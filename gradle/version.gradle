@@ -1,6 +1,5 @@
 import java.text.SimpleDateFormat
 
-
 repositories {
 	mavenCentral()
 }
@@ -8,22 +7,68 @@ configurations {
 	gitVersion{}
 }
 dependencies {
-    gitVersion "org.eclipse.jgit:org.eclipse.jgit:[4,)"
+	gitVersion "org.eclipse.jgit:org.eclipse.jgit:[4,)"
 	gitVersion "org.slf4j:slf4j-simple:1.6.1"
+}
+def callGradle(type, Object... params) {
+	def gradle = getGradle(type)
+	if(gradle) {
+		if(params!= null && params.length>0) {
+			gradle.execute(params)
+		}else {
+			gradle.execute()
+		}
+	}
+}
+
+def execute(String... args) {
+	try {
+		if(args.length == 1) {
+			args = args[0].split(" ")
+		}
+		ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()
+
+		exec{
+			commandLine args
+			standardOutput = stdOutput
+		}
+		return stdOutput.toString()
+	}catch(Exception e) {
+	}
+	return "";
+}
+
+def getGradle(type) {
+	def urls=[]
+
+	files(configurations.gitVersion).each {urls.add(it.toURL())}
+	sourceSets.main.runtimeClasspath.files.each {urls.add(it.toURL())}
+	sourceSets.main.output.files.each {urls.add(it.toURL())}
+	files('build/classes/main18').each {urls.add(it.toURL())}
+	try {
+		ClassLoader cl = new URLClassLoader(urls.toArray(new URL[urls.size()]))
+		Class<?> myClass = cl.loadClass("de.uniks.networkparser.ext.Gradle");
+		def method = myClass.getMethod("getType", String.class)
+		def gradle = method.invoke(myClass, type)
+		return gradle
+	}catch(Exception e) {
+		//e.printStackTrace()
+	}
 }
 
 // Define a method using a closure as the method body
 class GITVersion {
 	// MAJOR VERSION - Manually set
-	int major = -1
-	int minor = -1
-	int revision = -1
+	int major = 0
+	int minor = 0
+	int revision = 1
 	String buildTime = ""
 	String hash = ""
 	String coverage = ""
 	String branch = ""
 	String prefix = ""
 	boolean latest
+	boolean error = true
 
 	String toString() {
 		if (System.getenv().BUILD_NUMBER) {
@@ -31,11 +76,15 @@ class GITVersion {
 		}
 		if(latest) {
 			""
-		} else if(isRelease() == false && !isMaster()) {
-			"$major.$minor.$revision${'-SNAPSHOT'}"
 		} else {
-			"$major.$minor.$revision"
+			getVersion()
 		}
+	}
+	String getVersion() {
+		if(isRelease() == false && !isMaster()) {
+			return "$major.$minor.$revision${'-SNAPSHOT'}"
+		}
+		"$major.$minor.$revision"
 	}
 	boolean isMaster() {
 		if(branch == null) {
@@ -51,80 +100,49 @@ class GITVersion {
 	}
 }
 
-task compileJava18(type: JavaCompile) {
-	source = fileTree(dir: 'src', exclude: ['**/test/**'])
-	destinationDir = file('build/classes/main18')
-	sourceCompatibility = '1.8'
-	targetCompatibility = '1.8'
-	classpath = files('build/classes/main18')
-}
-
-task JavaGit(type:JavaExec, dependsOn: compileJava18) {
-	doFirst {
-		try {
-			compileJava18.execute()
-		}catch(Exception e) {
-		}
-	}
-	errorOutput = System.err
-	main = "de.uniks.networkparser.ext.DiagramEditor"
-	args 'GIT', '3'
-	classpath = (sourceSets.main.compileClasspath + sourceSets.main.output + files('build/classes/main18') + files(configurations.gitVersion))
-	//.filter({it.name.indexOf("jgit")>=0})))
-
-	ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()
-	standardOutput = stdOutput
-	doLast {
-		try {
-			def slurper = new groovy.json.JsonSlurper()
-			def json = slurper.parseText(stdOutput.toString())
-			
-			gitVersion.minor = json.get("minor")
-			gitVersion.revision = json.get("revisionnumber")
-			gitVersion.hash = json.get("lastcommit")
-			gitVersion.buildTime = buildTime()
-			gitVersion.branch = json.get("branchname")
-		} catch(Exception e) {
-			println e
-
-			gitVersion.minor = getGitTag()
-			gitVersion.revision = revisionNumber()
-			gitVersion.hash = getGitLastCommit()
-			gitVersion.buildTime = buildTime()
-			if (project.hasProperty("branch")) {
-				gitVersion.branch = project.get("branch")
-			} else {
-				gitVersion.branch = getWorkingBranch()
-			}
-			gitVersion.latest = getGitLastCommit() != null
-		}
-	}
-}
-
-task version() {
-	doFirst{
-		JavaGit.execute()
-	}
-	group "Git"
-	description "Show Final Version of Repository"
-	doLast {
-		if(gitVersion != null) {
-			println "Revisionnumber: "	+ gitVersion.revision
-			println "Branchname: " 		+ gitVersion.branch
-			println "LastCommit: "		+ gitVersion.hash
-			println "GitTag: "			+ gitVersion.minor
-		}
-	}
-}
 ext {
 	gitVersion = new GITVersion(major: ext.majorNumber)
-	try {
-		tasks.JavaGit.execute()
-	} catch(e){
-	}
-	
 }
-version = gitVersion
+def gitversion() {
+	try {
+		def gradle = getGradle("git")
+		def json = gradle.execute(3)
+		gitVersion.minor = json.get("minor")
+		gitVersion.revision = json.get("revisionnumber")
+		gitVersion.hash = json.get("lastcommit")
+		gitVersion.buildTime = buildTime()
+		gitVersion.branch = json.get("branchname")
+		gitVersion.error = false
+		println json
+	} catch(Exception e) {
+		println "ERROR GIT"
+		gitVersion.minor = getGitTag()
+		gitVersion.error = true
+		gitVersion.revision = revisionNumber()
+		gitVersion.hash = getGitLastCommit()
+		gitVersion.buildTime = buildTime()
+		if (project.hasProperty("branch")) {
+			gitVersion.branch = project.get("branch")
+		} else {
+			gitVersion.branch = getWorkingBranch()
+		}
+		gitVersion.latest = getGitLastCommit() != null
+	}
+	if(gitVersion != null && gitVersion.revision>0) {
+		println "Revisionnumber: "	+ gitVersion.revision
+		println "Branchname: " 		+ gitVersion.branch
+		println "LastCommit: "		+ gitVersion.hash
+		println "GitTag: "			+ gitVersion.minor
+		println "JarVersion: "		+ gitVersion.getVersion()
+	}
+}
+task gitversion() {
+	println "Show Version:"
+}
+project.gradle.taskGraph.whenReady{
+	gitversion()
+}
+
 
 def buildTime() {
 	//def df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'") //you can change it
@@ -169,7 +187,7 @@ def revisionNumber() {
 		count = count + 1
 	}
 	if( count == 0) {
-		count = -1
+		count = 1
 	}
 	count
 }
@@ -191,7 +209,24 @@ def getWorkingBranch() {
 			branch = branch + " "+value
 		}
 	}
-	branch = branch.trim()
-	println "Git-Branch: " + branch
-	branch
+	branch.trim()
+}
+task compileJava18(type: JavaCompile) {
+	source = fileTree(dir: 'src', exclude: ['**/test/**', 'jmh/**', 'gitsrc/**'])
+	destinationDir = file('build/classes/main18')
+	sourceCompatibility = '1.8'
+	targetCompatibility = '1.8'
+	classpath = files('build/classes/main18')
+	doLast{
+		if(gitVersion.error) {
+			gitversion()
+		}
+	}
+}
+compileJava.dependsOn compileJava18
+
+version = gitVersion
+
+project.gradle.taskGraph.whenReady { g -> 
+	callGradle("gradle", g, "build/Tasks.dot")
 }

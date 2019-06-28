@@ -3,7 +3,7 @@ package de.uniks.networkparser;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,19 +26,35 @@ THE SOFTWARE.
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
 
 public class SimpleGrammar implements Grammar {
-	private SimpleList<String> basicProperties =new SimpleList<String>().with(IdMap.ID, IdMap.CLASS, IdMap.SESSION, IdMap.TIMESTAMP);
+	private boolean flatFormat = false;
+	private ObjectCondition condition;
+	private SimpleList<String> basicProperties = new SimpleList<String>().with(IdMap.ID, IdMap.CLASS, IdMap.SESSION,
+			IdMap.TIMESTAMP);
+
+	public SimpleGrammar withFlatFormat(boolean value) {
+		this.flatFormat = value;
+		return this;
+	}
+
+	public boolean isFlatFormat() {
+		return flatFormat;
+	}
 
 	@Override
 	public BaseItem getProperties(Entity item, MapEntity map, boolean isId) {
+		if (item == null) {
+			return null;
+		}
 		if (isId) {
 			if (item.has(JsonTokener.PROPS)) {
-				return ((JsonObject)item).getJsonObject(JsonTokener.PROPS);
+				return ((JsonObject) item).getJsonObject(JsonTokener.PROPS);
 			}
 			return item;
 		}
@@ -54,39 +70,77 @@ public class SimpleGrammar implements Grammar {
 
 	@Override
 	public String getId(Object obj, IdMap map) {
+		if (condition != null) {
+			/* Please set Type for new Id */
+			SimpleEvent evt = new SimpleEvent(map, "id", null, obj);
+			if (condition.update(evt)) {
+				return evt.getType();
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public Entity writeBasicValue(Entity entity, String className, String id, String type, IdMap map) {
-		if(entity == null || map == null) {
+		if (entity == null || map == null) {
 			return null;
 		}
-		if(type != null && SendableEntityCreator.UPDATE.equalsIgnoreCase(type) == false) {
+		if (this.flatFormat) {
+			if (type != null && SendableEntityCreator.UPDATE.equalsIgnoreCase(type) == false) {
+				entity.put("." + IdMap.TYPE, type);
+			}
+			if (basicProperties.contains(IdMap.SESSION)) {
+				String session = map.getSession();
+				if (session != null) {
+					entity.put("." + IdMap.SESSION, session);
+				}
+			}
+			if (basicProperties.contains(IdMap.CLASS)) {
+				entity.put("." + IdMap.CLASS, className);
+			}
+			if (id != null) {
+				if (basicProperties.contains(IdMap.ID)) {
+					entity.put("." + IdMap.ID, id);
+				}
+				if (basicProperties.contains(IdMap.TIMESTAMP)) {
+					if (map.getTimeStamp() == 0) {
+						String ts = null;
+						if (id.length() > 0) {
+							ts = id.substring(1);
+						}
+						if (EntityUtil.isNumeric(ts)) {
+							entity.put("." + IdMap.TIMESTAMP, ts);
+						}
+					}
+				}
+			}
+			return entity;
+		}
+		if (type != null && SendableEntityCreator.UPDATE.equalsIgnoreCase(type) == false) {
 			entity.put(IdMap.TYPE, type);
 		}
-		if(basicProperties.contains(IdMap.SESSION)) {
+		if (basicProperties.contains(IdMap.SESSION)) {
 			String session = map.getSession();
-			if(session != null) {
+			if (session != null) {
 				entity.put(IdMap.SESSION, session);
 			}
 		}
-		if(basicProperties.contains(IdMap.CLASS)) {
-			entity.setType(className);
+		if (basicProperties.contains(IdMap.CLASS)) {
+			entity.withType(className);
 		}
 
-		if(id != null) {
-			if(basicProperties.contains(IdMap.ID)) {
+		if (id != null) {
+			if (basicProperties.contains(IdMap.ID)) {
 				entity.put(IdMap.ID, id);
 			}
-			if(basicProperties.contains(IdMap.TIMESTAMP)) {
-				if(map.getTimeStamp() == 0) {
+			if (basicProperties.contains(IdMap.TIMESTAMP)) {
+				if (map.getTimeStamp() == 0) {
 					String ts = null;
-					if(id.length()>0) {
+					if (id.length() > 0) {
 						ts = id.substring(1);
 					}
-					if(EntityUtil.isNumeric(ts)) {
-							entity.put(IdMap.TIMESTAMP, ts);
+					if (EntityUtil.isNumeric(ts)) {
+						entity.put(IdMap.TIMESTAMP, ts);
 					}
 				}
 			}
@@ -96,21 +150,20 @@ public class SimpleGrammar implements Grammar {
 
 	@Override
 	public SendableEntityCreator getCreator(String type, Object item, MapEntity entity, String className) {
-//			IdMap map, boolean searchForSuperCreator, String className) {
-		if(item == null) {
+		if (item == null) {
 			return null;
 		}
-		IdMap map =entity.getMap();
-		if(map == null) {
+		IdMap map = entity.getMap();
+		if (map == null) {
 			return null;
 		}
-		if(Grammar.WRITE.equals(type)) {
-			if(className == null) {
+		if (Grammar.WRITE.equals(type)) {
+			if (className == null) {
 				className = item.getClass().getName();
 			}
-			SendableEntityCreator creator = map.getCreator(className, true, null);
+			SendableEntityCreator creator = map.getCreator(className, true, true, null);
 
-			if(creator != null) {
+			if (creator != null) {
 				return creator;
 			}
 			if (item instanceof SendableEntityCreator) {
@@ -118,15 +171,15 @@ public class SimpleGrammar implements Grammar {
 			}
 			return getSuperCreator(map, entity.isSearchForSuperClass(), item);
 		}
-		if(className == null && item instanceof Entity) {
-			Object name = ((Entity)item).getValue(IdMap.CLASS);
-			if(name == null) {
+		if (className == null && item instanceof Entity) {
+			Object name = ((Entity) item).getValue(IdMap.CLASS);
+			if (name == null) {
 				return null;
 			}
 			className = (String) name;
 		}
-		SendableEntityCreator creator = map.getCreator(className, false, null);
-		if(creator != null) {
+		SendableEntityCreator creator = map.getCreator(className, false, true, null);
+		if (creator != null) {
 			return creator;
 		}
 		Class<?> clazzName = getClassForName(className);
@@ -143,7 +196,7 @@ public class SimpleGrammar implements Grammar {
 
 	@Override
 	public boolean hasValue(Entity item, String property) {
-		if(item == null) {
+		if (item == null) {
 			return false;
 		}
 		return item.has(property);
@@ -151,34 +204,46 @@ public class SimpleGrammar implements Grammar {
 
 	@Override
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype) {
+		if (creator == null) {
+			return null;
+		}
 		return creator.getSendableInstance(prototype);
 	}
 
 	@Override
 	public String getValue(Entity item, String property) {
+		if (item == null) {
+			return null;
+		}
 		return item.getString(property);
 	}
 
 	@Override
 	public BaseItem encode(Object entity, MapEntity map) {
-		return map.getTokener().encode(entity, map);
+		if (map != null) {
+			Tokener tokener = map.getTokener();
+			if (tokener != null) {
+				return map.getTokener().encode(entity, map);
+			}
+		}
+		return null;
 	}
 
 	public SimpleGrammar withBasicFeature(String... values) {
-		if(values == null) {
+		if (values == null) {
 			return this;
 		}
-		for(String item : values) {
+		for (String item : values) {
 			this.basicProperties.add(item);
 		}
 		return this;
 	}
 
 	public SimpleGrammar withoutBasicFeature(String... values) {
-		if(values == null) {
+		if (values == null) {
 			return this;
 		}
-		for(String item : values) {
+		for (String item : values) {
 			this.basicProperties.without(item);
 		}
 		return this;

@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,26 +29,26 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyServer;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Server;
 
-public class Server_UPD extends Thread implements Server{
-	protected boolean run=true;
+public class Server_UPD extends Thread implements Server {
+	protected boolean run = true;
 	protected DatagramSocket socket;
 	private NodeProxyServer proxy;
 
-	public Server_UPD(NodeProxyServer proxy, boolean asyn)
-	{
+	public Server_UPD(NodeProxyServer proxy, boolean asyn) {
 		this.proxy = proxy;
-		if(init() && asyn){
+		if (init() && asyn) {
 			start();
 		}
 	}
 
-	public boolean close(){
-		this.run=false;
-		if(socket!=null){
+	public boolean close() {
+		this.run = false;
+		if (socket != null) {
 			socket.close();
 			socket = null;
 		}
@@ -57,17 +57,16 @@ public class Server_UPD extends Thread implements Server{
 
 	@Override
 	public boolean isRun() {
-		return socket!=null && socket.isClosed() == false;
+		return socket != null && socket.isClosed() == false;
 	}
 
 	@Override
-	public void run()
-	{
-		if(NodeProxy.isInput(proxy.getType())) {
+	public void run() {
+		if (NodeProxy.isInput(proxy.getType())) {
 			runServer();
 		} else {
 			DatagramPacket data = runClient();
-			if(proxy != null) {
+			if (proxy != null) {
 				proxy.getSpace().firePropertyChange(BROADCAST, null, data);
 			}
 		}
@@ -75,7 +74,7 @@ public class Server_UPD extends Thread implements Server{
 
 	public DatagramPacket createSendPacket() {
 		byte[] sendData = new byte[proxy.getBufferSize()];
-		if(proxy.getSpace() != null) {
+		if (proxy.getSpace() != null) {
 			sendData = proxy.getSpace().getReplicationInfo().toString().getBytes();
 		}
 		InetAddress IPAddress = null;
@@ -102,40 +101,33 @@ public class Server_UPD extends Thread implements Server{
 		return receivePacket;
 	}
 
-	public void runServer()
-	{
-		Thread.currentThread().setName(proxy.getPort()+" broadcast server");
-		while (!isInterrupted()&&this.run)
-		{
-			try
-			{
+	public void runServer() {
+		Thread.currentThread().setName(proxy.getPort() + " broadcast server");
+		while (!isInterrupted() && this.run) {
+			try {
 				byte[] receiveData = new byte[proxy.getBufferSize()];
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 				socket.receive(receivePacket);
 
-	//			String sentence = new String(receivePacket.getData());
-	//			System.out.println("RECEIVED: " + sentence);
 				InetAddress IPAddress = receivePacket.getAddress();
 				int port = receivePacket.getPort();
 				Entity answer = proxy.getSpace().getReplicationInfo();
 				byte[] sendData = answer.toString().getBytes();
 				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
 				socket.send(sendPacket);
-			}
-			catch (IOException e) {
+			} catch (IOException e) {
 
 			}
 		}
 	}
 
-	private boolean init()
-	{
-		boolean success=true;
+	private boolean init() {
+		boolean success = true;
 		try {
-			// Switch for Client / Server
-			if(proxy != null && NodeProxy.isInput(proxy.getType())) {
+			/* Switch for Client / Server */
+			if (proxy != null && NodeProxy.isInput(proxy.getType())) {
 				socket = new DatagramSocket(proxy.getPort());
-			}else {
+			} else {
 				socket = new DatagramSocket();
 			}
 		} catch (SocketException e) {

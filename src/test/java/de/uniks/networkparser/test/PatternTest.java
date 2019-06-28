@@ -36,11 +36,9 @@ public class PatternTest {
 			if(matchPattern != null) {
 				i++;
 			}
-//			System.out.println(pattern);
 		}
 		Assert.assertEquals(3, i);
 
-//		System.out.println(allMatches);
 //		for (Object found : allMatches) {
 //			Cargo cargo = (Cargo) found;
 //			System.out.println(cargo.getName());

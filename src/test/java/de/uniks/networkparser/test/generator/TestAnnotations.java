@@ -15,7 +15,7 @@ public class TestAnnotations {
 
 		Annotation annotation = Annotation.create("Deprecated");
 		person.with(annotation);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
@@ -29,7 +29,7 @@ public class TestAnnotations {
 
 		person.with(annotation);
 		person.with(Annotation.DEPRECATED);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 	}
 

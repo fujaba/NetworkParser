@@ -8,7 +8,7 @@ import de.uniks.networkparser.list.AbstractList;
  * @author Stefan
  *
  */
-public class PropertyList extends AbstractList<String>{
+public class PropertyList extends AbstractList<String> {
 	private String[] cache;
 
 	public boolean add(String value) {
@@ -18,11 +18,11 @@ public class PropertyList extends AbstractList<String>{
 	}
 
 	public boolean addAll(String... values) {
-		if(values == null) {
+		if (values == null) {
 			return true;
 		}
-		for(String value : values) {
-			if(super.add(value) == false) {
+		for (String value : values) {
+			if (super.add(value) == false) {
 				this.cache = null;
 				return false;
 			}
@@ -37,7 +37,7 @@ public class PropertyList extends AbstractList<String>{
 	}
 
 	public String[] getList() {
-		if(this.cache == null) {
+		if (this.cache == null) {
 			this.cache = this.toArray(new String[this.size()]);
 		}
 		return this.cache;
@@ -45,8 +45,8 @@ public class PropertyList extends AbstractList<String>{
 
 	public static PropertyList create(String... properties) {
 		PropertyList list = new PropertyList();
-		if(properties != null) {
-			for(String item : properties) {
+		if (properties != null) {
+			for (String item : properties) {
 				list.add(item);
 			}
 		}

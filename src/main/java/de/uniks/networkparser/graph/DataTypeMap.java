@@ -3,7 +3,7 @@ package de.uniks.networkparser.graph;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -62,46 +62,45 @@ public class DataTypeMap extends DataType {
 
 	@Override
 	public String getName(boolean shortName) {
-		if (this.value == null) {
-			return null;
-		}
-		return this.value.getName(shortName) + "<" + genericKey.getInternName(shortName, false) + "," + genericValue.getInternName(shortName, false) + ">";
+		return getInternName(shortName, false);
 	}
 
 	@Override
 	protected String getInternName(boolean shortName, boolean primitivAllow) {
-		if (this.value == null) {
+		if (this.value == null || genericKey == null || genericValue == null) {
 			return null;
 		}
-		return this.value.getName(shortName) + "<" + genericKey.getInternName(shortName, primitivAllow) + "," + genericValue.getInternName(shortName, primitivAllow) + ">";
+		return this.value.getName(shortName) + "<" + genericKey.getInternName(shortName, primitivAllow) + ","
+				+ genericValue.getInternName(shortName, primitivAllow) + ">";
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if(super.equals(obj) == false) {
+		if (super.equals(obj) == false) {
 			return false;
 		}
-		if(obj instanceof DataTypeMap == false) {
+		if (obj instanceof DataTypeMap == false) {
 			return false;
 		}
-		if(obj.hashCode() == this.hashCode()) {
+		if (obj.hashCode() == this.hashCode()) {
 			return true;
 		}
 		DataTypeMap otherDTM = (DataTypeMap) obj;
-		if(this.genericKey == null) {
-			if(otherDTM.getGenericKey() != null) {
+		if (this.genericKey == null) {
+			if (otherDTM.getGenericKey() != null) {
 				return false;
 			}
 		} else {
-			if(otherDTM.getGenericKey().equals(this.genericKey) == false) {
+			if (otherDTM.getGenericKey().equals(this.genericKey) == false) {
 				return false;
 			}
 		}
-		if(this.genericValue == null) {
+		if (this.genericValue == null) {
 			return otherDTM.getGenericValue() == null;
 		}
 		return otherDTM.getGenericValue().equals(this.genericValue);
 	}
+
 	@Override
 	public int hashCode() {
 		return super.hashCode();
@@ -111,5 +110,15 @@ public class DataTypeMap extends DataType {
 	public DataTypeMap withExternal(boolean external) {
 		super.withExternal(external);
 		return this;
+	}
+
+	public String getValue(String value) {
+		if (PROPERTY_NAME.equals(value)) {
+			return getGenericKey().getName(true);
+		}
+		if (PROPERTY_CATEGORIE.equals(value)) {
+			return "MAP";
+		}
+		return null;
 	}
 }

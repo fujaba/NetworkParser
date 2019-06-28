@@ -1,9 +1,11 @@
 package de.uniks.networkparser.gui.controls;
 
+import de.uniks.networkparser.SimpleObject;
+
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,9 +33,12 @@ public class Input<T> extends Control {
 	public static final String VALUE = "value";
 
 	/* variables */
-//	protected SimpleGUI $view;
 	protected T value;
 	protected String type;
+
+	public Input<T> withElement(SimpleObject blub) {
+		return this;
+	}
 
 	public Input() {
 		super();
@@ -59,10 +64,10 @@ public class Input<T> extends Control {
 	public boolean setValue(String key, Object value) {
 		key = key.trim();
 		if (VALUE.equalsIgnoreCase(key)) {
-			return this.setValue((T)value);
+			return this.setValue((T) value);
 		}
 		if (TYPE.equals(key)) {
-			return this.setType(""+value);
+			return this.setType("" + value);
 		}
 		return super.setValue(key, value);
 	}
@@ -85,7 +90,7 @@ public class Input<T> extends Control {
 	}
 
 	/**
-	 * @param value	 the value to set
+	 * @param value the value to set
 	 * @return success
 	 */
 	public boolean setValue(T value) {

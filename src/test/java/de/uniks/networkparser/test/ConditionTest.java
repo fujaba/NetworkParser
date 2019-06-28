@@ -179,7 +179,7 @@ public class ConditionTest implements ObjectCondition {
 
 	@Test
 	public void testUpdateCondition() {
-		UpdateCondition condition = new UpdateCondition();
+		UpdateCondition condition = UpdateCondition.createUpdateCondition();
 		IdMap map=new IdMap();
 		University uni = new University();
 		map.put("root", uni, true);

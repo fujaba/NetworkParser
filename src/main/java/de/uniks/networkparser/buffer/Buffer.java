@@ -1,10 +1,9 @@
 package de.uniks.networkparser.buffer;
 
-
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -35,9 +34,9 @@ import de.uniks.networkparser.list.SimpleList;
 public abstract class Buffer implements BufferItem {
 	public final static String STOPCHARSJSON = ",:]}/\\\"[{;=# ";
 	public final static String STOPCHARSXML = ",]}/\\\"[{;=# ";
-	public final static char[] STOPCHARSXMLEND = new char[] { '"', ',', ']', '}', '/', '\\', '"', '[', '{', ';', '=',
-			'#', '>', '\r', '\n', ' ' };
-	public final static char ENDLINE='\n';
+	public final static char[] STOPCHARSXMLEND = new char[] { '"', ',', ']', '}', '/', '\\', '[', '{', ';', '=', '#',
+			'>', '\r', '\n', ' ' };
+	public final static char ENDLINE = '\n';
 
 	/** The index. */
 	protected int position;
@@ -55,15 +54,15 @@ public abstract class Buffer implements BufferItem {
 
 	public int getUnsignedInt() {
 		byte[] bytes = array(Integer.SIZE / Byte.SIZE, false);
-		return (int) (
-					((bytes[0] & 0xff) << 24) + 
-					((bytes[1] & 0xff)<< 16) + 
-					((bytes[2] & 0xff)<< 8) + 
-					(bytes[3] & 0xff)
-					);
+		return (int) (((bytes[0] & 0xff) << 24) + ((bytes[1] & 0xff) << 16) + ((bytes[2] & 0xff) << 8)
+				+ (bytes[3] & 0xff));
 	}
 
 	public abstract char getChar();
+
+	public CharacterBuffer readResource(String file) {
+		return new CharacterBuffer();
+	}
 
 	public long getLong() {
 		byte[] bytes = array(Long.SIZE / Byte.SIZE, false);
@@ -87,6 +86,10 @@ public abstract class Buffer implements BufferItem {
 		return "";
 	}
 
+	public String next(int... positions) {
+		return "";
+	}
+
 	public double getDouble() {
 		long asLong = getLong();
 		return Double.longBitsToDouble(asLong);
@@ -104,16 +107,17 @@ public abstract class Buffer implements BufferItem {
 		byte[] result = new byte[len];
 		int start = 0;
 		if (current) {
-			if (len > 0 && position < 0) {
-				position = 0;
+			if (len > 0) {
+				if (position < 0) {
+					position = 0;
+				}
+				result[0] = (byte) getCurrentChar();
 			}
-			result[0] = (byte) getCurrentChar();
 			start = 1;
 		}
 		for (int i = start; i < len; i++) {
 			result[i] = getByte();
 		}
-		// }
 		return result;
 	}
 
@@ -208,8 +212,8 @@ public abstract class Buffer implements BufferItem {
 
 	public CharacterBuffer nextString() {
 		nextClean(true);
-		boolean isQuote = getCurrentChar()==QUOTES;
-		if(isQuote) {
+		boolean isQuote = getCurrentChar() == QUOTES;
+		if (isQuote) {
 			this.skipChar(QUOTES);
 			CharacterBuffer result = nextString(QUOTES);
 			this.skipChar(QUOTES);
@@ -361,7 +365,7 @@ public abstract class Buffer implements BufferItem {
 					return myLong;
 				}
 			} catch (Exception ignore) {
-				// DO nothing
+				/* Do nothing */
 			}
 		}
 		return value;
@@ -389,6 +393,9 @@ public abstract class Buffer implements BufferItem {
 
 	@Override
 	public boolean skipTo(String search, boolean order, boolean notEscape) {
+		if (position() < 0) {
+			return false;
+		}
 		char[] character = search.toCharArray();
 		int z = 0;
 		int strLen = character.length;
@@ -481,20 +488,6 @@ public abstract class Buffer implements BufferItem {
 	}
 
 	@Override
-	public SimpleList<String> splitStrings(String value, boolean split) {
-		SimpleList<String> result = new SimpleList<String>();
-		if (value.startsWith("\"") && value.endsWith("\"")) {
-			result.add(value.substring(1, value.length() - 1));
-			return result;
-		}
-		String[] values = value.split(" ");
-		for (String item : values) {
-			result.add(item);
-		}
-		return result;
-	}
-
-	@Override
 	public char skipChar(char... quotes) {
 		char c = getCurrentChar();
 		if (quotes == null) {
@@ -517,8 +510,27 @@ public abstract class Buffer implements BufferItem {
 		return c;
 	}
 
+	public boolean skipIf(boolean allowSpace, char... quotes) {
+		char c = getCurrentChar();
+		if (quotes == null) {
+			return true;
+		}
+		for (int i = 0; i < quotes.length; i++) {
+			if (quotes[i] != c) {
+				if (allowSpace && c == ' ') {
+					c = getChar();
+					i--;
+					continue;
+				}
+				return false;
+			}
+			c = getChar();
+		}
+		return true;
+	}
+
 	public void printError(String msg) {
-		if(msg != null && msg.length() > 0) {
+		if (msg != null && msg.length() > 0) {
 			System.err.println(msg);
 		}
 	}

@@ -3,7 +3,7 @@ package de.uniks.networkparser.logic;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 
 public abstract class CustomCondition<T> implements ParserCondition {
-	protected static final String PROPERTY_MEMBER="member";
+	protected static final String PROPERTY_MEMBER = "member";
 	protected boolean isExpression;
 
 	@Override
@@ -49,16 +49,18 @@ public abstract class CustomCondition<T> implements ParserCondition {
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		skipEnd(buffer);
 	}
+
 	protected String addImport(Object value, Class<?> importName) {
-		if(value instanceof SendableEntityCreator) {
+		if (value instanceof SendableEntityCreator) {
 			SendableEntityCreator creator = (SendableEntityCreator) value;
 			creator.setValue(value, "headers", importName.getName(), SendableEntityCreator.NEW);
 			return importName.getSimpleName();
 		}
 		return null;
 	}
+
 	protected boolean addImport(Object value, String importName) {
-		if(value instanceof SendableEntityCreator) {
+		if (value instanceof SendableEntityCreator) {
 			SendableEntityCreator creator = (SendableEntityCreator) value;
 			return creator.setValue(value, "headers", importName, SendableEntityCreator.NEW);
 		}
@@ -66,7 +68,7 @@ public abstract class CustomCondition<T> implements ParserCondition {
 	}
 
 	protected GraphMember getMember(Object value) {
-		if(value instanceof SendableEntityCreator) {
+		if (value instanceof SendableEntityCreator) {
 			SendableEntityCreator creator = (SendableEntityCreator) value;
 			GraphMember member = (GraphMember) creator.getValue(creator, PROPERTY_MEMBER);
 			return member;
@@ -82,10 +84,10 @@ public abstract class CustomCondition<T> implements ParserCondition {
 
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof ObjectCondition) {
-			return ((ObjectCondition)value).update(this);
+		if (value instanceof ObjectCondition) {
+			return ((ObjectCondition) value).update(this);
 		}
-		if(value instanceof LocalisationInterface) {
+		if (value instanceof LocalisationInterface) {
 			return getValue((LocalisationInterface) value) != null;
 		}
 		return false;
@@ -94,9 +96,9 @@ public abstract class CustomCondition<T> implements ParserCondition {
 	@Override
 	@SuppressWarnings("unchecked")
 	public Object getValue(LocalisationInterface variables) {
-		if(variables instanceof SendableEntityCreator) {
+		if (variables instanceof SendableEntityCreator) {
 			SendableEntityCreator creator = (SendableEntityCreator) variables;
-			return getValue(creator, (T)getMember(variables));
+			return getValue(creator, (T) getMember(variables));
 		}
 		return null;
 	}

@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,10 +27,16 @@ import de.uniks.networkparser.DateTimeEntity;
 
 public interface TaskExecutor {
 	public Object executeTask(Runnable task, int delay, int interval);
+
 	public Object executeTask(Runnable task, int delay);
+
 	public boolean handleMsg(Message message);
+
 	public void shutdown();
+
 	public TaskExecutor withSpace(Space space);
+
 	public Space getSpace();
+
 	public DateTimeEntity getLastRun();
 }

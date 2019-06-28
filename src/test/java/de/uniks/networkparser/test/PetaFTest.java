@@ -44,7 +44,7 @@ public class PetaFTest {
 	public void testMessage() {
 		ConnectMessage connectMsg = ConnectMessage.create();
 		Space space=new Space();
-		space.createServer(5000);
+		space.startServer(5000);
 		space.sendMessage(connectMsg, false);
 		Assert.assertNotNull(space.convertMessage(connectMsg));
 
@@ -72,6 +72,11 @@ public class PetaFTest {
 		Assert.assertTrue(server.start());
 		server.start();
 		server.close();
+		
+//		Space space=new Space();
+//		space.with(NodeProxyLocal.create(e -> {
+//			return true;
+//		}));
 //		Thread.sleep(5000);
 	}
 
@@ -136,7 +141,6 @@ public class PetaFTest {
 		buffer.with(convertMessage);
 
 		ConnectMessage newMessage = (ConnectMessage) space.getMap().decode(buffer);
-//		System.out.println(newMessage);
 		Assert.assertEquals(newMessage.getReceiver(), proxy);
 	}
 

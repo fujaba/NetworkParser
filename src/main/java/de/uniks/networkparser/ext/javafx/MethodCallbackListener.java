@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.javafx;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,14 +29,15 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 public class MethodCallbackListener implements ObjectCondition {
 	private Object element;
 	private String methodName;
-	public MethodCallbackListener (Object element, String methodName) {
+
+	public MethodCallbackListener(Object element, String methodName) {
 		this.element = element;
 		this.methodName = methodName;
 	}
+
 	@Override
 	public boolean update(Object value) {
 		ReflectionLoader.call(element, this.methodName, value);
 		return true;
-//		throw new RuntimeException("The function cannot be found on the given Object...");
 	}
 }

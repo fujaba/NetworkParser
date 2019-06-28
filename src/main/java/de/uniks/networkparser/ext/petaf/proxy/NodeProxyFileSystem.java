@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf.proxy;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,31 +33,13 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
-public class NodeProxyFileSystem extends NodeProxy {
+public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 	private String fileName;
 	private FileWatcher nodeProxyFileWatcher;
 	private boolean fullModell;
 
 	public void enableGitFilter() {
-		this.withFilter(new ObjectCondition() {
-			@Override
-			public boolean update(Object value) {
-				// Filter if it should be written on disk
-//				if (value instanceof ChangeMessage) {
-//					SimpleList<NodeProxy> receiver = ((ChangeMessage) value).getReceived();
-//					if (receiver != null && receiver.contains(this) ) {
-//						// already saved to disk
-//						System.out.println("Already saved");
-//						return false;
-//					}
-//				}else {
-//					System.out.println("No Change");
-//				}
-				// eigener change?
-
-				return true;
-			}
-		});
+		this.withFilter(this);
 	}
 
 	NodeProxyFileSystem() {
@@ -65,7 +47,7 @@ public class NodeProxyFileSystem extends NodeProxy {
 	}
 
 	public NodeProxyFileSystem(String fileName) {
-		if(fileName != null) {
+		if (fileName != null) {
 			this.fileName = fileName;
 			withOnline(true);
 		}
@@ -92,11 +74,7 @@ public class NodeProxyFileSystem extends NodeProxy {
 	@Override
 	protected boolean sending(Message msg) {
 		boolean result = super.sending(msg);
-//		if (!this.getFilter().update(msg)) {
-//			// dont't update
-//			return result;
-//		}
-		if(this.space == null) {
+		if (this.space == null) {
 			return false;
 		}
 		try {
@@ -108,14 +86,14 @@ public class NodeProxyFileSystem extends NodeProxy {
 				NodeProxyModel model = getSpace().getModel();
 				Object modell = model.getModel();
 				BaseItem value = this.space.encode(modell, null);
-				if(value == null) {
+				if (value == null) {
 					return false;
 				}
 				String data = value.toString();
 				len = data.length();
 				file.write(FileBuffer.OVERRIDE, data);
 			} else if (msg != null) {
-				String data = this.space.convertMessage(msg)+BaseItem.CRLF;
+				String data = this.space.convertMessage(msg) + BaseItem.CRLF;
 				len = data.length();
 				file.write(FileBuffer.APPEND, data);
 			}
@@ -132,28 +110,28 @@ public class NodeProxyFileSystem extends NodeProxy {
 		if (this.space != null && readBaseFile != null) {
 			IdMap map = space.getMap();
 			if (map != null) {
-				if(this.isFullModell()) {
+				if (this.isFullModell()) {
 					this.space.withInit(false);
 					Object model = map.decode(readBaseFile, root, null);
 					this.space.withInit(true);
-					// Check if NodeProxyModel exists
+					/* Check if NodeProxyModel exists */
 					this.space.createModel(model);
 					return readBaseFile;
 				}
-				// Maybe ChangeMessages
-				if(readBaseFile instanceof EntityList){
+				/* Maybe ChangeMessages */
+				if (readBaseFile instanceof EntityList) {
 					try {
 						EntityList list = (EntityList) readBaseFile;
-						for(int i=0;i<list.sizeChildren();i++) {
+						for (int i = 0; i < list.sizeChildren(); i++) {
 							BaseItem singleMessage = list.getChild(i);
 							Object message = map.decode(singleMessage);
-							if(message instanceof ChangeMessage) {
+							if (message instanceof ChangeMessage) {
 								ChangeMessage changeMsg = (ChangeMessage) message;
-								if(map.getObject(changeMsg.getId()) == null) {
-									// Try to Use old Root
+								if (map.getObject(changeMsg.getId()) == null) {
+									/* Try to Use old Root */
 									Object entity = changeMsg.getEntity();
-									if(entity != null) {
-										if(entity instanceof String || entity.getClass().equals(root.getClass())) {
+									if (entity != null) {
+										if (entity instanceof String || entity.getClass().equals(root.getClass())) {
 											map.put(changeMsg.getId(), root, false);
 										} else {
 											map.put(changeMsg.getId(), changeMsg.getEntity(), false);
@@ -171,11 +149,11 @@ public class NodeProxyFileSystem extends NodeProxy {
 					}
 					return readBaseFile;
 				}
-				// So May be a SingleChange or FullDatamodel and wrong Config
+				/* So May be a SingleChange or FullDatamodel and wrong Config */
 				this.space.withInit(false);
 				Object model = map.decode(readBaseFile, root, null);
 				this.space.withInit(true);
-				// Check if NodeProxyModel exists
+				/* Check if NodeProxyModel exists */
 				this.space.createModel(model);
 				return readBaseFile;
 			}
@@ -195,7 +173,7 @@ public class NodeProxyFileSystem extends NodeProxy {
 	}
 
 	@Override
-	protected boolean initProxy() {
+	protected boolean startProxy() {
 		withType(NodeProxy.TYPE_INOUT);
 		nodeProxyFileWatcher = new FileWatcher().init(this, this.fileName);
 		return true;
@@ -209,5 +187,10 @@ public class NodeProxyFileSystem extends NodeProxy {
 	@Override
 	public Object getSendableInstance(boolean reference) {
 		return new NodeProxyFileSystem(null);
+	}
+
+	@Override
+	public boolean update(Object value) {
+		return true;
 	}
 }

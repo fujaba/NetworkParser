@@ -3,7 +3,7 @@ package de.uniks.networkparser.calculator;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,12 +32,12 @@ public class Maximum implements Operator {
 
 	@Override
 	public double calculate(Double... values) {
-		if(values == null) {
+		if (values == null) {
 			return Double.MIN_VALUE;
 		}
-		double max=Double.MIN_VALUE;
-		for(int i=0;i<values.length;i++) {
-			if(values[i] != null && values[i] > max) {
+		double max = Double.MIN_VALUE;
+		for (int i = 0; i < values.length; i++) {
+			if (values[i] != null && values[i] > max) {
 				max = values[i];
 			}
 		}

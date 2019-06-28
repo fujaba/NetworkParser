@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.generic;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -35,27 +35,35 @@ public class ReflectionInterfaceProxy implements InvocationHandler {
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+		if (proxy == null || method == null) {
+			return null;
+		}
 		Class<?>[] newTypes = convertTypes(method.getParameterTypes());
 		Method proxyMethod = null;
 		try {
 			proxyMethod = this.obj.getClass().getMethod(method.getName(), newTypes);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			newTypes = convertTypesObject(newTypes);
 			proxyMethod = this.obj.getClass().getMethod(method.getName(), newTypes);
 		}
-		if(proxyMethod != null) {
+		if (proxyMethod != null) {
 			return proxyMethod.invoke(this.obj, args);
 		}
 		return null;
-//		return method.invoke(this.obj, args);
 	}
 
-	private Class<?>[] convertTypes(Class<?> [] types) {
-		Class<?>[] newTypes=new Class<?>[types.length];
-		for(int i=0;i<newTypes.length;i++) {
-			if(types[i].getName().indexOf("javafx.")>=0) {
+	private Class<?>[] convertTypes(Class<?>[] types) {
+		if (types == null) {
+			return null;
+		}
+		Class<?>[] newTypes = new Class<?>[types.length];
+		for (int i = 0; i < newTypes.length; i++) {
+			if (types[i] == null) {
+				continue;
+			}
+			if (types[i].getName().indexOf("javafx.") >= 0) {
 				newTypes[i] = Object.class;
-			} else if(types[i].getName().indexOf("java.awt.event.")>=0) {
+			} else if (types[i].getName().indexOf("java.awt.event.") >= 0) {
 				newTypes[i] = Object.class;
 			} else {
 				newTypes[i] = types[i];
@@ -64,9 +72,12 @@ public class ReflectionInterfaceProxy implements InvocationHandler {
 		return newTypes;
 	}
 
-	private Class<?>[] convertTypesObject(Class<?> [] types) {
-		Class<?>[] newTypes=new Class<?>[types.length];
-		for(int i=0;i<newTypes.length;i++) {
+	private Class<?>[] convertTypesObject(Class<?>[] types) {
+		if (types == null) {
+			return null;
+		}
+		Class<?>[] newTypes = new Class<?>[types.length];
+		for (int i = 0; i < newTypes.length; i++) {
 			newTypes[i] = Object.class;
 		}
 		return newTypes;

@@ -3,7 +3,7 @@ package de.uniks.networkparser.interfaces;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,9 @@ THE SOFTWARE.
 /**
  * Integrate this Interface to your Modellentity to disable the creating of Id
  * of the serialized elements and no creating for subelement for Props
+ * 
+ * @author Stefan Lindel
  */
-
 public interface SendableEntityCreatorNoIndex extends SendableEntityCreator {
-	// Nothing
+	/* Nothing */
 }

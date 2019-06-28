@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,12 +27,13 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.Server;
 
-public class Server_TCP extends Thread  implements Server {
-	protected boolean run=true;
-	private boolean searchFreePort=true;
+public class Server_TCP extends Thread implements Server {
+	protected boolean run = true;
+	private boolean searchFreePort = true;
 	protected ServerSocket serverSocket;
 	private NodeProxyTCP proxy;
 
@@ -45,10 +46,9 @@ public class Server_TCP extends Thread  implements Server {
 		this(NodeProxyTCP.createServer(port));
 	}
 
-	public Server_TCP(NodeProxyTCP proxy)
-	{
+	public Server_TCP(NodeProxyTCP proxy) {
 		this.proxy = proxy;
-		if(init()){
+		if (init()) {
 			start();
 		}
 	}
@@ -57,10 +57,10 @@ public class Server_TCP extends Thread  implements Server {
 		return run;
 	}
 
-	public boolean close(){
-		this.run=false;
+	public boolean close() {
+		this.run = false;
 		try {
-			if(serverSocket!=null){
+			if (serverSocket != null) {
 				serverSocket.close();
 			}
 		} catch (IOException e) {
@@ -71,54 +71,40 @@ public class Server_TCP extends Thread  implements Server {
 	}
 
 	@Override
-	public void run()
-	{
-		if(proxy.getUrl() != null) {
-			Thread.currentThread().setName(proxy.getUrl()+":"+proxy.getPort()+" com server");
-		}else {
-			Thread.currentThread().setName("localhost:"+proxy.getPort()+" com server");
+	public void run() {
+		if (proxy.getUrl() != null) {
+			Thread.currentThread().setName(proxy.getUrl() + ":" + proxy.getPort() + " com server");
+		} else {
+			Thread.currentThread().setName("localhost:" + proxy.getPort() + " com server");
 		}
-		while (!isInterrupted()&&this.run)
-		{
+		while (!isInterrupted() && this.run) {
 			Socket requestSocket = null;
-			try
-			{
+			try {
 				requestSocket = serverSocket.accept();
 				MessageRequest.executeTask(this.proxy, requestSocket);
-			}
-			catch (IOException e)
-			{
-			}finally{
-//				try {
-//					if(requestSocket!=null && !requestSocket.isClosed()){
-//						requestSocket.close();
-//					}
-//				} catch (IOException e) {
-//				}
+			} catch (IOException e) {
+			} finally {
 			}
 		}
 	}
 
-	private boolean init()
-	{
-		try
-		{
-			serverSocket = new ServerSocket(proxy.getPort(), 10, null);
-			return true;
-		}
-		catch (UnknownHostException e)
-		{
+	private boolean init() {
+		if (proxy == null || proxy.getPort() < 1) {
 			return false;
 		}
-		catch (IOException e)
-		{
-			if(searchFreePort) {
-				// Wrong PORT
+		try {
+			serverSocket = new ServerSocket(proxy.getPort(), 10, null);
+			return true;
+		} catch (UnknownHostException e) {
+			return false;
+		} catch (IOException e) {
+			if (searchFreePort) {
+				/* Wrong PORT */
 				try {
 					serverSocket = new ServerSocket(0, 10, null);
 					proxy.withPort(serverSocket.getLocalPort());
 					return true;
-				}catch (Exception exception) {
+				} catch (Exception exception) {
 				}
 			}
 		}

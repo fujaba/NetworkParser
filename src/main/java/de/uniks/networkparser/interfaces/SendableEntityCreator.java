@@ -3,7 +3,7 @@ package de.uniks.networkparser.interfaces;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -57,8 +57,8 @@ public interface SendableEntityCreator {
 	/**
 	 * Gets the value.
 	 *
-	 * @param entity		the entity
-	 * @param attribute		the attribute
+	 * @param entity    the entity
+	 * @param attribute the attribute
 	 * @return the value
 	 */
 	public Object getValue(Object entity, String attribute);
@@ -66,20 +66,19 @@ public interface SendableEntityCreator {
 	/**
 	 * Sets the value.
 	 *
-	 * @param entity	the entity
-	 * @param attribute	the attribute
-	 * @param value		the value
-	 * @param type		edit, update or remove operation
+	 * @param entity    the entity
+	 * @param attribute the attribute
+	 * @param value     the value
+	 * @param type      edit, update or remove operation
 	 * @return true, if successful
 	 */
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type);
+	public boolean setValue(Object entity, String attribute, Object value, String type);
 
-	  /**
-	* Gets the sendable instance.
-	* @param prototyp
-	*			the prototyp
-	* @return the sendable instance
-	*/
-   Object getSendableInstance(boolean prototyp);
+	/**
+	 * Gets the sendable instance.
+	 * 
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
+	Object getSendableInstance(boolean prototyp);
 }

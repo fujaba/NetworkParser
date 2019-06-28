@@ -5,10 +5,15 @@ import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
+import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.ext.story.Cucumber;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryBook;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
 import de.uniks.networkparser.ext.story.StoryUtil;
+import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.xml.HTMLEntity;
 
 public class StoryTest {
 	@Test
@@ -35,7 +40,6 @@ public class StoryTest {
 
 		story.addDiagram(model);
 
-
 		story.dumpHTML();
 	}
 	
@@ -43,11 +47,12 @@ public class StoryTest {
 	public void testStoryJUnit() {
 		Story story = new Story().withName("StoryJUnit");
 		story.withPath("build/story");
+		ReflectionBlackBoxTester.setTester();
 		StoryStepJUnit storyTest = new StoryStepJUnit().withPackageName("de.uniks.networkparser.test.model");
 		// MUST BE JACOCO TO BUILD-Path MAVEN EXAMPLE: dependencies {compile "org.jacoco:jacoco:0.8.1"}
 		
 		// MSUT BE A LINK TO JACOCO AGENT
-		storyTest.withAgentPath("lib/jacocoagent.jar");
+		storyTest.withAgent("lib/jacocoagent.jar");
 		story.add(storyTest);
 		story.dumpHTML();
 	}
@@ -76,5 +81,60 @@ public class StoryTest {
 
 		book.dumpIndexHTML();
 	}
+	@Test
+	public void testStorySimple() {
+		Story story = new Story();
+		story.addText("Sample");
+		story.dumpHTML();
+	}
 
+	@Test
+	public void testRecompile() {
+		StoryStepJUnit storyStepJUnit = new StoryStepJUnit();
+		storyStepJUnit.withPackageName("src/main/java", "src\\main\\java\\de\\uniks\\networkparser\\ext");
+//		storyStepJUnit.recompile("bin");
+	}
+	
+	@Test
+	public void testCucumber() {
+		Cucumber scenario = Cucumber.createScenario("defining the start player");
+
+		scenario.Definition("Karli is a Player");
+		scenario.Definition("Seb is a Player");
+		scenario.Definition("dice is a Dice");
+		
+		
+		scenario.Given("Alice and Seb play ludo");
+//		scenario.Given("the players has tokens on startingArea");
+		scenario.Given("Alice has dice with value 5");
+		scenario.When("Bob has dice with 1");
+		scenario.Then("Alice is currentplayer from ludo");
+		scenario.analyse();
+		
+		GraphList model = scenario.getModel();
+		HTMLEntity file = new HTMLEntity();
+		file.withGraph(model);
+		
+		FileBuffer.writeFile("build/cucumber.html", file.toString());
+//		System.out.println(model.toString(new GraphConverter()));
+//		System.out.println(model.toString(DiagramEditor.dump()));
+	}
+	
+	@Test
+	public void testSimple() {
+		ClassModel ludoModel = new ClassModel();
+		Story story = new Story().withLabel("playing Ludo");
+		story.addText("This is the Ludo Model", true);
+		story.addDiagram(ludoModel);
+		story.addText("next Step is Testing", true);
+		
+//		story.add(new StoryStepJUnit());
+		story.addText("Result is Fine");
+		
+		story.addSourceCode(1, 14);
+		story.addText("Moockup", true);
+		story.addImage("doc/gui_mockup.png");
+		story.dumpHTML();
+	}
+	
 }

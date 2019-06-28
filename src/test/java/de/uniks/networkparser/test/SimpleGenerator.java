@@ -7,7 +7,6 @@ import org.junit.Test;
 import de.uniks.networkparser.ext.ModelGenerator;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeSet;
@@ -62,11 +61,11 @@ public class SimpleGenerator {
 		Clazz person = classModel.createClazz("Person");
 		Clazz room = classModel.createClazz("Room");
 		student.withSuperClazz(person);
-		student.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
+		student.withBidirectional(room, "room", Association.ONE, "persons", Association.MANY);
 		person.withAttribute("name", DataType.STRING);
 		person.withMethod("eat", DataType.BOOLEAN);
 		ModelGenerator javaModelFactory = new ModelGenerator();
-		javaModelFactory.generate("build/gen/java", classModel);
+		javaModelFactory.generating("build/gen/java", classModel, null, ModelGenerator.TYPE_JAVA, true, true);
 //		javaModelFactory.generateTypescript("build", classModel);
 	}
 
@@ -148,11 +147,10 @@ public class SimpleGenerator {
 		TemplateResultFile templateFile = new TemplateResultFile(student, true);
 		TemplateResultModel model = new TemplateResultModel();
 		ModelGenerator modelGenerator = new ModelGenerator();
-		model.withTemplate(modelGenerator.getTemplates());
+		model.withTemplate(modelGenerator.getCondition());
 
 
 		TemplateResultFragment fragment = template.generate(model, templateFile, assoc);
-//		System.out.println(generate);
 
 		Assert.assertEquals("de.uniks.test.model.UniSet", fragment.getHeaders().first());
 	}

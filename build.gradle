@@ -1,15 +1,45 @@
 // clean --refresh-dependencies build
 // -PReleaseBuild 
-apply plugin: 'java'
-apply plugin: 'maven'
+
+
+buildscript {
+	repositories {
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+	}
+	dependencies {
+		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:[2,)"
+		classpath "com.moowork.gradle:gradle-node-plugin:[1,)"
+		//classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:[1,)"
+	}
+}
+plugins {
+  id "org.sonarqube" version "2.6"
+}
 
 // MAJOR VERSION - Manually set
 //----------------------
+group = "de.uniks"
 ext{
 	majorNumber = 4
 }
 //----------------------
 
+
+apply plugin: 'java'
+apply plugin: 'maven'
+
+apply from: 'gradle/tasks.gradle'
+apply plugin: 'jacoco'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+apply plugin: 'checkstyle'
+//apply plugin: "com.github.spotbugs"
+apply plugin: "com.github.kt3k.coveralls"
+apply from: 'gradle/mavencentral.gradle'
+//apply from: 'gradle/artifactory.gradle'
 repositories {
 	jcenter()
 	mavenCentral()
@@ -17,6 +47,13 @@ repositories {
 		url "https://repo.eclipse.org/content/groups/releases/"
 	}
 }
+
+
+
+//tasks.withType(com.github.spotbugs.SpotBugsTask) {
+//  reports.html.enabled true
+//	reports.xml.enabled false
+//}
 
 test {
 	// enable TestNG support (default is JUnit)
@@ -39,32 +76,25 @@ test {
 		destination new File("${buildDir}/reports/")
 	}
 }
-buildscript {
-	repositories {
-		maven {
-			url "https://plugins.gradle.org/m2/"
-		}
-	}
-	dependencies {
-		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:[2,)"
-		classpath "com.moowork.gradle:gradle-node-plugin:[1,)"
-	}
-}
-
-
 
 def execute(String... args) {
-	if(args.length == 1) {
-		args = args[0].split(" ")
-	}
-	ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()
+	try {
+		if(args.length == 1) {
+			args = args[0].split(" ")
+		}
+		ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()
 
-	exec{
-		commandLine args
-		standardOutput = stdOutput
+		exec{
+			commandLine args
+			standardOutput = stdOutput
+		}
+		return stdOutput.toString()
+	}catch(Exception e) {
 	}
-	stdOutput.toString()
+	return "";
 }
+
+
 def copyFile(String source, String dest) {
 	InputStream is = null;
 	OutputStream os = null;
@@ -88,6 +118,8 @@ def copyFile(String source, String dest) {
 		}
 	}
 }
+
+
 def unzip(String src, String dest) {
 	byte[] buffer = new byte[1024];
 	java.util.zip.ZipInputStream zis = new java.util.zip.ZipInputStream(new FileInputStream(src));
@@ -111,6 +143,8 @@ def unzip(String src, String dest) {
 	zis.closeEntry();
 	zis.close();
 }
+
+
 def delete(File file) {
 	if(file.isDirectory()) {
 		File[] contents = file.listFiles();
@@ -123,19 +157,7 @@ def delete(File file) {
 	file.delete();
 }
 
-apply from: 'gradle/tasks.gradle'
-apply plugin: 'jacoco'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
 
-//buildscript {
-//	repositories {
-//			maven {url "https://plugins.gradle.org/m2/"}
-//	}
-//	dependencies {
-//		classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.1"
-//		}
-//	}
 
 if(JavaVersion.current() != JavaVersion.VERSION_1_8){
 	println "JavaVersion: " + JavaVersion.current() + " (1.9)"
@@ -149,14 +171,6 @@ if(JavaVersion.current() != JavaVersion.VERSION_1_8){
 //	apply plugin: 'findbugs'
 }
 
-apply plugin: 'checkstyle'
-apply plugin: "com.github.kt3k.coveralls"
-apply from: 'gradle/mavencentral.gradle'
-//apply from: 'gradle/artifactory.gradle'
-apply plugin: "com.moowork.node"
-
-group = "de.uniks"
-
 idea {
 	project {
 		// jdkName = '1.7'
@@ -165,11 +179,11 @@ idea {
 }
 
 artifacts { 
-	archives buildCoreJar16, buildCoreJar17, buildCoreJar18, buildCoreJar19, buildSourceJar, buildSourceJar18, buildMinCoreJar, buildJavadoc
+	archives buildCoreJar16, buildCoreJar17, buildCoreJar18, buildCoreJar19, buildSourceJar, buildSourceJar18, buildMinCoreJar, buildJavadoc, buildGitJar
 }
 
-task wrapper(type: Wrapper) {
-		gradleVersion = '4.7-rc-1'
+wrapper {
+	gradleVersion = '5.4.1'
 }
 jacoco.toolVersion = "0.8.+"
 
@@ -207,12 +221,13 @@ if (project.hasProperty('branch')) {
 
 test.finalizedBy jacocoTestReport
 
-defaultTasks 'test', 'jacocoTestReport', 'buildJavadoc'
+defaultTasks 'test', 'jacocoTestReport', 'buildJavadoc', 'buildGitJar'
 
 tasks.withType(Checkstyle) {
 	configFile = new File("src/test/resources/de/uniks/networkparser/test/sun_checks.xml")
 	reports {
-		xml.enabled false
+		xml.enabled true
+		xml.destination = new File("build/checkStyle.xml")
 		html.enabled true
 		html.destination = new File("build/checkStyle.html")
 	}
@@ -233,28 +248,9 @@ tasks.withType(FindBugs) {
 	targetCompatibility = '1.8'
 }
 
-//NODE
-node {
-	version = '10.7.0'
-	npmVersion = '6.1.0'
-	download = true
-}
-task npmCacheConfig(type: NpmTask) {
-	description = "Configure the NPM cache"
-	def npmCacheDir = "${gradle.getGradleUserHomeDir()}/caches/npm"
-	outputs.files file(npmCacheDir)
-	args = [ 'config', 'set', 'cache', npmCacheDir ]
-}
-task npmPackages(type: NpmTask, dependsOn: npmCacheConfig) {
-	description = "Install Node.js packages"
-	args = [ 'install' ]
-	inputs.files file('package.json')
-	outputs.files file('node_modules')
-	doLast {
-		copyFile("node_modules/dagre/dist/dagre.min.js", "src/main/resources/de/uniks/networkparser/graph/dagre.min.js")
-		copyFile("node_modules/diagramjs/diagram.js", "src/main/resources/de/uniks/networkparser/graph/diagram.js")
-		copyFile("node_modules/jspdf/dist/jspdf.min.js", "src/main/resources/de/uniks/networkparser/graph/jspdf.min.js")
-		
-		copyFile("node_modules/highlightjs-line-numbers.js/dist/highlightjs-line-numbers.min.js", "src/main/resources/de/uniks/networkparser/graph/highlightjs-line-numbers.min.js")
-	}
+task npm(type:JavaExec) {
+	errorOutput = System.err
+	main = "de.uniks.networkparser.ext.DiagramEditor"
+	args 'NPM'
+	classpath = (sourceSets.main.compileClasspath + sourceSets.main.output + files('build/classes/main18') )
 }

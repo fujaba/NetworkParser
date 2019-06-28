@@ -1,9 +1,10 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.EntityUtil;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +25,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.graph.util.AssociationSet;
-import de.uniks.networkparser.graph.util.AttributeSet;
-import de.uniks.networkparser.graph.util.ClazzSet;
-import de.uniks.networkparser.graph.util.MethodSet;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
-
 
 public class Clazz extends GraphEntity {
 	public static final String TYPE_CLASS = "class";
@@ -39,8 +35,7 @@ public class Clazz extends GraphEntity {
 	public static final String TYPE_CREATOR = "creator";
 	public static final String TYPE_SET = "set";
 	public static final String TYPE_PATTERNOBJECT = "pattern";
-	
-	public static final StringFilter<Clazz> NAME = new StringFilter<Clazz>(GraphMember.PROPERTY_NAME);
+
 	public static final String PROPERTY_FULLNAME = "fullName";
 	public static final String PROPERTY_VISIBILITY = "visibility";
 	public static final String PROPERTY_MODIFIERS = "modifiers";
@@ -50,6 +45,8 @@ public class Clazz extends GraphEntity {
 	public static final String PROPERTY_ATTRIBUTE = "attribute";
 	public static final String PROPERTY_ASSOCIATION = "association";
 	public static final String PROPERTY_METHOD = "method";
+	public static final int ONE = 1;
+	public static final int MANY = 42;
 
 	private String type = TYPE_CLASS;
 
@@ -59,13 +56,15 @@ public class Clazz extends GraphEntity {
 
 	/**
 	 * Constructor with Name of Clazz
+	 * 
 	 * @param name Name of Clazz
 	 */
 	public Clazz(String name) {
 		this.with(name);
 	}
+
 	public Clazz(Class<?> name) {
-		if(name != null) {
+		if (name != null) {
 			with(name.getName().replace("$", "."));
 		}
 	}
@@ -88,22 +87,21 @@ public class Clazz extends GraphEntity {
 
 	public Clazz enableEnumeration(Object... literals) {
 		this.withType(TYPE_ENUMERATION);
-		if(literals == null) {
+		if (literals == null) {
 			return this;
 		}
-		for(Object item : literals) {
-			if(item == null) {
+		for (Object item : literals) {
+			if (item == null) {
 				continue;
 			}
-			if(item instanceof Literal) {
-				this.with((Literal)item);
-			}else {
+			if (item instanceof Literal) {
+				this.with((Literal) item);
+			} else {
 				this.with(new Literal(item.toString()));
 			}
 		}
 		return this;
 	}
-
 
 	public String getType() {
 		return type;
@@ -111,7 +109,7 @@ public class Clazz extends GraphEntity {
 
 	@Override
 	protected String getFullId() {
-		if(this.getId() != null) {
+		if (this.getId() != null) {
 			return this.getId();
 		}
 		return super.getFullId();
@@ -126,7 +124,7 @@ public class Clazz extends GraphEntity {
 	@Override
 	public Modifier getModifier() {
 		Modifier modifier = super.getModifier();
-		if(modifier == null) {
+		if (modifier == null) {
 			modifier = new Modifier(Modifier.PUBLIC);
 			super.withChildren(modifier);
 		}
@@ -157,6 +155,7 @@ public class Clazz extends GraphEntity {
 		super.withChildren(values);
 		return this;
 	}
+
 	protected Clazz with(Literal... values) {
 		super.withChildren(values);
 		return this;
@@ -164,18 +163,18 @@ public class Clazz extends GraphEntity {
 
 	public SimpleSet<Literal> getValues() {
 		SimpleSet<Literal> collection = new SimpleSet<Literal>();
-		if(this.children == null) {
+		if (this.children == null) {
 			return collection;
 		}
-		if(this.children instanceof Literal) {
-			collection.add((Literal)this.children);
+		if (this.children instanceof Literal) {
+			collection.add((Literal) this.children);
 			return collection;
 		}
-		if(this.children instanceof GraphSimpleSet) {
+		if (this.children instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
-			for(GraphMember item : list) {
-				if(item instanceof Literal) {
-					collection.add((Literal)item);
+			for (GraphMember item : list) {
+				if (item instanceof Literal) {
+					collection.add((Literal) item);
 				}
 			}
 		}
@@ -184,6 +183,7 @@ public class Clazz extends GraphEntity {
 
 	/**
 	 * ********************************************************************
+	 * 
 	 * <pre>
 	 *		%srcCardinality%		%tgtCardinality%
 	 * Clazz -------------------------------------- %tgtClass%
@@ -192,22 +192,25 @@ public class Clazz extends GraphEntity {
 	 *
 	 * create a Bidirectional Association
 	 *
-	 * @param tgtClass				 The target Clazz
-	 * @param tgtRoleName			 The Targetrolename
-	 * @param tgtCardinality		The Targetcardinality
-	 * @param srcRoleName			The sourcerolename
-	 * @param srcCardinality		The sourcecardinality
+	 * @param tgtClass       The target Clazz
+	 * @param tgtRoleName    The Targetrolename
+	 * @param tgtCardinality The Targetcardinality
+	 * @param srcRoleName    The sourcerolename
+	 * @param srcCardinality The sourcecardinality
 	 * @return The Clazz Instance
 	 */
-	public Clazz withBidirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality, String srcRoleName, Cardinality srcCardinality) {
-		// Target
+	public Clazz withBidirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality, String srcRoleName,
+			int srcCardinality) {
+		/* Target */
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
 
-		// Source
+		/* Source */
 		Association assocSource = new Association(this).with(srcCardinality).with(srcRoleName);
 		assocSource.with(assocTarget);
 
-		tgtClass.with(assocTarget);
+		if (tgtClass != null) {
+			tgtClass.with(assocTarget);
+		}
 		this.with(assocSource);
 		return this;
 	}
@@ -228,12 +231,15 @@ public class Clazz extends GraphEntity {
 	 * @param srcCardinality The sourcecardinality
 	 * @return The Association Instance
 	 */
-	public Association createBidirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality,
-			String srcRoleName, Cardinality srcCardinality) {
-		// Target
+	public Association createBidirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality, String srcRoleName,
+			int srcCardinality) {
+		/* Target */
+		if (tgtCardinality < 1 || srcCardinality < 1 || tgtClass == null) {
+			return null;
+		}
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
 
-		// Source
+		/* Source */
 		Association assocSource = new Association(this).with(srcCardinality).with(srcRoleName);
 		assocSource.with(assocTarget);
 
@@ -242,8 +248,75 @@ public class Clazz extends GraphEntity {
 		return assocSource;
 	}
 
+	public Clazz withAssoc(Clazz tgtClass, String tgtRoleName, int tgtCardinality, String srcRoleName,
+			int srcCardinality) {
+		createBidirectional(tgtClass, tgtRoleName, tgtCardinality, srcRoleName, srcCardinality);
+		return this;
+	}
+
+	/**
+	 * @param tgtClass    The Target Class
+	 * @param cardinality The Cardinality default is [1,1], May Be
+	 *                    [[1,1],[1,42],[42,1],[42,42],[1,0], [42,0]]
+	 * @return ThisComponent
+	 */
+	public Clazz withAssoc(Clazz tgtClass, int... cardinality) {
+		if (tgtClass == null || tgtClass.getName() == null) {
+			return this;
+		}
+		int tgtCardinality = 1;
+		int srcCardinality = 1;
+		if (cardinality != null && cardinality.length > 0) {
+			if (cardinality[0] > 0) {
+				tgtCardinality = cardinality[0];
+			}
+			if (cardinality.length > 1 && cardinality[1] >= 0) {
+				srcCardinality = cardinality[1];
+			}
+		}
+		String srcRoleName = null, tgtRoleName = tgtClass.getName();
+
+		/* Now Check dupplicate Naming */
+		for (Association assoc : getAssociations()) {
+			if (tgtRoleName.equals(assoc.getName())) {
+				return this;
+			}
+		}
+		if (srcCardinality > 0) {
+			srcRoleName = this.getName();
+			for (Association assoc : tgtClass.getAssociations()) {
+				if (srcRoleName.equals(assoc.getName())) {
+					return this;
+				}
+			}
+		}
+		/* Set MANY Name */
+		if (tgtCardinality > 1) {
+			tgtRoleName = GraphUtil.getPlural(tgtRoleName);
+		}
+		if (srcCardinality > 1) {
+			srcRoleName = GraphUtil.getPlural(srcRoleName);
+		}
+
+		/* So SourceRoleName and TargetRoleName is Set now create Asssoc */
+		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
+		/* Source */
+		Association assocSource = new Association(this).with(assocTarget);
+
+		if (srcCardinality > 0) {
+			assocSource.with(srcCardinality).with(srcRoleName);
+		} else {
+			assocTarget.with(AssociationTypes.UNDIRECTIONAL);
+			assocSource.with(AssociationTypes.EDGE);
+		}
+		tgtClass.with(assocTarget);
+		this.with(assocSource);
+		return this;
+	}
+
 	/**
 	 * ********************************************************************
+	 * 
 	 * <pre>
 	 *								 %tgtCardinality%
 	 * Clazz ----------------------------------- %tgtClass%
@@ -252,16 +325,17 @@ public class Clazz extends GraphEntity {
 	 *
 	 * create a Undirectional Association
 	 *
-	 * @param tgtClass			The target Clazz
-	 * @param tgtRoleName		The Targetrolename
-	 * @param tgtCardinality	The Targetcardinality
+	 * @param tgtClass       The target Clazz
+	 * @param tgtRoleName    The Targetrolename
+	 * @param tgtCardinality The Targetcardinality
 	 * @return The Clazz Instance
 	 */
-	public Clazz withUniDirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality) {
-		// Target
-		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(AssociationTypes.UNDIRECTIONAL).with(tgtRoleName);
+	public Clazz withUniDirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality) {
+		/* Target */
+		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(AssociationTypes.UNDIRECTIONAL)
+				.with(tgtRoleName);
 
-		// Source
+		/* Source */
 		Association assocSource = new Association(this).with(AssociationTypes.EDGE).with(assocTarget);
 
 		tgtClass.with(assocTarget);
@@ -269,55 +343,64 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
-   /**
-    * ********************************************************************
-    * <pre>
-    *                       %tgtCardinality%
-    * Clazz ----------------------------------- %tgtClass%
-    *                         %tgtRoleName%
-    * </pre>
-    *
-    * create a Undirectional Association
-    *
-    * @param tgtClass         The target Clazz
-    * @param tgtRoleName      The Targetrolename
-    * @param tgtCardinality   The Targetcardinality
-    * @return The Association Instance
-    */
-   public Association createUniDirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality) {
-      // Target
-      Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(AssociationTypes.UNDIRECTIONAL).with(tgtRoleName);
+	/**
+	 * ********************************************************************
+	 * 
+	 * <pre>
+	 *                       %tgtCardinality%
+	 * Clazz ----------------------------------- %tgtClass%
+	 *                         %tgtRoleName%
+	 * </pre>
+	 *
+	 * create a Undirectional Association
+	 *
+	 * @param tgtClass       The target Clazz
+	 * @param tgtRoleName    The Targetrolename
+	 * @param tgtCardinality The Targetcardinality
+	 * @return The Association Instance
+	 */
+	public Association createUniDirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality) {
+		/* Target */
+		if (tgtCardinality < 1) {
+			return null;
+		}
+		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(AssociationTypes.UNDIRECTIONAL)
+				.with(tgtRoleName);
 
-      // Source
-      Association assocSource = new Association(this).with(AssociationTypes.EDGE).with(assocTarget);
+		/* Source */
+		Association assocSource = new Association(this).with(AssociationTypes.EDGE).with(assocTarget);
+		if (tgtClass != null) {
+			tgtClass.with(assocTarget);
+		}
+		this.with(assocSource);
+		return assocSource;
+	}
 
-      tgtClass.with(assocTarget);
-      this.with(assocSource);
-      return assocSource;
-   }
 	/**
 	 * Get All Interfaces
+	 * 
 	 * @param transitive Get all Interfaces or direct Interfaces
 	 * @return all Interfaces of a Clazz
-	 *		 <pre>
+	 * 
+	 *         <pre>
 	 *			one						many
 	 * Clazz ----------------------------------- Clazz
 	 *			clazz					Interfaces
-	 *		 </pre>
+	 *         </pre>
 	 */
 	public ClazzSet getInterfaces(boolean transitive) {
 		repairAssociations();
 		AssociationTypes type = AssociationTypes.IMPLEMENTS;
-		if(TYPE_INTERFACE.equals(this.getType())) {
+		if (TYPE_INTERFACE.equals(this.getType())) {
 			type = AssociationTypes.GENERALISATION;
 		}
 
 		ClazzSet collection = getEdgeClazzes(type, null);
-		if(!transitive) {
+		if (!transitive) {
 			return collection;
 		}
 		int size = collection.size();
-		for(int i=0;i<size;i++) {
+		for (int i = 0; i < size; i++) {
 			collection.withList(collection.get(i).getInterfaces(transitive));
 		}
 		return collection;
@@ -325,44 +408,91 @@ public class Clazz extends GraphEntity {
 
 	/**
 	 * Get All SuperClazzes
+	 * 
 	 * @param transitive Get all SuperClasses or direct SuperClasses
 	 * @return all SuperClasses of a Clazz
-	 *		 <pre>
+	 * 
+	 *         <pre>
 	 *			  one					   many
 	 * Clazz ----------------------------------- Clazz
 	 *			  clazz				   superClazzes
-	 *		 </pre>
+	 *         </pre>
 	 */
 	public ClazzSet getSuperClazzes(boolean transitive) {
 		repairAssociations();
 		ClazzSet collection = getEdgeClazzes(AssociationTypes.GENERALISATION, null);
-		if(!transitive) {
+		if (!transitive) {
 			return collection;
 		}
 		int size = collection.size();
-		for(int i=0;i<size;i++) {
+		for (int i = 0; i < size; i++) {
 			collection.withList(collection.get(i).getSuperClazzes(transitive));
 		}
 		return collection;
 	}
 
-	protected boolean repairAssociation(Association assoc) {
-		if(AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false && AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
-			// Wrong way try another round
+	protected boolean repairAssociation(Association assoc, boolean renameName) {
+		if (assoc == null || assoc.getOther() == null) {
+			return false;
+		}
+		if (AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false
+				&& AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
+			/* Wrong way try another round */
 			assoc = assoc.getOther();
 		}
-		if(AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false  && AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
-			// Ignore
+		Association otherAssoc = assoc.getOther();
+		if (AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false
+				&& AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
+			/* Check Cardinality */
+			if (assoc.getClazz() == otherAssoc.getClazz() && assoc.getName() != null
+					&& assoc.getName().equals(otherAssoc.getName())) {
+				if (assoc.getCardinality() != otherAssoc.getCardinality()) {
+					/* Self assoc with same RoleName but other Cardinality */
+					return false;
+				}
+			}
+			/* Check Name */
+			if (renameName) {
+				String name2 = assoc.getName();
+				if (name2 != null && name2.length() > 0) {
+					if (name2.equals(name2.toUpperCase())) {
+						assoc.setName(name2.toLowerCase());
+					} else {
+						char no = name2.charAt(0);
+						if (no < 'a' || no > 'z') {
+							assoc.setName(EntityUtil.downFirstChar(name2));
+						}
+					}
+				}
+			}
+			/* Check for duplicate */
+			AssociationSet associations = otherAssoc.getClazz().getAssociations();
+			for (Association checkAssoc : associations) {
+				if (checkAssoc == otherAssoc || checkAssoc.getType() == AssociationTypes.GENERALISATION
+						|| checkAssoc.getOtherType() == AssociationTypes.GENERALISATION) {
+					continue;
+				}
+				if (checkAssoc.getName() != null && checkAssoc.getName().equalsIgnoreCase(otherAssoc.getName())
+						&& checkAssoc.getOther().getName() == null) {
+					/* Create UnDirectional Association */
+					checkAssoc.getOther().with(AssociationTypes.EDGE);
+					checkAssoc.with(AssociationTypes.UNDIRECTIONAL);
+					assoc.with(AssociationTypes.EDGE);
+					otherAssoc.with(AssociationTypes.UNDIRECTIONAL);
+					break;
+				}
+			}
+			/* Ignore */
 			return true;
 		}
-		// REPAIR CLAZZES
-		GraphSimpleSet items = assoc.getOther().getParents();
+		/* REPAIR CLAZZES */
+		GraphSimpleSet items = otherAssoc.getParents();
 		ClazzSet interfaces = new ClazzSet();
 		ClazzSet generalizations = new ClazzSet();
-		for(GraphMember child : items) {
-			if(child != null && child instanceof Clazz) {
+		for (GraphMember child : items) {
+			if (child != null && child instanceof Clazz) {
 				Clazz clazzChild = (Clazz) child;
-				if(TYPE_INTERFACE.equals(clazzChild.getType())) {
+				if (TYPE_INTERFACE.equals(clazzChild.getType())) {
 					interfaces.add(child);
 				} else {
 					generalizations.add(child);
@@ -370,26 +500,25 @@ public class Clazz extends GraphEntity {
 			}
 		}
 
-		// CHECK FOR WRONG TYPE
-		if(AssociationTypes.GENERALISATION.equals(assoc.getType())) {
-			if(generalizations.size() < 1) {
-					//&& interfaces.size() > 0) {
+		/* CHECK FOR WRONG TYPE */
+		if (AssociationTypes.GENERALISATION.equals(assoc.getType())) {
+			if (generalizations.size() < 1) {
 				assoc.with(AssociationTypes.IMPLEMENTS);
-			} else if(interfaces.size() > 0){
-				// BOTH
-				for(Clazz item : interfaces) {
-					item.without(assoc.getOther());
+			} else if (interfaces.size() > 0) {
+				/* BOTH */
+				for (Clazz item : interfaces) {
+					item.remove(otherAssoc);
 				}
 				createAssociation(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE, interfaces.toArray());
 			}
 			return true;
 		}
-		if(interfaces.size() < 1) {
+		if (interfaces.size() < 1) {
 			assoc.with(AssociationTypes.GENERALISATION);
-		} else if(generalizations.size() > 0){
-			// BOTH
-			for(Clazz item : interfaces) {
-				item.without(assoc.getOther());
+		} else if (generalizations.size() > 0) {
+			/* BOTH */
+			for (Clazz item : interfaces) {
+				item.remove(otherAssoc);
 			}
 			createAssociation(AssociationTypes.GENERALISATION, AssociationTypes.EDGE, generalizations.toArray());
 		}
@@ -397,32 +526,31 @@ public class Clazz extends GraphEntity {
 	}
 
 	private void repairAssociations() {
-		if (this.children == null ) {
+		if (this.children == null) {
 			return;
 		}
-		if(this.children instanceof Association) {
-			// Is is easy only one Assoc
-			repairAssociation((Association) this.children);
-		}else if(children instanceof GraphSimpleSet) {
+		if (this.children instanceof Association) {
+			/* Is is easy only one Assoc */
+			repairAssociation((Association) this.children, true);
+		} else if (children instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
-			int size = list.size(); 
+			int size = list.size();
 			AssociationSet generalizations = new AssociationSet();
-			for(int i=0;i<size;i++) {
-//			for (GraphMember item : list) {
+			for (int i = 0; i < size; i++) {
 				GraphMember item = list.get(i);
-				if(item instanceof Association) {
+				if (item instanceof Association) {
 					Association assoc = (Association) item;
-					repairAssociation(assoc);
-					if(AssociationTypes.GENERALISATION.equals(assoc.getType())) {
+					repairAssociation(assoc, true);
+					if (AssociationTypes.GENERALISATION.equals(assoc.getType())) {
 						generalizations.add(assoc);
 					}
 				}
 			}
-			
-			if(generalizations.size() > 1) {
-				// Repair only valid last generalization
-				for(int i=0;i<generalizations.size() - 1;i++) {
-					this.without(generalizations.get(i));
+
+			if (generalizations.size() > 1) {
+				/* Repair only valid last generalization */
+				for (int i = 0; i < generalizations.size() - 1; i++) {
+					this.remove(generalizations.get(i));
 				}
 			}
 		}
@@ -430,31 +558,32 @@ public class Clazz extends GraphEntity {
 
 	public Clazz withSuperClazz(Clazz... values) {
 		AssociationTypes type = AssociationTypes.GENERALISATION;
-		
-		if(values != null) {
-			if(values.length == 1) {
-				Clazz item  = values[0];
-				if(item != null && TYPE_INTERFACE.equals(item.getType())) {
+
+		if (values != null) {
+			if (values.length == 1) {
+				Clazz item = values[0];
+				if (item != null && TYPE_INTERFACE.equals(item.getType())) {
 					type = AssociationTypes.IMPLEMENTS;
 				}
 			} else {
-				// COMPLEX
+				/* COMPLEX */
 				ClazzSet interfaces = new ClazzSet();
 				ClazzSet generalizations = new ClazzSet();
-				for(Clazz item : values) {
-					if(item != null) {
-						if(TYPE_INTERFACE.equals(item.getType())) {
+				for (Clazz item : values) {
+					if (item != null) {
+						if (TYPE_INTERFACE.equals(item.getType())) {
 							interfaces.add(item);
 						}
-						if(TYPE_CLASS.equals(item.getType())) {
+						if (TYPE_CLASS.equals(item.getType())) {
 							generalizations.add(item);
 						}
 					}
 				}
-				if(generalizations.size()>0) {
-					createAssociation(AssociationTypes.GENERALISATION, AssociationTypes.EDGE, generalizations.toArray());
+				if (generalizations.size() > 0) {
+					createAssociation(AssociationTypes.GENERALISATION, AssociationTypes.EDGE,
+							generalizations.toArray());
 				}
-				if(interfaces.size()>0) {
+				if (interfaces.size() > 0) {
 					createAssociation(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE, interfaces.toArray());
 				}
 				return this;
@@ -466,21 +595,23 @@ public class Clazz extends GraphEntity {
 
 	/**
 	 * get All KidClazzes
+	 * 
 	 * @param transitive Get all KidClasses or direct KidClasses
 	 * @return all KidClasses of a Clazz
-	 *		 <pre>
+	 * 
+	 *         <pre>
 	 *			  one					   many
 	 * Clazz ----------------------------------- Clazz
 	 *			  superClass		   kidClazzes
-	 *		 </pre>
+	 *         </pre>
 	 */
 	public ClazzSet getKidClazzes(boolean transitive) {
 		ClazzSet kidClazzes = getEdgeClazzes(AssociationTypes.EDGE, AssociationTypes.GENERALISATION);
-		if(!transitive) {
+		if (!transitive) {
 			return kidClazzes;
 		}
 		int size = kidClazzes.size();
-		for(int i=0;i<size;i++) {
+		for (int i = 0; i < size; i++) {
 			kidClazzes.withList(kidClazzes.get(i).getKidClazzes(transitive));
 		}
 		return kidClazzes;
@@ -488,12 +619,14 @@ public class Clazz extends GraphEntity {
 
 	/**
 	 * get All Implements Clazz
+	 * 
 	 * @return all implements of a Clazz
-	 *		 <pre>
+	 * 
+	 *         <pre>
 	 *			  one					   many
 	 * Clazz ----------------------------------- Clazz
 	 *			  superClass		   kidClazzes
-	 *		 </pre>
+	 *         </pre>
 	 */
 	public ClazzSet getImplements() {
 		ClazzSet kidClazzes = getEdgeClazzes(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE);
@@ -506,12 +639,11 @@ public class Clazz extends GraphEntity {
 			return kidClazzes;
 		}
 		for (Association assoc : super.getEdges(AssociationTypes.EDGE)) {
-			if(typ != assoc.getType()) {
+			if (typ != assoc.getType()) {
 				continue;
 			}
-			if(otherTyp == null || assoc.getOtherType() == otherTyp) {
+			if (otherTyp == null || assoc.getOtherType() == otherTyp) {
 				GraphSimpleSet parents = assoc.getOther().getParents();
-//				Clazz clazz = assoc.getOtherClazz();
 				kidClazzes.withList(parents);
 			}
 		}
@@ -525,11 +657,14 @@ public class Clazz extends GraphEntity {
 		AssociationSet associations = getAssociations();
 		for (Clazz item : values) {
 			if (item != null) {
-				for (Association assoc : associations) {
-					if(assoc.getType() == direction && assoc.getOtherType() == backDirection) {
-						if(assoc.contains(item, true, false) == false) {
-							assoc.getOther().setParentNode(item);
-							return true;
+				if (AssociationTypes.GENERALISATION.equals(backDirection) == false
+						&& AssociationTypes.GENERALISATION.equals(direction) == false) {
+					for (Association assoc : associations) {
+						if (assoc.getType() == direction && assoc.getOtherType() == backDirection) {
+							if (assoc.contains(item, true, false) == false) {
+								assoc.getOther().setParentNode(item);
+								return true;
+							}
 						}
 					}
 				}
@@ -538,7 +673,6 @@ public class Clazz extends GraphEntity {
 				childAssoc.with(superAssoc);
 				this.with(childAssoc);
 				item.with(superAssoc);
-				associations = getAssociations();
 			}
 		}
 		return true;
@@ -557,43 +691,46 @@ public class Clazz extends GraphEntity {
 		return super.setParentNode(value);
 	}
 
-	/** get All Attributes
+	/**
+	 * get All Attributes
+	 * 
 	 * @param filters Can Filter the List of Attributes
 	 * @return all Attributes of a Clazz
 	 *
-	 *<pre>
+	 *         <pre>
 	 * Clazz  --------------------- Attributes
 	 * one                          many
-	 *</pre>
+	 *         </pre>
 	 */
 	public AttributeSet getAttributes(Condition<?>... filters) {
 		AttributeSet collection = new AttributeSet();
-		if(this.children == null) {
+		if (this.children == null) {
 			return collection;
 		}
 
-		ClazzSet superClasses= new ClazzSet();
-		if(this.children instanceof Attribute) {
-			if(check((Attribute)this.children, filters)) {
-				collection.add((Attribute)this.children);
+		ClazzSet superClasses = new ClazzSet();
+		if (this.children instanceof Attribute) {
+			if (check((Attribute) this.children, filters)) {
+				collection.add((Attribute) this.children);
 			}
 			return collection;
-		} else if(this.children instanceof Association) {
+		} else if (this.children instanceof Association) {
 			Association assoc = (Association) this.children;
-			if(assoc.getType()==AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
+			if (assoc.getType() == AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
 				superClasses.add(assoc.getOtherClazz());
 			}
 		}
-		if(this.children instanceof GraphSimpleSet) {
+		if (this.children instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
-			for(GraphMember item : list) {
-				if(item instanceof Attribute) {
-					if(check(item, filters)) {
-						collection.add((Attribute)item);
+			for (GraphMember item : list) {
+				if (item instanceof Attribute) {
+					if (check(item, filters)) {
+						collection.add((Attribute) item);
 					}
-				} else if(item instanceof Association) {
+				} else if (item instanceof Association) {
 					Association assoc = (Association) item;
-					if(assoc.getType()==AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
+					if (assoc.getType() == AssociationTypes.GENERALISATION
+							|| assoc.getType() == AssociationTypes.IMPLEMENTS) {
 						superClasses.add(assoc.getOtherClazz());
 					}
 				}
@@ -601,13 +738,13 @@ public class Clazz extends GraphEntity {
 		}
 		boolean isInterface = TYPE_INTERFACE.equals(getType());
 		boolean isAbstract = getModifier().has(Modifier.ABSTRACT);
-		if(isInterface || isAbstract) {
+		if (isInterface || isAbstract) {
 			return collection;
 		}
-		// ALL SUPERMETHODS
+		/* ALL SUPERMETHODS */
 		AttributeSet newAttribute = new AttributeSet();
 		AttributeSet foundAttribute = new AttributeSet();
-		for(int i=0;i<superClasses.size();i++) {
+		for (int i = 0; i < superClasses.size(); i++) {
 			Clazz item = superClasses.get(i);
 			item.parseSuperElements(superClasses, collection, newAttribute, foundAttribute, filters);
 		}
@@ -615,43 +752,46 @@ public class Clazz extends GraphEntity {
 		return collection;
 	}
 
-	/** get All Methods
+	/**
+	 * get All Methods
+	 * 
 	 * @param filters Can Filter the List of Methods
 	 * @return all Methods of a Clazz
 	 *
-	 *<pre>
+	 *         <pre>
 	 * Clazz  --------------------- Methods
 	 * one                          many
-	 *</pre>
+	 *         </pre>
 	 */
 	public MethodSet getMethods(Condition<?>... filters) {
 		MethodSet collection = new MethodSet();
-		if(this.children == null) {
+		if (this.children == null) {
 			return collection;
 		}
-		ClazzSet superClasses= new ClazzSet();
-		if(this.children instanceof Method) {
-			if(check((Method)this.children, filters)) {
-				collection.add((Method)this.children);
+		ClazzSet superClasses = new ClazzSet();
+		if (this.children instanceof Method) {
+			if (check((Method) this.children, filters)) {
+				collection.add((Method) this.children);
 			}
 			return collection;
-		} else if(this.children instanceof Association) {
+		} else if (this.children instanceof Association) {
 			Association assoc = (Association) this.children;
-			if(assoc.getType()==AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
+			if (assoc.getType() == AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
 				superClasses.add(assoc.getOtherClazz());
 			}
 		}
 
-		if(this.children instanceof GraphSimpleSet) {
+		if (this.children instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
-			for(GraphMember item : list) {
-				if(item instanceof Method) {
-					if(check(item, filters)) {
-						collection.add((Method)item);
+			for (GraphMember item : list) {
+				if (item instanceof Method) {
+					if (check(item, filters)) {
+						collection.add((Method) item);
 					}
-				} else if(item instanceof Association) {
+				} else if (item instanceof Association) {
 					Association assoc = (Association) item;
-					if(assoc.getType()==AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
+					if (assoc.getType() == AssociationTypes.GENERALISATION
+							|| assoc.getType() == AssociationTypes.IMPLEMENTS) {
 						superClasses.add(assoc.getOtherClazz());
 					}
 				}
@@ -659,13 +799,13 @@ public class Clazz extends GraphEntity {
 		}
 		boolean isInterface = TYPE_INTERFACE.equals(getType());
 		boolean isAbstract = getModifier().has(Modifier.ABSTRACT);
-		if(isInterface || isAbstract) {
+		if (isInterface || isAbstract) {
 			return collection;
 		}
-		// ALL SUPERMETHODS
+		/* ALL SUPERMETHODS */
 		MethodSet newMethods = new MethodSet();
 		MethodSet foundMethods = new MethodSet();
-		for(int i=0;i<superClasses.size();i++) {
+		for (int i = 0; i < superClasses.size(); i++) {
 			Clazz item = superClasses.get(i);
 			item.parseSuperElements(superClasses, collection, newMethods, foundMethods, filters);
 		}
@@ -679,18 +819,18 @@ public class Clazz extends GraphEntity {
 		AssociationSet collection = super.getAssociations(filters);
 		boolean isInterface = TYPE_INTERFACE.equals(getType());
 		boolean isAbstract = getModifier().has(Modifier.ABSTRACT);
-		if(isInterface || isAbstract) {
+		if (isInterface || isAbstract) {
 			return collection;
 		}
-		ClazzSet superClasses= new ClazzSet();
-		for(Association assoc : collection) {
-			if(assoc.getType()==AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
+		ClazzSet superClasses = new ClazzSet();
+		for (Association assoc : collection) {
+			if (assoc.getType() == AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
 				superClasses.add(assoc.getOtherClazz());
 			}
 		}
 		AssociationSet newAssocs = new AssociationSet();
 		AssociationSet foundAssocs = new AssociationSet();
-		for(int i=0;i<superClasses.size();i++) {
+		for (int i = 0; i < superClasses.size(); i++) {
 			Clazz item = superClasses.get(i);
 			item.parseSuperElements(superClasses, collection, newAssocs, foundAssocs, filters);
 		}
@@ -698,32 +838,35 @@ public class Clazz extends GraphEntity {
 		return collection;
 	}
 
-	/** get All Methods
-	 * @param superClasses Set of all SuperClasses
-	 * @param existsElements Set of Found Methods or new Attribute (Return Value)
+	/**
+	 * get All Methods
+	 * 
+	 * @param superClasses     Set of all SuperClasses
+	 * @param existsElements   Set of Found Methods or new Attribute (Return Value)
 	 * @param newExistElements Set of new Methods or new Attribute
-	 * @param newElements new Methods or new Attribute
-	 * @param filters Can Filter the List of Methods
+	 * @param newElements      new Methods or new Attribute
+	 * @param filters          Can Filter the List of Methods
 	 *
-	 *<pre>
+	 *                         <pre>
 	 * Clazz  --------------------- Methods
 	 * one                          many
-	 *</pre>
+	 *                         </pre>
 	 */
-	protected void parseSuperElements(ClazzSet superClasses, SimpleSet<?> existsElements, SimpleSet<?> newExistElements, SimpleSet<?> newElements, Condition<?>... filters) {
-		if(this.children == null) {
+	protected void parseSuperElements(ClazzSet superClasses, SimpleSet<?> existsElements, SimpleSet<?> newExistElements,
+			SimpleSet<?> newElements, Condition<?>... filters) {
+		if (this.children == null || existsElements == null) {
 			return;
 		}
 		boolean isInterface = TYPE_INTERFACE.equals(getType());
 		boolean isAbstract = getModifier().has(Modifier.ABSTRACT);
 		Class<?> checkClassType = existsElements.getTypClass();
-		if(isInterface == false && isAbstract  == false ) {
+		if (isInterface == false && isAbstract == false) {
 			SimpleSet<?> collection = null;
-			if(checkClassType == Method.class) {
+			if (checkClassType == Method.class) {
 				collection = getMethods(filters);
-			}else if(checkClassType == Attribute.class) {
+			} else if (checkClassType == Attribute.class) {
 				collection = getAttributes(filters);
-			}else if(checkClassType == Association.class) {
+			} else if (checkClassType == Association.class) {
 				collection = getAssociations(filters);
 			}
 			newElements.removeAll(collection);
@@ -731,44 +874,46 @@ public class Clazz extends GraphEntity {
 		}
 
 		GraphSimpleSet list = this.getChildren();
-		for(GraphMember member : list) {
-			if(member instanceof Association) {
+		for (GraphMember member : list) {
+			if (member instanceof Association) {
 				Association assoc = (Association) member;
-				if(assoc.getType()==AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
+				if (assoc.getType() == AssociationTypes.GENERALISATION
+						|| assoc.getType() == AssociationTypes.IMPLEMENTS) {
 					superClasses.add(assoc.getOtherClazz());
 					continue;
 				}
-				if(checkClassType != Association.class) {
+				if (checkClassType != Association.class) {
 					continue;
 				}
-				if(assoc.getOtherType()==AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
+				if (assoc.getOtherType() == AssociationTypes.GENERALISATION
+						|| assoc.getType() == AssociationTypes.IMPLEMENTS) {
 					continue;
 				}
 			}
-			if(checkClassType == Method.class && member instanceof Method == false) {
+			if (checkClassType == Method.class && member instanceof Method == false) {
 				continue;
-			}else if(checkClassType == Attribute.class && member instanceof Attribute == false) {
+			} else if (checkClassType == Attribute.class && member instanceof Attribute == false) {
 				continue;
-			}else if(checkClassType == Association.class && member instanceof Association == false) {
+			} else if (checkClassType == Association.class && member instanceof Association == false) {
 				continue;
 			}
-			if(existsElements.contains(member)) {
+			if (existsElements.contains(member)) {
 				continue;
 			}
 			Modifier modifier = member.getModifier();
-			if(isInterface) {
-				if(modifier == null || modifier.has(Modifier.DEFAULT) == false) {
-					if(check(member, filters) && newExistElements.contains(member) == false) {
+			if (isInterface) {
+				if (modifier == null || modifier.has(Modifier.DEFAULT) == false) {
+					if (check(member, filters) && newExistElements.contains(member) == false) {
 						newElements.add(member);
 					}
-				} else if(newExistElements.contains(member) == false){
+				} else if (newExistElements.contains(member) == false) {
 					newExistElements.add(member);
 					newElements.remove(member);
 				}
-			} else if(isAbstract && modifier != null && modifier.has(Modifier.ABSTRACT)) {
-				if(check(member, filters) && newExistElements.contains(member) == false) {
+			} else if (isAbstract && modifier != null && modifier.has(Modifier.ABSTRACT)) {
+				if (check(member, filters) && newExistElements.contains(member) == false) {
 					newElements.add(member);
-				} else if(newExistElements.contains(member) == false){
+				} else if (newExistElements.contains(member) == false) {
 					newExistElements.add(member);
 					newElements.remove(member);
 				}
@@ -776,46 +921,28 @@ public class Clazz extends GraphEntity {
 		}
 	}
 
-	public Clazz withoutKidClazz(Clazz... values) {
-		if (this.children == null || values == null) {
-			return this;
+	@Override
+	public boolean remove(GraphMember member) {
+		if (this.children == null || member == null) {
+			return false;
 		}
-		for (Clazz item : values) {
-			if (item != null) {
-				for (Association assoc : getAssociations()) {
-					if(assoc.getOther().getType() == AssociationTypes.GENERALISATION) {
-						if(assoc.contains(item, false, true)) {
-							super.without(assoc);
-							break;
+		if (member instanceof Clazz) {
+			Clazz clazz = (Clazz) member;
+			for (Association assoc : getAssociations()) {
+				if (assoc.getType() == AssociationTypes.GENERALISATION
+						|| assoc.getType() == AssociationTypes.IMPLEMENTS) {
+					if (assoc.getOther().contains(clazz, true, true)) {
+						if (assoc.getOther().getParents().size() == 1) {
+							this.remove(assoc);
+						} else {
+							assoc.getOther().withoutParent(clazz);
 						}
+						break;
 					}
 				}
 			}
 		}
-		return this;
-	}
-
-	public Clazz withoutSuperClazz(Clazz... values) {
-		if (this.children == null || values == null) {
-			return this;
-		}
-		for (Clazz item : values) {
-			if (item != null) {
-				for (Association assoc : getAssociations()) {
-					if(assoc.getType() == AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
-						if(assoc.getOther().contains(item, true, false)) {
-							if(assoc.getOther().getParents().size() == 1) {
-								this.without(assoc);
-							} else {
-								assoc.getOther().withoutParent(item);
-							}
-							break;
-						}
-					}
-				}
-			}
-		}
-		return this;
+		return super.remove(member);
 	}
 
 	protected Clazz with(Import... value) {
@@ -825,18 +952,18 @@ public class Clazz extends GraphEntity {
 
 	public SimpleSet<Import> getImports() {
 		SimpleSet<Import> collection = new SimpleSet<Import>();
-		if(this.children == null) {
+		if (this.children == null) {
 			return collection;
 		}
-		if(this.children instanceof Import) {
-			collection.add((Import)this.children);
+		if (this.children instanceof Import) {
+			collection.add((Import) this.children);
 			return collection;
 		}
-		if(this.children instanceof GraphSimpleSet) {
+		if (this.children instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
-			for(GraphMember item : list) {
-				if(item instanceof Import) {
-					collection.add((Import)item);
+			for (GraphMember item : list) {
+				if (item instanceof Import) {
+					collection.add((Import) item);
 				}
 			}
 		}
@@ -867,6 +994,7 @@ public class Clazz extends GraphEntity {
 		with(attribute);
 		return this;
 	}
+
 	public Clazz withMethod(String name, DataType returnType, Parameter... parameters) {
 		Method method = this.createMethod(name, parameters);
 		method.with(returnType);
@@ -875,18 +1003,24 @@ public class Clazz extends GraphEntity {
 
 	@Override
 	public String toString() {
+		if (this.id != null) {
+			return this.id + ":" + this.getName();
+		}
 		return getName();
 	}
 
 	@Override
 	public Object getValue(String attribute) {
-		if(PROPERTY_PACKAGENAME.equalsIgnoreCase(attribute)) {
+		if (attribute == null) {
+			return null;
+		}
+		if (PROPERTY_PACKAGENAME.equalsIgnoreCase(attribute)) {
 			String fullName = this.getName(false);
-			if(fullName == null) {
+			if (fullName == null) {
 				return null;
 			}
 			int pos = fullName.lastIndexOf(".");
-			if(pos < 0) {
+			if (pos < 0) {
 				return "";
 			}
 			return fullName.substring(0, pos);
@@ -894,35 +1028,35 @@ public class Clazz extends GraphEntity {
 		if (PROPERTY_FULLNAME.equalsIgnoreCase(attribute)) {
 			return this.getName(false);
 		}
-		if(PROPERTY_MODIFIERS.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_MODIFIERS.equalsIgnoreCase(attribute)) {
 			CharacterBuffer buffer = new CharacterBuffer();
 			Modifier modifier = this.getModifier();
-			if(modifier != null) {
+			if (modifier != null) {
 				modifier = modifier.getModifier();
-				while(modifier != null) {
+				while (modifier != null) {
 					buffer.with(modifier.getName());
 					modifier = modifier.getModifier();
-					if(modifier != null) {
+					if (modifier != null) {
 						buffer.with(' ');
 					}
 				}
 			}
 			return buffer.toString();
 		}
-		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
 			return this.getType();
 		}
-		if(PROPERTY_SUPERCLAZZ.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_SUPERCLAZZ.equalsIgnoreCase(attribute)) {
 			ClazzSet clazzes;
-			if(TYPE_ENUMERATION.equals(this.getType()) || TYPE_INTERFACE.equals(this.getType())) {
+			if (TYPE_ENUMERATION.equals(this.getType()) || TYPE_INTERFACE.equals(this.getType())) {
 				clazzes = getImplements();
 			} else {
 				clazzes = getSuperClazzes(false);
 			}
 			return clazzes.toString(", ");
 		}
-		if(PROPERTY_IMPLEMENTS.equalsIgnoreCase(attribute)) {
-			if(TYPE_ENUMERATION.equals(this.getType()) || TYPE_INTERFACE.equals(this.getType())) {
+		if (PROPERTY_IMPLEMENTS.equalsIgnoreCase(attribute)) {
+			if (TYPE_ENUMERATION.equals(this.getType()) || TYPE_INTERFACE.equals(this.getType())) {
 				return null;
 			}
 
@@ -931,24 +1065,18 @@ public class Clazz extends GraphEntity {
 		}
 		int pos = attribute.indexOf('.');
 		String attrName;
-		if(pos>0) {
+		if (pos > 0) {
 			attrName = attribute.substring(0, pos);
-		}else {
+		} else {
 			attrName = attribute;
 		}
-		if(PROPERTY_ATTRIBUTE.equalsIgnoreCase(attrName)) {
+		if (PROPERTY_ATTRIBUTE.equalsIgnoreCase(attrName)) {
 			AttributeSet attributes = this.getAttributes();
-			if(pos>0) {
+			if (pos > 0) {
 				return attributes.getValue(attribute.substring(pos + 1));
 			}
 			return attributes;
 		}
 		return super.getValue(attribute);
-	}
-
-	@Override
-	public Clazz without(GraphMember... values) {
-		super.without(values);
-		return this;
 	}
 }

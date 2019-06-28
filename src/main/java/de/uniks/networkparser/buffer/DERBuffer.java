@@ -3,7 +3,7 @@ package de.uniks.networkparser.buffer;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -76,18 +76,23 @@ public class DERBuffer extends ByteBuffer {
 	public final static byte BMPSTRING = 0x1E;
 
 	public void add(BigInteger paramBigInteger) {
-		byte[] arrayOfByte = paramBigInteger.toByteArray();
-		add(arrayOfByte);
-		addBigIntegerLength(arrayOfByte.length);
-		add(INTEGER);
+		if (paramBigInteger != null) {
+			byte[] arrayOfByte = paramBigInteger.toByteArray();
+			add(arrayOfByte);
+			addBigIntegerLength(arrayOfByte.length);
+			add(INTEGER);
+		}
 	}
 
 	public void addBitString(String string) {
-		byte[] bytes = string.getBytes();
-		add(bytes);
-		addLength(bytes.length);
-		add(BITSTRING);
+		if (string != null) {
+			byte[] bytes = string.getBytes();
+			add(bytes);
+			addLength(bytes.length);
+			add(BITSTRING);
+		}
 	}
+
 	public void addBigIntegerLength(int length) {
 		if (length > 127) {
 			int size = 1;
@@ -96,15 +101,16 @@ public class DERBuffer extends ByteBuffer {
 			while ((val >>>= 8) != 0) {
 				size++;
 			}
-			add((byte)(size | 0x80));
+			add((byte) (size | 0x80));
 
 			for (int i = (size - 1) * 8; i >= 0; i -= 8) {
-				add((byte)(length >> i));
+				add((byte) (length >> i));
 			}
 		} else {
-			add((byte)length);
+			add((byte) length);
 		}
 	}
+
 	public void addLength(int value) {
 		if (value < 128) {
 			add((byte) value);
@@ -130,53 +136,55 @@ public class DERBuffer extends ByteBuffer {
 	}
 
 	public boolean addGroup(Object... values) {
-		if(values == null || values.length < 1) {
+		if (values == null || values.length < 1) {
 			return false;
 		}
 		int pos;
 		int z = values.length - 1;
-		while(z >= 0) {
+		while (z >= 0) {
 			Object item = values[z];
-			if(item instanceof String) {
+			if (item instanceof String) {
 				addBitString((String) item);
-			} else if(item instanceof Byte[]) {
+			} else if (item instanceof Byte[]) {
 				pos = length;
-				insert((Byte[])item, true);;
+				insert((Byte[]) item, true);
+				;
 
 				z--;
-				if((Byte)values[z] == DERBuffer.BITSTRING) {
+				if ((Byte) values[z] == DERBuffer.BITSTRING) {
 					add(0);
 				}
-				if(pos == 0) {
+				if (pos == 0) {
 					addLength(length);
 				} else {
-					addLength(length- pos);
+					addLength(length - pos);
 				}
-				add((Byte)values[z]);
-			} else if(item instanceof Object[]) {
+				add((Byte) values[z]);
+			} else if (item instanceof Object[]) {
 				pos = length;
-				addGroup((Object[])item);
-				if(pos == 0) {
+				addGroup((Object[]) item);
+				if (pos == 0) {
 					addLength(length);
 				} else {
 					addLength(length - pos);
 				}
 				z--;
-				add((Byte)values[z]);
-			} else if(item instanceof BigInteger) {
-				add((BigInteger)item);
-			} else if(item instanceof Byte) {
-				if(item.equals(NULL)) {
-					add((byte)0);
+				add((Byte) values[z]);
+			} else if (item instanceof BigInteger) {
+				add((BigInteger) item);
+			} else if (item instanceof Byte) {
+				if (item.equals(NULL)) {
+					add((byte) 0);
 					add(NULL);
-				}else {
-					add((Byte)item);
+				} else {
+					add((Byte) item);
 				}
 			}
 			z--;
 		}
 		return true;
 	}
+
 	@Override
 	public boolean addBytes(Object bytes, int len, boolean bufferAtEnd) {
 		if (bytes != null) {

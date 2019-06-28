@@ -3,7 +3,7 @@ package de.uniks.networkparser.gui;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,18 +26,22 @@ THE SOFTWARE.
 import de.uniks.networkparser.json.JsonObject;
 
 public class BridgeCommand {
-	private static final String COMMAND="bridge.load(";
-	private static final String REGISTER="bridge.registerListener(\"";
+	private static final String COMMAND = "bridge.load(";
+	private static final String REGISTER = "bridge.registerListener(\"";
+
 	public static final String load(String command) {
-		return COMMAND+command+");";
+		return COMMAND + command + ");";
 	}
+
 	public static final String load(JsonObject command) {
-		return COMMAND+command+");";
+		return COMMAND + command + ");";
 	}
+
 	public static final String register(EventTypes event, String id) {
-		return REGISTER+event+"\", \""+id+"\");";
+		return REGISTER + event + "\", \"" + id + "\");";
 	}
+
 	public static final String register(EventTypes event, String id, String callBack) {
-		return REGISTER+event+"\", \""+id+"\",\""+callBack+"\");";
+		return REGISTER + event + "\", \"" + id + "\",\"" + callBack + "\");";
 	}
 }

@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,18 +24,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.graph.Feature;
-import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 
-public class MergeFeature extends FeatureProperty{
-	public static final String IGNORE="ignore";
-	public static final String OVERRIDE="override";
-	public static final String CONFLICT="conflict";
-	public static final String CUSTOM="custom";
+public class MergeFeature extends Feature {
+	public static final String IGNORE = "ignore";
+	public static final String OVERRIDE = "override";
+	public static final String CONFLICT = "conflict";
+	public static final String CUSTOM = "custom";
 	private SimpleEventCondition condition;
+
+	public MergeFeature() {
+		super("");
+	}
 
 	protected MergeFeature(Feature name) {
 		super(name);
+	}
+
+	@Override
+	protected Feature newInstance(Feature ref) {
+		return new MergeFeature(ref);
 	}
 
 	/**
@@ -44,6 +52,7 @@ public class MergeFeature extends FeatureProperty{
 	public SimpleEventCondition getCondition() {
 		return condition;
 	}
+
 	/**
 	 * @param condition the condition to set
 	 * @return ThisComponent
@@ -62,12 +71,15 @@ public class MergeFeature extends FeatureProperty{
 	public static MergeFeature createIgnore() {
 		return new MergeFeature(Feature.DIFFERENCE_BEHAVIOUR).withStringValue(IGNORE);
 	}
+
 	public static MergeFeature createOverride() {
 		return new MergeFeature(Feature.DIFFERENCE_BEHAVIOUR).withStringValue(OVERRIDE);
 	}
+
 	public static MergeFeature createConflict() {
 		return new MergeFeature(Feature.DIFFERENCE_BEHAVIOUR).withStringValue(CONFLICT);
 	}
+
 	public static MergeFeature createCustom() {
 		return new MergeFeature(Feature.DIFFERENCE_BEHAVIOUR).withStringValue(CUSTOM);
 	}

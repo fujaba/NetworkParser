@@ -3,7 +3,7 @@ package de.uniks.networkparser.xml;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -65,11 +65,11 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 	}
 
 	protected String parseItem(EntityStringConverter converter) {
-		if(converter == null) {
+		if (converter == null) {
 			return null;
 		}
 		CharacterBuffer sb = new CharacterBuffer();
-		sb.with("<", nameSpace, ":Envelope xmlns:xsi=\"", XMLNS_XSI,"\" xmlns:xsd=\"", XMLNS_XSD, "\"");
+		sb.with("<", nameSpace, ":Envelope xmlns:xsi=\"", XMLNS_XSI, "\" xmlns:xsd=\"", XMLNS_XSD, "\"");
 		sb.with(" xmlns:", nameSpace, "=\"", XMLNS_SOAP, "\">");
 		converter.add();
 		sb.with(converter.getPrefix());
@@ -86,7 +86,7 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 	}
 
 	public SoapObject withHeader(String key, String value) {
-		if(this.headers == null) {
+		if (this.headers == null) {
 			this.headers = new SimpleKeyValueList<String, String>();
 		}
 		this.headers.add(key, value);
@@ -99,13 +99,13 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 
 	@Override
 	public boolean add(Object... values) {
-		if(values==null) {
+		if (values == null) {
 			return false;
 		}
-		for(Object item : values) {
-			if(item instanceof String) {
+		for (Object item : values) {
+			if (item instanceof String) {
 				withNameSpace((String) item);
-			} else if(item instanceof XMLEntity) {
+			} else if (item instanceof XMLEntity) {
 				withBody((XMLEntity) item);
 			}
 		}
@@ -118,10 +118,10 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 	}
 
 	public Object getValue(Object key) {
-		if(PROPERTY_HEADER.equals(key)){
+		if (PROPERTY_HEADER.equals(key)) {
 			return headers;
 		}
-		if(PROPERTY_BODY.equals(key)){
+		if (PROPERTY_BODY.equals(key)) {
 			return children;
 		}
 		return null;
@@ -133,10 +133,10 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 
 	@Override
 	public String toString(Converter converter) {
-		if(converter == null) {
+		if (converter == null) {
 			return null;
 		}
-		if(converter instanceof EntityStringConverter) {
+		if (converter instanceof EntityStringConverter) {
 			return parseItem((EntityStringConverter) converter);
 		}
 		return converter.encode(this);
@@ -144,8 +144,7 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {
-				"." + nameSpace + ":" + SoapObject.PROPERTY_HEADER,
+		return new String[] { "." + nameSpace + ":" + SoapObject.PROPERTY_HEADER,
 				"." + nameSpace + ":" + SoapObject.PROPERTY_BODY };
 	}
 
@@ -156,7 +155,7 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(attribute == null || entity instanceof SoapObject == false) {
+		if (attribute == null || entity instanceof SoapObject == false) {
 			return false;
 		}
 		if (attribute.endsWith(":" + SoapObject.PROPERTY_HEADER)) {
@@ -169,17 +168,15 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
-		if(attribute == null || entity instanceof SoapObject == false) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
+		if (attribute == null || entity instanceof SoapObject == false) {
 			return false;
 		}
-		if(XMLTokener.CHILDREN.equals(type)) {
+		if (XMLTokener.CHILDREN.equals(type)) {
 			((SoapObject) entity).add(value);
 			return true;
 		}
-		if (attribute.toLowerCase().endsWith(
-				":" + SoapObject.PROPERTY_BODY.toLowerCase())) {
+		if (attribute.toLowerCase().endsWith(":" + SoapObject.PROPERTY_BODY.toLowerCase())) {
 			((SoapObject) entity).withBody(new XMLEntity().withValue("" + value));
 			return true;
 		}
@@ -193,7 +190,7 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 
 	@Override
 	public int size() {
-		if(this.children == null) {
+		if (this.children == null) {
 			return 0;
 		}
 		return children.sizeChildren();

@@ -3,7 +3,7 @@ package de.uniks.networkparser.xml;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,20 +36,20 @@ import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleIteratorSet;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
-public class HTMLGrammar extends SimpleGrammar{
-	public static final String CLASSNAME="%CLASSNAME";
-	public static final String PROPERTY="%PROPERTY";
-	public static final String DEEP="%DEEP";
+public class HTMLGrammar extends SimpleGrammar {
+	public static final String CLASSNAME = "%CLASSNAME";
+	public static final String PROPERTY = "%PROPERTY";
+	public static final String DEEP = "%DEEP";
 
 	private SimpleKeyValueList<String, String> transformValue = new SimpleKeyValueList<String, String>();
 	private SimpleIteratorSet<String, String> iterator = new SimpleIteratorSet<String, String>(transformValue);
 
 	@Override
 	public BaseItem encode(Object entity, MapEntity map) {
-		if(entity == null || map == null) {
+		if (entity == null || map == null) {
 			return null;
 		}
-		HTMLEntity rootItem=new HTMLEntity();
+		HTMLEntity rootItem = new HTMLEntity();
 		rootItem.withEncoding(HTMLEntity.ENCODING);
 		Entity child = map.encode(entity);
 		rootItem.add(child);
@@ -58,18 +58,18 @@ public class HTMLGrammar extends SimpleGrammar{
 
 	private boolean transformValue(CharacterBuffer value, int deep, boolean isClassName) {
 		iterator.reset();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			Entry<String, String> item = iterator.next();
-			if(isClassName && CLASSNAME.equals(item.getKey())) {
-				if(value.indexOf('.')>0) {
+			if (isClassName && CLASSNAME.equals(item.getKey())) {
+				if (value.indexOf('.') > 0) {
 					value.set(item.getValue());
 					return true;
 				}
 			}
-			if(value != null && value.equals(item.getKey())) {
+			if (value != null && value.equals(item.getKey())) {
 				String property = value.toString();
 				value.set(item.getValue());
-				value.replace(DEEP, ""+deep);
+				value.replace(DEEP, "" + deep);
 				value.replace(PROPERTY, property);
 
 				return true;
@@ -81,27 +81,22 @@ public class HTMLGrammar extends SimpleGrammar{
 	@Override
 	public Entity writeBasicValue(Entity entity, String className, String id, String type, IdMap map) {
 		CharacterBuffer value = new CharacterBuffer().with(className);
-		if(transformValue(value, 0, true) && entity != null) {
-//			if(value.charAt(0) == IdMap.ENTITYSPLITTER) {
-//				entity = map.convertProperty(value, parent);
-//			} else {
-//				entity = map.convertProperty(value, entity);
-//			}
+		if (transformValue(value, 0, true) && entity != null) {
 			String prop = value.toString();
 			Entity item = (Entity) entity.getNewList(false);
 			String session = map.getSession();
-			if(session != null) {
+			if (session != null) {
 				entity.put(IdMap.SESSION, session);
 			}
 
-			if(id != null) {
+			if (id != null) {
 				entity.put(IdMap.ID, id);
 				entity.put(IdMap.TIMESTAMP, id.substring(1));
 			}
 			entity.add(item);
 			entity = item;
 			super.writeBasicValue(item, prop, id, type, map);
-		}else {
+		} else {
 			super.writeBasicValue(entity, className, id, type, map);
 		}
 		return entity;
@@ -109,31 +104,29 @@ public class HTMLGrammar extends SimpleGrammar{
 
 	@Override
 	public boolean writeValue(BaseItem parent, String property, Object value, MapEntity map, Tokener tokener) {
-		if (parent instanceof EntityList && tokener.isChild(value)){
-			((EntityList)parent).add(value);
-		} else if (parent instanceof Entity){
+		if (parent instanceof EntityList && tokener.isChild(value)) {
+			((EntityList) parent).add(value);
+		} else if (parent instanceof Entity) {
 			CharacterBuffer prop = new CharacterBuffer().with(property);
 			transformValue(prop, map.getDeep(), false);
 			parent = map.convertProperty(prop, parent);
 			property = prop.toString();
 			if (property.length() == 1 && property.charAt(0) == IdMap.ENTITYSPLITTER) {
-//				// Its ChildValue
+				/* Its ChildValue */
 				Object element = tokener.transformValue(value, parent);
-				CharacterBuffer buffer = new CharacterBuffer().with(""+element);
-				((Entity)parent).withValue(buffer);
+				CharacterBuffer buffer = new CharacterBuffer().with("" + element);
+				((Entity) parent).withValue(buffer);
 			} else {
-				((Entity)parent).put(property, tokener.transformValue(value, parent));
+				((Entity) parent).put(property, tokener.transformValue(value, parent));
 			}
 		}
 		return true;
 	}
 
 	/**
-	 * Variables:
-	 * %CLASSNAME ClassName
-	 * %PROPERTY Property
-	 * %DEEP Property
-	 * @param key the Key for transform
+	 * Variables: %CLASSNAME ClassName %PROPERTY Property %DEEP Property
+	 * 
+	 * @param key   the Key for transform
 	 * @param value the Value for transform
 	 */
 	public void with(String key, String value) {

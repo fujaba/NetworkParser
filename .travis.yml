@@ -5,8 +5,16 @@ dist: trusty
 
 git:
   depth: 42000
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+  - bundler
 cache:
-    - bundler
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
 addons:
   coverity_scan:
     project:
@@ -19,6 +27,8 @@ addons:
   #srcclr: true
   sonarcloud:
     organization: "Fujaba"
+    token:
+      secure: 2921049ca4f9759b8fe14243f11849830fd23237
     branches:
       - master
 before_script:
@@ -41,7 +51,7 @@ branches:
   - master
   - develop
 after_success: 
-  - ./gradlew version build uploadArchives jacocoTestReport coveralls
+  - ./gradlew build uploadArchives jacocoTestReport coveralls
   # other script steps might be done before running the actual sonarcloud analysis
   - sonar-scanner
 after_failure:

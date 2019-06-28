@@ -4,8 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.GUILine;
 import de.uniks.networkparser.Style;
+import de.uniks.networkparser.gui.controls.GUILine;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.xml.HTMLEntity;
@@ -33,18 +33,14 @@ public class HTMLTest {
 //		Assert.assertEquals(sb.toString(), html.toString());
 
 //		HTMLEntity answer = SocketUtil.getHTTP("http://www.google.de");
-//		System.out.println(answer);
-//
-//		System.out.println(html);
 	}
 	@Test
 	public void testHTML(){
-		EntityUtil html = new EntityUtil();
 		String txt = "Stefan <Test>";
-		String encode = html.encode(txt);
+		String encode = EntityUtil.encode(txt);
 		Assert.assertEquals("Stefan &lt;Test&gt;", encode);
 
-		Assert.assertEquals(txt, html.decode(encode));
+		Assert.assertEquals(txt, EntityUtil.decode(encode));
 	}
 	@Test
 	public void testSimpleHTMLFile(){

@@ -3,7 +3,7 @@ package de.uniks.networkparser.logic;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -34,15 +34,16 @@ public class IdFilterElements extends SimpleSet<Object> implements ObjectConditi
 	public IdFilterElements(ObjectCondition condition) {
 		this.condition = condition;
 	}
+
 	public IdFilterElements(Class<?> clazzConditon) {
 		this.condition = InstanceOf.create(clazzConditon);
 	}
 
 	@Override
 	public boolean update(Object evt) {
-		if(condition!=null) {
-			if(condition.update(evt)) {
-				return add(((PropertyChangeEvent)evt).getNewValue());
+		if (condition != null) {
+			if (condition.update(evt)) {
+				return add(((PropertyChangeEvent) evt).getNewValue());
 			}
 		}
 		return false;

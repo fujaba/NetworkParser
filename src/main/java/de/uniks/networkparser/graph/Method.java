@@ -3,7 +3,7 @@ package de.uniks.networkparser.graph;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.graph.util.ParameterSet;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class Method extends GraphMember {
-	public static final StringFilter<Method> NAME = new StringFilter<Method>(GraphMember.PROPERTY_NAME);
 	public static final String PROPERTY_RETURNTYPE = "returnType";
 	public static final String PROPERTY_PARAMETER = "parameter";
 	public static final String PROPERTY_PARAMETERNAME = "parameterName";
@@ -42,30 +40,28 @@ public class Method extends GraphMember {
 
 	@Override
 	public Method with(String name) {
-		if(name == null) {
+		if (name == null) {
 			return this;
 		}
 		int pos = name.indexOf("(");
-		if(pos>0) {
+		if (pos > 0) {
 			name = name.substring(0, pos);
 		}
 		super.with(name);
 		return this;
 	}
-	public String getName(boolean shortName) {
-		return getName(shortName, false);
-	}
+
 	public String getName(boolean shortName, boolean removeParameterNames) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(super.getName());
-		if(children != null) {
-			sb.append(getParameterString(shortName, removeParameterNames));
-		}else {
+		if (children != null) {
+			sb.append(getParameterString(shortName, removeParameterNames, true));
+		} else {
 			sb.append("()");
 		}
-		if(returnType!=null && returnType.equals(DataType.VOID) == false){
-			sb.append(" "+returnType.getName(shortName));
+		if (returnType != null && returnType.equals(DataType.VOID) == false) {
+			sb.append(" " + returnType.getName(shortName));
 		}
 		return sb.toString();
 	}
@@ -96,7 +92,7 @@ public class Method extends GraphMember {
 	@Override
 	public Modifier getModifier() {
 		Modifier modifier = super.getModifier();
-		if(modifier == null) {
+		if (modifier == null) {
 			modifier = new Modifier(Modifier.PUBLIC.getName());
 			super.withChildren(modifier);
 		}
@@ -117,25 +113,35 @@ public class Method extends GraphMember {
 	}
 
 	public Method withParent(Clazz value) {
-		super.setParentNode(value);
+		setParentNode(value);
 		return this;
 	}
 
-	CharacterBuffer getParameterString(boolean shortName, boolean removeParameterNames){
-		CharacterBuffer sb=new CharacterBuffer().with("(");
+	CharacterBuffer getParameterString(boolean shortName, boolean removeParameterNames, boolean optimizeArray) {
+		CharacterBuffer sb = new CharacterBuffer().with("(");
 		GraphSimpleSet collection = this.getChildren();
-		for(int i=0;i<collection.size();i++) {
-			if((collection.get(i) instanceof Parameter)==false) {
+		for (int i = 0; i < collection.size(); i++) {
+			if ((collection.get(i) instanceof Parameter) == false) {
 				continue;
 			}
 			Parameter param = (Parameter) collection.get(i);
-			if(sb.length() > 1) {
+			if (sb.length() > 1) {
 				sb.with(", ");
 			}
-			if(param.getName() == null || removeParameterNames) {
-				sb.with(param.getType().getName(shortName)+ " p"+i);
-			}else{
-				sb.with(param.getType().getName(shortName)+" "+collection.get(i).getName());
+			sb.with(param.getType().getName(shortName));
+			if (param.isArray()) {
+				if (optimizeArray && i == collection.size() - 1) {
+					/* Check for array at least */
+					sb.with("...");
+				} else {
+					sb.with("[]");
+				}
+			}
+
+			if (param.getName() == null || removeParameterNames) {
+				sb.with(" p" + i);
+			} else {
+				sb.with(" " + collection.get(i).getName());
 			}
 		}
 		sb.with(")");
@@ -156,12 +162,12 @@ public class Method extends GraphMember {
 		if (children == null) {
 			return collection;
 		}
-		if( children instanceof Throws) {
+		if (children instanceof Throws) {
 			collection.add((Throws) children);
-		}else if (children instanceof GraphSimpleSet) {
+		} else if (children instanceof GraphSimpleSet) {
 			GraphSimpleSet items = (GraphSimpleSet) children;
 			for (GraphMember child : items) {
-				if (child instanceof Throws)  {
+				if (child instanceof Throws) {
 					collection.add((Throws) child);
 				}
 			}
@@ -169,29 +175,31 @@ public class Method extends GraphMember {
 		return collection;
 	}
 
-	/** get All Parameter
+	/**
+	 * get All Parameter
+	 * 
 	 * @param filters Can Filter the List of Parameter
 	 * @return all Parameter of a Method
 	 *
-	 *<pre>
+	 *         <pre>
 	 * Method  --------------------- Parameter
 	 * one                          many
-	 *</pre>
+	 *         </pre>
 	 */
 	public ParameterSet getParameters(Condition<?>... filters) {
 		ParameterSet collection = new ParameterSet();
 		if (children == null) {
 			return collection;
 		}
-		if( children instanceof Parameter) {
-			if(check((Parameter)this.children, filters)) {
-				collection.add((Parameter)this.children);
+		if (children instanceof Parameter) {
+			if (check((Parameter) this.children, filters)) {
+				collection.add((Parameter) this.children);
 			}
-		}else if (children instanceof GraphSimpleSet) {
+		} else if (children instanceof GraphSimpleSet) {
 			GraphSimpleSet items = (GraphSimpleSet) children;
 			for (GraphMember item : items) {
-				if(item instanceof Parameter && check(item, filters) ) {
-					collection.add((Parameter)item);
+				if (item instanceof Parameter && check(item, filters)) {
+					collection.add((Parameter) item);
 				}
 			}
 		}
@@ -223,13 +231,13 @@ public class Method extends GraphMember {
 	}
 
 	public Method with(Annotation value) {
-		if(this.children != null) {
+		if (this.children != null) {
 			if (this.children instanceof Annotation) {
 				this.children = null;
-			} else if(this.children instanceof GraphSimpleSet) {
+			} else if (this.children instanceof GraphSimpleSet) {
 				GraphSimpleSet collection = (GraphSimpleSet) this.children;
-				for(int i=collection.size();i>=0;i--) {
-					if(collection.get(i) instanceof Annotation) {
+				for (int i = collection.size(); i >= 0; i--) {
+					if (collection.get(i) instanceof Annotation) {
 						collection.remove(i);
 					}
 				}
@@ -240,60 +248,50 @@ public class Method extends GraphMember {
 	}
 
 	@Override
-	public String toString()
-	{
-	   return getName(true);
+	public String toString() {
+		return getName(true, false);
 	}
 
 	@Override
 	public Object getValue(String attribute) {
-		if(PROPERTY_RETURNTYPE.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_RETURNTYPE.equalsIgnoreCase(attribute)) {
 			return this.getReturnType();
 		}
-		if(PROPERTY_PARAMETER.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_PARAMETER.equalsIgnoreCase(attribute)) {
 			return this.getParameters();
 		}
 		if (PROPERTY_PARAMETERNAME.equalsIgnoreCase(attribute)) {
-			return this.getParameterString(true, false);
+			return this.getParameterString(true, false, true);
 		}
-		if(PROPERTY_ANNOTATIONS.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_ANNOTATIONS.equalsIgnoreCase(attribute)) {
 			return this.getAnnotation();
 		}
-		if(PROPERTY_NODE.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_NODE.equalsIgnoreCase(attribute)) {
 			return this.getNodes();
 		}
-		if(PROPERTY_BODY.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_BODY.equalsIgnoreCase(attribute)) {
 			return this.getBody();
 		}
 		return super.getValue(attribute);
 	}
 
-
 	public boolean isValidReturn() {
-		if(getReturnType() == null || DataType.VOID.equals(getReturnType())) {
+		if (getReturnType() == null || DataType.VOID.equals(getReturnType())) {
 			return true;
 		}
-		if(this.body == null) {
+		if (this.body == null) {
 			return false;
 		}
 		String[] lines = this.body.split("\n");
-		if(lines.length<1) {
+		if (lines.length < 1) {
 			return false;
 		}
 
-		for (String l : lines)
-		{
-		   if (l.trim().startsWith("return"))
-		   {
-		      return true;
-		   }
+		for (String l : lines) {
+			if (l.trim().startsWith("return")) {
+				return true;
+			}
 		}
 		return false;
-	}
-
-	@Override
-	public Method without(GraphMember... values) {
-		super.without(values);
-		return this;
 	}
 }

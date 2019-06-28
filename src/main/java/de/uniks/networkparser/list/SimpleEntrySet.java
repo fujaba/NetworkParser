@@ -3,7 +3,7 @@ package de.uniks.networkparser.list;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class SimpleEntrySet<K, V> implements Set<Entry<K, V>>{
+public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 	private SimpleKeyValueList<K, V> map;
 
 	public SimpleEntrySet(SimpleKeyValueList<K, V> value) {
@@ -42,53 +42,89 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>>{
 
 	@Override
 	public int size() {
+		if (map == null) {
+			return 0;
+		}
 		return this.map.size();
 	}
 
 	@Override
 	public boolean isEmpty() {
+		if (map == null) {
+			return true;
+		}
 		return this.map.isEmpty();
 	}
 
 	@Override
 	public boolean contains(Object o) {
+		if (map == null) {
+			return false;
+		}
 		return this.map.contains(o);
 	}
 
 	@Override
 	public Iterator<Entry<K, V>> iterator() {
-		return new SimpleIteratorSet<K,V>(map);
+		return new SimpleIteratorSet<K, V>(map);
 	}
 
 	@Override
 	public Object[] toArray() {
-		return this.map.toArray();
+		if (map == null) {
+			return null;
+		}
+		/* Change to DebugInfo */
+		int size = this.map.size();
+		Object[] info = new Object[this.map.size()];
+		for (int i = 0; i < size; i++) {
+			ObjectMapEntry mapEntry = new ObjectMapEntry();
+			mapEntry.withKey(this.map.getKeyByIndex(i));
+			mapEntry.withValue(this.map.getValueByIndex(i));
+			info[i] = mapEntry;
+		}
+		return info;
 	}
 
 	@Override
 	public <T> T[] toArray(T[] a) {
+		if (map == null) {
+			return null;
+		}
 		return this.map.toArray(a);
 	}
 
 	@Override
 	public boolean add(Entry<K, V> e) {
+		if (map == null) {
+			return false;
+		}
 		return this.map.add(e.getKey(), e.getValue());
 	}
 
 	@Override
 	public boolean remove(Object o) {
-		return this.map.removeByObject(o)>=0;
+		if (map == null) {
+			return false;
+		}
+		return this.map.removeByObject(o) >= 0;
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
+		if (map == null) {
+			return false;
+		}
 		return this.map.containsAll(c);
 	}
 
 	@Override
 	public boolean addAll(Collection<? extends Entry<K, V>> collection) {
-		boolean result=true;
-		for(Entry<K, V> item : collection) {
+		boolean result = true;
+		if (collection == null) {
+			return result;
+		}
+		for (Entry<K, V> item : collection) {
 			result = result && this.map.add(item.getKey(), item.getValue());
 		}
 		return result;
@@ -96,16 +132,25 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>>{
 
 	@Override
 	public boolean retainAll(Collection<?> collection) {
+		if (map == null) {
+			return true;
+		}
 		return this.map.retainAll(collection);
 	}
 
 	@Override
 	public boolean removeAll(Collection<?> collection) {
+		if (map == null) {
+			return false;
+		}
 		return this.map.removeAll(collection);
 	}
 
 	@Override
 	public void clear() {
+		if (map == null) {
+			return;
+		}
 		this.map.clear();
 	}
 }

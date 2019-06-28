@@ -3,7 +3,7 @@ package de.uniks.networkparser.gui.controls;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Collection;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.list.SimpleList;
 
@@ -69,8 +70,9 @@ public class Form extends Control {
 		addElement(elements);
 		return this;
 	}
+
 	public boolean addElement(Control... elements) {
-		if(elements == null) {
+		if (elements == null) {
 			return false;
 		}
 		boolean changed = false;
@@ -78,7 +80,7 @@ public class Form extends Control {
 			this.elements = new SimpleList<Control>();
 		}
 		for (Control control : elements) {
-			if(this.elements.add(control)) {
+			if (this.elements.add(control)) {
 				changed = true;
 				firePropertyChange(PROPERTY_ELEMENTS, null, control);
 			}
@@ -90,8 +92,7 @@ public class Form extends Control {
 	public Object getValue(String key) {
 		if (METHOD.equals(key)) {
 			return this.getMethod();
-		}
-		else if (PROPERTY_ELEMENTS.equals(key)) {
+		} else if (PROPERTY_ELEMENTS.equals(key)) {
 			return this.getElements();
 		}
 		return super.getValue(key);
@@ -100,31 +101,31 @@ public class Form extends Control {
 	@Override
 	public boolean setValue(String key, Object value) {
 		if (METHOD.equals(key)) {
-			return this.setMethod(""+value);
-		}
-		else if (PROPERTY_ELEMENTS.equals(key)) {
-			if(value instanceof Control) {
-				return this.addElement((Control)value);
-			} else if(value instanceof Control[]) {
-				return this.addElement((Control[])value);
-			} else if(value instanceof Collection<?>) {
-				Collection<?> list = (Collection<?>)value;
+			return this.setMethod("" + value);
+		} else if (PROPERTY_ELEMENTS.equals(key)) {
+			if (value instanceof Control) {
+				return this.addElement((Control) value);
+			} else if (value instanceof Control[]) {
+				return this.addElement((Control[]) value);
+			} else if (value instanceof Collection<?>) {
+				Collection<?> list = (Collection<?>) value;
 				Control[] array = ((Collection<?>) value).toArray(new Control[list.size()]);
 				return this.addElement(array);
 			}
 		}
 		return super.setValue(key, value);
 	}
-	public Form withDataBinding(IdMap map, Object entity, boolean addCommandBtn){
-//		this.map = map;
-//		this.item = entity;
-//		textClazz = (TextItems) map.getCreator(TextItems.class.getName(), true);
 
-//		SendableEntityCreator creator = map.getCreatorClass(item);
-//		if(creator != null){
-//			this.setCenter(items);
-//			withDataBinding(addCommandBtn, creator.getProperties());
-//		}
+	public Form withDataBinding(IdMap map, Object entity, boolean addCommandBtn) {
+/* TODO		this.map = map;
+		this.item = entity;
+		textClazz = (TextItems) map.getCreator(TextItems.class.getName(), true);
+
+		SendableEntityCreator creator = map.getCreatorClass(item);
+		if(creator != null){
+			this.setCenter(items);
+			withDataBinding(addCommandBtn, creator.getProperties());
+		}*/
 		return this;
 	}
 

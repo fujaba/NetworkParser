@@ -20,10 +20,13 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.TextDiff;
-import de.uniks.networkparser.UpdateAccumulate;
+import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.converter.DotConverter;
 import de.uniks.networkparser.converter.EntityStringConverter;
+import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.PropertyChangeEventWrapper;
+import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
@@ -918,7 +921,7 @@ public class JsonTest {
 		map.withCreator(new PersonCreator());
 		map.withTimeStamp(1);
 		map.toJsonObject(person);
-		UpdateAccumulate updateAccumulate = new UpdateAccumulate();
+		UpdateCondition updateAccumulate = UpdateCondition.createUpdateCondition();
 
 		map.getMapListener().suspendNotification(updateAccumulate);
 		map.withListener(new ObjectCondition() {
@@ -933,7 +936,6 @@ public class JsonTest {
 		person.setBalance(42);
 		map.getMapListener().resetNotification();
 
-//		System.out.println(updateAccumulate.getChange());
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P1\",\"upd\":{\"name\":\"Albert\",\"balance\":42},\"rem\":{\"balance\":0}}", updateAccumulate.getChange().toString());
 	}
 	
@@ -950,6 +952,15 @@ public class JsonTest {
 		Assert.assertEquals("Hallo Welt", jsonArray.first());
 	}
 
+	@Test
+	public void yuml() {
+		ClassModel model =	new ClassModel();
+		Clazz uni = model.createClazz( "Uni" ) ;
+		Clazz student = model.createClazz( "Student" );
+		uni.withAssoc (student , 42 ) ;
+		Assert.assertNotNull(new DotConverter().encode(model));
+	}
+	
 //	@Test
 //	public void testErrorHandler() {
 //		JsonObject item = new JsonObject();

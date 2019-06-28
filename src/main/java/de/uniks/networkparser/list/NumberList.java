@@ -2,7 +2,7 @@ package de.uniks.networkparser.list;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 
 /**
  * Class for List of Numbers
+ * 
  * @author Stefan Lindel NumberList for List of Numbers (Integer Double etc.)
  *
  */
@@ -64,13 +65,12 @@ public class NumberList extends SimpleList<Number> {
 		return min;
 	}
 
-
 	public double middle() {
 		double middleValue = 0;
 		for (Number x : this) {
 			middleValue += x.doubleValue();
 		}
-		if(this.size()>0) {
+		if (this.size() > 0) {
 			middleValue = middleValue / this.size();
 		}
 		return middleValue;

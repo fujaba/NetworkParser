@@ -1,41 +1,17 @@
 package de.uniks.networkparser.ext;
 
-/*
-The MIT License
-
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Collection;
 import java.util.Iterator;
+
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.http.HTTPRequest;
+import de.uniks.networkparser.ext.http.LoginService;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -43,32 +19,34 @@ import de.uniks.networkparser.interfaces.Server;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SortedList;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class RESTServiceTask implements Runnable, Server{
+public class RESTServiceTask implements Runnable, Server {
 	private int port;
-	public static final String ERROR404="HTTP 404";
-	public static final String OK="HTTP 200";
-	public static final String PROPERTY_ERROR="error";
-	public static final String PROPERTY_ALLOW="allow";
-	public static final String LENGTH = "Content-Length:";
+	public static final String PROPERTY_ERROR = "error";
+	public static final String PROPERTY_ALLOW = "allow";
 	private ServerSocket serverSocket;
 	private IdMap map;
 	private Object root;
 	private SendableEntityCreator creator;
+	private boolean routingExists;
 	private Filter filter = Filter.regard(Deep.create(1));
 
 	private Condition<Exception> errorListener;
 	private Condition<SimpleEvent> allowListener;
-	public static final String JSON="/json";
-	public static final String XML="/xml";
+	private Condition<SimpleEvent> loginController;
+	public static final String JSON = "/json";
+	public static final String XML = "/xml";
+	private SimpleList<HTTPRequest> routing;
 
 	public RESTServiceTask(int port, IdMap map, Object root) {
 		super();
 		this.port = port;
 		this.map = map;
 		this.root = root;
-		if(map != null) {
+		if (map != null) {
 			creator = map.getCreatorClass(root);
 		}
 	}
@@ -77,6 +55,7 @@ public class RESTServiceTask implements Runnable, Server{
 		this.errorListener = listener;
 		return this;
 	}
+
 	public RESTServiceTask withAllowListener(Condition<SimpleEvent> listener) {
 		this.allowListener = listener;
 		return this;
@@ -85,63 +64,73 @@ public class RESTServiceTask implements Runnable, Server{
 	@Override
 	public void run() {
 		try {
-			if(port == 0) {
+			if (port == 0) {
 				return;
 			}
 			serverSocket = new ServerSocket(this.port);
-			CharacterBuffer buffer = new CharacterBuffer();
-			while(serverSocket != null) {
-				try {
-					Socket clientSocket = serverSocket.accept();
+			while (serverSocket != null) {
+				HTTPRequest clientSocket = HTTPRequest.create(serverSocket.accept());
+				clientSocket.withExceptionListener(this.errorListener);
 
-					buffer.clear();
+				clientSocket.readType();
+				clientSocket.readPath();
 
-					InputStreamReader isr = new InputStreamReader(clientSocket.getInputStream());
-					BufferedReader br = new BufferedReader(isr);
-					int c;
-					while ((c = br.read()) != -1) {
-						if(c == ' ') {
-							break;
+				System.out.println(clientSocket.getHttp_Type() + ": " + clientSocket.getPath());
+
+				HTTPRequest match = null;
+
+				if (routing != null && routing.size() > 0) {
+					/* Parsing Path */
+					HTTPRequest defaultMatch = null;
+					String path = clientSocket.getPath();
+
+					SortedList<HTTPRequest> matches = new SortedList<HTTPRequest>(true);
+					for (int i = 0; i < routing.size(); i++) {
+						HTTPRequest key = routing.get(i);
+						if ("*".equals(key.getPath())) {
+							defaultMatch = key;
 						}
-						buffer.with((char) c);
-					}
-					String type = buffer.toString();
-					buffer.clear();
-					while ((c = br.read()) != -1) {
-						if(c == ' ') {
-							break;
-						}
-						buffer.with((char) c);
-					}
-					if(buffer.charAt(0)=='/') {
-						buffer.withStartPosition(1);
-					}
-					PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-					SimpleEvent event=new SimpleEvent(clientSocket, buffer.toString(), br, out);
-					event.withType(type);
-
-					if(allowListener != null) {
-						if(allowListener.update(event) == false) {
-							out.write("HTTP 403");
-							out.close();
-							clientSocket.close();
-							continue;
+						if (clientSocket.match(key)) {
+							matches.add(key);
 						}
 					}
-					String result = this.executeRequest(event);
-					out.write(result);
-					out.close();
-					clientSocket.close();
-				}catch (Exception e) {
-					if(errorListener != null) {
-						errorListener.update(e);
-					}else {
-						e.printStackTrace();
+					if (matches.size() > 0) {
+						HTTPRequest first = matches.first();
+						/* *  */
+						if ((routingExists && first.isValid()) || routingExists == false) {
+							match = first;
+						} else if (path.indexOf("/") < 1) {
+							match = defaultMatch;
+						}
 					}
 				}
+				/* SO NEW MATCHES */
+				SimpleEvent event = new SimpleEvent(clientSocket, clientSocket.getPath(), null, null);
+				if (allowListener != null) {
+					if (allowListener.update(event) == false) {
+						clientSocket.writeHeader(HTTPRequest.HTTP_PERMISSION_DENIED);
+						clientSocket.close();
+						continue;
+					}
+				} else if (loginController != null) {
+					if (loginController.update(event) == false) {
+						clientSocket.close();
+						continue;
+					}
+				}
+				/* So Valid and Execute Match or default 
+				   CHECK FOR NEXT VALID OR BEST */
+				if (match != null) {
+					match.update(clientSocket);
+					clientSocket.close();
+					continue;
+				}
+				String result = this.executeRequest(event);
+				clientSocket.writeBody(result);
+				clientSocket.close();
 			}
-		}catch (Exception e) {
-			if(errorListener != null) {
+		} catch (Exception e) {
+			if (errorListener != null) {
 				errorListener.update(e);
 			}
 		}
@@ -149,12 +138,12 @@ public class RESTServiceTask implements Runnable, Server{
 
 	@Override
 	public boolean close() {
-		if( serverSocket == null ||  serverSocket.isClosed()) {
+		if (serverSocket == null || serverSocket.isClosed()) {
 			return true;
 		}
-		try{
+		try {
 			serverSocket.close();
-		}catch (Exception e) {
+		} catch (Exception e) {
 		}
 		return true;
 	}
@@ -168,65 +157,68 @@ public class RESTServiceTask implements Runnable, Server{
 		SimpleEvent event = new SimpleEvent(this, request, null, null);
 		return executeRequest(event);
 	}
+
 	public String executeRequest(SimpleEvent socketRequest) {
-		if(socketRequest == null) {
+		if (socketRequest == null) {
 			return null;
 		}
 		String type = socketRequest.getType();
-		if(NodeProxyTCP.GET.equalsIgnoreCase(type) || "".equals(type) || SendableEntityCreator.NEW.equalsIgnoreCase(type)) {
+		if (NodeProxyTCP.GET.equalsIgnoreCase(type) || "".equals(type)
+				|| SendableEntityCreator.NEW.equalsIgnoreCase(type)) {
 			return this.getExecute(socketRequest);
 		}
-		if(NodeProxyTCP.POST.equalsIgnoreCase(type)) {
+		if (NodeProxyTCP.POST.equalsIgnoreCase(type)) {
 			return this.postExecute(socketRequest);
 		}
-		if(NodeProxyTCP.PUT.equalsIgnoreCase(type)) {
+		if (NodeProxyTCP.PUT.equalsIgnoreCase(type)) {
 			return this.putExecute(socketRequest);
 		}
-		if(NodeProxyTCP.PATCH.equalsIgnoreCase(type)) {
+		if (NodeProxyTCP.PATCH.equalsIgnoreCase(type)) {
 			return this.patchExecute(socketRequest);
 		}
-		if(NodeProxyTCP.DELETE.equalsIgnoreCase(type)) {
+		if (NodeProxyTCP.DELETE.equalsIgnoreCase(type)) {
 			return this.deleteExecute(socketRequest);
 		}
 		return null;
 	}
 
-	private Object getElement(CharacterBuffer request, CharacterBuffer path, CharacterBuffer listID, boolean lastElement) {
+	private Object getElement(CharacterBuffer request, CharacterBuffer path, CharacterBuffer listID,
+			boolean lastElement) {
 		int pos = 0;
 		SendableEntityCreator creator = this.creator;
 
-		if(request.startsWith(JSON, 0, false)) {
-			pos =6;
-		} else if(request.startsWith(XML, 0, false)) {
+		if (request.startsWith(JSON, 0, false)) {
+			pos = 6;
+		} else if (request.startsWith(XML, 0, false)) {
 			pos = 5;
 		}
 		Object element = root;
 		Object last = root;
-		CharacterBuffer oldPath=new CharacterBuffer();
-		while(pos<request.length()) {
-			if(request.charAt(pos) == '[') {
+		CharacterBuffer oldPath = new CharacterBuffer();
+		while (pos < request.length()) {
+			if (request.charAt(pos) == '[') {
 				listID.clear();
 				pos++;
-				while(pos<request.length() && request.charAt(pos)!=']') {
+				while (pos < request.length() && request.charAt(pos) != ']') {
 					listID.with(request.charAt(pos));
 					pos++;
 				}
 				pos++;
 			}
 
-			if(request.charAt(pos) != '/' && pos<request.length()) {
+			if (request.charAt(pos) != '/' && pos < request.length()) {
 				path.with(request.charAt(pos));
 				pos++;
 			}
-			if(request.charAt(pos) == '/' || (pos==request.length() && path.length()>0)) {
+			if (request.charAt(pos) == '/' || (pos == request.length() && path.length() > 0)) {
 				last = element;
 				oldPath.set(path.toString());
 				element = creator.getValue(element, path.toString());
-				if(element == null) {
+				if (element == null) {
 					break;
 				}
-				// Switch For List
-				if(element instanceof Collection<?>) {
+				/* Switch For List */
+				if (element instanceof Collection<?>) {
 					int temp;
 					String id = listID.toString();
 					try {
@@ -236,32 +228,32 @@ public class RESTServiceTask implements Runnable, Server{
 					}
 
 					Collection<?> collection = (Collection<?>) element;
-					if(temp<0) {
+					if (temp < 0) {
 						Object item = null;
 						Iterator<?> i = collection.iterator();
-						if(id.length()>0){
+						if (id.length() > 0) {
 							element = null;
-							while(i.hasNext()) {
+							while (i.hasNext()) {
 								item = i.next();
-								if(id.equals(map.getId(item, true))) {
+								if (id.equals(map.getId(item, true))) {
 									last = element;
 									oldPath.set(path.toString());
 									element = item;
 									break;
 								}
 							}
-						}else if(collection.size() == 1) {
+						} else if (collection.size() == 1) {
 							last = element;
 							oldPath.set(path.toString());
 							element = i.next();
 						}
-					}else {
+					} else {
 						last = element;
 						oldPath.set(path.toString());
 						element = null;
 						int collectionPos = 0;
-						for(Iterator<?> i = collection.iterator();i.hasNext();) {
-							if(collectionPos==temp) {
+						for (Iterator<?> i = collection.iterator(); i.hasNext();) {
+							if (collectionPos == temp) {
 								element = i.next();
 								break;
 							} else {
@@ -277,40 +269,39 @@ public class RESTServiceTask implements Runnable, Server{
 				pos++;
 			}
 		}
-		if(lastElement) {
+		if (lastElement) {
 			path.set(oldPath.toString());
 			return last;
 		}
 		return element;
 	}
 
-
-	//GET
-	// Read	200 (OK)
-	// 404 (Not Found) if ID not found or invalid
+	/* GET
+	   Read 200 (OK)
+	   404 (Not Found) if ID not found or invalid */
 	private String getExecute(SimpleEvent socketRequest) {
 		CharacterBuffer path = new CharacterBuffer();
 		CharacterBuffer listID = new CharacterBuffer();
 		CharacterBuffer request = new CharacterBuffer().with(socketRequest.getPropertyName());
 		Object element = getElement(request, path, listID, false);
-		if(element == root) {
-			if(path.length()>0) {
+		if (element == root) {
+			if (path.length() > 0) {
 				element = null;
-			} else if(listID.length()>0) {
+			} else if (listID.length() > 0) {
 				element = map.getObject(listID.toString());
 			}
 		}
 		boolean isXML = false;
-		if(request.startsWith(JSON, 0, false)) {
-		} else if(request.startsWith(XML, 0, false)) {
+		if (request.startsWith(JSON, 0, false)) {
+		} else if (request.startsWith(XML, 0, false)) {
 			isXML = true;
 		}
-		if(element != null) {
-			if(isXML) {
+		if (element != null) {
+			if (isXML) {
 				XMLEntity xml = map.toXMLEntity(element, filter);
 				return xml.toString();
 			}
-			if(element instanceof Collection<?>) {
+			if (element instanceof Collection<?>) {
 				JsonArray jsonArray = map.toJsonArray(element, filter);
 				return jsonArray.toString();
 
@@ -319,146 +310,126 @@ public class RESTServiceTask implements Runnable, Server{
 				return jsonObject.toString();
 			}
 		}
-		return ERROR404;
+		return HTTPRequest.HTTP__NOTFOUND;
 	}
 
-	// DELETE
-	// Delete 405 (Method Not Allowed)
-	// 200 (OK)
-	// 404 (Not Found), if ID not found or invalid.
+	/** DELETE
+	 *  Delete 405 (Method Not Allowed)
+	 *  200 (OK)
+	 *  404 (Not Found), if ID not found or invalid.
+	 * @param socketRequest The SocketRequest
+	 * @return Response
+	 */
 	private String deleteExecute(SimpleEvent socketRequest) {
 		CharacterBuffer path = new CharacterBuffer();
 		CharacterBuffer listID = new CharacterBuffer();
 		CharacterBuffer request = new CharacterBuffer().with(socketRequest.getPropertyName());
 		Object element = getElement(request, path, listID, false);
-		if(element != null) {
+		if (element != null) {
 			map.removeObj(element, true);
-			return OK;
+			return HTTPRequest.HTTP_OK;
 		}
-		return ERROR404;
+		return HTTPRequest.HTTP__NOTFOUND;
 	}
 
-	//POST
-	// Create 200 (Created)
-	// 404 (Not Found)
-	// 409 (Conflict) if resource already exists..
+	/** POST
+	 *  Create 200 (Created)
+	 *  404 (Not Found)
+	 *  409 (Conflict) if resource already exists..
+  	 *  @param socketRequest The SocketRequest
+	 *  @return Response
+	 */
 	private String postExecute(SimpleEvent socketRequest) {
-		if(socketRequest == null) {
-			return ERROR404;
+		if (socketRequest == null) {
+			return HTTPRequest.HTTP__NOTFOUND;
 		}
-		try {
-			Object source = socketRequest.getSource();
-			if(source instanceof Socket == false) {
-				return ERROR404;
-			}
-			BufferedReader br = (BufferedReader) socketRequest.getOldValue();
-			String propertyName = socketRequest.getPropertyName();
-
-			CharacterBuffer path = new CharacterBuffer();
-			CharacterBuffer listID = new CharacterBuffer();
-			CharacterBuffer request = new CharacterBuffer().with(socketRequest.getPropertyName());
-			Object element = getElement(request, path, listID, true);
-
-			// First item SWITCH
-			CharacterBuffer buffer = new CharacterBuffer();
-			int c = br.read();
-			int pos=0;
-			boolean found = false;
-
-			while ((c = br.read()) != -1) {
-				if(c == LENGTH.charAt(pos)) {
-					pos++;
-					if(pos==LENGTH.length()) {
-						found = true;
-						break;
-					}
-				} else {
-					pos =0;
-				}
-				buffer.with((char)  c);
-			}
-			int length = 0;
-			if(found) {
-				while ((c = br.read()) != -1) {
-					if(c==' ') {
-						continue;
-					}
-					if(c >='0' && c<='9') {
-						length = length*10 + c-'0';
-					}else {
-						break;
-					}
-				}
-				char[] item = new char[length];
-				while ((c = br.read()) != -1) {
-					if(c != 13 && c != 10 && c != ' ') {
-						break;
-					}
-
-				}
-				item[0] = (char) c;
-				br.read(item, 1, item.length - 1);
-				CharacterBuffer entry = new CharacterBuffer();
-				entry.with(item, 0 , item.length);
-
-				if(entry.charAt(0) == JsonObject.START || entry.charAt(0) == XMLEntity.START) {
-					// JsonObject or XMLEntity
-					Object child = map.decode(entry);
-					SendableEntityCreator creator = map.getCreatorClass(element);
-					if(creator != null) {
-						creator.setValue(element, propertyName, child, SendableEntityCreator.NEW);
-					}
-					return OK;
-				} else {
-					// PLAIN KEY VALUE
-					SimpleKeyValueList<String, String> child = new SimpleKeyValueList<String, String>().withKeyValueString(entry.toString(), String.class);
-					String className = child.getString(IdMap.CLASS);
-					SendableEntityCreator childCreator = map.getCreator(className, false);
-					Object childValue = childCreator.getSendableInstance(false);
-					for(int i=0;i<child.size();i++) {
-						String key = child.getKeyByIndex(i);
-						if(IdMap.CLASS.equalsIgnoreCase(key)) {
-							continue;
-						}
-						childCreator.setValue(childValue, child.getKeyByIndex(i), child.getValueByIndex(i), SendableEntityCreator.NEW);
-					}
-					creator.setValue(element, propertyName, childValue, SendableEntityCreator.NEW);
-					return OK;
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		Object source = socketRequest.getSource();
+		if (source instanceof HTTPRequest == false) {
+			return HTTPRequest.HTTP__NOTFOUND;
 		}
-		return ERROR404;
+		HTTPRequest request = (HTTPRequest) source;
+
+		CharacterBuffer path = new CharacterBuffer();
+		CharacterBuffer listID = new CharacterBuffer();
+		CharacterBuffer pathValue = new CharacterBuffer().with(request.getPath());
+		Object element = getElement(pathValue, path, listID, true);
+
+		/* First item SWITCH */
+		String body = request.getContent();
+		if (body.charAt(0) == JsonObject.START || body.charAt(0) == XMLEntity.START) {
+			/* JsonObject or XMLEntity */
+			Object child = map.decode(body);
+			SendableEntityCreator creator = map.getCreatorClass(element);
+			if (creator != null) {
+				creator.setValue(element, pathValue.toString(), child, SendableEntityCreator.NEW);
+			}
+			return HTTPRequest.HTTP_OK;
+		}
+		/* PLAIN KEY VALUE */
+		SimpleKeyValueList<String, String> child = new SimpleKeyValueList<String, String>().withKeyValueString(body,
+				String.class);
+		String className = child.getString(IdMap.CLASS);
+		SendableEntityCreator childCreator = map.getCreator(className, false);
+		Object childValue = childCreator.getSendableInstance(false);
+		for (int i = 0; i < child.size(); i++) {
+			String key = child.getKeyByIndex(i);
+			if (IdMap.CLASS.equalsIgnoreCase(key)) {
+				continue;
+			}
+			childCreator.setValue(childValue, child.getKeyByIndex(i), child.getValueByIndex(i),
+					SendableEntityCreator.NEW);
+		}
+		creator.setValue(element, pathValue.toString(), childValue, SendableEntityCreator.NEW);
+		return HTTPRequest.HTTP_OK;
 	}
 
-	//PUT
-	// Update/Replace 405 (Method Not Allowed)
-    // 200 (OK) or 204 (No Content)
-	// 404 (Not Found), if ID not found or invalid.
+	/** PUT
+	*   Update/Replace 405 (Method Not Allowed)
+	*   200 (OK) or 204 (No Content)
+	*   404 (Not Found), if ID not found or invalid.
+	*   @param socketRequest The SocketRequest
+	*   @return Response */
 	private String putExecute(SimpleEvent socketRequest) {
-		return ERROR404;
+		return HTTPRequest.HTTP__NOTFOUND;
 	}
 
-	//PATCH	Update/Modify
-	// 405 (Method Not Allowed), unless you want to modify the collection itself.
-	// 200 (OK) or 204 (No Content).
-	// 404 (Not Found), if ID not found or invalid.
+	/** PATCH Update/Modify
+	* 405 (Method Not Allowed), unless you want to modify the collection itself.
+	* 200 (OK) or 204 (No Content).
+	* 404 (Not Found), if ID not found or invalid.
+	* @param socketRequest The SocketRequest
+	* @return Response */
 	private String patchExecute(SimpleEvent socketRequest) {
-		return ERROR404;
+		return HTTPRequest.HTTP__NOTFOUND;
 	}
 
 	public void stop() {
-		if(serverSocket!=null) {
+		if (serverSocket != null) {
 			try {
 				ServerSocket socket = serverSocket;
 				serverSocket = null;
 				socket.close();
 			} catch (IOException e) {
-				if(errorListener != null) {
+				if (errorListener != null) {
 					errorListener.update(e);
 				}
 			}
 		}
+	}
+
+	public RESTServiceTask withLoginService(LoginService loginService) {
+		this.loginController = loginService;
+		return this;
+	}
+
+	public RESTServiceTask withRooting(String string, Condition<HTTPRequest> webContent) {
+		if (this.routing == null) {
+			this.routing = new SimpleList<HTTPRequest>();
+		}
+
+		HTTPRequest routing = HTTPRequest.createRouting(string);
+		routing.withUpdateCondition(webContent);
+		this.routing.add(routing);
+		return this;
 	}
 }

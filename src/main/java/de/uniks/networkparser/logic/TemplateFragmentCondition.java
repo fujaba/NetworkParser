@@ -3,7 +3,7 @@ package de.uniks.networkparser.logic;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,13 +31,17 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.parser.TemplateResultFragment;
 
-// {{#template PACKAGE {{CONDITION}}}}{{#endtemplate}}
-	public class TemplateFragmentCondition implements ParserCondition{
-	public static final String PROPERTY_CLONE="clone";
-	public static final String PROPERTY_FILE="file";
-	public static final String PROPERTY_KEY="key";
-	public static final String PROPERTY_TEMPLATE="template";
-	public static final String TAG="template";
+/** TemplateFragmentCondition 
+ * {{#template PACKAGE {{CONDITION}}}}{{#endtemplate}}
+ *
+ * @author Stefan Lindel
+ */
+public class TemplateFragmentCondition implements ParserCondition {
+	public static final String PROPERTY_CLONE = "clone";
+	public static final String PROPERTY_FILE = "file";
+	public static final String PROPERTY_KEY = "key";
+	public static final String PROPERTY_TEMPLATE = "template";
+	public static final String TAG = "template";
 
 	private String id;
 	private ObjectCondition condition;
@@ -53,26 +57,26 @@ import de.uniks.networkparser.parser.TemplateResultFragment;
 		return TAG;
 	}
 
-	private int getIdKey() {
-		if("PACKAGE".equalsIgnoreCase(this.id)) {
+	public static int getIdKey(String id) {
+		if ("PACKAGE".equalsIgnoreCase(id)) {
 			return TemplateParser.PACKAGE;
 		}
-		if("IMPORT".equalsIgnoreCase(this.id)) {
+		if ("IMPORT".equalsIgnoreCase(id)) {
 			return TemplateParser.IMPORT;
 		}
-		if("TEMPLATE".equalsIgnoreCase(this.id)) {
+		if ("TEMPLATE".equalsIgnoreCase(id)) {
 			return TemplateParser.TEMPLATE;
 		}
-		if("FIELD".equalsIgnoreCase(this.id)) {
+		if ("FIELD".equalsIgnoreCase(id)) {
 			return TemplateParser.FIELD;
 		}
-		if("VALUE".equalsIgnoreCase(this.id)) {
+		if ("VALUE".equalsIgnoreCase(id)) {
 			return TemplateParser.VALUE;
 		}
-		if("METHOD".equalsIgnoreCase(this.id)) {
+		if ("METHOD".equalsIgnoreCase(id)) {
 			return TemplateParser.METHOD;
 		}
-		if("TEMPLATEEND".equalsIgnoreCase(this.id)) {
+		if ("TEMPLATEEND".equalsIgnoreCase(id)) {
 			return TemplateParser.TEMPLATEEND;
 		}
 		return TemplateParser.DECLARATION;
@@ -80,22 +84,25 @@ import de.uniks.networkparser.parser.TemplateResultFragment;
 
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SendableEntityCreator) {
-			if(condition != null) {
-				if(condition.update(value) == false) {
+		if (value instanceof SendableEntityCreator) {
+			if (condition != null) {
+				if (condition.update(value) == false) {
 					return false;
 				}
 			}
 			SendableEntityCreator creator = (SendableEntityCreator) value;
-			// VODOO
+			/* VODOO */
 			SendableEntityCreator newInstance = (SendableEntityCreator) creator.getValue(creator, PROPERTY_CLONE);
-			newInstance.setValue(newInstance, PROPERTY_KEY, this.getIdKey(), SendableEntityCreator.NEW);
+			newInstance.setValue(newInstance, PROPERTY_KEY, TemplateFragmentCondition.getIdKey(id),
+					SendableEntityCreator.NEW);
 			newInstance.setValue(newInstance, PROPERTY_TEMPLATE, this.child, SendableEntityCreator.NEW);
 
-			newInstance.setValue(newInstance, PROPERTY_FILE, creator.getValue(creator, PROPERTY_FILE), SendableEntityCreator.NEW);
+			newInstance.setValue(newInstance, PROPERTY_FILE, creator.getValue(creator, PROPERTY_FILE),
+					SendableEntityCreator.NEW);
 
 			this.child.update(newInstance);
-			newInstance.setValue(newInstance, TemplateResultFragment.FINISH_GENERATE, newInstance, SendableEntityCreator.NEW);
+			newInstance.setValue(newInstance, TemplateResultFragment.FINISH_GENERATE, newInstance,
+					SendableEntityCreator.NEW);
 			return true;
 		}
 		return false;
@@ -103,7 +110,6 @@ import de.uniks.networkparser.parser.TemplateResultFragment;
 
 	@Override
 	public Object getValue(LocalisationInterface variables) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -112,15 +118,15 @@ import de.uniks.networkparser.parser.TemplateResultFragment;
 		CharacterBuffer id = buffer.nextToken(false, SPLITEND, SPACE);
 		this.id = id.toString();
 		buffer.nextClean(true);
-		if(buffer.getCurrentChar() != SPLITEND) {
-			// Condition
+		if (buffer.getCurrentChar() != SPLITEND) {
+			/* Condition */
 			this.condition = parser.parsing(buffer, customTemplate, true, true);
 		}
 
 		buffer.skipChar(SPLITEND);
 		buffer.skipChar(SPLITEND);
 		this.child = parser.parsing(buffer, customTemplate, false, true, "endtemplate");
-		//Skip }
+		/* Skip } */
 		buffer.skip();
 
 		buffer.skipTo(SPLITEND, true);

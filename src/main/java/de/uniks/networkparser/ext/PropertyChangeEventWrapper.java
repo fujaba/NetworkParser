@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,36 +29,36 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
 
 public class PropertyChangeEventWrapper extends SendableEntityCreatorWrapper {
-	public static final String PROPERTY_SOURCE="source";
-	public static final String PROPERTY_PROPERTY="property";
-	public static final String PROPERTY_OLDVALUE="oldValue";
-	public static final String PROPERTY_NEWVALUE="newValue";
-	public static final String SENDABLECLASSSTRING="java.beans.PropertyChangeEvent";
+	public static final String PROPERTY_SOURCE = "source";
+	public static final String PROPERTY_PROPERTY = "property";
+	public static final String PROPERTY_OLDVALUE = "oldValue";
+	public static final String PROPERTY_NEWVALUE = "newValue";
+	public static final String SENDABLECLASSSTRING = "java.beans.PropertyChangeEvent";
 
 	@Override
 	public String[] getProperties() {
-		return new String[]{PROPERTY_SOURCE, PROPERTY_PROPERTY, PROPERTY_OLDVALUE, PROPERTY_NEWVALUE};
+		return new String[] { PROPERTY_SOURCE, PROPERTY_PROPERTY, PROPERTY_OLDVALUE, PROPERTY_NEWVALUE };
 	}
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		return new PropertyChangeEvent(this,null,null,null);
+		return new PropertyChangeEvent(this, null, null, null);
 	}
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(entity instanceof PropertyChangeEvent) {
-			if(PROPERTY_SOURCE.equalsIgnoreCase(attribute)) {
-				return ((PropertyChangeEvent)entity).getSource();
+		if (entity instanceof PropertyChangeEvent) {
+			if (PROPERTY_SOURCE.equalsIgnoreCase(attribute)) {
+				return ((PropertyChangeEvent) entity).getSource();
 			}
-			if(PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
-				return ((PropertyChangeEvent)entity).getPropertyName();
+			if (PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
+				return ((PropertyChangeEvent) entity).getPropertyName();
 			}
-			if(PROPERTY_OLDVALUE.equalsIgnoreCase(attribute)) {
-				return ((PropertyChangeEvent)entity).getOldValue();
+			if (PROPERTY_OLDVALUE.equalsIgnoreCase(attribute)) {
+				return ((PropertyChangeEvent) entity).getOldValue();
 			}
-			if(PROPERTY_NEWVALUE.equalsIgnoreCase(attribute)) {
-				return ((PropertyChangeEvent)entity).getNewValue();
+			if (PROPERTY_NEWVALUE.equalsIgnoreCase(attribute)) {
+				return ((PropertyChangeEvent) entity).getNewValue();
 			}
 		}
 		return null;
@@ -67,7 +67,7 @@ public class PropertyChangeEventWrapper extends SendableEntityCreatorWrapper {
 	@Override
 	public Object newInstance(Entity item) {
 		Object source = item.getValue(PROPERTY_SOURCE);
-		String property = ""+item.getValue(PROPERTY_PROPERTY);
+		String property = "" + item.getValue(PROPERTY_PROPERTY);
 		Object oldValue = item.getValue(PROPERTY_OLDVALUE);
 		Object newValue = item.getValue(PROPERTY_NEWVALUE);
 		return new PropertyChangeEvent(source, property, oldValue, newValue);

@@ -3,7 +3,7 @@ package de.uniks.networkparser.converter;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphMember;
+import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphSimpleSet;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.graph.GraphUtil;
@@ -39,19 +40,27 @@ import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
-public class YUMLConverter implements Converter{
+public class YUMLConverter implements Converter {
 	/** The Constant URL. */
-	public static final String URL = "http://yuml.me/diagram/class/";
+	public static final String URL = "http://www.yuml.me/diagram/class/";
 	public boolean defaultShowPackage;
 
-	public String convert(GraphList root, boolean removePackage) {
-		String type = root.getType();
+	public String convert(GraphModel root, boolean removePackage) {
+		String type = GraphTokener.CLASSDIAGRAM;
+		if (root instanceof GraphList) {
+			type = ((GraphList) root).getType();
+		}
 		GraphSimpleSet collection = GraphUtil.getChildren(root);
-		if(collection.size()>0) {
+		if (collection == null) {
+			return null;
+		}
+		if (collection.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			SimpleList<GraphMember> visitedObj = new SimpleList<GraphMember>();
-			root.initSubLinks();
-			for(GraphMember item : collection) {
+			if (root instanceof GraphList) {
+				((GraphList) root).initSubLinks();
+			}
+			for (GraphMember item : collection) {
 				parse(type, item, sb, visitedObj, removePackage);
 			}
 			return sb.toString();
@@ -59,26 +68,30 @@ public class YUMLConverter implements Converter{
 		return null;
 	}
 
-	public void parse(String type, GraphMember item, StringBuilder sb,
-			SimpleList<GraphMember> visited, boolean shortName) {
-		if(item instanceof GraphEntity) {
+	public void parse(String type, GraphMember item, StringBuilder sb, SimpleList<GraphMember> visited,
+			boolean shortName) {
+		if (item instanceof GraphEntity) {
 			parse(type, (GraphEntity) item, sb, visited, shortName);
 		}
 	}
-	public void parse(String type, GraphEntity item, StringBuilder sb,
-			SimpleList<GraphMember> visited, boolean shortName) {
+
+	public boolean parse(String type, GraphEntity item, StringBuilder sb, SimpleList<GraphMember> visited,
+			boolean shortName) {
+		if (item == null) {
+			return false;
+		}
 		SimpleSet<Association> association = item.getAssociations();
-		if (association.size()==0) {
-			if(visited.contains(item) == false) {
+		if (association.size() == 0) {
+			if (visited.contains(item) == false) {
 				if (sb.length() > 0) {
 					sb.append(",");
 				}
 				sb.append(parseEntity(item, visited, type, shortName));
 			}
-			return;
+			return true;
 		}
 		if (type == null) {
-			type = GraphTokener.OBJECT;
+			type = GraphTokener.OBJECTDIAGRAM;
 		}
 		Iterator<?> iterator = association.iterator();
 		while (iterator.hasNext()) {
@@ -88,12 +101,12 @@ public class YUMLConverter implements Converter{
 			}
 			Association element = (Association) entry;
 			Association other = element.getOther();
-			if(GraphTokener.CLASS.equals(type)) {
-				if ( GraphUtil.containsClazzAssociation(visited, element, other)) {
+			if (GraphTokener.CLASSDIAGRAM.equals(type)) {
+				if (GraphUtil.containsClazzAssociation(visited, element, other)) {
 					continue;
 				}
 			}
-			if(visited.contains(element)) {
+			if (visited.contains(element)) {
 				continue;
 			}
 			visited.add(element);
@@ -117,65 +130,68 @@ public class YUMLConverter implements Converter{
 				sb.append(parseEntity(target, visited, type, shortName));
 			}
 		}
+		return true;
 	}
 
-	// ##################################### Entity
-	public String parseEntity(GraphEntity entity, SimpleList<GraphMember> visited,
-			boolean shortName) {
+	/**
+	 * Method for Parsing Entity
+	 * 
+	 * @param entity    Entity to Parse
+	 * @param visited   Visited elements
+	 * @param shortName ShortName
+	 * @return ResultString
+	 */
+	public String parseEntity(GraphEntity entity, SimpleList<GraphMember> visited, boolean shortName) {
 		return parseEntity(entity, visited, null, shortName);
 	}
 
-	public String parseEntity(GraphEntity entity, SimpleList<GraphMember> visited,
-			String type, boolean shortName) {
-		if(!(entity instanceof Clazz)){
+	public String parseEntity(GraphEntity entity, SimpleList<GraphMember> visited, String type, boolean shortName) {
+		if (!(entity instanceof Clazz)) {
 			return "";
 		}
 		Clazz clazzEntity = (Clazz) entity;
 		boolean shortString = visited.contains(clazzEntity);
-		if(shortString == false) {
+		if (shortString == false) {
 			visited.add(clazzEntity);
 		}
 		if (type == null) {
-			type = GraphTokener.OBJECT;
+			type = GraphTokener.OBJECTDIAGRAM;
 			if (clazzEntity.getName(false) == null) {
-				type = GraphTokener.CLASS;
+				type = GraphTokener.CLASSDIAGRAM;
 			}
 		}
 
 		StringBuilder sb = new StringBuilder("[");
-		if (type == GraphTokener.OBJECT) {
+		if (type == GraphTokener.OBJECTDIAGRAM) {
 			sb.append(clazzEntity.getId());
 			sb.append(" : ");
 		}
 		sb.append(clazzEntity.getName(shortName));
-		if(shortString == false) {
+		if (shortString == false) {
 			sb.append(parseEntityValues(clazzEntity, type, shortName));
 		}
 		sb.append("]");
 		return sb.toString();
 	}
 
-	public String parseEntityValues(GraphEntity entity, String type,
-			boolean shortName) {
+	public String parseEntityValues(GraphEntity entity, String type, boolean shortName) {
 		StringBuilder sb = new StringBuilder();
-
-		Iterator<GraphMember> i = GraphUtil.getChildren(entity).iterator();
-		boolean second=false;
+		GraphSimpleSet children = GraphUtil.getChildren(entity);
+		if (children == null) {
+			return null;
+		}
+		Iterator<GraphMember> i = children.iterator();
+		boolean second = false;
 		if (i.hasNext()) {
 			String splitter = "";
-			if (type.equals(GraphTokener.OBJECT)) {
+			if (type.equals(GraphTokener.OBJECTDIAGRAM)) {
 				splitter = "=";
-			} else if (type.equals(GraphTokener.CLASS)) {
+			} else if (type.equals(GraphTokener.CLASSDIAGRAM)) {
 				splitter = ":";
 			}
 
 			Object element;
 			Attribute attribute;
-//			if (element instanceof Attribute) {
-//				attribute = (Attribute) element;
-//				sb.append(attribute.getName() + splitter
-//						+ attribute.getValue(type, shortName)); // / without Type
-//			}
 
 			while (i.hasNext()) {
 				element = i.next();
@@ -183,15 +199,14 @@ public class YUMLConverter implements Converter{
 					continue;
 				}
 				attribute = (Attribute) element;
-				if(second) {
+				if (second) {
 					sb.append(";");
 				}
 				second = true;
-				sb.append(attribute.getName() + splitter
-						+ attribute.getValue(type, shortName));
+				sb.append(attribute.getName() + splitter + attribute.getValue(type, shortName));
 			}
 		}
-		if(sb.length()>0) {
+		if (sb.length() > 0) {
 			return "|" + sb.toString();
 		}
 		return sb.toString();
@@ -199,8 +214,8 @@ public class YUMLConverter implements Converter{
 
 	@Override
 	public String encode(BaseItem entity) {
-		if(entity instanceof GraphList) {
-			return convert((GraphList) entity, defaultShowPackage);
+		if (entity instanceof GraphModel) {
+			return convert((GraphModel) entity, defaultShowPackage);
 		}
 		return null;
 	}

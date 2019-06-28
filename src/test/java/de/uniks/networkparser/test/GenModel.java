@@ -3,11 +3,12 @@ package de.uniks.networkparser.test;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.ClassModelBuilder;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.ext.story.StoryStepSourceCode;
 import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeMap;
@@ -48,7 +49,6 @@ public class GenModel {
 		model = new ClassModel(packageName);
 		count += showCounting(Annotation.class, sdmLib, model);
 		count += showCounting(Association.class, sdmLib, model);
-		count += showCounting(Cardinality.class, sdmLib, model);
 		sdmLib.withGraph(model);
 
 
@@ -65,6 +65,65 @@ public class GenModel {
 
 		sdmLib.withText("API-Count: "+count);
 //		sdmLib.withGraph(model);
+		sdmLib.withPageBreak();
+		packageName = GraphUtil.getPackage(ClassModelBuilder.class);
+		model = new ClassModel(packageName);
+		showCounting(ClassModelBuilder.class, sdmLib, model);
+		sdmLib.withGraph(model);
+
+		StoryStepSourceCode step = new StoryStepSourceCode();
+		step.withCode("ClassModelBuilder builder = new ClassModelBuilder(\"de.uniks.model\");\r\n" + 
+				"		\r\n" + 
+				"\r\n" + 
+				"		Clazz person = builder.buildClass(\"Person\");\r\n" + 
+				"		builder.createAttribute(\"name\", DataType.STRING)\r\n" + 
+				"			.createAttribute(\"matrikelno\", DataType.INT);\r\n" + 
+				"		\r\n" + 
+				"		builder.createClass(\"University\").createAttribute(\"name\", DataType.STRING);\r\n" + 
+				"		\r\n" + 
+				"		builder.createAssociation(\"student\", Association.MANY, person, \"studs\", Association.ONE);\r\n" + 
+				"\r\n" + 
+				"		\r\n" + 
+				"		builder.build();");
+		step.addToHTML(sdmLib);
+
+		sdmLib.withHeader("graph.js");
+		sdmLib.withHeader("drawer.js");
+		sdmLib.withoutHeader("diagram.js");
+		
+		
+		sdmLib.withText("NetworkParser MetaModel");
+		
+		
+		ClassModel modelMeta=new ClassModel();
+		Clazz classModel = modelMeta.createClazz("ClassModel");
+		Clazz clazz = modelMeta.createClazz("Clazz").withAttribute("name", DataType.STRING);
+		classModel.withAttribute("name", DataType.STRING);
+		classModel.withAssoc(clazz, "children", Association.MANY, "parent", Association.ONE);
+
+		Clazz attribute= modelMeta.createClazz("Attribute").withAttribute("name", DataType.STRING);
+		Clazz datatype = modelMeta.createClazz("DataType");
+		Clazz method = modelMeta.createClazz("Method").withAttribute("name", DataType.STRING);
+		Clazz parameter = modelMeta.createClazz("Parameter").withAttribute("name", DataType.STRING);
+		
+		Clazz association = modelMeta.createClazz("Association").withAttribute("name", DataType.STRING);
+		
+		clazz.withBidirectional(attribute, "children", Association.MANY, "parent", Association.ONE);
+		clazz.withBidirectional(method, "children", Association.MANY, "parent", Association.ONE);
+		clazz.withBidirectional(association, "children", Association.MANY, "parent", Association.ONE);
+		
+		association.withBidirectional(association, "other", Association.ONE, "other", Association.ONE);
+		
+		method.withBidirectional(parameter, "children", Association.MANY, "parent", Association.ONE);
+		
+		datatype.withBidirectional(parameter, "parent", Association.ONE, "childre", Association.MANY);
+		datatype.withBidirectional(attribute, "parent", Association.ONE, "childre", Association.MANY);
+		datatype.withBidirectional(method, "parent", Association.ONE, "childre", Association.MANY);
+		datatype.withUniDirectional(clazz, "clazz", Association.ONE);
+		
+		sdmLib.withGraph(modelMeta);
+		
+		
 		FileBuffer.writeFile("build/sdmlib.html", sdmLib.toString());
 	}
 

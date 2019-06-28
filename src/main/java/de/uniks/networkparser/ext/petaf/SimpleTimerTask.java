@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,22 +24,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
 
 import de.uniks.networkparser.DateTimeEntity;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.ErrorHandler;
 
-public class SimpleTimerTask extends TimerTask {
+public class SimpleTimerTask extends TimerTask implements Callable<Object> {
 	protected final ErrorHandler handler = new ErrorHandler();
 	protected Runnable task;
 	protected Space space;
 	protected DateTimeEntity lastRun;
 	private Thread simpleExit;
-	
-	public SimpleTimerTask(Thread simpleExit){
+	private SimpleEvent event;
+	private ModelExecutor executor;
+
+	public SimpleTimerTask(SimpleEvent event, ModelExecutor executor) {
+		this.event = event;
+		this.executor = executor;
+	}
+
+	public SimpleTimerTask(Thread simpleExit) {
 		this.simpleExit = simpleExit;
 	}
 
-	public SimpleTimerTask(Space space){
+	public SimpleTimerTask(Space space) {
 		handler.addListener(space);
 		this.space = space;
 	}
@@ -58,15 +67,20 @@ public class SimpleTimerTask extends TimerTask {
 		return lastRun;
 	}
 
+	public SimpleTimerTask withEvent(SimpleEvent event) {
+		this.event = event;
+		return this;
+	}
+
 	@Override
 	public void run() {
-		if(simpleExit != null) {
+		if (simpleExit != null) {
 			simpleExit.interrupt();
 		}
-		try{
+		try {
 			updateLastRun();
 			runTask();
-		}catch(Exception e){
+		} catch (Exception e) {
 			handler.saveException(e, false);
 		}
 	}
@@ -75,18 +89,19 @@ public class SimpleTimerTask extends TimerTask {
 		if (lastRun != null) {
 			lastRun.withValue(System.currentTimeMillis());
 		}
-		if(space != null) {
+		if (space != null) {
 			space.withLastTimerRun(lastRun);
 		}
 	}
 
 	public boolean runTask() throws Exception {
-		if(this.task != null) {
+		if (this.task != null) {
 			task.run();
 			return true;
 		}
 		return false;
 	}
+
 	public SimpleTimerTask withTask(Runnable task) {
 		this.task = task;
 		return this;
@@ -94,5 +109,13 @@ public class SimpleTimerTask extends TimerTask {
 
 	public Space getSpace() {
 		return space;
+	}
+
+	@Override
+	public Object call() throws Exception {
+		if (this.event == null || this.executor == null) {
+			return null;
+		}
+		return this.executor.execute(event);
 	}
 }

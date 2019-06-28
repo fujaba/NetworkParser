@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.story;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,10 @@ import java.util.Comparator;
 
 public interface JacocoColumnListener {
 	public boolean init(Object items, Object total);
+
 	public void footer(Object td, Object total, Object resources, Object base);
+
 	public void item(Object td, Object item, Object resources, Object base);
+
 	public Comparator<Object> getComparator();
 }

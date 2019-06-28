@@ -5,17 +5,32 @@ import org.junit.Test;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.Manifest;
-import de.uniks.networkparser.xml.PomFile;
+import de.uniks.networkparser.logic.VersionCondition;
+import de.uniks.networkparser.xml.ArtifactFile;
 
 public class PomFileCreation {
 	@Test
+	public void NPMTest() {
+		VersionCondition first = new VersionCondition().withVersion("1.0.0");
+		VersionCondition second = new VersionCondition().withVersion("2.0.0");
+		int retval = first.compareTo(second);
+		if(retval > 0) {
+//			System.out.println("d1 is greater than d2");
+		} else if(retval < 0) {
+//			System.out.println("d1 is less than d2");
+		} else {
+//			System.out.println("d1 is equal to d2");
+		}
+	}
+	
+	@Test
 	public void testPom(){
-		PomFile pom=new PomFile();
+		ArtifactFile pom=new ArtifactFile();
 		pom.withModelVersion("4.0.0");
 		pom.withGroupId("de.uniks");
 		pom.withArtifactId("NetworkParser");
 		pom.withVersion("4.2.244-SNAPSHOT");
-		pom.withDependency(new PomFile().withArtifact("junit", "junit", "4.+").withScope("test"));
+		pom.withDependency(new ArtifactFile().withArtifact("junit", "junit", "4.+").withScope("test"));
 		String ref = "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n"+
 		"  <modelVersion>4.0.0</modelVersion>\r\n"+
 		"  <groupId>de.uniks</groupId>\r\n"+

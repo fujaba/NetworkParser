@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf.filter;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,17 +31,17 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 public class ProxyFilter implements ObjectCondition {
 	private SimpleKeyValueList<String, NodeProxy> nodeProxyList = new SimpleKeyValueList<String, NodeProxy>();
 
-	public ProxyFilter(){
+	public ProxyFilter() {
 	}
 
 	private String getClassName(NodeProxy proxy) {
-		if(proxy == null) {
+		if (proxy == null) {
 			return null;
 		}
 		Object reference = proxy.getSendableInstance(true);
 		if (reference != null) {
 			if (reference instanceof Class<?>) {
-				return ((Class<?>)reference).getName();
+				return ((Class<?>) reference).getName();
 			} else {
 				return reference.getClass().getName();
 			}
@@ -50,10 +50,10 @@ public class ProxyFilter implements ObjectCondition {
 	}
 
 	public ProxyFilter with(NodeProxy... values) {
-		if(values == null) {
+		if (values == null) {
 			return this;
 		}
-		for(NodeProxy proxy : values) {
+		for (NodeProxy proxy : values) {
 			String className = getClassName(proxy);
 			if (className != null) {
 				this.nodeProxyList.add(className, proxy);
@@ -63,10 +63,10 @@ public class ProxyFilter implements ObjectCondition {
 	}
 
 	public ProxyFilter without(NodeProxy... values) {
-		if(values == null) {
+		if (values == null) {
 			return this;
 		}
-		for(NodeProxy proxy : values) {
+		for (NodeProxy proxy : values) {
 			String className = getClassName(proxy);
 			if (className != null) {
 				this.nodeProxyList.remove(className);
@@ -78,12 +78,12 @@ public class ProxyFilter implements ObjectCondition {
 	/**
 	 * Gets the creator classes.
 	 *
-	 * @param clazz	Clazzname for search
+	 * @param clazz Clazzname for search
 	 * @return return a Creator class for a clazz name
 	 */
 	public NodeProxy getCreator(String clazz) {
 		NodeProxy creator = this.nodeProxyList.get(clazz);
-		if (creator != null ) {
+		if (creator != null) {
 			return creator;
 		}
 		return null;
@@ -93,13 +93,15 @@ public class ProxyFilter implements ObjectCondition {
 	public boolean update(Object value) {
 		SimpleEvent evt = (SimpleEvent) value;
 		NodeProxy creator = null;
-		if(evt.getModelValue() != null) {
-			 creator = getCreator(evt.getModelValue().getClass().getName());
+		if (evt.getModelValue() != null) {
+			creator = getCreator(evt.getModelValue().getClass().getName());
 		}
-		if(creator == null) {return false;}
+		if (creator == null) {
+			return false;
+		}
 		String[] sendableProperties = creator.getUpdateProperties();
-		for(String prop : sendableProperties){
-			if(prop.equals(evt.getPropertyName())){
+		for (String prop : sendableProperties) {
+			if (prop.equals(evt.getPropertyName())) {
 				return true;
 			}
 		}

@@ -3,7 +3,7 @@ package de.uniks.networkparser.gui;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,10 @@ THE SOFTWARE.
 */
 
 public interface CellEditorElement {
-	public enum APPLYACTION{SAVE,TAB, ENTER, FOCUS};
+	public enum APPLYACTION {
+		SAVE, TAB, ENTER, FOCUS
+	};
+
 	public CellEditorElement withColumn(Column column);
 
 	public void cancel();

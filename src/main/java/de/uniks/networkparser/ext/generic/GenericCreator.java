@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.generic;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,12 +32,14 @@ import java.util.LinkedHashSet;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleSet;
 
 public class GenericCreator implements SendableEntityCreator {
 	private Object item;
 	private Class<?> clazz;
 	private String[] properties = null;
-	private static final LinkedHashSet<String> badProperties = new LinkedHashSet<String>();
+	private String id;
+	private static final SimpleSet<String> badProperties = new SimpleSet<String>();
 
 	public GenericCreator() {
 		badProperties.add("getClass");
@@ -51,9 +53,24 @@ public class GenericCreator implements SendableEntityCreator {
 		withItem(item);
 	}
 
+	public GenericCreator withId(String id) {
+		this.id = id;
+		return this;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public Object getItem() {
+		return item;
+	}
+
 	public GenericCreator withClass(String value) {
 		try {
-			this.clazz = Class.forName(value);
+			if (value != null) {
+				this.clazz = Class.forName(value);
+			}
 		} catch (ClassNotFoundException e) {
 		}
 		return this;
@@ -67,7 +84,7 @@ public class GenericCreator implements SendableEntityCreator {
 	public GenericCreator withItem(Object value) {
 		this.item = value;
 
-		// Init all Values
+		/* Init all Values */
 		if (this.item == null) {
 			this.properties = new String[0];
 		} else {
@@ -77,7 +94,7 @@ public class GenericCreator implements SendableEntityCreator {
 			for (Method method : methods) {
 				String methodName = method.getName();
 				String name = getValidMethod(methodName);
-				if(name != null) {
+				if (name != null) {
 					fieldNames.add(name.toLowerCase());
 				}
 			}
@@ -95,23 +112,22 @@ public class GenericCreator implements SendableEntityCreator {
 	public Object getSendableInstance(boolean prototype) {
 		if (item != null) {
 			return ReflectionLoader.newInstance(this.clazz);
-		} else if( this.clazz != null) {
+		} else if (this.clazz != null) {
 			return ReflectionLoader.newInstance(this.clazz);
 		}
 		return null;
 	}
 
 	private String getMethodName(String value) {
-		if(value == null || value.length()< 1) {
+		if (value == null || value.length() < 1) {
 			return "";
 		}
-		return value.substring(0, 1).toUpperCase()
-				+ value.substring(1);
+		return value.substring(0, 1).toUpperCase() + value.substring(1);
 	}
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (entity == null) {
+		if (entity == null || this.clazz == null) {
 			return null;
 		}
 		try {
@@ -126,10 +142,10 @@ public class GenericCreator implements SendableEntityCreator {
 			return invoke;
 		} catch (ReflectiveOperationException e) {
 		}
-		// No Method Found
+		/* No Method Found */
 		try {
 			Field field = this.clazz.getDeclaredField(attribute);
-			if(ReflectionLoader.isAccess(field, entity) == false) {
+			if (ReflectionLoader.isAccess(field, entity) == false) {
 				field.setAccessible(true);
 				Object invoke = field.get(entity);
 				field.setAccessible(false);
@@ -138,44 +154,39 @@ public class GenericCreator implements SendableEntityCreator {
 			Object invoke = field.get(entity);
 			return invoke;
 		} catch (ReflectiveOperationException e) {
-//			System.out.println(e);
 		}
 		return null;
 	}
 
 	private boolean setNewValue(Object entity, String methodName, Object value) {
-		if(this.clazz == null || value == null) {
+		if (this.clazz == null || value == null) {
 			return false;
 		}
 		try {
-			this.clazz.getMethod(methodName, value.getClass()).invoke(entity,
-					value);
+			this.clazz.getMethod(methodName, value.getClass()).invoke(entity, value);
 			return true;
 		} catch (ReflectiveOperationException e) {
 		}
-		// maybe a number
+		/* maybe a number */
 		try {
 			int intValue = Integer.parseInt("" + value);
-			this.clazz.getMethod(methodName, int.class)
-					.invoke(entity, intValue);
+			this.clazz.getMethod(methodName, int.class).invoke(entity, intValue);
 			return true;
 		} catch (ReflectiveOperationException e) {
 		} catch (NumberFormatException e) {
 		}
-		// maybe a double
+		/* maybe a double */
 		try {
 			double doubleValue = Double.parseDouble("" + value);
-			this.clazz.getMethod(methodName, double.class).invoke(entity,
-					doubleValue);
+			this.clazz.getMethod(methodName, double.class).invoke(entity, doubleValue);
 			return true;
 		} catch (ReflectiveOperationException e) {
 		} catch (NumberFormatException e) {
 		}
-		// maybe a float
+		/* maybe a float */
 		try {
 			float floatValue = Float.parseFloat("" + value);
-			this.clazz.getMethod(methodName, float.class).invoke(entity,
-					floatValue);
+			this.clazz.getMethod(methodName, float.class).invoke(entity, floatValue);
 			return true;
 		} catch (ReflectiveOperationException e) {
 		} catch (NumberFormatException e) {
@@ -184,28 +195,27 @@ public class GenericCreator implements SendableEntityCreator {
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
-		if (entity == null) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
+		if (entity == null || this.clazz == null) {
 			return false;
 		}
 		if (setNewValue(entity, "set" + this.getMethodName(attribute), value)) {
 			return true;
 		}
-		if (setNewValue(entity, "with" + this.getMethodName(attribute), value)){
+		if (setNewValue(entity, "with" + this.getMethodName(attribute), value)) {
 			return true;
 		}
-		// May be Collection???
-		if(attribute.endsWith("s")) {
-			if (setNewValue(entity, "addTo" + this.getMethodName(attribute), value)){
+		/* May be Collection??? */
+		if (attribute.endsWith("s")) {
+			if (setNewValue(entity, "addTo" + this.getMethodName(attribute), value)) {
 				return true;
 			}
 		}
 
-		// No Method Found
+		/* No Method Found */
 		try {
 			Field field = this.clazz.getDeclaredField(attribute);
-			if(ReflectionLoader.isAccess(field, entity) == false) {
+			if (ReflectionLoader.isAccess(field, entity) == false) {
 				field.setAccessible(true);
 				field.set(entity, value);
 				field.setAccessible(false);
@@ -214,52 +224,58 @@ public class GenericCreator implements SendableEntityCreator {
 			field.set(entity, value);
 			return true;
 		} catch (ReflectiveOperationException e) {
-//			System.out.println(e);
 		}
 		return false;
 	}
 
 	protected Class<?> getClassForName(String className) {
 		try {
-			return Class.forName(className);
+			if (className != null) {
+				return Class.forName(className);
+			}
 		} catch (ClassNotFoundException e) {
 		}
 		return null;
 	}
 
-	String getValidMethod(String methodName ) {
+	String getValidMethod(String methodName) {
 		String name = null;
-		if(badProperties.contains(methodName) == false) {
-			if(methodName.startsWith("get")) {
+		if (methodName != null && badProperties.contains(methodName) == false) {
+			if (methodName.startsWith("get")) {
 				name = methodName.substring(3);
-			} else if(methodName.startsWith("is")) {
+			} else if (methodName.startsWith("is")) {
 				name = methodName.substring(2);
 			}
-			if(name == null || "".equals(name.trim())) {
+			if (name == null || "".equals(name.trim())) {
 				return null;
 			}
 		}
 		return name;
 	}
+
 	public static GenericCreator create(IdMap map, String className) {
 		try {
-			if(className != null && className.length() >0) {
+			if (className != null && className.length() > 0) {
 				return create(map, Class.forName(className));
 			}
 		} catch (ClassNotFoundException e) {
 		}
 		return null;
 	}
+
 	public static GenericCreator create(IdMap map, Class<?> instance) {
-		SendableEntityCreator creator = map.getCreator(instance.getName(), true, null);
-		if(creator != null) {
+		if (map == null || instance == null) {
+			return null;
+		}
+		SendableEntityCreator creator = map.getCreator(instance.getName(), true, true, null);
+		if (creator != null) {
 			return (GenericCreator) creator;
 		}
 
 		GenericCreator genericCreator = new GenericCreator();
-		// Add all Properties
+		/* Add all Properties */
 		try {
-			if(instance.isInterface() == false) {
+			if (instance.isInterface() == false) {
 				genericCreator.withItem(ReflectionLoader.newInstance(instance));
 			}
 		} catch (Exception e1) {
@@ -268,7 +284,7 @@ public class GenericCreator implements SendableEntityCreator {
 
 		map.add(genericCreator);
 
-		// VODOO
+		/* VODOO */
 		Method[] methods = instance.getMethods();
 		for (Method method : methods) {
 			String methodName = method.getName();
@@ -281,16 +297,16 @@ public class GenericCreator implements SendableEntityCreator {
 							ParameterizedType genericSuperclass = (ParameterizedType) types;
 							if (genericSuperclass.getActualTypeArguments().length > 0) {
 								Type type = genericSuperclass.getActualTypeArguments()[0];
-								String typeClass = ""+ReflectionLoader.call(type, "getTypeName");
-								if(typeClass.length() > 0) {
+								String typeClass = "" + ReflectionLoader.call(type, "getTypeName");
+								if (typeClass.length() > 0) {
 									child = Class.forName(typeClass);
 								}
 							}
 						}
 					} catch (ReflectiveOperationException e) {
-						// Try to find SubClass for Set
+						/* Try to find SubClass for Set */
 					}
-					if(child.isInterface() == false && child instanceof Class<?> == false) {
+					if (child.isInterface() == false && child instanceof Class<?> == false) {
 						create(map, child);
 					}
 				}
@@ -299,15 +315,16 @@ public class GenericCreator implements SendableEntityCreator {
 		Field[] fields = instance.getDeclaredFields();
 		for (Field field : fields) {
 			Class<?> child = field.getType();
-			if (EntityUtil.isPrimitiveType(child.getName()) == false && field.getName().equals("dynamicValues") == false) {
+			if (EntityUtil.isPrimitiveType(child.getName()) == false
+					&& field.getName().equals("dynamicValues") == false) {
 				Type types = field.getGenericType();
 				if (types != null && types instanceof ParameterizedType) {
 					ParameterizedType genericSuperclass = (ParameterizedType) types;
 					if (genericSuperclass.getActualTypeArguments().length > 0) {
 						Type type = genericSuperclass.getActualTypeArguments()[0];
 						Object childClass = ReflectionLoader.call(type, "getTypeName");
-						if(childClass != null) {
-							child = ReflectionLoader.getClass(""+childClass);
+						if (childClass != null) {
+							child = ReflectionLoader.getClass("" + childClass);
 						}
 					}
 				}

@@ -3,7 +3,7 @@ package de.uniks.networkparser.bytes;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,12 +30,7 @@ import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;
 
 public class BitEntity extends SimpleList<BitValue> implements ByteItem {
-	public static final byte BIT_STRING = 0x53; // S = String;
-	public static final byte BIT_NUMBER = 0x4E; // N = Number
-	public static final byte BIT_BYTE = 0x42; // B = Byte
-	public static final byte BIT_REFERENCE = 0x52; // R = Reference
-
-	// Can be a Type
+	/* Can be a Type */
 	protected String property;
 	protected byte type = BIT_BYTE;
 	protected int orientation = 1;
@@ -44,7 +39,7 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	public static final String PROPERTY_ORIENTATION = "orientation";
 
 	public BitEntity with(String property, byte type) {
-		if(type != 0) {
+		if (type != 0) {
 			this.property = property;
 			this.type = type;
 		}
@@ -100,7 +95,7 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	 * Generic Getter for Attributes
 	 */
 	public Object get(String attrName) {
-		if(attrName==null) {
+		if (attrName == null) {
 			return null;
 		}
 		int pos = attrName.indexOf(".");
@@ -123,8 +118,7 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	}
 
 	@Override
-	public void writeBytes(ByteBuffer buffer, boolean isDynamic,
-			boolean last, boolean isPrimitive) {
+	public void writeBytes(ByteBuffer buffer, boolean isDynamic, boolean last, boolean isPrimitive) {
 	}
 
 	@Override
@@ -149,7 +143,7 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 
 	@Override
 	public boolean add(Object... values) {
-		if(values==null){
+		if (values == null) {
 			return false;
 		}
 		for (Object value : values) {
@@ -170,7 +164,7 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	}
 
 	public BitEntity withType(byte value) {
-		if(value != 0) {
+		if (value != 0) {
 			this.type = value;
 		}
 		return this;

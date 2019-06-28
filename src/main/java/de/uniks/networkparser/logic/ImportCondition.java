@@ -10,13 +10,14 @@ import de.uniks.networkparser.list.ConditionSet;
 import de.uniks.networkparser.list.SimpleList;
 
 /**
- * @author Stefan
- * FeatureCondition for ModelFilter
+ * For Template for Import a Class
+ * 
+ * @author Stefan FeatureCondition for ModelFilter
  *
- * Format {{#import value}}
+ *         Format {{#import value}}
  */
 public class ImportCondition implements ParserCondition {
-	public static final String TAG="import";
+	public static final String TAG = "import";
 	private ObjectCondition importExpression;
 
 	@Override
@@ -25,25 +26,27 @@ public class ImportCondition implements ParserCondition {
 	}
 
 	public void parseImport(String className, SimpleList<String> imports) {
-	   int genericType = className.indexOf("<");
+		if(className == null) {
+			return;
+		}
+		int genericType = className.indexOf("<");
 		if (genericType > 0) {
-	    	  // Try to rekursiv add
-			parseImport(className.substring(genericType+1, className.lastIndexOf(">")), imports);
+			/* Try to rekursiv add */
+			parseImport(className.substring(genericType + 1, className.lastIndexOf(">")), imports);
 			className = className.substring(0, genericType);
 		}
 		String[] strings = className.split(",");
-		for(String importName : strings) {
+		for (String importName : strings) {
 			imports.with(importName);
 		}
 	}
 
 	@Override
 	public CharSequence getValue(LocalisationInterface variables) {
-		if(variables instanceof SendableEntityCreator) {
+		if (variables instanceof SendableEntityCreator) {
 			SendableEntityCreator creator = (SendableEntityCreator) variables;
-			//&& importExpression.update(variables)
-			SimpleList<String> imports=new SimpleList<String>();
-			if(importExpression instanceof ChainCondition) {
+			SimpleList<String> imports = new SimpleList<String>();
+			if (importExpression instanceof ChainCondition) {
 				ChainCondition cc = (ChainCondition) importExpression;
 				ConditionSet templates = cc.getList();
 				CharacterBuffer buffer = templates.getAllValue(variables);
@@ -51,13 +54,13 @@ public class ImportCondition implements ParserCondition {
 			} else if (importExpression instanceof VariableCondition) {
 				VariableCondition vc = (VariableCondition) importExpression;
 				Object buffer = vc.getValue(variables);
-				if(buffer != null) {
+				if (buffer != null) {
 					parseImport(buffer.toString(), imports);
 				}
 			} else if (importExpression != null) {
 				parseImport(importExpression.toString(), imports);
 			}
-			if(imports.size() > 0) {
+			if (imports.size() > 0) {
 				creator.setValue(variables, "headers", imports, SendableEntityCreator.NEW);
 			}
 		}
@@ -66,7 +69,7 @@ public class ImportCondition implements ParserCondition {
 
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof LocalisationInterface) {
+		if (value instanceof LocalisationInterface) {
 			getValue((LocalisationInterface) value);
 		}
 		return importExpression != null;
@@ -74,29 +77,29 @@ public class ImportCondition implements ParserCondition {
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+		if(buffer == null) {
+			return;
+		}
 		buffer.skip();
 		ObjectCondition result = null;
 		ObjectCondition expression;
-		while(buffer.getCurrentChar() != SPLITEND) {
+		while (buffer.getCurrentChar() != SPLITEND) {
 			int position = buffer.position();
-			expression = parser.parsing(buffer, customTemplate, true, true, "}");
-//			if(expression instanceof VariableCondition) {
-//				((VariableCondition)expression).withExpression(true);
-//			}
-			if(result == null) {
+			expression = parser.parsing(buffer, customTemplate, false, true, "}");
+			if (result == null) {
 				result = expression;
-			}else if(result instanceof ChainCondition) {
-				((ChainCondition)result).with(expression);
-				if(position == buffer.position()) {
+			} else if (result instanceof ChainCondition) {
+				((ChainCondition) result).with(expression);
+				if (position == buffer.position()) {
 					buffer.skip();
 				}
 			} else {
 				ChainCondition chainCondition = new ChainCondition();
 				chainCondition.with(result);
-				if(expression instanceof ChainCondition) {
+				if (expression instanceof ChainCondition) {
 					ChainCondition cc = (ChainCondition) expression;
 					chainCondition.with(cc.getList());
-				}else {
+				} else {
 					chainCondition.with(expression);
 				}
 				result = chainCondition;
@@ -127,8 +130,8 @@ public class ImportCondition implements ParserCondition {
 
 	@Override
 	public String toString() {
-		if(this.importExpression != null) {
-			return "{{#import "+this.importExpression.toString() +"}}";
+		if (this.importExpression != null) {
+			return "{{#import " + this.importExpression.toString() + "}}";
 		}
 		return "{{#import}}";
 	}

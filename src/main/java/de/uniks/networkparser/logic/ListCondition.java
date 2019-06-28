@@ -3,7 +3,7 @@ package de.uniks.networkparser.logic;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -46,12 +47,13 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		this.staticEvent = event;
 		return this;
 	}
+
 	@Override
 	public boolean update(Object evt) {
-		if(this.staticEvent != null) {
+		if (this.staticEvent != null) {
 			evt = this.staticEvent;
 		}
-		if(evt instanceof PropertyChangeEvent) {
+		if (evt instanceof PropertyChangeEvent) {
 			return updatePCE((PropertyChangeEvent) evt);
 		}
 		return updateSet(evt);
@@ -59,10 +61,10 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 
 	public boolean updateSet(Object evt) {
 		Set<ObjectCondition> list = getList();
-		boolean result=true;
-		for(ObjectCondition item : list) {
-			if(item.update(evt) == false) {
-				if(chain == false) {
+		boolean result = true;
+		for (ObjectCondition item : list) {
+			if (item.update(evt) == false) {
+				if (chain == false) {
 					return false;
 				}
 				result = false;
@@ -72,57 +74,57 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 	}
 
 	public boolean updatePCE(PropertyChangeEvent evt) {
-		if(list instanceof PropertyChangeListener) {
-			((PropertyChangeListener)list).propertyChange(evt);
+		if (list instanceof PropertyChangeListener) {
+			((PropertyChangeListener) list).propertyChange(evt);
 			return true;
-		} else if(list instanceof ObjectCondition) {
-			return ((ObjectCondition)list).update(evt);
+		} else if (list instanceof ObjectCondition) {
+			return ((ObjectCondition) list).update(evt);
 		}
 		SimpleSet<?> collection = (SimpleSet<?>) this.list;
 
-		for(Iterator<?> i = collection.iterator();i.hasNext();) {
+		for (Iterator<?> i = collection.iterator(); i.hasNext();) {
 			Object listener = i.next();
-			if(listener instanceof ObjectCondition) {
-				if(((ObjectCondition)listener).update(evt) == false) {
-					if(chain) {
+			if (listener instanceof ObjectCondition) {
+				if (((ObjectCondition) listener).update(evt) == false) {
+					if (chain) {
 						return false;
 					}
 				}
-			} else if(listener instanceof PropertyChangeListener) {
-				((PropertyChangeListener)listener).propertyChange(evt);
+			} else if (listener instanceof PropertyChangeListener) {
+				((PropertyChangeListener) listener).propertyChange(evt);
 			}
 		}
 		return true;
 	}
 
 	public ListCondition with(ObjectCondition... values) {
-		add((Object[])values);
+		add((Object[]) values);
 		return this;
 	}
 
 	public ListCondition with(PropertyChangeListener... values) {
-		add((Object[])values);
+		add((Object[]) values);
 		return this;
 	}
 
 	public boolean add(Object... values) {
-		if(values == null || values.length < 1) {
+		if (values == null || values.length < 1) {
 			return false;
 		}
-		if(values.length == 1 && this.list == null) {
-			// Dont do Chain in Chain
-			if(values[0] instanceof ChainCondition == false) {
-				if(values[0] instanceof PropertyChangeListener || values[0] instanceof ObjectCondition) {
+		if (values.length == 1 && this.list == null) {
+			/* Dont do Chain in Chain */
+			if (values[0] instanceof ChainCondition == false) {
+				if (values[0] instanceof PropertyChangeListener || values[0] instanceof ObjectCondition) {
 					this.list = values[0];
 				}
 				return true;
 			}
 		}
 		SimpleSet<?> list;
-		if(this.list instanceof SimpleSet<?>) {
+		if (this.list instanceof SimpleSet<?>) {
 			list = (SimpleSet<?>) this.list;
 		} else {
-			if(values[0] instanceof PropertyChangeListener) {
+			if (values[0] instanceof PropertyChangeListener) {
 				list = new SimpleSet<PropertyChangeListener>();
 			} else {
 				list = new ConditionSet();
@@ -130,13 +132,13 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 			list.with(this.list);
 			this.list = list;
 		}
-		if(list instanceof ConditionSet) {
-			for(Object condition : values) {
-				if(condition instanceof ChainCondition) {
+		if (list instanceof ConditionSet) {
+			for (Object condition : values) {
+				if (condition instanceof ChainCondition) {
 					ChainCondition cc = (ChainCondition) condition;
 					list.withList(cc.getList());
-				} else if(condition instanceof ObjectCondition) {
-					if(list.add((ObjectCondition)condition) == false) {
+				} else if (condition instanceof ObjectCondition) {
+					if (list.add((ObjectCondition) condition) == false) {
 						return false;
 					}
 				}
@@ -147,10 +149,10 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 	}
 
 	public ConditionSet getList() {
-		if(this.list instanceof ConditionSet) {
-			return (ConditionSet)this.list;
+		if (this.list instanceof ConditionSet) {
+			return (ConditionSet) this.list;
 		}
-		ConditionSet  result = new ConditionSet();
+		ConditionSet result = new ConditionSet();
 		result.with(this.list);
 		return result;
 	}
@@ -160,11 +162,11 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 	}
 
 	public ObjectCondition first() {
-		if(this.list instanceof ObjectCondition) {
+		if (this.list instanceof ObjectCondition) {
 			return (ObjectCondition) this.list;
-		} else if(this.list instanceof SimpleSet<?>) {
+		} else if (this.list instanceof SimpleSet<?>) {
 			Object first = ((SimpleSet<?>) this.list).first();
-			if(first instanceof ObjectCondition) {
+			if (first instanceof ObjectCondition) {
 				return (ObjectCondition) first;
 			}
 		}
@@ -172,10 +174,10 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 	}
 
 	public int size() {
-		if(this.list==null) {
+		if (this.list == null) {
 			return 0;
-		}else if(this.list instanceof Collection<?>) {
-			return ((Collection<?>)this.list).size();
+		} else if (this.list instanceof Collection<?>) {
+			return ((Collection<?>) this.list).size();
 		}
 		return 1;
 	}
@@ -183,9 +185,9 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 	@Override
 	public String toString() {
 		Set<ObjectCondition> templates = getList();
-		if(templates.size()>0) {
-			CharacterBuffer buffer=new CharacterBuffer();
-			for(ObjectCondition item : templates) {
+		if (templates.size() > 0) {
+			CharacterBuffer buffer = new CharacterBuffer();
+			for (ObjectCondition item : templates) {
 				buffer.with(item.toString());
 			}
 			return buffer.toString();
@@ -195,12 +197,12 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {CHILD};
+		return new String[] { CHILD };
 	}
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(entity instanceof ChainCondition == false) {
+		if (entity instanceof ChainCondition == false) {
 			return false;
 		}
 		ChainCondition cc = (ChainCondition) entity;
@@ -212,7 +214,7 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if(entity instanceof ChainCondition == false) {
+		if (entity instanceof ChainCondition == false) {
 			return false;
 		}
 		ChainCondition cc = (ChainCondition) entity;

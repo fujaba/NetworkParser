@@ -3,7 +3,7 @@ package de.uniks.networkparser.list;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ public class SortedList<V> extends SimpleList<V> {
 	protected Comparator<V> cpr;
 
 	public SortedList(boolean comparator) {
-		if(comparator) {
+		if (comparator) {
 			comparator();
 		}
 	}
@@ -41,8 +41,8 @@ public class SortedList<V> extends SimpleList<V> {
 	@Override
 	public Comparator<Object> comparator() {
 		if (this.cpr == null) {
-			withComparator(new EntityComparator<V>().withColumn(
-					EntityComparator.VALUES).withDirection(SortingDirection.ASC));
+			withComparator(
+					new EntityComparator<V>().withColumn(EntityComparator.VALUES).withDirection(SortingDirection.ASC));
 		}
 		return (Comparator<Object>) cpr;
 	}
@@ -58,8 +58,7 @@ public class SortedList<V> extends SimpleList<V> {
 	}
 
 	public SortedList<V> withComparator(String column) {
-		this.cpr = new EntityComparator<V>().withColumn(column).withDirection(
-				SortingDirection.ASC);
+		this.cpr = new EntityComparator<V>().withColumn(column).withDirection(SortingDirection.ASC);
 		return this;
 	}
 
@@ -67,25 +66,23 @@ public class SortedList<V> extends SimpleList<V> {
 	 * Returns a view of the portion of this map whose keys are greater than (or
 	 * equal to, if {@code inclusive} is true) {@code fromKey}.
 	 *
-	 * @param fromElement
-	 *			low endpoint of the keys in the returned map
-	 * @param inclusive
-	 *			{@code true} if the low endpoint is to be included in the
-	 *			returned view
-	 * @param <ST> the ContainerClass
+	 * @param fromElement low endpoint of the keys in the returned map
+	 * @param inclusive   {@code true} if the low endpoint is to be included in the
+	 *                    returned view
+	 * @param <ST>        the ContainerClass
 	 *
 	 *
 	 * @return a view of the portion of this map whose keys are greater than (or
-	 *		 equal to, if {@code inclusive} is true) {@code fromKey}
+	 *         equal to, if {@code inclusive} is true) {@code fromKey}
 	 *
 	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleList<V>> ST tailSet(V fromElement, boolean inclusive) {
-		if(!isComparator()) {
+		if (!isComparator()) {
 			return null;
 		}
 		BaseItem newList = getNewList(false);
-		// PRE WHILE
+		/* PRE WHILE */
 		int pos = 0;
 		for (; pos < size(); pos++) {
 			int compare = comparator().compare(get(pos), fromElement);
@@ -99,8 +96,7 @@ public class SortedList<V> extends SimpleList<V> {
 				break;
 			}
 		}
-
-		// MUST COPY
+		/* MUST COPY */
 		while (pos < size()) {
 			copyEntity(newList, pos++);
 		}
@@ -108,33 +104,27 @@ public class SortedList<V> extends SimpleList<V> {
 	}
 
 	/**
-	 * Returns a view of the portion of this map whose keys are less than (or
-	 * equal to, if {@code inclusive} is true) {@code toKey}. The returned map
-	 * is backed by this map, so changes in the returned map are reflected in
-	 * this map, and vice-versa. The returned map supports all optional map
-	 * operations that this map supports.
+	 * Returns a view of the portion of this map whose keys are less than (or equal
+	 * to, if {@code inclusive} is true) {@code toKey}. The returned map is backed
+	 * by this map, so changes in the returned map are reflected in this map, and
+	 * vice-versa. The returned map supports all optional map operations that this
+	 * map supports.
 	 *
-	 * <p>
-	 * The returned map will throw an {@code IllegalArgumentException} on an
-	 * attempt to insert a key outside its range.
-	 *
-	 * @param toElement
-	 *			high endpoint of the keys in the returned map
-	 * @param inclusive
-	 *			{@code true} if the high endpoint is to be included in the
-	 *			returned view
-	 * @param <ST> the ContainerClass
+	 * @param toElement high endpoint of the keys in the returned map
+	 * @param inclusive {@code true} if the high endpoint is to be included in the
+	 *                  returned view
+	 * @param <ST>      the ContainerClass
 	 *
 	 * @return result a list with less item then the key
 	 *
 	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleList<V>> ST headSet(V toElement, boolean inclusive) {
-		if(!isComparator()) {
+		if (!isComparator()) {
 			return null;
 		}
 		BaseItem newList = getNewList(false);
-		// MUST COPY
+		/* MUST COPY */
 		for (int pos = 0; pos < size(); pos++) {
 			int compare = comparator().compare(get(pos), toElement);
 			if (compare == 0) {
@@ -151,7 +141,7 @@ public class SortedList<V> extends SimpleList<V> {
 	}
 
 	public V higher(V toElement) {
-		if(!isComparator()) {
+		if (!isComparator()) {
 			return null;
 		}
 		for (int pos = 0; pos < size(); pos++) {
@@ -181,11 +171,11 @@ public class SortedList<V> extends SimpleList<V> {
 	 * @return BaseItem-Child or Null
 	 */
 	public BaseItem getChild(int index) {
-		if(index < 0 || index > this.size()) {
+		if (index < 0 || index > this.size()) {
 			return null;
 		}
 		Object item = this.get(index);
-		if(item instanceof BaseItem) {
+		if (item instanceof BaseItem) {
 			return (BaseItem) item;
 		}
 		return null;

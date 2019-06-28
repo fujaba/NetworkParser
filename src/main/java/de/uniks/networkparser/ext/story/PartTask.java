@@ -1,6 +1,6 @@
 package de.uniks.networkparser.ext.story;
 
-import de.uniks.networkparser.ext.petaf.SendableItem;
+import de.uniks.networkparser.SendableItem;
 
 public class PartTask extends SendableItem {
 	public static final String PROPERTY_TYPE = "type";

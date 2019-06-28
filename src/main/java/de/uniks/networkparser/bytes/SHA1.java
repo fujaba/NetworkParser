@@ -3,7 +3,7 @@ package de.uniks.networkparser.bytes;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -59,7 +59,10 @@ public class SHA1 extends Checksum {
 	}
 
 	@Override
-	public void update(byte[] bytes, int offset, int length) {
+	public boolean update(byte[] bytes, int offset, int length) {
+		if (bytes == null || bytes.length < offset) {
+			return false;
+		}
 		if (length >= 4) {
 			int idx = currentPos >> 2;
 
@@ -149,6 +152,7 @@ public class SHA1 extends Checksum {
 			}
 			length--;
 		}
+		return true;
 	}
 
 	@Override
@@ -167,6 +171,9 @@ public class SHA1 extends Checksum {
 	}
 
 	private void putInt(byte[] b, int pos, int val) {
+		if (b == null || pos > b.length - 3) {
+			return;
+		}
 		b[pos] = (byte) (val >> 24);
 		b[pos + 1] = (byte) (val >> 16);
 		b[pos + 2] = (byte) (val >> 8);
@@ -193,10 +200,10 @@ public class SHA1 extends Checksum {
 			perform();
 		}
 		/*
-		 * Now currentPos is a multiple of 4 and we can do the remaining padding
-		 * much more efficiently, furthermore we are sure that currentPos <= 56.
+		 * Now currentPos is a multiple of 4 and we can do the remaining padding much
+		 * more efficiently, furthermore we are sure that currentPos <= 56.
 		 */
-		for (int i = currentPos >> 2; i < 14; i++){
+		for (int i = currentPos >> 2; i < 14; i++) {
 			w[i] = 0;
 		}
 		w[14] = (int) (currentLen >> 32);
@@ -214,7 +221,7 @@ public class SHA1 extends Checksum {
 		return out;
 	}
 
-	// Constants for each round
+	/* Constants for each round */
 	private final static int round1_kt = 0x5a827999;
 	private final static int round2_kt = 0x6ed9eba1;
 	private final static int round3_kt = 0x8f1bbcdc;
@@ -225,8 +232,7 @@ public class SHA1 extends Checksum {
 			int x = w[t - 3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16];
 			w[t] = ((x << 1) | (x >>> 31));
 		}
-		// The first 16 ints have the byte stream, compute the rest of
-		// the buffer
+		/* The first 16 ints have the byte stream, compute the rest of the buffer */
 		for (int t = 16; t <= 79; t++) {
 			int temp = w[t - 3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16];
 			w[t] = (temp << 1) | (temp >>> 31);
@@ -238,7 +244,7 @@ public class SHA1 extends Checksum {
 		int d = H3;
 		int e = H4;
 
-		// Round 1
+		/* Round 1 */
 		for (int i = 0; i < 20; i++) {
 			int temp = ((a << 5) | (a >>> (32 - 5))) + ((b & c) | ((~b) & d)) + e + w[i] + round1_kt;
 			e = d;
@@ -248,7 +254,7 @@ public class SHA1 extends Checksum {
 			a = temp;
 		}
 
-		// Round 2
+		/* Round 2 */
 		for (int i = 20; i < 40; i++) {
 			int temp = ((a << 5) | (a >>> (32 - 5))) + (b ^ c ^ d) + e + w[i] + round2_kt;
 			e = d;
@@ -258,7 +264,7 @@ public class SHA1 extends Checksum {
 			a = temp;
 		}
 
-		// Round 3
+		/* Round 3 */
 		for (int i = 40; i < 60; i++) {
 			int temp = ((a << 5) | (a >>> (32 - 5))) + ((b & c) | (b & d) | (c & d)) + e + w[i] + round3_kt;
 			e = d;
@@ -268,7 +274,7 @@ public class SHA1 extends Checksum {
 			a = temp;
 		}
 
-		// Round 4
+		/* Round 4 */
 		for (int i = 60; i < 80; i++) {
 			int temp = ((a << 5) | (a >>> (32 - 5))) + (b ^ c ^ d) + e + w[i] + round4_kt;
 			e = d;
@@ -291,6 +297,9 @@ public class SHA1 extends Checksum {
 	}
 
 	public static CharacterBuffer convertToHex(byte[] data) {
+		if (data == null) {
+			return null;
+		}
 		CharacterBuffer buf = new CharacterBuffer();
 		for (int i = 0; i < data.length; i++) {
 			int halfbyte = (data[i] >>> 4) & 0x0F;

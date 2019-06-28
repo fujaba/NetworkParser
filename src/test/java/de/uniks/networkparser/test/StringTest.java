@@ -2,11 +2,12 @@ package de.uniks.networkparser.test;
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.ludo.model.Ludo;
+import de.uniks.ludo.model.Player;
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.ByteBuffer;
@@ -14,7 +15,9 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.CharacterReader;
 import de.uniks.networkparser.converter.ByteConverterHex;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.logic.Or;
+import de.uniks.networkparser.logic.StringCondition;
 
 public class StringTest {
 	@Test
@@ -33,6 +36,14 @@ public class StringTest {
 		Assert.assertEquals(ref, tokenerString);
 	}
 
+	@Test
+	public void testObjectType() {
+		System.out.println(EntityUtil.getObjectType("byte"));
+		System.out.println(EntityUtil.getObjectType("int"));
+		System.out.println(EntityUtil.getObjectType("Integer"));
+		System.out.println(EntityUtil.getObjectType("Room"));
+	}
+	
 	@Test
 	public void testUmlaute() {
 		String uml = "\u00fcbung";
@@ -101,9 +112,8 @@ public class StringTest {
 	public void testEscapeSimpleHTML(){
 		char[] txt = new char[]{'H','a', 'l', 'l', 228};
 		String example = new String(txt);
-		EntityUtil util = new EntityUtil();
-		String encode = util.encode(example);
-		Assert.assertEquals(example, util.decode(encode));
+		String encode = EntityUtil.encode(example);
+		Assert.assertEquals(example, EntityUtil.decode(encode));
 	}
 
 	@Test
@@ -174,20 +184,8 @@ public class StringTest {
 	@Test
 	public void testSearchText(){
 		CharacterBuffer stringTokener = new CharacterBuffer().with("-Harmonie -Illusion -\"E1 E2\"");
-		SimpleList<String> stringList = stringTokener.getStringList();
-		ArrayList<String> searchList= new ArrayList<String>();
-		for (int i=0;i<stringList.size();i++){
-			if(stringList.get(i).endsWith("-") && i<stringList.size()-1){
-				String temp=stringList.get(i);
-				temp=temp.substring(0, temp.length()-1);
-				searchList.addAll(stringTokener.splitStrings(temp.trim(), true));
-				searchList.add("-" +stringList.get(++i).trim());
-			} else {
-				searchList.addAll(stringTokener.splitStrings(stringList.get(i), true));
-			}
-		}
-		String[] lastSearchCriteriaItems = searchList.toArray(new String[searchList.size()]);
-		Assert.assertEquals(3, lastSearchCriteriaItems.length);
+		Or condition = (Or) StringCondition.createSearchLogic(stringTokener);
+		Assert.assertEquals(3, condition.size());
 	}
 
 	@Test
@@ -297,4 +295,38 @@ public class StringTest {
 		Assert.assertFalse(EntityUtil.isNumericTypeContainer("int", "byte"));
 		Assert.assertFalse(EntityUtil.isNumericTypeContainer("int", "Byte"));
 	}
+	@Test
+	public void testStringCompare() {
+		
+		
+		String text = "01 Maier Rothunde Montag 09:00";
+		String search = "Rothunde -Dienstag";
+
+		ObjectCondition condition = StringCondition.createSearchLogic(CharacterBuffer.create(search));
+		System.out.println(condition);
+				
+				
+		Ludo ludo = new Ludo();
+		Player alice = ludo.createPlayers().withName("Alice");
+		Player bob = ludo.createPlayers().withName("Bob");
+		alice.createMeeple();
+		
+		
+//		SimpleList<String> stringList = stringTokener.getStringList();
+//		ArrayList<String> searchList = new ArrayList<String>();
+//		for (int i = 0; i < stringList.size(); i++) {
+//			if (stringList.get(i).endsWith("-") && i < stringList.size() - 1) {
+//				String temp = stringList.get(i);
+//				temp = temp.substring(0, temp.length() - 1);
+//				searchList.addAll(stringTokener.splitStrings(temp.trim()));
+//				searchList.add("-" + stringList.get(++i).trim());
+//			} else {
+//				searchList.addAll(stringTokener.splitStrings(stringList.get(i)));
+//			}
+//		}
+//		lastSearchCriteriaItems = searchList.toArray(new String[searchList
+//				.size()]);
+
+	}
+
 }

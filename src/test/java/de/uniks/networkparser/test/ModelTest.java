@@ -5,22 +5,34 @@ import java.util.Map.Entry;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
 
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.SimpleGrammar;
+import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.converter.CodeCityConverter;
+import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.ClassModelBuilder;
+import de.uniks.networkparser.ext.FileClassModel;
 import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.ext.generic.SimpleParser;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.ext.io.StringPrintStream;
+import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.json.AtomarCondition;
+import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.WhiteListCondition;
+import de.uniks.networkparser.parser.DebugCondition;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.Barbarian;
@@ -31,6 +43,7 @@ import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.Student;
 import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.util.AppleCreatorNoIndex;
+import de.uniks.networkparser.test.model.util.AppleSet;
 import de.uniks.networkparser.test.model.util.AppleTreeCreatorNoIndex;
 import de.uniks.networkparser.test.model.util.BarbarianCreator;
 import de.uniks.networkparser.test.model.util.ItemCreator;
@@ -95,7 +108,7 @@ public class ModelTest implements ObjectCondition {
 		IdMap subMap= new IdMap();
 		Assert.assertEquals(7, countMap(subMap));
 		subMap.with(map);
-		Assert.assertEquals(8, countMap(subMap));
+		Assert.assertEquals(9, countMap(subMap));
 
 	}
 
@@ -139,11 +152,31 @@ public class ModelTest implements ObjectCondition {
 		IdMap map=new IdMap();
 		map.with(new UniversityCreator());
 		map.with(new StudentCreator());
-		map.withListener(new AtomarCondition(this));
+		map.withListener(UpdateCondition.createAtomarCondition(this));
 		events.clear();
 		map.toJsonObject(uni);
 		uni.withStudents(new Student().withFirstName("Stefan"));
 		Assert.assertEquals(5, events.size());
+	}
+	
+	@Test
+	public void testTransaction() {
+		University uni = new University();
+		IdMap map=new IdMap();
+		map.with(new UniversityCreator(), new StudentCreator());
+		UpdateCondition filter = UpdateCondition.createTransaction(map);
+		map.withListener(filter);
+		filter.withContidion(new StringPrintStream());
+		filter.withStart(Student.class);
+		filter.withEnd(Student.PROPERTY_LASTNAME);
+		
+		map.toJsonObject(uni);
+
+		Student student = new Student();
+		uni.addToStudents(student);
+		student.withFirstName("Albert");
+		student.withLastName("Zuendorf");
+
 	}
 
 	@Test
@@ -175,6 +208,8 @@ public class ModelTest implements ObjectCondition {
 		IdMap map=new IdMap();
 		map.with(new UniversityCreator());
 		map.with(new StudentCreator());
+		
+		
 	}
 
 	@Test
@@ -256,7 +291,155 @@ public class ModelTest implements ObjectCondition {
 
 		University uni2 = SimpleParser.decodeModel(buffer, map);
 		Assert.assertNotNull(uni2);
-
 	}
+	
+	@Test
+	public void testSet() {
+		AppleTree tree = new AppleTree();
+		Apple empty = new Apple();
+		Apple apple = new Apple();
+		apple.withX(23).withY(42);
+		String errorMsg="";
+		try {
+			tree.getHas().add(apple);
+			errorMsg+="ADD TO EMPTY SET";
+		}catch (Exception e) {
+		}
+		tree.withHas(empty);
+		
+		try {
+			tree.getHas().add(apple);
+			errorMsg+="ADD TO SET";
+		}catch (Exception e) {
+		}
+		Assert.assertTrue(errorMsg, errorMsg.isEmpty());
+		
+		AppleSet appleSet = new AppleSet();
+		appleSet.add(empty);
+		appleSet.add(apple);
+		Assert.assertEquals(2, appleSet.size());
+	}
+	
+	@Test
+	public void testTest() {
+		FileClassModel model = new FileClassModel("de.uniks.networkparser");
+		model.readFiles("src/main/java/");
+//		model.createParserEntity(new File("src/main/java/de/uniks/networkparser/ext/io/TarArchiveEntry.java"), new DebugCondition());
 
+		model.analyseBounds(null);
+		if(model.getErros().size()>0) {
+//			System.out.println("ERROR: "+model.getErros().size());
+		}
+	}
+	
+	@Test
+	public void testMSE() {
+		FileClassModel model = new FileClassModel("de.uniks.networkparser");
+		model.readFiles("src/main/java/");
+		
+		model.analyseSymTabEntry(null);
+		model.analyseLoC(model);
+		model.analyseBounds(null);
+//		model.createParserEntity(new File("src/main/java/de/uniks/networkparser/ext/io/TarArchiveEntry.java"), new DebugCondition());
+
+		CodeCityConverter converter = new CodeCityConverter();
+		String encode = converter.encode(model);
+		FileBuffer.writeFile("build/NetworkParser.mse", encode);
+	}
+	
+	@Test
+	public void testMSEIdMap() {
+		FileClassModel model = new FileClassModel("de.uniks.networkparser");
+		model.readFile("src/main/java/de/uniks/networkparser/IdMap.java", new DebugCondition());
+		
+		model.analyseSymTabEntry(null);
+		model.analyseLoC(model);
+		model.analyseBounds(null);
+//		model.createParserEntity(new File("src/main/java/de/uniks/networkparser/ext/io/TarArchiveEntry.java"), new DebugCondition());
+
+		CodeCityConverter converter = new CodeCityConverter();
+		String encode = converter.encode(model);
+		FileBuffer.writeFile("build/NetworkParser-IdMap.mse", encode);
+	}
+	
+	@Test
+	public void testProgMeth() {
+//		ClassModel model = new ClassModel ("de.uniks.model");
+//		Clazz person = model.createClazz("Person");
+//		person.withAttribute("name", DataType.STRING)
+//				.createAttribute("matrikelno", DataType.INT);
+//		Clazz uni = model.createClazz("University").withAttribute("name", DataType.STRING);
+//		uni.createBidirectional(person, "students", Association.MANY, "studs", Association.ONE);
+////		model.generate("gen");
+//		
+//		ClassModelBuilder builder = new ClassModelBuilder("de.uniks.model");
+//		Clazz student = builder.buildClass("Student");
+//		builder.createAttribute("name", DataType.STRING)
+//				.createAttribute("matrikelno", DataType.INT);
+//		builder.createClass("University").createAttribute("name", DataType.STRING);
+//		builder.createAssociation("student", Association.MANY, student, "studs", Association.ONE);
+////		builder.build();
+
+		ClassModelBuilder builder = new ClassModelBuilder("de.uniks.model");
+		Clazz student = builder.buildClass("Student");
+		builder.createAttribute("name", DataType.STRING)
+			.createAttribute("matrikelno", DataType.INT);
+		builder.createClass("University").createAttribute("name", DataType.STRING);
+		builder.createAssociation("student",Association.MANY,student,"studs", Association.ONE);
+		ClassModel model = builder.getModel();
+		model.dumpHTML("test.html", true);
+//		builder.build("gen");
+	}
+	@Test
+	public void testgen() {
+		ClassModel model = new ClassModel("me.uniks");
+		Clazz uni = model.createClazz("Uni");
+		Clazz student = model.createClazz("Student");
+		uni.withAssoc(student, "students", 5, "studs", 1);
+		
+//		model.generate("src/test/java");
+	}
+	
+	@Test
+	public void testSimpleGen() {
+		ClassModel model = new ClassModel("me.uniks");
+		Clazz uni = model.createClazz("Uni");
+		Clazz student = model.createClazz("Student");
+		uni.withAssoc(student, 42);
+//		model.generate("src/test/java");
+	}
+	
+	@Test
+	public void testJsonIdMap(){
+		IdMap map= new IdMap();
+		map.withGrammar(new SimpleGrammar().withFlatFormat(true));
+		map.with(new PersonCreator());
+		map.withListener(new SimpleEventCondition() {
+			@Override
+			public boolean update(SimpleEvent event) {
+				Assert.assertNotNull(event.getEntity());
+				return false;
+			}
+		});
+		Person alice = new Person();
+		alice.withName("Alice");
+		alice.setBalance(42);
+	}
+	
+	@Test
+	public void testChaining() {
+		org.sdmlib.test.examples.studyrightWithAssignments.model.University uni = new org.sdmlib.test.examples.studyrightWithAssignments.model.University();
+		Room math = new Room();
+		org.sdmlib.test.examples.studyrightWithAssignments.model.Student alice = new org.sdmlib.test.examples.studyrightWithAssignments.model.Student();
+		alice.setName("Alice");
+		
+		org.sdmlib.test.examples.studyrightWithAssignments.model.Student bob = new org.sdmlib.test.examples.studyrightWithAssignments.model.Student();
+		bob.setName("Bob");
+		
+		math.setStudents(alice, bob);
+		uni.setRooms(math);
+		
+		uni.getRooms().stream().map(p -> p.getStudents())
+				.forEach(s->s.forEach(st->st.setCredits(42)));
+	}
 }

@@ -3,7 +3,7 @@ package de.uniks.networkparser;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ import de.uniks.networkparser.interfaces.Converter;
 
 public class StringEntity implements BaseItem {
 	private String value;
+
 	@Override
 	public String toString() {
 		return toString(new EntityStringConverter());
@@ -39,12 +40,16 @@ public class StringEntity implements BaseItem {
 		return this;
 	}
 
+	public String getValue() {
+		return value;
+	}
+
 	@Override
 	public String toString(Converter converter) {
-		if(converter == null) {
+		if (converter == null) {
 			return null;
 		}
-		if(converter instanceof EntityStringConverter) {
+		if (converter instanceof EntityStringConverter) {
 			return value;
 		}
 		return converter.encode(this);
@@ -52,10 +57,10 @@ public class StringEntity implements BaseItem {
 
 	@Override
 	public boolean add(Object... values) {
-		if(values == null) {
+		if (values == null) {
 			return false;
 		}
-		if(values.length>0) {
+		if (values.length > 0) {
 			this.value = (String) values[0];
 			return true;
 		}
@@ -69,7 +74,7 @@ public class StringEntity implements BaseItem {
 
 	@Override
 	public int size() {
-		if(this.value != null) {
+		if (this.value != null) {
 			return 1;
 		}
 		return 0;

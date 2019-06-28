@@ -1,5 +1,7 @@
 package de.uniks.networkparser.test;
 
+import org.junit.Assert;
+
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
@@ -12,7 +14,7 @@ public class NodeProxyTest {
 //	@Test
 	public void UniversityOfMadness() {
 		HTMLEntity answer = NodeProxyTCP.getHTTP("avocado.uniks.de", 33000, "user/info");
-		System.out.println(answer);
+		Assert.assertNotNull(answer);
 	}
 
 //	@Test
@@ -20,8 +22,6 @@ public class NodeProxyTest {
 		HTMLEntity answer = NodeProxyTCP.postHTTP("avocado.uniks.de", 33000, "user/create", NodeProxyTCP.BODY_JSON, "Username", "Eraser");
 
 		HTMLEntity login = NodeProxyTCP.postHTTP("avocado.uniks.de", 33000, "user/login", NodeProxyTCP.BODY_JSON, "Username", "Eraser", "Password", "crazy");
-		System.out.println(login.getStatusCode()+": "+login.getStatusMessage());
-		System.out.println("BODY: "+login.getBody().getValue());
 
 //		answer = NodeProxyTCP.postHTTP(login, "api/games/create", NodeProxyTCP.HEADER_PLAIN, "name", "Springfield");
 //		System.out.println(answer.getStatusCode()+": "+answer.getStatusMessage());
@@ -29,8 +29,8 @@ public class NodeProxyTest {
 
 		// Call Chatinfo
 		answer = NodeProxyTCP.getHTTP(login, "/api/chat/info");
-		System.out.println(answer.getStatusCode()+": "+answer.getStatusMessage());
-		System.out.println("BODY: "+answer.getBody().getValue());
+//		System.out.println(answer.getStatusCode()+": "+answer.getStatusMessage());
+//		System.out.println("BODY: "+answer.getBody().getValue());
 
 		JsonObject value = JsonObject.create(answer.getBody().getValue());
 		String user = value.getString("rabbit_user");
@@ -44,13 +44,12 @@ public class NodeProxyTest {
 			@Override
 			public boolean update(Object value) {
 				SimpleEvent event=(SimpleEvent) value;
-				System.out.println(event.getNewValue());
-				
+				Assert.assertNotNull(event);
 				return true;
 			}
 		});
 		answer = NodeProxyTCP.postHTTP(login, "/api/chat/channel/General", NodeProxyTCP.BODY_PLAIN, "Hallo Welt");
-		System.out.println(answer.getStatusCode()+": "+answer.getStatusMessage() + "BODY: "+answer.getBody().getValue());
+//		System.out.println(answer.getStatusCode()+": "+answer.getStatusMessage() + "BODY: "+answer.getBody().getValue());
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {

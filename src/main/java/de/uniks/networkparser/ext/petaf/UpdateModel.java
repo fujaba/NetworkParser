@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,10 +25,11 @@ THE SOFTWARE.
 */
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class UpdateModel implements Callable<Object>, Runnable,Supplier<Object> {
+public class UpdateModel implements Callable<Object>, Runnable, Supplier<Object> {
 	private Object newValue;
 	private String property;
 	private Object entity;
@@ -53,28 +54,28 @@ public class UpdateModel implements Callable<Object>, Runnable,Supplier<Object> 
 
 	@Override
 	public Object call() {
-		try{
+		try {
 			IdMap map = this.owner.getMap();
-			if(map == null || this.entity == null) {
+			if (map == null || this.entity == null) {
 				return null;
 			}
 			SendableEntityCreator creator;
 			Object element;
 
-			if(this.entity instanceof String) {
+			if (this.entity instanceof String) {
 				String name = (String) this.entity;
-				
-				// Check if name is ClassName or Id
+
+				/* Check if name is ClassName or Id */
 				element = map.getObject(name);
-				if(element != null) {
-					if(this.property != null) {
+				if (element != null) {
+					if (this.property != null) {
 						creator = map.getCreatorClass(element);
-						if(creator != null) {
+						if (creator != null) {
 							Object value = creator.getValue(element, property);
-							if(newValue == null) {
+							if (newValue == null) {
 								return value;
 							} else {
-								// Its Remove
+								/* Its Remove */
 								return creator.setValue(element, property, newValue, SendableEntityCreator.REMOVE);
 							}
 						}
@@ -82,13 +83,13 @@ public class UpdateModel implements Callable<Object>, Runnable,Supplier<Object> 
 					return element;
 				}
 				creator = map.getCreator(name, true);
-				// TEST FOR NEW ONE
+				/* TEST FOR NEW ONE */
 				element = creator.getSendableInstance(true);
 				String newid;
-				if(this.newValue instanceof String) {
-					newid = (String) this.newValue; 
+				if (this.newValue instanceof String) {
+					newid = (String) this.newValue;
 				} else {
-					newid  = map.getId(element, true);
+					newid = map.getId(element, true);
 				}
 				map.put(newid, element, false);
 				return element;
@@ -97,9 +98,9 @@ public class UpdateModel implements Callable<Object>, Runnable,Supplier<Object> 
 				creator = map.getCreatorClass(element);
 			}
 
-			// Switch for Add or Delete
+			/* Switch for Add or Delete */
 			return creator.setValue(element, property, newValue, SendableEntityCreator.NEW);
-		}catch(Exception e){
+		} catch (Exception e) {
 			this.owner.getErrorHandler().saveException(e, false);
 		}
 		return false;

@@ -3,7 +3,7 @@ package de.uniks.networkparser.graph;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -44,15 +44,12 @@ public class DataTypeSet extends DataType {
 
 	@Override
 	public String getName(boolean shortName) {
-		if (this.value == null) {
-			return null;
-		}
-		return this.value.getName(shortName) + "<" + generic.getInternName(shortName, false) + ">";
+		return getInternName(shortName, false);
 	}
 
 	@Override
 	protected String getInternName(boolean shortName, boolean primitivAllow) {
-		if (this.value == null) {
+		if (this.value == null || generic == null) {
 			return null;
 		}
 		return this.value.getName(shortName) + "<" + generic.getInternName(shortName, primitivAllow) + ">";
@@ -61,9 +58,10 @@ public class DataTypeSet extends DataType {
 	public static DataTypeSet create(Object genericType) {
 		return new DataTypeSet().withGeneric(DataType.create(genericType));
 	}
+
 	public static DataTypeSet create(Clazz container, Object genericType) {
 		DataTypeSet list = new DataTypeSet().withGeneric(DataType.create(genericType));
-		if(container != null) {
+		if (container != null) {
 			list.value = container;
 		}
 		return list;
@@ -71,19 +69,19 @@ public class DataTypeSet extends DataType {
 
 	@Override
 	public boolean equals(Object obj) {
-		if(super.equals(obj) == false) {
+		if (super.equals(obj) == false) {
 			return false;
 		}
-		if(obj instanceof DataTypeSet == false) {
+		if (obj instanceof DataTypeSet == false) {
 			return false;
 		}
-		if(obj.hashCode() == this.hashCode()) {
+		if (obj.hashCode() == this.hashCode()) {
 			return true;
 		}
-		if(this.generic == null) {
-			return ((DataTypeSet)obj).getGeneric() == null;
+		if (this.generic == null) {
+			return ((DataTypeSet) obj).getGeneric() == null;
 		}
-		return ((DataTypeSet)obj).getGeneric().equals(this.generic);
+		return ((DataTypeSet) obj).getGeneric().equals(this.generic);
 	}
 
 	@Override
@@ -97,4 +95,16 @@ public class DataTypeSet extends DataType {
 		return this;
 	}
 
+	public Object getValue(String value) {
+		if (PROPERTY_NAME.equals(value)) {
+			return getGeneric().getName(true);
+		}
+		if (PROPERTY_CONTAINER.equals(value)) {
+			return getClazz().getName(true);
+		}
+		if (PROPERTY_CATEGORIE.equals(value)) {
+			return "SET";
+		}
+		return super.getValue(value);
+	}
 }

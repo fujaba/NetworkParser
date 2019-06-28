@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf.messages;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,8 +31,8 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 
 public class InfoMessage extends ReceivingTimerTask {
-	public static final String PROPERTY_PROXIES="proxies";
-	public static final String PROPERTY_LASTID="history_id";
+	public static final String PROPERTY_PROXIES = "proxies";
+	public static final String PROPERTY_LASTID = "history_id";
 
 	public InfoMessage() {
 		InfoMessage.props.add(PROPERTY_PROXIES, PROPERTY_LASTID);
@@ -46,48 +46,31 @@ public class InfoMessage extends ReceivingTimerTask {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(attribute == null || entity instanceof AcceptMessage == false ) {
+		if (attribute == null || entity instanceof AcceptMessage == false) {
 			return null;
 		}
 		AcceptMessage message = (AcceptMessage) entity;
 		Space space = message.getSpace();
-		if(space != null) {
-			if(PROPERTY_PROXIES.equalsIgnoreCase(attribute)) {
+		if (space != null) {
+			if (PROPERTY_PROXIES.equalsIgnoreCase(attribute)) {
 				SimpleList<NodeProxy> candidates = new SimpleList<NodeProxy>();
 				SortedSet<NodeProxy> nodeProxies = space.getNodeProxies();
-				for(NodeProxy proxy : nodeProxies) {
-					if(proxy.isSendable()) {
+				for (NodeProxy proxy : nodeProxies) {
+					if (proxy.isSendable()) {
 						candidates.add(proxy);
 					}
 				}
 				return candidates;
 			}
-			if(PROPERTY_LASTID.equalsIgnoreCase(attribute)) {
+			if (PROPERTY_LASTID.equalsIgnoreCase(attribute)) {
 				ModelChange lastModelChange = space.getHistory().getLastModelChange();
-				if(lastModelChange != null) {
+				if (lastModelChange != null) {
 					return lastModelChange.getKey();
 				}
 			}
 		}
 		return super.getValue(entity, attribute);
 	}
-
-//	@Override
-//	public BaseItem getMessage() {
-//		if(msg == null && space != null) {
-//			SortedSet<NodeProxy> proxies = space.getNodeProxies();
-//
-//			IdMap map = getInternMap(space);
-//			Tokener tokener = space.getTokener();
-//			EntityList list = tokener.newInstanceList();
-//			PetaFilter filter = new PetaFilter().withTyp(PetaFilter.INFO);
-//			for(NodeProxy proxy : proxies) {
-//				list.add(map.encode(proxy, tokener, filter));
-//			}
-//			msg = list;
-//		}
-//		return super.getMessage();
-//	}
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {

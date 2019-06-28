@@ -3,7 +3,7 @@ package de.uniks.networkparser.calculator;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,10 +32,13 @@ public class Potenz implements Operator {
 
 	@Override
 	public double calculate(Double... values) {
-		if(values == null) {
+		if (values == null || values.length < 2) {
 			return 0;
 		}
-		double result = values[0];
+		double result = 0;
+		if (values[0] != null) {
+			result = values[0];
+		}
 		if (values[1] < 0) {
 			values[1] = values[1] * -1;
 			for (int i = 1; i < values[1]; i++) {

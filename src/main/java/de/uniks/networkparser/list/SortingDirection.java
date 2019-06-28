@@ -3,7 +3,7 @@ package de.uniks.networkparser.list;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,17 +32,18 @@ THE SOFTWARE.
 
 public enum SortingDirection {
 	/**
-	 * The Sortdirection Options. ASC from small to BIG and DESC from BIG to
-	 * small
+	 * The Sortdirection Options. ASC from small to BIG and DESC from BIG to small
 	 */
 	ASC(1), DESC(-1);
 
 	/** The Variable of Direction. */
 	private int direction;
 
+	SortingDirection() {
+	}
+
 	/**
-	 * @param value
-	 *			The new Sortdirection
+	 * @param value The new Sortdirection
 	 */
 	SortingDirection(int value) {
 		this.setDirection(value);
@@ -56,7 +57,7 @@ public enum SortingDirection {
 	/**
 	 * Set the new Direction.
 	 *
-	 * @param value	The new Sortdirection
+	 * @param value The new Sortdirection
 	 */
 	public void setDirection(int value) {
 		this.direction = value;

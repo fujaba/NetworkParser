@@ -3,7 +3,7 @@ package de.uniks.networkparser.gui.controls;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -42,14 +42,12 @@ public class ChoiceField extends Input<String> {
 
 	private boolean checked = false;
 
-
 	public ChoiceField(boolean multi) {
 		super();
 		this.addBaseElements(CHECKED);
 		if (multi) {
 			this.type = RADIO;
-		}
-		else {
+		} else {
 			this.type = CHECKBOX;
 		}
 	}
@@ -57,7 +55,6 @@ public class ChoiceField extends Input<String> {
 	public boolean isChecked() {
 		return checked;
 	}
-
 
 	public boolean setChecked(boolean checked) {
 		boolean oldValue = this.checked;
@@ -68,7 +65,6 @@ public class ChoiceField extends Input<String> {
 		}
 		return changed;
 	}
-
 
 	@Override
 	public boolean setValue(String value) {
@@ -81,7 +77,6 @@ public class ChoiceField extends Input<String> {
 		return changed;
 	}
 
-
 	@Override
 	public boolean setValue(String key, Object value) {
 		if (CHECKED.equals(key)) {
@@ -90,7 +85,6 @@ public class ChoiceField extends Input<String> {
 		return super.setValue(key, value);
 	}
 
-
 	@Override
 	public Object getValue(String key) {
 		if (CHECKED.equals(key)) {
@@ -98,7 +92,7 @@ public class ChoiceField extends Input<String> {
 		}
 		return super.getValue(key);
 	}
-	
+
 	@Override
 	public ChoiceField newInstance() {
 		return new ChoiceField(false);

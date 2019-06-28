@@ -3,7 +3,7 @@ package de.uniks.networkparser.gui;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,21 +36,20 @@ import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLTokener;
 
 public class TileMap implements SendableEntityCreatorTag {
-	public static final String ENCODING="encoding";
-	public static final String TAG="map";
-	public static final String VERSION="version";
-	public static final String ORIENTATION="orientation";
-	public static final String RENDERORDER="renderorder";
-	public static final String WIDTH="width";
-	public static final String HEIGHT="height";
-	public static final String TILEWIDTH="tilewidth";
-	public static final String TILEHEIGHT="tileheight";
+	public static final String ENCODING = "encoding";
+	public static final String TAG = "map";
+	public static final String VERSION = "version";
+	public static final String ORIENTATION = "orientation";
+	public static final String RENDERORDER = "renderorder";
+	public static final String WIDTH = "width";
+	public static final String HEIGHT = "height";
+	public static final String TILEWIDTH = "tilewidth";
+	public static final String TILEHEIGHT = "tileheight";
 
-	public static final String TILESET_TILE ="tileset";
-	public static final String TILESET_LAYER="layer";
+	public static final String TILESET_TILE = "tileset";
+	public static final String TILESET_LAYER = "layer";
 
-	
-	public static final String TILESET_OBJECTGROUP="objectgroup";
+	public static final String TILESET_OBJECTGROUP = "objectgroup";
 
 	public String version;
 	public String orientation;
@@ -59,10 +58,10 @@ public class TileMap implements SendableEntityCreatorTag {
 	public int height;
 	public int tilewidth;
 	public int tileheight;
-	
+
 	private SimpleList<TileObject> images = new SimpleList<TileObject>();
 
-	public SimpleKeyValueList<String, SimpleList<TileObject>> objects=new SimpleKeyValueList<String, SimpleList<TileObject>>();
+	public SimpleKeyValueList<String, SimpleList<TileObject>> objects = new SimpleKeyValueList<String, SimpleList<TileObject>>();
 
 	public int[] background;
 	public SimpleList<String> backgroundNames = new SimpleList<String>();
@@ -81,40 +80,46 @@ public class TileMap implements SendableEntityCreatorTag {
 
 	@Override
 	public String[] getProperties() {
-		return new String[]{VERSION, ORIENTATION, RENDERORDER, WIDTH, HEIGHT,TILEWIDTH, TILEHEIGHT, TILESET_TILE, TILESET_LAYER, TILESET_OBJECTGROUP};
+		return new String[] { VERSION, ORIENTATION, RENDERORDER, WIDTH, HEIGHT, TILEWIDTH, TILEHEIGHT, TILESET_TILE,
+				TILESET_LAYER, TILESET_OBJECTGROUP };
 	}
 
 	/**
 	 * Return the Position of the Background Sprite
-	 * @param ebene Ebene of background
+	 * 
+	 * @param ebene         Ebene of background
 	 * @param backgroundPos Background Positoin 0..n
 	 * @return Position of Background Pos
 	 */
 	public Pos getSpriteBackgroundPos(int ebene, int backgroundPos) {
 		int spritePos = 0;
-		if(background != null) {
+		if (background != null) {
 			spritePos = background[backgroundPos];
 		}
 		return this.getSpritePos(ebene, spritePos);
 	}
-	
 
-	/** Return the Position of Sprite
+	/**
+	 * Return the Position of Sprite
+	 * 
 	 * @param ebene Ebene of background
-	 * @param pos The Position 00..n
+	 * @param pos   The Position 00..n
 	 * @return The Position
 	 */
 	public Pos getSpritePos(int ebene, int pos) {
 		Pos result = new Pos();
 		TileObject tileObject = this.images.get(ebene);
-		int columns = tileObject.width / this.tileheight;
-		result.y = pos/columns;
-		result.x = pos-(result.y*columns) - 1;
+		int columns = 1;
+		if (this.tileheight > 0) {
+			columns = tileObject.width / this.tileheight;
+		}
+		result.y = pos / columns;
+		result.x = pos - (result.y * columns) - 1;
 		return result;
 	}
 
 	public int getBackground(int sprite) {
-		if(sprite<0 || sprite>=background.length) {
+		if (sprite < 0 || background == null || sprite >= background.length) {
 			return 0;
 		}
 		return background[sprite];
@@ -122,18 +127,21 @@ public class TileMap implements SendableEntityCreatorTag {
 
 	/**
 	 * Return the Position of a Sprite
+	 * 
 	 * @param sprite the SpriteNumber
 	 * @return the Position of Sprite
 	 */
 	public Pos getPos(int sprite) {
 		Pos pos = new Pos();
-		pos.y = sprite/this.width;
-		pos.x = sprite-(pos.y*this.width);
+		if (width > 0) {
+			pos.y = sprite / this.width;
+		}
+		pos.x = sprite - (pos.y * this.width);
 		return pos;
 	}
 
 	public int length() {
-		if(background == null) {
+		if (background == null) {
 			return 0;
 		}
 		return background.length;
@@ -145,57 +153,57 @@ public class TileMap implements SendableEntityCreatorTag {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(entity instanceof TileMap == false) {
+		if (entity instanceof TileMap == false) {
 			return null;
 		}
 		TileMap map = (TileMap) entity;
-		if(VERSION.equalsIgnoreCase(attribute)) {
+		if (VERSION.equalsIgnoreCase(attribute)) {
 			return map.version;
 		}
-		if(ORIENTATION.equalsIgnoreCase(attribute)) {
+		if (ORIENTATION.equalsIgnoreCase(attribute)) {
 			return map.orientation;
 		}
-		if(RENDERORDER.equalsIgnoreCase(attribute)) {
+		if (RENDERORDER.equalsIgnoreCase(attribute)) {
 			return map.renderorder;
 		}
-		if(WIDTH.equalsIgnoreCase(attribute)) {
+		if (WIDTH.equalsIgnoreCase(attribute)) {
 			return map.width;
 		}
-		if(HEIGHT.equalsIgnoreCase(attribute)) {
+		if (HEIGHT.equalsIgnoreCase(attribute)) {
 			return map.height;
 		}
-		if(TILEWIDTH.equalsIgnoreCase(attribute)) {
+		if (TILEWIDTH.equalsIgnoreCase(attribute)) {
 			return map.tilewidth;
 		}
-		if(TILEHEIGHT.equalsIgnoreCase(attribute)) {
+		if (TILEHEIGHT.equalsIgnoreCase(attribute)) {
 			return map.tileheight;
 		}
-		if(TileObject.PROPERTY_SOURCE.equalsIgnoreCase(attribute)) {
-			if(map.images.size()>0) {
+		if (TileObject.PROPERTY_SOURCE.equalsIgnoreCase(attribute)) {
+			if (map.images.size() > 0) {
 				return map.images.first().name;
 			}
 			return null;
 		}
-		if(TileObject.PROPERTY_WIDTH.equalsIgnoreCase(attribute)) {
-			if(map.images.size()>0) {
+		if (TileObject.PROPERTY_WIDTH.equalsIgnoreCase(attribute)) {
+			if (map.images.size() > 0) {
 				return map.images.first().width;
 			}
 			return null;
 		}
-		if(TileObject.PROPERTY_HEIGHT.equalsIgnoreCase(attribute)) {
-			if(map.images.size()>0) {
+		if (TileObject.PROPERTY_HEIGHT.equalsIgnoreCase(attribute)) {
+			if (map.images.size() > 0) {
 				return map.images.first().height;
 			}
 			return null;
 		}
-		if(TILESET_TILE.equalsIgnoreCase(attribute)) {
-			if(map.images.size() < 1) {
+		if (TILESET_TILE.equalsIgnoreCase(attribute)) {
+			if (map.images.size() < 1) {
 				return null;
 			}
-			XMLEntity tileset=XMLEntity.TAG("tileset");
-			for(TileObject image : map.images) {
+			XMLEntity tileset = XMLEntity.TAG("tileset");
+			for (TileObject image : map.images) {
 				tileset.add("firstgid", image.gid);
-				if(image.name != "") {
+				if (image.name != "") {
 					tileset.add("name", image.name);
 				}
 				tileset.add("tilewidth", map.tilewidth);
@@ -209,23 +217,23 @@ public class TileMap implements SendableEntityCreatorTag {
 			}
 			return tileset;
 		}
-		if(TILESET_LAYER.equalsIgnoreCase(attribute)) {
-			if(map.background == null) {
+		if (TILESET_LAYER.equalsIgnoreCase(attribute)) {
+			if (map.background == null) {
 				return null;
 			}
-			XMLEntity layer=XMLEntity.TAG("layer");
+			XMLEntity layer = XMLEntity.TAG("layer");
 			layer.withKeyValue("name", "Background");
 			layer.withKeyValue("width", map.width);
 			layer.withKeyValue("height", map.height);
-			XMLEntity data=layer.createChild("data");
+			XMLEntity data = layer.createChild("data");
 			data.withKeyValue(ENCODING, "csv");
-			StringBuilder sb=new StringBuilder();
-			for(int i=0;i<map.background.length;i++) {
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < map.background.length; i++) {
 				sb.append(map.background[i]);
-				if(i<map.background.length - 1) {
+				if (i < map.background.length - 1) {
 					sb.append(",");
 				}
-				if(i%10==9) {
+				if (i % 10 == 9) {
 					sb.append("\r\n");
 				}
 			}
@@ -237,42 +245,42 @@ public class TileMap implements SendableEntityCreatorTag {
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if(entity instanceof TileMap == false) {
+		if (entity instanceof TileMap == false) {
 			return false;
 		}
 		TileMap map = (TileMap) entity;
-		if(VERSION.equalsIgnoreCase(attribute)) {
-			map.version = ""+value;
+		if (VERSION.equalsIgnoreCase(attribute)) {
+			map.version = "" + value;
 			return true;
 		}
-		if(ORIENTATION.equalsIgnoreCase(attribute)) {
-			map.orientation = ""+value;
+		if (ORIENTATION.equalsIgnoreCase(attribute)) {
+			map.orientation = "" + value;
 			return true;
 		}
-		if(RENDERORDER.equalsIgnoreCase(attribute)) {
-			map.renderorder = ""+value;
+		if (RENDERORDER.equalsIgnoreCase(attribute)) {
+			map.renderorder = "" + value;
 			return true;
 		}
-		if(WIDTH.equalsIgnoreCase(attribute)) {
-			map.width = Integer.valueOf(""+value);
+		if (WIDTH.equalsIgnoreCase(attribute)) {
+			map.width = Integer.valueOf("" + value);
 			return true;
 		}
-		if(HEIGHT.equalsIgnoreCase(attribute)) {
-			map.height = Integer.valueOf(""+value);
+		if (HEIGHT.equalsIgnoreCase(attribute)) {
+			map.height = Integer.valueOf("" + value);
 			return true;
 		}
-		if(TILEWIDTH.equalsIgnoreCase(attribute)) {
-			map.tilewidth = Integer.valueOf(""+value);
+		if (TILEWIDTH.equalsIgnoreCase(attribute)) {
+			map.tilewidth = Integer.valueOf("" + value);
 			return true;
 		}
-		if(TILEHEIGHT.equalsIgnoreCase(attribute)) {
-			map.tileheight = Integer.valueOf(""+value);
+		if (TILEHEIGHT.equalsIgnoreCase(attribute)) {
+			map.tileheight = Integer.valueOf("" + value);
 			return true;
 		}
-		if(TILESET_TILE.equalsIgnoreCase(attribute) ) {
-			// Complex Child Layer
+		if (TILESET_TILE.equalsIgnoreCase(attribute)) {
+			/* Complex Child Layer */
 			XMLEntity tileSet = (XMLEntity) value;
-			if(tileSet.sizeChildren()==1) {
+			if (tileSet.sizeChildren() == 1) {
 				XMLEntity imageXML = (XMLEntity) tileSet.getChild(0);
 				TileObject image = new TileObject();
 				image.gid = tileSet.getInt("firstgid");
@@ -281,31 +289,30 @@ public class TileMap implements SendableEntityCreatorTag {
 				image.height = imageXML.getInt("height");
 				image.source = imageXML.getString("source");
 				image.name = imageXML.getString("name");
-				// columns = count / width
 				map.images.add(image);
 			}
 			return true;
 		}
-		if(TILESET_LAYER.equalsIgnoreCase(attribute) ) {
-			// Complex Child Layer
+		if (TILESET_LAYER.equalsIgnoreCase(attribute)) {
+			/* Complex Child Layer */
 			XMLEntity layer = (XMLEntity) value;
-			if(layer.sizeChildren()==1) {
+			if (layer.sizeChildren() == 1) {
 				XMLEntity data = (XMLEntity) layer.getChild(0);
-				if("csv".equals(data.get(ENCODING))) {
+				if ("csv".equals(data.get(ENCODING))) {
 					String text = data.getValue();
-					int i=0;
-					int start=0;
-					int z=0;
-					map.background = new int[map.width*map.height];
-					while(i<text.length() ) {
-						if(text.charAt(i) != ',') {
+					int i = 0;
+					int start = 0;
+					int z = 0;
+					map.background = new int[map.width * map.height];
+					while (i < text.length()) {
+						if (text.charAt(i) != ',') {
 							i++;
 							continue;
 						}
 						String number = text.substring(start, i);
 						map.background[z++] = Integer.valueOf(number.trim());
 						i++;
-						start=i;
+						start = i;
 					}
 					String number = text.substring(start, i);
 					map.background[z] = Integer.valueOf(number.trim());
@@ -313,20 +320,20 @@ public class TileMap implements SendableEntityCreatorTag {
 				}
 			}
 		}
-		if(TILESET_OBJECTGROUP.equalsIgnoreCase(attribute) ) {
+		if (TILESET_OBJECTGROUP.equalsIgnoreCase(attribute)) {
 			XMLEntity objectGroup = (XMLEntity) value;
 			String tag = objectGroup.getString("name");
-			if(tag == null || tag.length()<1) {
+			if (tag == null || tag.length() < 1) {
 				tag = "element";
 			}
 			SimpleList<TileObject> objects = this.objects.get(tag);
-			if(objects == null) {
+			if (objects == null) {
 				objects = new SimpleList<TileObject>();
 				this.objects.put(tag, objects);
 			}
-			for(int i=0;i<objectGroup.size();i++) {
+			for (int i = 0; i < objectGroup.size(); i++) {
 				BaseItem item = objectGroup.getChild(i);
-				objects.add(TileObject.create((Entity)item));
+				objects.add(TileObject.create((Entity) item));
 			}
 			return true;
 		}
@@ -348,7 +355,7 @@ public class TileMap implements SendableEntityCreatorTag {
 	}
 
 	public String getSource() {
-		if(images.size()>0) {
+		if (images.size() > 0) {
 			return images.first().name;
 		}
 		return null;
@@ -358,7 +365,7 @@ public class TileMap implements SendableEntityCreatorTag {
 		this.path = value;
 		return this;
 	}
-	
+
 	public String getPath() {
 		return path;
 	}

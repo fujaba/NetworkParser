@@ -1,9 +1,11 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.EntityUtil;
+
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,14 +29,16 @@ THE SOFTWARE.
 public abstract class Value extends GraphMember {
 	public static final String PROPERTY_INITIALIZATION = "initialization";
 	public static final String PROPERTY_TYPE = "type";
+	public static final String PROPERTY_TYPECAT = "typecat";
 	public static final String PROPERTY_TYPECLAZZ = "typeClazz";
+	public static final String PROPERTY_NAMEGETTER = "namegetter";
+	public static final String PROPERTY_VALUE = "value";
 
 	protected DataType type = null;
 	protected String value = null;
 
 	public Value with(DataType value) {
-		if ((this.type == null && value != null)
-				|| (this.type != null && this.type != value)) {
+		if ((this.type == null && value != null) || (this.type != null && this.type != value)) {
 			this.type = value;
 		}
 		return this;
@@ -48,22 +52,42 @@ public abstract class Value extends GraphMember {
 	public Object getValue(String attribute) {
 		int pos = attribute.indexOf('.');
 		String attrName;
-		if(pos>0) {
+		if (pos > 0) {
 			attrName = attribute.substring(0, pos);
-		}else {
+		} else {
 			attrName = attribute;
 		}
-		if(PROPERTY_TYPE.equalsIgnoreCase(attrName)) {
-			return this.getType();
+		if (PROPERTY_TYPE.equalsIgnoreCase(attrName)) {
+			DataType type = this.getType();
+			if (type != null && pos > 0) {
+				return type.getValue(attribute.substring(pos + 1));
+			}
+			return type;
 		}
-		if(PROPERTY_TYPECLAZZ.equalsIgnoreCase(attrName)) {
+		if (PROPERTY_TYPECLAZZ.equalsIgnoreCase(attrName)) {
 			DataType dataType = this.getType();
-			if(dataType != null) {
+			if (dataType != null) {
 				if (pos > 0) {
 					return dataType.getClazz().getValue(attribute.substring(pos + 1));
 				}
 				return dataType.getClazz();
 			}
+		}
+		if (PROPERTY_TYPECAT.equalsIgnoreCase(attrName)) {
+			DataType dataType = this.getType();
+			if (dataType != null) {
+				return dataType.getValue("cat");
+			}
+		}
+		if (PROPERTY_NAMEGETTER.equalsIgnoreCase(attribute)) {
+			if ("boolean".equals(this.type.getName(true))) {
+				return "is" + EntityUtil.upFirstChar(this.name);
+			}
+			return "get" + EntityUtil.upFirstChar(this.name);
+		}
+		if (PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
+			return this.value;
+
 		}
 		return super.getValue(attribute);
 	}
@@ -74,6 +98,6 @@ public abstract class Value extends GraphMember {
 	}
 
 	public String getValue() {
-		return this.value;
+		return value;
 	}
 }

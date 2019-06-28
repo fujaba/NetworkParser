@@ -3,7 +3,7 @@ package de.uniks.networkparser.xml;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,10 +25,12 @@ THE SOFTWARE.
 */
 import java.util.ArrayList;
 
+import de.uniks.networkparser.EntityCreator;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -45,9 +47,9 @@ public class XMLTokener extends Tokener {
 	/** The Constant ENDTAG. */
 	public static final char ENDTAG = '/';
 
-	private static final char[] TOKEN = new char[]{' ', XMLEntity.START, ENDTAG, XMLEntity.END};
+	private static final char[] TOKEN = new char[] { ' ', XMLEntity.START, ENDTAG, XMLEntity.END };
 
-	public static final String CHILDREN= "<CHILDREN>";
+	public static final String CHILDREN = "<CHILDREN>";
 
 	private SendableEntityCreator defaultFactory;
 
@@ -66,15 +68,12 @@ public class XMLTokener extends Tokener {
 	}
 
 	/**
-	 * Get the next value. The value can be a Boolean, Double, Integer,
-	 * BaseEntity, Long, or String.
+	 * Get the next value. The value can be a Boolean, Double, Integer, BaseEntity,
+	 * Long, or String.
 	 *
-	 * @param creator
-	 *			The new Creator
-	 * @param allowQuote
-	 *			is in Text allow Quote
-	 * @param c
-	 *			The Terminate Char
+	 * @param creator    The new Creator
+	 * @param allowQuote is in Text allow Quote
+	 * @param c          The Terminate Char
 	 *
 	 * @return An object.
 	 */
@@ -100,7 +99,11 @@ public class XMLTokener extends Tokener {
 	}
 
 	@Override
-	public boolean parseToEntity(Entity entity, Buffer buffer) {
+	public BaseItem parseToEntity(BaseItem entity, Object source) {
+		if (source == null || source instanceof Buffer == false) {
+			return null;
+		}
+		Buffer buffer = (Buffer) source;
 		skipHeader(buffer);
 		char c = buffer.getCurrentChar();
 		if (c != XMLEntity.START) {
@@ -108,43 +111,42 @@ public class XMLTokener extends Tokener {
 		}
 		if (entity instanceof XMLEntity == false) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-				throw new RuntimeException("Parse only XMLEntity");
+				throw new SimpleException("Parse only XMLEntity");
 			}
-			return false;
+			return null;
 		}
 		XMLEntity xmlEntity = (XMLEntity) entity;
 		if (c != XMLEntity.START) {
-//			xmlEntity.withValue(this.buffer);
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-				throw new RuntimeException("A XML text must begin with '<'");
+				throw new SimpleException("A XML text must begin with '<'");
 			}
-			return false;
+			return null;
 		}
-		xmlEntity.setType(buffer.nextToken(false, Buffer.STOPCHARSXMLEND).toString());
+		xmlEntity.withType(buffer.nextToken(false, Buffer.STOPCHARSXMLEND).toString());
 		XMLEntity child;
 		while (true) {
- 			c = buffer.nextClean(true);
+			c = buffer.nextClean(true);
 			if (c == 0) {
 				break;
 			} else if (c == XMLEntity.END) {
 				c = buffer.nextClean(false);
 				if (c == 0) {
-					return true;
+					return entity;
 				}
 				if (c != XMLEntity.START) {
 					CharacterBuffer item = new CharacterBuffer();
 					buffer.nextString(item, false, false, '<');
 					char currentChar = buffer.getCurrentChar();
 					char nextChar = buffer.nextClean(false);
-					if(nextChar !='/' ) {
-						// May be another child so it is possible text node text
-						XMLEntity newChild=new XMLEntity();
+					if (nextChar != '/') {
+						/* May be another child so it is possible text node text */
+						XMLEntity newChild = new XMLEntity();
 						newChild.withValue(item.toString());
 						xmlEntity.withChild(newChild);
-					}else {
+					} else {
 						xmlEntity.withValue(item.toString());
 					}
-					buffer.withLookAHead(""+currentChar+nextChar);
+					buffer.withLookAHead("" + currentChar + nextChar);
 					c = currentChar;
 				}
 			}
@@ -154,14 +156,27 @@ public class XMLTokener extends Tokener {
 				if (nextChar == '/') {
 					buffer.skipTo(XMLEntity.END, false);
 					break;
-				} else if(nextChar == '!') {
-					buffer.skipTo("-->", true, true);
+				} else if (nextChar == '!') {
+					nextChar = buffer.getChar();
+					if ('[' == nextChar) {
+						/* MIGHT BE <![CDATA[ */
+						int start = buffer.position();
+						buffer.skipTo("]]>", true, true);
+						int end = buffer.position();
+						if (end != start) {
+							start += 7; /* CDATA[ */
+							end -= 2;
+							xmlEntity.withValueItem(buffer.substring(start, end).toString());
+						}
+					} else {
+						buffer.skipTo("-->", true, true);
+					}
 					buffer.skip();
 				} else {
 					buffer.withLookAHead(c);
 					if (buffer.getCurrentChar() == '<') {
 						child = (XMLEntity) xmlEntity.getNewList(true);
-						if(parseToEntity((Entity)child, buffer)) {
+						if (parseToEntity(child, buffer) != null) {
 							xmlEntity.with(child);
 							buffer.skip();
 						}
@@ -173,60 +188,68 @@ public class XMLTokener extends Tokener {
 				buffer.skip();
 				break;
 			} else {
-				if(xmlEntity.sizeChildren()<1) {
-					// Normal key Value
+				if (xmlEntity.sizeChildren() < 1) {
+					/* Normal key Value */
 					Object value = nextValue(buffer, xmlEntity, false, true, c);
-					if(value == null) {
-						return false;
+					if (value == null) {
+						return null;
 					}
 					String key = value.toString();
 					if (key.length() > 0) {
 						xmlEntity.put(key, nextValue(buffer, xmlEntity, isAllowQuote, true, buffer.nextClean(false)));
 					}
 				} else {
-					// Just a Child
+					/* Just a Child */
 					CharacterBuffer item = new CharacterBuffer();
 					nextString(buffer, item, false, false, '<');
-					// May be another child so it is possible text node text
-					XMLEntity newChild=new XMLEntity();
+					/* May be another child so it is possible text node text */
+					XMLEntity newChild = new XMLEntity();
 					newChild.withValue(item.toString());
 					xmlEntity.withChild(newChild);
 				}
 			}
 		}
-		return true;
+		return entity;
 	}
 
-	/**	Skip the Current Entity to &gt;. 
-	 * @param buffer	Buffer for Values
-	 * */
+	/**
+	 * Skip the Current Entity to &gt;.
+	 * 
+	 * @param buffer Buffer for Values
+	 */
 	protected void skipEntity(Buffer buffer) {
+		if (buffer == null) {
+			return;
+		}
 		buffer.skipTo('>', false);
-		// Skip >
+		/* Skip > */
 		buffer.nextClean(false);
 	}
 
 	public String skipHeader(Buffer buffer) {
-		boolean skip=false;
+		boolean skip = false;
 		CharacterBuffer tag;
+		if (buffer == null) {
+			return null;
+		}
 		do {
 			tag = buffer.getString(2);
-			if(tag == null) {
+			if (tag == null) {
 				tag = new CharacterBuffer();
 				break;
-			} else if(tag.equals("<?")) {
+			} else if (tag.equals("<?")) {
 				skipEntity(buffer);
 				skip = true;
-			} else if(tag.equals("<!")) {
+			} else if (tag.equals("<!")) {
 				buffer.skipTo(">", true, true);
 				buffer.nextClean(false);
 				skip = true;
 			} else {
 				skip = false;
 			}
-		}while(skip);
+		} while (skip);
 		String item = tag.toString();
-		if(buffer != null) {
+		if (buffer != null) {
 			buffer.withLookAHead(item);
 		}
 		return item;
@@ -250,10 +273,10 @@ public class XMLTokener extends Tokener {
 	/**
 	 * Find tag.
 	 *
-	 * @param tokener 	the tokener
- 	 * @param buffer	Buffer for Values
-	 * @param map 		decoding runtime values
-	 * @return 			the object
+	 * @param tokener the tokener
+	 * @param buffer  Buffer for Values
+	 * @param map     decoding runtime values
+	 * @return the object
 	 */
 	public Object parse(XMLTokener tokener, Buffer buffer, MapEntity map) {
 		parseAttribute(tokener, buffer, map);
@@ -261,17 +284,17 @@ public class XMLTokener extends Tokener {
 	}
 
 	protected void parseAttribute(XMLTokener tokener, Buffer buffer, MapEntity map) {
-		if(map == null) {
+		if (map == null) {
 			return;
 		}
 		MapEntityStack stack = map.getStack();
-		if(stack == null) {
+		if (stack == null) {
 			return;
 		}
 		Object entity = stack.getCurrentItem();
 		SendableEntityCreator creator = stack.getCurrentCreator();
 		if (entity != null) {
-			// Parsing attributes
+			/* Parsing attributes */
 			CharacterBuffer token = new CharacterBuffer();
 			char myChar;
 			do {
@@ -297,18 +320,19 @@ public class XMLTokener extends Tokener {
 	}
 
 	protected Object parseChildren(XMLTokener tokener, Buffer buffer, MapEntity map) {
-		if(map == null) {
+		if (map == null) {
 			return null;
 		}
 		MapEntityStack stack = map.getStack();
-		if(stack == null) {
-			return null;
-		}Object entity = stack.getCurrentItem();
-		SendableEntityCreator creator = stack.getCurrentCreator();
-		if(creator == null) {
+		if (stack == null) {
 			return null;
 		}
-		// Parsing next Element
+		Object entity = stack.getCurrentItem();
+		SendableEntityCreator creator = stack.getCurrentCreator();
+		if (creator == null) {
+			return null;
+		}
+		/* Parsing next Element */
 		if (buffer.skipTo("/>", false, false)) {
 			if (buffer.getCurrentChar() == '/') {
 				stack.popStack();
@@ -318,7 +342,7 @@ public class XMLTokener extends Tokener {
 			}
 
 			char quote = (char) XMLEntity.START;
-			// Skip >
+			/* Skip > */
 			buffer.skip();
 			CharacterBuffer valueItem = new CharacterBuffer();
 			tokener.nextString(buffer, valueItem, false, false, quote);
@@ -349,7 +373,7 @@ public class XMLTokener extends Tokener {
 					}
 					test.clear();
 				}
-				if(entity!=null) {
+				if (entity != null) {
 					creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(), SendableEntityCreator.NEW);
 				}
 				stack.setValue("" + IdMap.ENTITYSPLITTER, valueItem.toString());
@@ -358,24 +382,25 @@ public class XMLTokener extends Tokener {
 				return entity;
 			}
 			if (buffer.getCurrentChar() == XMLEntity.START) {
-				// show next Tag
+				/* show next Tag */
 				Object child;
 				do {
 					valueItem = parseEntity(tokener, buffer, map);
 					if (valueItem == null) {
 						if (buffer.getCurrentChar() == ENDTAG) {
-							// Show if Item is End
+							/* Show if Item is End */
 							valueItem = tokener.nextToken(buffer, false, XMLEntity.END);
 							if (valueItem.equals(stack.getCurrentTag())) {
 								stack.popStack();
-								// SKip > EndTag
+								/* Skip > EndTag */
 								buffer.skip();
 							}
 						}
 						return entity;
 					}
 					if (valueItem.isEmpty() == false) {
-						creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(), SendableEntityCreator.NEW);
+						creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(),
+								SendableEntityCreator.NEW);
 						stack.setValue("" + IdMap.ENTITYSPLITTER, valueItem.toString());
 						stack.popStack();
 						tokener.skipEntity(buffer);
@@ -384,7 +409,7 @@ public class XMLTokener extends Tokener {
 
 					String childTag = stack.getCurrentTag();
 					child = parse(tokener, buffer, map);
-					if(childTag != null && child != null) {
+					if (childTag != null && child != null) {
 						creator.setValue(entity, childTag, child, CHILDREN);
 					}
 				} while (child != null);
@@ -396,14 +421,14 @@ public class XMLTokener extends Tokener {
 	/**
 	 * Gets the entity.
 	 *
-	 * @param tokener	the tokener
-	 * @param buffer	Buffer for Values
-	 * @param map	the decoding runtime values
+	 * @param tokener the tokener
+	 * @param buffer  Buffer for Values
+	 * @param map     the decoding runtime values
 	 * @return the entity
 	 */
 	public CharacterBuffer parseEntity(XMLTokener tokener, Buffer buffer, MapEntity map) {
 		CharacterBuffer valueItem = new CharacterBuffer();
-		if(tokener == null) {
+		if (tokener == null || buffer == null) {
 			return valueItem;
 		}
 		CharacterBuffer tag;
@@ -427,11 +452,11 @@ public class XMLTokener extends Tokener {
 					}
 				}
 			}
-			if(buffer.isEnd()) {
+			if (buffer.isEnd()) {
 				break;
 			}
 		} while (tag == null);
-		if(tag == null || tag.length()<1) {
+		if (tag == null || tag.length() < 1) {
 			return null;
 		}
 		if (tag.isEmpty() && isEmpty) {
@@ -439,22 +464,22 @@ public class XMLTokener extends Tokener {
 		}
 		IdMap idMap = getMap();
 		SendableEntityCreator item = null;
-		if(idMap != null) {
-			item = idMap.getCreator(tag.toString(), false, null);
+		if (idMap != null) {
+			item = idMap.getCreator(tag.toString(), false, true, null);
 		}
 		if (item != null && item instanceof SendableEntityCreatorTag) {
 			addToStack((SendableEntityCreatorTag) item, tokener, tag, valueItem, map);
 			return valueItem;
 		}
 		String startTag;
-		if(tag.lastIndexOf(IdMap.ENTITYSPLITTER)>=0) {
+		if (tag.lastIndexOf(IdMap.ENTITYSPLITTER) >= 0) {
 			startTag = tag.substring(0, tag.lastIndexOf(IdMap.ENTITYSPLITTER));
 		} else {
 			startTag = tag.toString();
 		}
-		SimpleKeyValueList<String, SendableEntityCreatorTag> filter=new SimpleKeyValueList<String, SendableEntityCreatorTag>();
-		if(idMap != null) {
-			for(int i=0;i<idMap.getCreators().size();i++) {
+		SimpleKeyValueList<String, SendableEntityCreatorTag> filter = new SimpleKeyValueList<String, SendableEntityCreatorTag>();
+		if (idMap != null) {
+			for (int i = 0; i < idMap.getCreators().size(); i++) {
 				String key = idMap.getCreators().getKeyByIndex(i);
 				SendableEntityCreator value = idMap.getCreators().getValueByIndex(i);
 				if (key.startsWith(startTag) && value instanceof SendableEntityCreatorTag) {
@@ -465,49 +490,49 @@ public class XMLTokener extends Tokener {
 		MapEntityStack stack = map.getStack();
 		SendableEntityCreator defaultCreator = getDefaultFactory();
 		SendableEntityCreatorTag creator;
-		if(defaultCreator instanceof SendableEntityCreatorTag) {
+		if (defaultCreator instanceof SendableEntityCreatorTag) {
 			creator = (SendableEntityCreatorTag) defaultCreator;
-		}else {
-			creator = new XMLEntityCreator();
+		} else {
+			creator = EntityCreator.createXML();
 		}
-		if(filter.size() < 1) {
+		if (filter.size() < 1) {
 			addToStack(creator, tokener, tag, valueItem, map);
 			return valueItem;
 		}
-		StringBuilder sTag=new StringBuilder(startTag);
-		while(filter.size()>0) {
+		StringBuilder sTag = new StringBuilder(startTag);
+		while (filter.size() > 0) {
 			addToStack(creator, tokener, tag, valueItem, map);
 			parseAttribute(tokener, buffer, map);
-			if(buffer.getCurrentChar()=='/') {
+			if (buffer.getCurrentChar() == '/') {
 				stack.popStack();
-			}else {
+			} else {
 				buffer.skip();
 				if (buffer.getCurrentChar() != XMLEntity.START) {
 					tokener.nextString(buffer, valueItem, false, false, XMLEntity.START);
 					if (valueItem.isEmpty() == false) {
 						valueItem.trim();
 						Object entity = stack.getCurrentItem();
-						creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(), SendableEntityCreator.NEW);
+						creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(),
+								SendableEntityCreator.NEW);
 					}
 				}
 				tag = tokener.nextToken(buffer, false, TOKEN);
-				item = idMap.getCreator(tag.toString(), false, null);
-				if(item instanceof SendableEntityCreatorTag) {
+				item = idMap.getCreator(tag.toString(), false, true, null);
+				if (item instanceof SendableEntityCreatorTag) {
 					creator = (SendableEntityCreatorTag) item;
-				}else{
+				} else {
 					creator = (SendableEntityCreatorTag) defaultCreator;
 				}
 				sTag.append(IdMap.ENTITYSPLITTER).append(tag.toString());
-//				startTag = startTag + IdMap.ENTITYSPLITTER + tag.toString();
-				for(int i=filter.size() - 1;i >= 0;i++) {
+				for (int i = filter.size() - 1; i >= 0; i++) {
 					String key = filter.getKeyByIndex(i);
-					if(key.equals(sTag.toString())) {
-						// FOUND THE Item
+					if (key.equals(sTag.toString())) {
+						/* FOUND THE Item */
 						creator = filter.getValueByIndex(i);
 						addToStack(creator, tokener, tag, valueItem, map);
 						return valueItem;
 					}
-					if(key.startsWith(sTag.toString()) == false) {
+					if (key.startsWith(sTag.toString()) == false) {
 						filter.removePos(i);
 					}
 				}
@@ -518,18 +543,19 @@ public class XMLTokener extends Tokener {
 	}
 
 	public Entity createLink(Entity parent, String property, String className, String id) {
-		if(parent != null) {
+		if (parent != null) {
 			parent.put(property, id);
 		}
 		return null;
 	}
 
-	protected Object addToStack(SendableEntityCreatorTag creator, XMLTokener tokener, CharacterBuffer tag, CharacterBuffer value, MapEntity map) {
-		if(creator == null) {
+	protected Object addToStack(SendableEntityCreatorTag creator, XMLTokener tokener, CharacterBuffer tag,
+			CharacterBuffer value, MapEntity map) {
+		if (creator == null) {
 			return null;
 		}
 		Object entity = creator.getSendableInstance(false);
-		if(entity instanceof EntityList) {
+		if (entity instanceof EntityList) {
 			creator.setValue(entity, XMLEntity.PROPERTY_VALUE, value.toString(), SendableEntityCreator.NEW);
 			creator.setValue(entity, XMLEntity.PROPERTY_TAG, tag.toString(), SendableEntityCreator.NEW);
 		}
@@ -561,6 +587,7 @@ public class XMLTokener extends Tokener {
 		this.defaultFactory = defaultFactory;
 		return this;
 	}
+
 	public boolean isChild(Object writeValue) {
 		return writeValue instanceof BaseItem;
 	}
@@ -575,4 +602,20 @@ public class XMLTokener extends Tokener {
 		super.withMap(map);
 		return this;
 	}
+
+	/* FIXME public static XsdValidationLoggingErrorHandler */
+	/*
+	 * validate(java.net.URL xsdSchema, String xmlDokument) throws SAXException,
+	 * IOException {
+	 * com.sun.org.apache.xerces.internal.jaxp.validation.XMLSchemaFactory
+	 * schemaFactory = (XMLSchemaFactory) SchemaFactory
+	 * .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+	 * 
+	 * Schema schema = schemaFactory.newSchema(new File(xsdSchema)); Schema
+	 * schema = schemaFactory.newSchema(xsdSchema); Validator validator =
+	 * schema.newValidator(); XsdValidationLoggingErrorHandler errorHandler = new
+	 * XsdValidationLoggingErrorHandler(); validator.setErrorHandler(errorHandler);
+	 * validator.validate(new StreamSource(new File(xmlDokument))); return
+	 * errorHandler; }
+	 */
 }

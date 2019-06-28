@@ -3,7 +3,7 @@ package de.uniks.networkparser;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,8 +30,7 @@ public class EntityValueFactory {
 		return getCellValue(value, null, null);
 	}
 
-	public Object getCellValue(Object value, SendableEntityCreator creator,
-			String property) {
+	public Object getCellValue(Object value, SendableEntityCreator creator, String property) {
 		if (creator != null && property != null) {
 			return creator.getValue(value, property);
 		}

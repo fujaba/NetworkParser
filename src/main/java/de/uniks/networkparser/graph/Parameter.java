@@ -2,7 +2,7 @@ package de.uniks.networkparser.graph;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@ THE SOFTWARE.
 */
 
 public class Parameter extends Value {
-	public static final StringFilter<Parameter> NAME = new StringFilter<Parameter>(GraphMember.PROPERTY_NAME);
+	private boolean isArray;
 
 	Parameter() {
 
@@ -48,7 +48,7 @@ public class Parameter extends Value {
 		return (Method) this.parentNode;
 	}
 
-	// Redirect
+	/* Redirect */
 	@Override
 	public Parameter with(String string) {
 		super.with(string);
@@ -66,9 +66,29 @@ public class Parameter extends Value {
 		return this;
 	}
 
-	@Override
-	public Parameter without(GraphMember... values) {
-		super.without(values);
-		return this;
+	public static Parameter create(Object param) {
+		if (param == null) {
+			return null;
+		}
+		if (param instanceof DataType) {
+			return new Parameter((DataType) param);
+		}
+		if (param instanceof Clazz) {
+			return new Parameter((Clazz) param);
+		}
+		if (param instanceof String) {
+			String value = (String) param;
+			if (value.endsWith("...")) {
+				Parameter newParam = new Parameter(DataType.create(value.substring(0, value.length() - 3)));
+				newParam.isArray = true;
+				return newParam;
+			}
+			return new Parameter(DataType.create(value));
+		}
+		return null;
+	}
+
+	public boolean isArray() {
+		return isArray;
 	}
 }

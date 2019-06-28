@@ -3,7 +3,7 @@ package de.uniks.networkparser.logic;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Collection;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -32,7 +33,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
 public class WhiteListCondition implements ObjectCondition, SendableEntityCreator {
-	private SimpleKeyValueList<String, SimpleList<String>> whiteList=new SimpleKeyValueList<String, SimpleList<String>>();
+	private SimpleKeyValueList<String, SimpleList<String>> whiteList = new SimpleKeyValueList<String, SimpleList<String>>();
 	private boolean primitive = true;
 
 	@Override
@@ -52,12 +53,12 @@ public class WhiteListCondition implements ObjectCondition, SendableEntityCreato
 
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SimpleEvent == false) {
+		if (value instanceof SimpleEvent == false) {
 			return false;
 		}
 		SimpleEvent event = (SimpleEvent) value;
 		Object newValue = event.getNewValue();
-		if(newValue == null) {
+		if (newValue == null) {
 			return false;
 		}
 		String className = newValue.getClass().getSimpleName();
@@ -65,38 +66,39 @@ public class WhiteListCondition implements ObjectCondition, SendableEntityCreato
 		SimpleList<String> simpleList = whiteList.get(className);
 		IdMap map = (IdMap) event.getSource();
 		SendableEntityCreator creator = map.getCreatorClass(newValue);
-		if(newValue instanceof Collection<?>) {
+		if (newValue instanceof Collection<?>) {
 			return true;
 		}
-		if(creator != null) {
-			if(simpleList != null) {
-				return simpleList.size() == 0 || simpleList.indexOf(propertyName)>=0;
+		if (creator != null) {
+			if (simpleList != null) {
+				return simpleList.size() == 0 || simpleList.indexOf(propertyName) >= 0;
 			}
 			return false;
 		}
 		return this.primitive;
 	}
+
 	public WhiteListCondition with(Class<?> className, String... attributes) {
-		if(className != null) {
+		if (className != null) {
 			with(className.getSimpleName(), attributes);
 		}
 		return this;
 	}
+
 	public WhiteListCondition with(String className, String... attributes) {
 		SimpleList<String> simpleList = whiteList.get(className);
-		if(simpleList == null) {
+		if (simpleList == null) {
 			simpleList = new SimpleList<String>();
 			whiteList.put(className, simpleList);
 		}
-		if(attributes == null) {
+		if (attributes == null) {
 			return this;
 		}
-		for(String item : attributes) {
+		for (String item : attributes) {
 			simpleList.add(item);
 		}
 		return this;
 	}
-
 
 	@Override
 	public Object getValue(Object entity, String attribute) {

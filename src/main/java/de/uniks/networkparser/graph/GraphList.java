@@ -1,9 +1,11 @@
 package de.uniks.networkparser.graph;
 
+import java.util.Collection;
+
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,14 +31,10 @@ import de.uniks.networkparser.list.SimpleMapEntry;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class GraphList extends GraphModel {
-	private String typ = GraphTokener.CLASS;
+	private String type = GraphTokener.CLASSDIAGRAM;
 	private String style;
 	private GraphOptions options;
 
-	@Override
-	public String toString() {
-		return toString(new YUMLConverter());
-	}
 	public String toString(boolean removePackage) {
 		YUMLConverter converter = new YUMLConverter();
 		converter.defaultShowPackage = removePackage;
@@ -44,11 +42,11 @@ public class GraphList extends GraphModel {
 	}
 
 	public String getType() {
-		return typ;
+		return type;
 	}
 
 	public GraphList withType(String typ) {
-		this.typ = typ;
+		this.type = typ;
 		return this;
 	}
 
@@ -139,6 +137,9 @@ public class GraphList extends GraphModel {
 	}
 
 	public Association getEdge(GraphEntity node, String property) {
+		if (property == null || node == null) {
+			return null;
+		}
 		for (Association edge : getAssociations()) {
 			Association oEdge = edge.getOther();
 			if (edge.getClazz() == node && property.equals(oEdge.getName())) {
@@ -156,7 +157,12 @@ public class GraphList extends GraphModel {
 			return false;
 		}
 		for (Object item : values) {
-			if (item instanceof GraphMember) {
+			if (item instanceof Collection<?>) {
+				Collection<?> items = (Collection<?>) item;
+				for (Object i : items) {
+					add(i);
+				}
+			} else if (item instanceof GraphMember) {
 				super.withChildren((GraphMember) item);
 			}
 		}

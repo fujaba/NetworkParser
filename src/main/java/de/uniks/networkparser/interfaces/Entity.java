@@ -3,7 +3,7 @@ package de.uniks.networkparser.interfaces;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.Buffer;
 
-public interface Entity extends BaseItem{
+public interface Entity extends BaseItem {
 	public String getString(String key);
 
 	public Object getValue(Object key);
@@ -44,8 +44,10 @@ public interface Entity extends BaseItem{
 	 */
 	public boolean has(String key);
 
-	/** Add Key-Value item to Entity
-	 * @param key The key
+	/**
+	 * Add Key-Value item to Entity
+	 * 
+	 * @param key   The key
 	 * @param value The new Value
 	 * @return The value
 	 */
@@ -56,23 +58,25 @@ public interface Entity extends BaseItem{
 	 * <p>
 	 * Warning: This method assumes that the data structure is acyclical.
 	 *
-	 * @param indentFactor	The number of spaces to add to each level of indentation.
-	 * @return a printable, displayable, portable, transmittable representation
-	 *		 of the object, beginning with <code>{</code>&nbsp;<small>(left
-	 *		 brace)</small> and ending with <code>}</code>&nbsp;<small>(right
-	 *		 brace)</small>.
+	 * @param indentFactor The number of spaces to add to each level of indentation.
+	 * @return a printable, displayable, portable, transmittable representation of
+	 *         the object, beginning with <code>{</code>&nbsp;<small>(left
+	 *         brace)</small> and ending with <code>}</code>&nbsp;<small>(right
+	 *         brace)</small>.
 	 */
 	public String toString(int indentFactor);
 
 	/**
 	 * Activate Allow Empty Value
+	 * 
 	 * @param allow is Empty Value (NULL) Allow
+	 * @return The BaseItem
 	 */
-	public void setAllowEmptyValue(boolean allow);
+	public BaseItem withAllowEmptyValue(boolean allow);
 
 	public BaseItem getElementBy(String key, String value);
 
 	public BaseItem withValue(Buffer values);
 
-	public BaseItem setType(String type);
+	public BaseItem withType(String type);
 }

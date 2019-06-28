@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf.proxy;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -50,16 +50,17 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public class NodeProxyTCP extends NodeProxy {
-	public static int BUFFER=100*1024;
-	public static final String POST="POST";
-	public static final String GET="GET";
+	public static int BUFFER = 100 * 1024;
+	public static final String POST = "POST";
+	public static final String GET = "GET";
 	public static final String PUT = "PUT";
 	public static final String PATCH = "PATCH";
 	public static final String DELETE = "DELETE";
 
 	public static final String PROPERTY_URL = "url";
 	public static final String PROPERTY_PORT = "port";
-	
+	public static final String USERAGENT = "User-Agent";
+
 	public static final String BODY_PLAIN = "plain";
 	public static final String HEADER_PLAIN = "plainHeader";
 	public static final String BODY_JSON = "json";
@@ -100,8 +101,8 @@ public class NodeProxyTCP extends NodeProxy {
 
 	@Override
 	public String getKey() {
-		if(url ==null) {
-			return "server:"+port;
+		if (url == null) {
+			return "server:" + port;
 		}
 		return url + ":" + port;
 	}
@@ -128,7 +129,7 @@ public class NodeProxyTCP extends NodeProxy {
 
 	@Override
 	public Object getValue(Object element, String attrName) {
-		if(element instanceof NodeProxyTCP ) {
+		if (element instanceof NodeProxyTCP) {
 			NodeProxyTCP nodeProxy = (NodeProxyTCP) element;
 			if (PROPERTY_URL.equals(attrName)) {
 				return nodeProxy.getUrl();
@@ -142,7 +143,7 @@ public class NodeProxyTCP extends NodeProxy {
 
 	@Override
 	public boolean setValue(Object element, String attrName, Object value, String type) {
-		if(element instanceof NodeProxyTCP) {
+		if (element instanceof NodeProxyTCP) {
 			NodeProxyTCP nodeProxy = (NodeProxyTCP) element;
 			if (PROPERTY_URL.equals(attrName)) {
 				nodeProxy.withUrl((String) value);
@@ -156,53 +157,53 @@ public class NodeProxyTCP extends NodeProxy {
 		return super.setValue(element, attrName, value, type);
 	}
 
-	public Message readFromInputStream(Socket socket) throws IOException {
-		ByteBuffer buffer=new ByteBuffer();
+	public Message executeInputStream(Socket socket) throws IOException {
+		ByteBuffer buffer = new ByteBuffer();
 
 		byte[] messageArray = new byte[BUFFER];
 		InputStream is = socket.getInputStream();
 		int bytesRead;
 		while (-1 != (bytesRead = is.read(messageArray, 0, BUFFER))) {
 			buffer.with(new String(messageArray, 0, bytesRead, Charset.forName("UTF-8")));
-			if(bytesRead != BUFFER && allowAnswer) {
+			if (bytesRead != BUFFER && allowAnswer) {
 				break;
 			}
 		}
 
-		Message msg=null;
-		if(this.space != null) {
+		Message msg = null;
+		if (this.space != null) {
 			IdMap map = this.space.getMap();
 			Object element = map.decode(buffer);
 			this.space.updateNetwork(NodeProxy.TYPE_IN, this);
-			if(element instanceof Message) {
+			if (element instanceof Message) {
 				msg = (Message) element;
 				NodeProxy receiver = msg.getReceiver();
-				if(element instanceof ConnectMessage) {
+				if (element instanceof ConnectMessage) {
 					receiver.updateReceive(buffer.size(), false);
 				} else {
 					receiver.updateReceive(buffer.size(), true);
 				}
-				if(msg instanceof ReceivingTimerTask) {
-					((ReceivingTimerTask)msg).withSpace(this.space);
+				if (msg instanceof ReceivingTimerTask) {
+					((ReceivingTimerTask) msg).withSpace(this.space);
 				}
-				// Let my Know about the new Receiver
-				if(receiver != null) {
+				/* Let my Know about the new Receiver */
+				if (receiver != null) {
 					this.space.with(receiver);
 				}
 			}
 		}
-		if(msg == null){
-			msg=new Message();
+		if (msg == null) {
+			msg = new Message();
 		}
 		msg.withMessage(buffer.flip(false));
 		msg.withSession(socket);
 		msg.withAddToReceived(this);
-		if(this.listener != null) {
+		if (this.listener != null) {
 			this.listener.update(msg);
 		}
-		if(allowAnswer) {
+		if (allowAnswer) {
 			getExecutor().handleMsg(msg);
-		}else {
+		} else {
 			socket.close();
 			getExecutor().handleMsg(msg);
 		}
@@ -221,13 +222,13 @@ public class NodeProxyTCP extends NodeProxy {
 				Socket requestSocket = new Socket(addr, port);
 				if (msg.getTimeOut() > Message.TIMEOUTDEFAULT) {
 					requestSocket.setSoTimeout(msg.getTimeOut());
-				}else if(this.timeOut >0) {
+				} else if (this.timeOut > 0) {
 					requestSocket.setSoTimeout(this.timeOut);
 				}
 				OutputStream os = requestSocket.getOutputStream();
 				byte[] buffer;
-				if(this.space != null) {
- 					buffer = this.space.convertMessage(msg).getBytes();
+				if (this.space != null) {
+					buffer = this.space.convertMessage(msg).getBytes();
 				} else {
 					buffer = msg.toString().getBytes();
 				}
@@ -245,15 +246,15 @@ public class NodeProxyTCP extends NodeProxy {
 					start = end;
 				}
 				os.flush();
-				if(allowAnswer) {
-					readFromInputStream(requestSocket);
+				if (allowAnswer) {
+					executeInputStream(requestSocket);
 				}
 				setSendTime(buffer.length);
 				requestSocket.close();
 				success = true;
 			}
 		} catch (IOException ioException) {
-			// could not reach the proxy, mark it as offline
+			/* could not reach the proxy, mark it as offline */
 			this.withOnline(false);
 			success = false;
 		}
@@ -261,7 +262,7 @@ public class NodeProxyTCP extends NodeProxy {
 	}
 
 	public boolean start() {
-		return initProxy();
+		return startProxy();
 	}
 
 	@Override
@@ -274,14 +275,14 @@ public class NodeProxyTCP extends NodeProxy {
 	}
 
 	@Override
-	protected boolean initProxy() {
+	protected boolean startProxy() {
 		boolean isInput = NodeProxy.isInput(getType());
 		if (url == null && getType() == null || isInput) {
-			if(serverSocket != null) {
+			if (serverSocket != null) {
 				return true;
 			}
-			// Incoming Proxy
-			if(isInput == false) {
+			/* Incoming Proxy */
+			if (isInput == false) {
 				withType(NodeProxy.TYPE_IN);
 			}
 			serverSocket = new Server_TCP(this);
@@ -301,7 +302,6 @@ public class NodeProxyTCP extends NodeProxy {
 					url = InetAddress.getLocalHost().getHostAddress();
 				} catch (UnknownHostException e) {
 				}
-				// NodeProxyTCP result = createProxy(url, port);
 			}
 		}
 		return true;
@@ -334,28 +334,30 @@ public class NodeProxyTCP extends NodeProxy {
 		this.allowAnswer = true;
 		return this;
 	}
-	public static HTMLEntity postHTTP(String url, int port, String path, String bodyType, Object...params) {
+
+	public static HTMLEntity postHTTP(String url, int port, String path, String bodyType, Object... params) {
 		String uri = convertPath(url, port, path);
-		if(uri == null) {
+		if (uri == null) {
 			return null;
 		}
-		if(BODY_JSON.equalsIgnoreCase(bodyType) == false && BODY_PLAIN.equalsIgnoreCase(bodyType) == false && HEADER_PLAIN.equalsIgnoreCase(bodyType) == false) {
+		if (BODY_JSON.equalsIgnoreCase(bodyType) == false && BODY_PLAIN.equalsIgnoreCase(bodyType) == false
+				&& HEADER_PLAIN.equalsIgnoreCase(bodyType) == false) {
 			return null;
 		}
 		HttpURLConnection conn = getConnection(uri, POST);
-		
+
 		byte[] byteArray = null;
-		if(HEADER_PLAIN.equalsIgnoreCase(bodyType)) {
-			for(int i=0;i<params.length;i+=2) {
-				conn.setRequestProperty(""+params[i], ""+params[i + 1]);
+		if (HEADER_PLAIN.equalsIgnoreCase(bodyType)) {
+			for (int i = 0; i < params.length; i += 2) {
+				conn.setRequestProperty("" + params[i], "" + params[i + 1]);
 			}
-		} else if(BODY_PLAIN.equalsIgnoreCase(bodyType)) {
-			CharacterBuffer sb =new CharacterBuffer();
+		} else if (BODY_PLAIN.equalsIgnoreCase(bodyType)) {
+			CharacterBuffer sb = new CharacterBuffer();
 			convertParams(sb, params);
 			byteArray = sb.toBytes();
 			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-		} else if(BODY_JSON.equalsIgnoreCase(bodyType)) {
-			JsonObject json =new JsonObject();
+		} else if (BODY_JSON.equalsIgnoreCase(bodyType)) {
+			JsonObject json = new JsonObject();
 			convertParams(json, params);
 			byteArray = json.toString().getBytes();
 			conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
@@ -370,36 +372,36 @@ public class NodeProxyTCP extends NodeProxy {
 		}
 		return null;
 	}
-	
-	public static HTMLEntity getHTTP(HTMLEntity session, String path, Object...params) {
-		if(session == null) {
+
+	public static HTMLEntity getHTTP(HTMLEntity session, String path, Object... params) {
+		if (session == null) {
 			return null;
 		}
 		CharacterBuffer buffer = new CharacterBuffer();
 		buffer.add(session.getConnectionHeader("remote"));
-		if(buffer.length() <1) {
+		if (buffer.length() < 1) {
 			return null;
 		}
-		if(path != null) {
-			if(path.startsWith("/")) {
+		if (path != null) {
+			if (path.startsWith("/")) {
 				buffer.with(path);
-			}else {
+			} else {
 				buffer.with('/');
 				buffer.with(path);
 			}
 		}
-		if(params != null && params.length > 0) {
+		if (params != null && params.length > 0) {
 			buffer.add("?");
 			convertParams(buffer, params);
 		}
 		String uri = buffer.toString();
-		if(uri == null) {
+		if (uri == null) {
 			return null;
 		}
 		HttpURLConnection conn = getConnection(uri, GET);
 		List<String> cookies = session.getConnectionHeaders("Set-Cookie");
-		if(cookies != null) {
-			for(int i=0;i<cookies.size();i++) {
+		if (cookies != null) {
+			for (int i = 0; i < cookies.size(); i++) {
 				String cookie = cookies.get(i).substring(0, cookies.get(i).indexOf(';'));
 				conn.setRequestProperty("Cookie", cookie);
 			}
@@ -412,64 +414,65 @@ public class NodeProxyTCP extends NodeProxy {
 		return null;
 	}
 
-	public static HTMLEntity postHTTP(HTMLEntity session, String path, String bodyType, Object...params) {
-		if(session == null) {
+	public static HTMLEntity postHTTP(HTMLEntity session, String path, String bodyType, Object... params) {
+		if (session == null) {
 			return null;
 		}
 		CharacterBuffer buffer = new CharacterBuffer();
 		buffer.add(session.getConnectionHeader("remote"));
-		
-		if(path != null) {
-			if(path.startsWith("/")) {
+
+		if (path != null) {
+			if (path.startsWith("/")) {
 				buffer.with(path);
-			}else {
+			} else {
 				buffer.with('/');
 				buffer.with(path);
 			}
 		}
 		String uri = buffer.toString();
-		if(uri == null) {
+		if (uri == null) {
 			return null;
 		}
-		if(BODY_JSON.equalsIgnoreCase(bodyType) == false && BODY_PLAIN.equalsIgnoreCase(bodyType) == false && HEADER_PLAIN.equalsIgnoreCase(bodyType) == false) {
+		if (BODY_JSON.equalsIgnoreCase(bodyType) == false && BODY_PLAIN.equalsIgnoreCase(bodyType) == false
+				&& HEADER_PLAIN.equalsIgnoreCase(bodyType) == false) {
 			return null;
 		}
 		HttpURLConnection conn = getConnection(uri, POST);
 		List<String> cookies = session.getConnectionHeaders("Set-Cookie");
-		if(cookies != null) {
-			for(int i=0;i<cookies.size();i++) {
+		if (cookies != null) {
+			for (int i = 0; i < cookies.size(); i++) {
 				String cookie = cookies.get(i).substring(0, cookies.get(i).indexOf(';'));
 				conn.setRequestProperty("Cookie", cookie);
 			}
 		}
 		byte[] byteArray = null;
-		if(HEADER_PLAIN.equalsIgnoreCase(bodyType)) {
-			for(int i=0;i<params.length;i+=2) {
-				conn.setRequestProperty(""+params[i], ""+params[i + 1]);
+		if (HEADER_PLAIN.equalsIgnoreCase(bodyType)) {
+			for (int i = 0; i < params.length; i += 2) {
+				conn.setRequestProperty("" + params[i], "" + params[i + 1]);
 			}
-		} else if(BODY_PLAIN.equalsIgnoreCase(bodyType)) {
-			CharacterBuffer sb =new CharacterBuffer();
-			if(params != null && params.length == 1) {
+		} else if (BODY_PLAIN.equalsIgnoreCase(bodyType)) {
+			CharacterBuffer sb = new CharacterBuffer();
+			if (params != null && params.length == 1) {
 				sb.with(params[0].toString());
-			}else {
+			} else {
 				convertParams(sb, params);
 			}
 			byteArray = sb.toBytes();
-			conn.setRequestProperty("Content-Type", "text/plain"); 
+			conn.setRequestProperty("Content-Type", "text/plain");
 			conn.setRequestProperty("charset", "utf-8");
-			conn.setRequestProperty( "Content-Length", "" + byteArray.length);
-		} else if(BODY_JSON.equalsIgnoreCase(bodyType)) {
-			JsonObject json =new JsonObject();
+			conn.setRequestProperty("Content-Length", "" + byteArray.length);
+		} else if (BODY_JSON.equalsIgnoreCase(bodyType)) {
+			JsonObject json = new JsonObject();
 			convertParams(json, params);
 			byteArray = json.toString().getBytes();
 			conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
 		}
-		if(byteArray != null) {
+		if (byteArray != null) {
 			conn.setFixedLengthStreamingMode(byteArray.length);
 		}
 		try {
 			conn.connect();
-			if(byteArray != null) {
+			if (byteArray != null) {
 				OutputStream os = conn.getOutputStream();
 				os.write(byteArray);
 			}
@@ -480,26 +483,26 @@ public class NodeProxyTCP extends NodeProxy {
 	}
 
 	public static BaseItem convertParams(BaseItem result, Object... params) {
-		if(params == null || params.length<1) {
+		if (params == null || params.length < 1) {
 			return result;
 		}
-		if(params[0] instanceof Map<?,?>) {
-			Map<?,?> map = (Map<?, ?>) params[0];
+		if (params[0] instanceof Map<?, ?>) {
+			Map<?, ?> map = (Map<?, ?>) params[0];
 			Set<?> keySet = (Set<?>) map.keySet();
-			for(Object key : keySet) {
-				addToList(result, ""+key, ""+map.get(key));
+			for (Object key : keySet) {
+				addToList(result, "" + key, "" + map.get(key));
 			}
-		} else if(params.length % 2 == 0) {
-			for(int i=0;i<params.length;i+=2) {
-				addToList(result, ""+params[i], ""+params[i + 1]);
+		} else if (params.length % 2 == 0) {
+			for (int i = 0; i < params.length; i += 2) {
+				addToList(result, "" + params[i], "" + params[i + 1]);
 			}
 		}
 		return result;
 	}
-	
+
 	private static void addToList(BaseItem params, String key, String value) {
-		if(params instanceof CharacterBuffer) {
-			if(params.size() > 0 ) {
+		if (params instanceof CharacterBuffer) {
+			if (params.size() > 0) {
 				params.add('&');
 			}
 			params.add(key, "=", value);
@@ -510,10 +513,10 @@ public class NodeProxyTCP extends NodeProxy {
 
 	public static HTMLEntity postHTTP(String url, Map<String, String> params) {
 		HttpURLConnection conn = getConnection(url, POST);
-		if(conn == null) {
+		if (conn == null) {
 			return null;
 		}
-		CharacterBuffer sb =new CharacterBuffer();
+		CharacterBuffer sb = new CharacterBuffer();
 		convertParams(sb, params);
 		byte[] byteArray = sb.toBytes();
 		conn.setFixedLengthStreamingMode(byteArray.length);
@@ -531,11 +534,11 @@ public class NodeProxyTCP extends NodeProxy {
 
 	public static HTMLEntity postHTTP(String url, BaseItem params) {
 		HttpURLConnection conn = getConnection(url, POST);
-		if(conn == null) {
+		if (conn == null) {
 			return null;
 		}
-		CharacterBuffer sb=new CharacterBuffer();
-		if(params != null) {
+		CharacterBuffer sb = new CharacterBuffer();
+		if (params != null) {
 			sb.with(params.toString());
 		}
 		byte[] byteArray = sb.toBytes();
@@ -553,43 +556,49 @@ public class NodeProxyTCP extends NodeProxy {
 	}
 
 	private static HttpURLConnection getConnection(String url, String type) {
-		HttpURLConnection conn =null;
+		HttpURLConnection conn = null;
 		try {
-			if(url == null || url.isEmpty()) {
+			if (url == null || url.isEmpty()) {
 				return null;
 			}
-			if(url.startsWith("localhost") ) {
-				url = "http://"+url;
+			if (url.startsWith("localhost")) {
+				url = "http://" + url;
 			}
 			URL remoteURL = new URL(url);
 			conn = (HttpURLConnection) remoteURL.openConnection();
-			if(POST.equals(type)) {
+			if (POST.equals(type)) {
 				conn.setRequestMethod(POST);
 				conn.setDoOutput(true);
 			} else {
 				conn.setRequestMethod(GET);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			return null;
 		}
 		return conn;
 	}
 
 	private static HTMLEntity readAnswer(HttpURLConnection conn) {
-		HTMLEntity rootItem=new HTMLEntity();
-		if(conn == null) {
-			return rootItem;
+		return readAnswer(conn, null);
+	}
+
+	private static HTMLEntity readAnswer(HttpURLConnection conn, HTMLEntity root) {
+		if (root == null) {
+			root = new HTMLEntity();
+		}
+		if (conn == null) {
+			return root;
 		}
 		try {
-			rootItem.withStatus(conn.getResponseCode(), conn.getResponseMessage());
+			root.withStatus(conn.getResponseCode(), conn.getResponseMessage());
 			String uri = conn.getURL().toString();
 			String path = conn.getURL().getPath();
-			if(uri.length()> path.length()) {
+			if (uri.length() > path.length()) {
 				uri = uri.substring(0, uri.length() - path.length());
 			}
-			rootItem.withConnectionHeader("remote", uri);
-			
-			rootItem.withConnectionHeader(conn.getHeaderFields());
+			root.withConnectionHeader("remote", uri);
+
+			root.withConnectionHeader(conn.getHeaderFields());
 
 			InputStream is = conn.getInputStream();
 			CharacterBuffer sb = new CharacterBuffer();
@@ -597,11 +606,11 @@ public class NodeProxyTCP extends NodeProxy {
 			while (true) {
 				int bytesRead = is.read(messageArray, 0, BUFFER);
 				if (bytesRead <= 0)
-					break; // <======= no more data
+					break; /* <======= no more data */
 				sb.add(new String(messageArray, 0, bytesRead, Charset.forName("UTF-8")));
 			}
-			rootItem.with(sb);
-		}catch (IOException e) {
+			root.with(sb);
+		} catch (IOException e) {
 			InputStream is = conn.getErrorStream();
 			byte[] messageArray = new byte[BUFFER];
 			CharacterBuffer sb = new CharacterBuffer();
@@ -609,38 +618,36 @@ public class NodeProxyTCP extends NodeProxy {
 				while (true) {
 					int bytesRead = is.read(messageArray, 0, BUFFER);
 					if (bytesRead <= 0)
-						break; // <======= no more data
+						break; /* <======= no more data */
 					sb.add(new String(messageArray, 0, bytesRead, Charset.forName("UTF-8")));
 				}
-				rootItem.with(sb);
-			}catch (Exception e2) {
+				root.with(sb);
+			} catch (Exception e2) {
 			}
-//			e.printStackTrace();
 		}
-		
 
 		conn.disconnect();
-		return rootItem;
+		return root;
 	}
-	
+
 	public static String convertPath(String url, int port, String path) {
-		if(url == null) {
+		if (url == null) {
 			return null;
 		}
-		CharacterBuffer buffer=new CharacterBuffer();
-		if(url.toLowerCase().startsWith("http")) {
+		CharacterBuffer buffer = new CharacterBuffer();
+		if (url.toLowerCase().startsWith("http")) {
 			buffer.with(url);
 		} else {
-			buffer.with("http://"+url);
+			buffer.with("http://" + url);
 		}
-		if(buffer.indexOf(':', 6)<1) {
+		if (buffer.indexOf(':', 6) < 1) {
 			buffer.with(':');
 			buffer.with(port);
 		}
-		if(path != null) {
-			if(path.startsWith("/")) {
+		if (path != null) {
+			if (path.startsWith("/")) {
 				buffer.with(path);
-			}else {
+			} else {
 				buffer.with('/');
 				buffer.with(path);
 			}
@@ -650,24 +657,63 @@ public class NodeProxyTCP extends NodeProxy {
 
 	public static HTMLEntity getHTTP(String url, int port, String path) {
 		String uri = convertPath(url, port, path);
-		if(uri == null) {
+		if (uri == null) {
 			return null;
 		}
 		return getHTTP(url);
 	}
-	
-	public static HTMLEntity getHTTP(String url) {
+
+	public static HTMLEntity getHTTP(String url, HTMLEntity... root) {
 		HttpURLConnection conn = getConnection(url, GET);
-		if(conn == null) {
+		if (conn == null) {
 			return null;
 		}
-		return readAnswer(conn);
+		HTMLEntity rootItem = null;
+		if (root != null && root.length > 0) {
+			rootItem = root[0];
+		}
+		return readAnswer(conn, rootItem);
+	}
+
+	public static HTMLEntity getSimpleHTTP(String url, String... headers) {
+		HttpURLConnection conn = getConnection(url, GET);
+		if (headers != null && headers.length % 2 == 0) {
+			for (int i = 0; i < headers.length; i += 2) {
+				conn.setRequestProperty(headers[i], headers[i + 1]);
+			}
+		}
+		if (conn == null) {
+			return null;
+		}
+		HTMLEntity rootItem = null;
+		return readAnswer(conn, rootItem);
+	}
+
+	public static ByteBuffer getHTTPBinary(String url) {
+		HttpURLConnection conn = getConnection(url, GET);
+		if (conn == null) {
+			return null;
+		}
+		ByteBuffer sb = new ByteBuffer();
+		try {
+			InputStream is = conn.getInputStream();
+			byte[] messageArray = new byte[BUFFER];
+			while (true) {
+				int bytesRead = is.read(messageArray, 0, BUFFER);
+				if (bytesRead <= 0)
+					break; /* <======= no more data */
+				sb.addBytes(messageArray, bytesRead, false);
+			}
+		} catch (Exception e) {
+		}
+		conn.disconnect();
+		return sb;
 	}
 
 	@Override
 	public String toString() {
-		if(this.url != null && this.port >0) {
-			return this.getClass().getSimpleName() + " "+this.url+":"+this.port;
+		if (this.url != null && this.port > 0) {
+			return this.getClass().getSimpleName() + " " + this.url + ":" + this.port;
 		}
 		return super.toString();
 	}
@@ -679,10 +725,15 @@ public class NodeProxyTCP extends NodeProxy {
 
 	@Override
 	public boolean isValid() {
-		if(this.port >0) {
+		if (this.port > 0) {
 			return true;
 		}
 		return false;
+	}
+
+	public static NodeProxy search(int port) {
+		/* Create BroadCast and search in Local Network */
+		return null;
 	}
 
 }

@@ -3,7 +3,7 @@ package de.uniks.networkparser.list;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class SimpleList<V> extends AbstractList<V> implements List<V> {
-	public static final String PROPERTY="items";
+	public static final String PROPERTY = "items";
 	private ObjectCondition listener;
 
 	public SimpleList() {
@@ -49,7 +49,7 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 
 	@Override
 	public boolean remove(Object o) {
-		return super.removeByObject(o)>=0;
+		return super.removeByObject(o) >= 0;
 	}
 
 	@Override
@@ -68,9 +68,11 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	}
 
 	@Override
-	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, int index, Object value) {
-		if(this.listener != null) {
-			this.listener.update(new SimpleEvent(type, this, PROPERTY, index, newElement, oldElement, value, beforeElement));
+	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, int index,
+			Object value) {
+		if (this.listener != null) {
+			this.listener
+					.update(new SimpleEvent(type, this, PROPERTY, index, newElement, oldElement, value, beforeElement));
 		}
 		return super.fireProperty(type, oldElement, newElement, beforeElement, index, value);
 	}

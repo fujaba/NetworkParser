@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.sql;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ import de.uniks.networkparser.list.SimpleIterator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
-public class SQLTable extends SimpleList<Object>{
+public class SQLTable extends SimpleList<Object> {
 	private String table;
 	private boolean simple;
 
@@ -43,7 +43,7 @@ public class SQLTable extends SimpleList<Object>{
 		String[] properties = new String[values.size()];
 		String property = null;
 		int counter = 0;
-		for(SimpleIterator<String> i = new SimpleIterator<String>(values);i.hasNext();) {
+		for (SimpleIterator<String> i = new SimpleIterator<String>(values); i.hasNext();) {
 			property = i.next();
 			properties[counter] = property;
 			counter++;
@@ -54,23 +54,23 @@ public class SQLTable extends SimpleList<Object>{
 	public static SQLTable create(ResultSet executeQuery, SendableEntityCreator creator) {
 		String tableName;
 		Object prototype = creator.getSendableInstance(true);
-		if(prototype instanceof Class<?>) {
-			tableName = EntityUtil.shortClassName(((Class<?>)prototype).getName());
-		}else {
+		if (prototype instanceof Class<?>) {
+			tableName = EntityUtil.shortClassName(((Class<?>) prototype).getName());
+		} else {
 			tableName = EntityUtil.shortClassName(prototype.getClass().getName());
 		}
 		return create(executeQuery, creator.getProperties(), tableName, false);
 	}
 
 	public SimpleList<Object> getColumnValue(String column) {
-		SimpleList<Object> values=new SimpleList<Object>();
-		if(this.simple) {
+		SimpleList<Object> values = new SimpleList<Object>();
+		if (this.simple) {
 			return this;
 		}
-		for(Iterator<Object> i = this.iterator();i.hasNext();) {
+		for (Iterator<Object> i = this.iterator(); i.hasNext();) {
 			Object item = i.next();
-			if(item instanceof SimpleKeyValueList<?,?>) {
-				SimpleKeyValueList<?,?> row = (SimpleKeyValueList<?, ?>) item;
+			if (item instanceof SimpleKeyValueList<?, ?>) {
+				SimpleKeyValueList<?, ?> row = (SimpleKeyValueList<?, ?>) item;
 				values.add(row.get(column));
 			}
 		}
@@ -80,23 +80,21 @@ public class SQLTable extends SimpleList<Object>{
 	public static SQLTable create(ResultSet executeQuery, String[] properties, String table, boolean isDynamicResult) {
 		SQLTable sqlTable = new SQLTable();
 		sqlTable.withTable(table);
-		if(isDynamicResult && properties.length != 1) {
+		if (isDynamicResult && properties.length != 1) {
 			isDynamicResult = false;
 		}
-		if(properties != null) {
+		if (properties != null) {
 			try {
-				if(isDynamicResult) {
+				if (isDynamicResult) {
 					String prop = properties[0];
-					while(executeQuery.next())
-					{
+					while (executeQuery.next()) {
 						sqlTable.add(executeQuery.getObject(prop));
 					}
 					sqlTable.withSimple(true);
 				} else {
-					while(executeQuery.next())
-					{
+					while (executeQuery.next()) {
 						SimpleKeyValueList<String, Object> row = new SimpleKeyValueList<String, Object>();
-						for(String prop : properties) {
+						for (String prop : properties) {
 							row.add(prop, executeQuery.getObject(prop));
 						}
 						sqlTable.add(row);
@@ -121,6 +119,7 @@ public class SQLTable extends SimpleList<Object>{
 	public boolean isSimple() {
 		return simple;
 	}
+
 	public SQLTable withSimple(boolean value) {
 		this.simple = value;
 		return this;

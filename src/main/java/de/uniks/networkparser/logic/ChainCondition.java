@@ -3,7 +3,7 @@ package de.uniks.networkparser.logic;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -39,7 +40,7 @@ public class ChainCondition extends ListCondition {
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
-		// CHAIN CANT CREATE
+		/* CHAIN CANT CREATE */
 	}
 
 	@Override
@@ -57,7 +58,7 @@ public class ChainCondition extends ListCondition {
 	public ChainCondition with(Collection<ObjectCondition> values) {
 		ConditionSet list;
 
-		if(this.list instanceof ConditionSet) {
+		if (this.list instanceof ConditionSet) {
 			list = (ConditionSet) this.list;
 		} else {
 			list = new ConditionSet();
@@ -67,7 +68,6 @@ public class ChainCondition extends ListCondition {
 		list.withList(values);
 		return this;
 	}
-
 
 	@Override
 	public boolean isExpression() {

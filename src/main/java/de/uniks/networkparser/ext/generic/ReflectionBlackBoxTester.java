@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.generic;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,99 +27,115 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Set;
 import java.util.Timer;
 
 import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.ext.ErrorHandler;
+import de.uniks.networkparser.ext.FileClassModel;
+import de.uniks.networkparser.ext.Gradle;
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.SimpleController;
-import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
+import de.uniks.networkparser.ext.http.HTTPRequest;
+import de.uniks.networkparser.ext.petaf.ModelThread;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
-import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class ReflectionBlackBoxTester {
-	public static final String NULLVALUE="nullValue";
-	public static final String MINVALUE="minValue";
-	public static final String MAXVALUE="maxValue";
-	public static final String RANDOMVALUE="randomValue";
-	public static final String BLACKBOXTESTER="backboxtest";
-	public static final String INSTANCE="instance";
-	public static final String IGNOREMETHOD="run";
-	public static final String DEFAULTMETHODS="";
+	public static final String TYPE_NULLVALUE = "null";
+	public static final String TYPE_MINVALUE = "min";
+	public static final String TYPE_MIDDLEVALUE = "middle";
+	public static final String TYPE_MAXVALUE = "max";
+	public static final String TYPE_RANDOMVALUE = "random";
+	public static final String TYPE_CUSTOMVALUE = "custom";
+	public static final String BLACKBOXTESTER = "backboxtest";
+	public static final String INSTANCE = "instance";
+	public static final String DEFAULTMETHODS = "";
 
-	private SimpleSet<String> tests=new SimpleSet<String>().with(NULLVALUE,MINVALUE,RANDOMVALUE);
+	private SimpleSet<String> tests = new SimpleSet<String>().with(TYPE_NULLVALUE, TYPE_MINVALUE, TYPE_RANDOMVALUE,
+			TYPE_CUSTOMVALUE, TYPE_MIDDLEVALUE);
 	private SimpleKeyValueList<String, SimpleSet<String>> ignoreMethods;
-//	private SimpleSet<String> ignoreClazz=new SimpleSet<String>().with("de.uniks.networkparser.NetworkParserLog");
 	private int errorCount;
+	private int successClazzCount;
+	private int errorClazzCount;
+	private boolean ignoreClassError;
+	private boolean ignoreSimpleException;
 	private int successCount;
 	private String packageName;
-	private NetworkParserLog logger;
+	private NetworkParserLog logger = new NetworkParserLog();
+	private ObjectCondition custom;
+	private long startTime;
+	private int oldThreadCount;
+	private int breakByErrorCount = -1;
 
-	public static void mainTester(String[] args) {
+	public void mainTester(String[] args) {
 		Object junitCore = ReflectionLoader.newInstanceStr("org.junit.runner.JUnitCore");
-		SimpleSet<Class<?>> testClasses=new SimpleSet<Class<?>>();
+		SimpleSet<Class<?>> testClasses = new SimpleSet<Class<?>>();
 		String blackBoxPackage = null;
 		String path = "doc/";
-		if(junitCore != null) {
-			for(String param : args) {
-				if(param.startsWith("test=")) {
+		if (junitCore != null && args != null) {
+			for (String param : args) {
+				if (param == null) {
+					continue;
+				}
+				if (param.startsWith("test=")) {
 					param = param.substring(5);
 					String[] clazzes = param.split(",");
-					for(String item : clazzes) {
-						if(item.startsWith(BLACKBOXTESTER)) {
+					for (String item : clazzes) {
+						if (item.startsWith(BLACKBOXTESTER)) {
 							int pos = item.indexOf('=');
-							if(pos>0) {
+							if (pos > 0) {
 								blackBoxPackage = item.substring(pos + 1);
 							} else {
 								blackBoxPackage = "";
 							}
 						}
 						Class<?> testClazz = ReflectionLoader.getClass(item);
-						if(testClazz != null) {
+						if (testClazz != null) {
 							testClasses.add(testClazz);
 						}
 					}
-				}else if(param.startsWith("path=")) {
+				} else if (param.startsWith("path=")) {
 					path = param.substring(5);
 				}
 			}
-			if(testClasses.size()<1 && blackBoxPackage == null) {
+			if (testClasses.size() < 1 && blackBoxPackage == null) {
 				return;
 			}
 			Class<? extends Object> itemClass = junitCore.getClass();
 			Method method = null;
 			try {
-			}catch (Exception e) {
+			} catch (Exception e) {
 				try {
 					method = itemClass.getDeclaredMethod("run", Class[].class);
 				} catch (Exception e1) {
 				}
 			}
-			if(method != null) {
+			if (method != null) {
 				Class<?>[] list = testClasses.toArray(new Class<?>[testClasses.size()]);
 				try {
-					method.invoke(junitCore, new Object[] {list});
+					method.invoke(junitCore, new Object[] { list });
 				} catch (Exception e) {
-					System.out.println("error: "+e.getMessage());
-					e.printStackTrace(System.out);
+					logger.error(ReflectionBlackBoxTester.class, "mainTester", "error: " + e.getMessage(), e);
 				}
 			}
-			// Now Check if BaclkBoxTester activ
-			if(blackBoxPackage != null) {
+			/* Now Check if BaclkBoxTester activ */
+			if (blackBoxPackage != null) {
 				StoryStepJUnit storyStepJUnit = new StoryStepJUnit();
 				storyStepJUnit.withPackageName(blackBoxPackage);
 				storyStepJUnit.executeBlackBoxTest(path);
@@ -127,69 +143,58 @@ public class ReflectionBlackBoxTester {
 		}
 	}
 
-
 	public ReflectionBlackBoxTester() {
-		ignoreMethods =new SimpleKeyValueList<String, SimpleSet<String>>();
+		ignoreMethods = new SimpleKeyValueList<String, SimpleSet<String>>();
 
-		withIgnoreClazzes(ReflectionBlackBoxTester.class, "main");
-
-		// Add for Files
+		withIgnoreClazzes(Gradle.class);
+		withIgnoreClazzes(FileClassModel.class);
+		/* Add for Files */
 		withIgnoreClazzes(Story.class, "dumpHTML", "writeFile");
 		withIgnoreClazzes(ErrorHandler.class);
 		withIgnoreClazzes(StoryStepJUnit.class, "update");
-		ignoreMethods.add(DEFAULTMETHODS, new SimpleSet<String>().with("show*", "run", "execute*", "checkSystemTray", "main"));
-		// Add for new Threads
-//		withIgnoreClazzes(SimpleController.class, "create", "init");
-		withIgnoreClazzes(SimpleController.class);
-		withIgnoreClazzes(DialogBox.class, "createContent");
-		withIgnoreClazzes(JarValidator.class);
+		withIgnoreClazzes(ModelThread.class);
 
-		// TEST
-//		withIgnoreClazzes(Server_UPD.class);
-//		withIgnoreClazzes(Server_Time.class);
-//		withIgnoreClazzes(Space.class);
-//		withIgnoreClazzes(NodeProxyServer.class);
-//		withIgnoreClazzes(NodeProxyTCP.class, "initProxy", "postHTTP", "getHTTP", "getConnection");
-//		withIgnoreClazzes(DiagramEditor.class);
-//		withIgnoreClazzes(NodeProxyMessages.class);
-//		withIgnoreClazzes(NodeProxyBroker.class);
-//		withIgnoreClazzes(MQTTMessage.class);
-//		withIgnoreClazzes(RabbitMessage.class);
-//		withIgnoreClazzes(MessageSession.class);
-//		withIgnoreClazzes(JavaAdapter.class);
-//		withIgnoreClazzes(JavaBridgeFX.class);
-//		withIgnoreClazzes(TimerExecutor.class);
+		ignoreMethods.add(DEFAULTMETHODS,
+				new SimpleSet<String>().with("show*", "run*", "start*", "execute*", "consume", "subscribe", "main"));
+		/* Add for new Threads */
+		withIgnoreClazzes(SimpleController.class, "create", "init");
+		withIgnoreClazzes(JarValidator.class);
 	}
 
 	public ReflectionBlackBoxTester withIgnoreClazzes(Class<?> metaClass, String... methods) {
+		if (metaClass == null) {
+			return this;
+		}
 		String className = metaClass.getName();
-		if(methods == null || methods.length < 1) {
+		if (methods == null || methods.length < 1) {
 			return withIgnoreClazzes(className);
 		}
-		for(String method : methods) {
-			withIgnoreClazzes(className+":"+method);
+		for (String method : methods) {
+			withIgnoreClazzes(className + ":" + method);
 		}
 		return this;
 	}
 
-
 	public ReflectionBlackBoxTester withIgnoreClazzes(String... values) {
-		if(values == null) {
+		if (values == null) {
 			return this;
 		}
-		for(String item : values) {
+		for (String item : values) {
+			if (item == null) {
+				continue;
+			}
 			int pos = item.indexOf(":");
-			if(pos<0) {
-				if(this.ignoreMethods.contains(item) == false) {
+			if (pos < 0) {
+				if (this.ignoreMethods.contains(item) == false) {
 					this.ignoreMethods.put(item, new SimpleSet<String>());
 				}
-			}else {
+			} else {
 				String clazz = item.substring(0, pos);
-				String method = item.substring(pos+1);
+				String method = item.substring(pos + 1);
 				SimpleSet<String> methods = this.ignoreMethods.get(clazz);
-				if(methods instanceof SimpleSet<?>) {
+				if (methods instanceof SimpleSet<?>) {
 					methods.add(method);
-				}else {
+				} else {
 					methods = new SimpleSet<String>().with(method);
 					this.ignoreMethods.put(clazz, methods);
 				}
@@ -200,285 +205,394 @@ public class ReflectionBlackBoxTester {
 
 	public static final boolean isTester() {
 		String property = System.getProperty("Tester");
-		return property != null && "true".equalsIgnoreCase(property);
+		return property != null;
 	}
-	
-	public void test(String packageName, NetworkParserLog logger) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		System.setProperty("Tester", "true");
-		ArrayList<Class<?>> classesForPackage = getClassesForPackage(packageName);
+
+	public static final boolean setTester() {
+		String property = System.getProperty("Tester");
+		if (property == null || property.length() < 1) {
+			System.setProperty("Tester", "true");
+		}
+		return true;
+	}
+
+	public boolean execute(String... path) {
+		try {
+			if (path != null && path.length > 0) {
+				this.packageName = path[0];
+			}
+			return test(packageName, null);
+		} catch (Exception e) {
+		}
+		return false;
+	}
+
+	public boolean test(String packageName, NetworkParserLog logger) throws ClassNotFoundException, IOException,
+			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		String tester = Os.getTester();
+		setTester();
+		SimpleList<Class<?>> classesForPackage = ReflectionLoader.getClassesForPackage(packageName);
+		if (classesForPackage == null) {
+			return true;
+		}
 		errorCount = 0;
 		successCount = 0;
 		this.packageName = packageName;
 		this.logger = logger;
-		long start = System.currentTimeMillis();
+		this.startTime = System.currentTimeMillis();
 		Set<Thread> oldThreads = ReflectionLoader.closeThreads(null);
+		this.oldThreadCount = oldThreads.size();
 		Timer timer = new Timer();
+		SimpleSet<String> defaultMethods = this.ignoreMethods.get(DEFAULTMETHODS);
 
-		for(Class<?> clazz : classesForPackage) {
-			SimpleSet<String> methods = this.ignoreMethods.get(clazz.getName());
-			if(methods != null && methods.size()<1) {
-//				System.out.println("Ignore:"+clazz.getName());
+		for (Class<?> clazz : classesForPackage) {
+			if (Modifier.isAbstract(clazz.getModifiers())) {
 				continue;
 			}
-			if(Modifier.isAbstract(clazz.getModifiers()) ) {
+
+			SimpleSet<String> methods = getMethods(clazz.getName());
+			if (methods != null && methods.size() < 1) {
 				continue;
 			}
 			SimpleTimerTask task = new SimpleTimerTask(Thread.currentThread());
 			timer.schedule(task, 2000);
-			Object obj = ReflectionLoader.newInstanceSimple(clazz, IGNOREMETHOD);
-			if(obj != null) {
-				// Show For Ignore DefaultMethods
-				SimpleSet<String> defaultMethods = this.ignoreMethods.get(DEFAULTMETHODS);
-				if(defaultMethods!= null) {
-					if(methods == null) {
-						methods = new SimpleSet<String>();
+			Object obj = ReflectionLoader.newInstanceSimple(clazz);
+			if (obj == null && clazz.isEnum()) {
+				continue;
+			}
+			if (obj == null) {
+				obj = ReflectionLoader.newInstanceSimple(clazz);
+			}
+			if (obj != null) {
+				/* Show For Ignore DefaultMethods */
+
+				if (defaultMethods != null) {
+					if (methods != null) {
+						methods.withList(defaultMethods);
+					} else {
+						methods = defaultMethods;
 					}
-					methods.withList(defaultMethods);
 				}
-				testClass(obj, clazz, methods);
+				if(testClass(obj, clazz, methods) == false) {
+					break;
+				}
+			} else {
+				logger.debug(this, "test", "ERROR: DONT INSTANCE: " + clazz.getName());
+				output(clazz, "dont instance of " + clazz.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR, null);
 			}
 			task.withSimpleExit(null);
 		}
 
-		if(timer != null) {
+		if (timer != null) {
 			timer.cancel();
 			timer = null;
 		}
-		
-		ReflectionLoader.closeThreads(oldThreads);
 
-		// Write out all Results
-		output(this, "Errors: "+errorCount+ "/" + (errorCount+ successCount), logger, NetworkParserLog.LOGLEVEL_INFO, null);
-		output(this, "Time: "+(System.currentTimeMillis() - start) + "ms - Thread: "+ oldThreads.size() + " -> "+ Thread.activeCount(), logger, NetworkParserLog.LOGLEVEL_INFO, null);
-
+		if ("gitlab".equalsIgnoreCase(tester) == false) {
+			ReflectionLoader.closeThreads(oldThreads);
+		}
+		printResult(NetworkParserLog.LOGLEVEL_INFO);
+		return true;
 	}
 
+	public SimpleSet<String> getMethods(String className) {
+		return this.ignoreMethods.get(className);
+	}
 
-	public void testClass(Object obj, Class<?> clazz, SimpleSet<String> ignoreMethods) {
-		boolean reg=false;
-		if(obj == null) {
-			return;
+	public boolean testClass(Object obj, Class<?> clazz, SimpleSet<String> ignoreMethods) {
+		boolean reg = false;
+		Set<Thread> oldThreads = Thread.getAllStackTraces().keySet();
+		if (obj == null) {
+			return true;
 		}
-		for(String m : ignoreMethods) {
-			if(m != null && m.endsWith("*")) {
-				reg=true;
-				break;
+		if (ignoreMethods != null) {
+			for (String m : ignoreMethods) {
+				if (m != null && m.endsWith("*")) {
+					reg = true;
+					break;
+				}
 			}
 		}
 		Field propertyChangeListener = null;
 		try {
 			propertyChangeListener = clazz.getDeclaredField("listeners");
 			propertyChangeListener.setAccessible(true);
-		}catch (Exception e) {
+		} catch (Exception e) {
 		}
-		for(Method m : clazz.getDeclaredMethods()) {
-			if(m.getDeclaringClass().isInterface()) {
+		boolean isValid = true;
+		for (Method m : clazz.getDeclaredMethods()) {
+			if (m.getDeclaringClass().isInterface()) {
 				continue;
 			}
-			if(ignoreMethods != null && ignoreMethods.contains(m.getName())) {
+			if (ignoreMethods != null && ignoreMethods.contains(m.getName())) {
 				continue;
 			}
-			if(reg) {
+			if (reg) {
 				boolean continueFlag = false;
-				for(String name : ignoreMethods) {
-					if(name != null && name.endsWith("*")) {
+				for (String name : ignoreMethods) {
+					if (name != null && name.endsWith("*")) {
 						String lowerCase = name.substring(0, name.length() - 1).toLowerCase();
-						if(m.getName().toLowerCase().startsWith(lowerCase)) {
-							continueFlag=true;
+						if (m.getName().toLowerCase().startsWith(lowerCase)) {
+							continueFlag = true;
 							break;
 						}
-						
+
 					}
 				}
-				if(continueFlag) {
+				if (continueFlag) {
 					continue;
 				}
 			}
-			output(this, clazz.getName()+":"+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR, null);
+			output(this, clazz.getName() + ":" + m.getName(), logger, NetworkParserLog.LOGLEVEL_DEBUG, null);
 
 			Object[] call = null;
 			m.setAccessible(true);
-			// mit Null as Parameter
-//			System.out.println(System.currentTimeMillis()+" TEST:"+clazz.getName()+":"+m.getName());
+			/* mit Null as Parameter */
 			Class<?>[] parameterTypes = m.getParameterTypes();
-			if(tests.contains(NULLVALUE)) {
+			for (String type : tests) {
 				try {
-					call = getParameters(parameterTypes, NULLVALUE);
-
-					m.invoke(obj, call);
-					successCount++;
-				}catch(Exception e) {
-					saveException(e, clazz, m, call);
-				}
-				// specialcase
-				if(propertyChangeListener != null && "addPropertyChangeListener".equals(m.getName())) {
-					// So try again
-					try {
-						propertyChangeListener.set(obj, null);
-					}catch (Exception e) {
-							e.printStackTrace();
-					}
-						
-					try {
+					call = getParameters(m, parameterTypes, type, this);
+					if (call != null) {
+						if (logger != null) {
+							logger.info(this, "CALL", obj.getClass().getName() + ": " + m.getName());
+						}
 						m.invoke(obj, call);
 						successCount++;
-					}catch (Exception e) {
+					}
+				} catch (Exception e) {
+					isValid = false;
+					if(saveException(e, clazz, m, call) == false) {
+						return false;
+					}
+				}
+				if (TYPE_NULLVALUE.equals(type)) {
+					/* specialcase */
+					if ("update".equals(m.getName())) {
+						/* So try again */
+						try {
+							Class<?>[] types = m.getParameterTypes();
+							if (types.length == 1) {
+								if (types[0] != int.class && types[0] != byte[].class && types[0] != String.class
+										&& types[0] != byte.class && types[0] != HTTPRequest.class) {
+									m.invoke(obj, new SimpleEvent(this, "TESTER", null, null));
+								}
+							}
+						} catch (Exception e) {
+							saveException(e, clazz, m, call);
+							isValid = false;
+						}
+					}
+					if (propertyChangeListener != null && "addPropertyChangeListener".equals(m.getName())) {
+						/* So try again */
+						try {
+							propertyChangeListener.set(obj, null);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						try {
+							m.invoke(obj, call);
+							successCount++;
+						} catch (Exception e) {
+						}
 					}
 				}
 			}
-			// mit MINVALUE as Parameter
-			if(tests.contains(MINVALUE)) {
-				try {
-					call = getParameters(parameterTypes, MINVALUE);
-					m.invoke(obj, call);
-					successCount++;
-				}catch(Exception e) {
-					saveException(e, clazz, m, call);
-				}
-			}
-			// mit MAXVALUE as Parameter
-			if(tests.contains(MAXVALUE)) {
-				try {
-					call = getParameters(parameterTypes, MAXVALUE);
-					m.invoke(obj, call);
-					successCount++;
-				} catch(Exception e) {
-					saveException(e, clazz, m, call);
-				}
-			}
-
-			// mit RANDOMVALUE as Parameter
-			if(tests.contains(RANDOMVALUE)) {
-				try {
-					call = getParameters(parameterTypes, RANDOMVALUE);
-//					output(clazz.getName()+"-call: "+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
-
-					m.invoke(obj, call);
-					successCount++;
-				} catch(Exception e) {
-					saveException(e, clazz, m, call);
-				}
+			Set<Thread> newThreads = Thread.getAllStackTraces().keySet();
+			if (newThreads.size() > oldThreads.size()) {
+				logger.debug(this, "test", "ERROR:" + clazz.getName() + ":" + m.getName());
 			}
 		}
-		for(Field f : clazz.getDeclaredFields()) {
+		for (Field f : clazz.getDeclaredFields()) {
 			try {
 				f.setAccessible(true);
 				Object value = f.get(obj);
-				if(value == null) {
+				if (value == null) {
 					output(f, "field null", logger, NetworkParserLog.LOGLEVEL_WARNING, null);
 				}
-				if(Modifier.isFinal(f.getModifiers())) {
+				if (Modifier.isFinal(f.getModifiers())) {
 					continue;
 				}
-				if(value != null) {
+				if (value != null) {
 					f.set(obj, getNullValue(value.getClass()));
 					f.set(obj, value);
 				}
-			} catch(Exception e) {
+			} catch (Exception e) {
 			}
 		}
-		if(obj instanceof SendableEntityCreator) {
+		if (obj instanceof SendableEntityCreator) {
 			try {
-				((SendableEntityCreator)obj).setValue(obj, DEFAULTMETHODS, null, SendableEntityCreator.REMOVE_YOU);
-			}catch (Throwable e) {
+				((SendableEntityCreator) obj).setValue(obj, DEFAULTMETHODS, null, SendableEntityCreator.REMOVE_YOU);
+			} catch (Throwable e) {
 				Exception e2 = null;
-				if(e instanceof Exception) {
+				if (e instanceof Exception) {
 					e2 = (Exception) e;
 				}
-				output(this, "Dont kill: "+obj, logger, NetworkParserLog.LOGLEVEL_WARNING, e2);
+				output(this, "Dont kill: " + obj, logger, NetworkParserLog.LOGLEVEL_WARNING, e2);
 			}
 		}
-		
+		Set<Thread> newThreads = Thread.getAllStackTraces().keySet();
+		if (newThreads.size() > oldThreads.size()) {
+			logger.debug(this, "test", "ERROR:" + clazz.getName());
+		}
+		if (isValid) {
+			successClazzCount++;
+		} else {
+			errorClazzCount++;
+		}
+		return true;
 	}
-	
+
 	public ReflectionBlackBoxTester withTest(String value) {
 		this.tests.clear();
 		this.tests.add(value);
 		return this;
 	}
 
-	private void saveException(Exception e, Class<?> clazz, Method m, Object[] call) {
-		String line =getLine(packageName, e, clazz.getSimpleName());
-		if(line.length()<1) {
-			line = clazz.getName()+".java:1";
+	private boolean saveException(Exception e, Class<?> clazz, Method m, Object[] call) {
+		if (clazz == null) {
+			return true;
 		}
-//		String error = "("+line+") : "+clazz.getName()+":"+getSignature(m) +" "+ e.getCause()+":"+getParamtoString(call)+"\n");
-//		output(error.toString(), logger, NetworkParserLog.LOGLEVEL_ERROR);
-
-		String shortName="";
-		if(line.lastIndexOf(".")>0) {
-			String[] split = line.split("\\.");
-			shortName = line.substring(0, line.lastIndexOf(":") - 4) +m.getName()+"("+split[split.length - 2] + "."+split[split.length - 1]+")";
+		String line = getLine(packageName, e, clazz.getSimpleName());
+		int pos = 1;
+		String shortName = "";
+		if (line.length() < 1) {
+			line = clazz.getName() + ".java:1";
+		} else {
+			if (line.lastIndexOf(".") > 0) {
+				String[] split = line.split("\\.");
+				shortName = line.substring(0, line.lastIndexOf(":") - 4) + m.getName() + "(" + split[split.length - 2]
+						+ "." + split[split.length - 1] + ")";
+				String value = split[split.length - 1];
+				if (value.indexOf(":") > 0) {
+					pos = Integer.valueOf(value.substring(value.indexOf(":") + 1));
+				}
+			}
 		}
-		output(m, "at "+clazz.getName()+": "+e.getCause()+" "+shortName+" : ", logger, NetworkParserLog.LOGLEVEL_ERROR, e);
-		errorCount++;
+		String causes = "";
+		Throwable exception = e;
+		if (e.getCause() != null) {
+			causes = ": " + e.getCause();
+			if (e instanceof InvocationTargetException) {
+				exception = ((InvocationTargetException) e).getTargetException();
+			}
+		} else if (e instanceof InvocationTargetException) {
+			exception = ((InvocationTargetException) e).getTargetException();
+			causes = ": " + exception.getCause();
+		} else if (e.getMessage() != null) {
+			causes = ": " + e.getMessage();
+		}
+		if (ignoreClassError == false || pos != 1) {
+			/* Check for Exception */
+			if (ignoreSimpleException == false || exception == null || exception instanceof SimpleException == false) {
+				output(m, "at " + clazz.getName() + causes + " " + shortName, logger, NetworkParserLog.LOGLEVEL_ERROR,
+						e);
+				errorCount++;
+				if(breakByErrorCount>0 && errorCount>=breakByErrorCount) {
+					logger.info(this, "saveException", "Error Abort");
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	public String getParamtoString(Object[] params) {
-		StringBuilder sb= new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		sb.append("(");
-		if(params == null) {
+		if (params == null) {
 			sb.append(")");
 			return sb.toString();
 		}
-		boolean hasParam=false;
-		for(Object item : params) {
-			if(hasParam) {
+		boolean hasParam = false;
+		for (Object item : params) {
+			if (hasParam) {
 				sb.append(",");
 			}
-			if(item == null) {
+			if (item == null) {
 				sb.append("null");
-			}else {
+			} else {
 				sb.append(item.toString());
 			}
-			hasParam=true;
+			hasParam = true;
 		}
 		sb.append(")");
 		return sb.toString();
 	}
+	
+	public ReflectionBlackBoxTester breakByErrorCount(int number) {
+		this.breakByErrorCount = number;
+		return this;
+	}
+
+	public void printResult(int loglevel) {
+		/* Write out all Results */
+		String prefix = "Errors: ";
+		if(this.breakByErrorCount>0) {
+			prefix = "Errors Abort: ";
+		}
+		output(this,prefix + errorCount + "/" + (errorCount + successCount) + " " + errorClazzCount + "/"
+				+ (errorClazzCount + successClazzCount), logger, loglevel, null);
+		if (startTime > 0 && oldThreadCount > 0) {
+			output(this, "Time: " + (System.currentTimeMillis() - startTime) + "ms - Thread: " + oldThreadCount + " -> "
+					+ Thread.activeCount(), logger, loglevel, null);
+		}
+
+	}
 
 	public void output(Object owner, String message, NetworkParserLog logger, int logLevel, Exception e) {
-		if(logger != null) {
+		if (logger != null) {
 			logger.log(owner, "output", message, logLevel, e);
 		}
 	}
 
-	public static Object[] getParameters(Class<?>[] parameters, String type) {
+	public static Object[] getParameters(Executable m, Class<?>[] parameters, String type, Object owner) {
+		if (parameters == null) {
+			return new Object[0];
+		}
 		int length = parameters.length;
 		Object[] objects = new Object[length];
-		if(NULLVALUE.equals(type)) {
+		if (TYPE_NULLVALUE.equals(type)) {
 			for (int i = 0; i < length; i++) {
 				objects[i] = getNullValue(parameters[i]);
 			}
 			return objects;
 
 		}
-		if(MINVALUE.equals(type)) {
+		if (TYPE_MINVALUE.equals(type)) {
 			for (int i = 0; i < length; i++) {
 				objects[i] = getMinValue(parameters[i]);
 			}
 			return objects;
 		}
-		if(MAXVALUE.equals(type)) {
+		if (TYPE_MAXVALUE.equals(type)) {
 			for (int i = 0; i < length; i++) {
 				objects[i] = getMaxValue(parameters[i]);
 			}
 			return objects;
 		}
-		if(RANDOMVALUE.equals(type)) {
+		if (TYPE_RANDOMVALUE.equals(type)) {
 			for (int i = 0; i < length; i++) {
 				objects[i] = getRandomValue(parameters[i]);
 			}
 		}
+		if (TYPE_MIDDLEVALUE.equals(type)) {
+			for (int i = 0; i < length; i++) {
+				objects[i] = getMiddleValue(parameters[i]);
+			}
+		}
+		if (TYPE_CUSTOMVALUE.equals(type)) {
+			return getCustomValue(m, parameters, owner);
+		}
 		return objects;
 	}
 
-	private static  boolean equalsClass(Class<?> clazz, Class<?>... checkClasses) {
-		if(checkClasses == null) {
+	private static boolean equalsClass(Class<?> clazz, Class<?>... checkClasses) {
+		if (checkClasses == null || clazz == null) {
 			return true;
 		}
-		for(Class<?> check : checkClasses) {
-			if(clazz.getName().equals(check.getName())) {
+		for (Class<?> check : checkClasses) {
+			if (check != null && clazz.getName().equals(check.getName())) {
 				return true;
 			}
 		}
@@ -486,121 +600,252 @@ public class ReflectionBlackBoxTester {
 	}
 
 	private static Object getNullValue(Class<?> clazz) {
-		if (clazz.isPrimitive()) {
-			if(equalsClass(clazz, boolean.class, Boolean.class)) {return false;}
-			if(equalsClass(clazz, byte.class, Byte.class)) {return (byte) 0;}
-			if(equalsClass(clazz, short.class, Short.class)) {return 0;}
-			if(equalsClass(clazz, int.class, Integer.class)) {return 0;}
-			if(equalsClass(clazz, long.class, Long.class)) {return 0L;}
-			if(equalsClass(clazz, char.class, Character.class)) {return '\u0000';}
-			if(equalsClass(clazz, float.class, Float.class)) {return 0.0f;}
-			if(equalsClass(clazz, double.class, Double.class)) {return 0.0d;}
-			if(equalsClass(clazz, String.class, CharSequence.class)) {return null;}
-		}
-		return null;
-	}
-	private static Object getMinValue(Class<?> clazz) {
-		if (clazz.isPrimitive()) {
-			if(equalsClass(clazz, boolean.class, Boolean.class)) {return false;}
-			if(equalsClass(clazz, byte.class, Byte.class)) {return Byte.MIN_VALUE;}
-			if(equalsClass(clazz, int.class, Integer.class)) {return Integer.MIN_VALUE;}
-			if(equalsClass(clazz, short.class, Short.class)) {return Short.MIN_VALUE;}
-			if(equalsClass(clazz, long.class, Long.class)) {return Long.MIN_VALUE;}
-			if(equalsClass(clazz, char.class, Character.class)) {return Character.MIN_VALUE;}
-			if(equalsClass(clazz, float.class, Float.class)) {return Float.MIN_VALUE;}
-			if(equalsClass(clazz, double.class, Double.class)) {return Double.MIN_VALUE;}
-			if(equalsClass(clazz, String.class, CharSequence.class)) {return "";}
+		if (clazz != null && clazz.isPrimitive()) {
+			if (equalsClass(clazz, boolean.class, Boolean.class)) {
+				return false;
+			}
+			if (equalsClass(clazz, byte.class, Byte.class)) {
+				return (byte) 0;
+			}
+			if (equalsClass(clazz, short.class, Short.class)) {
+				return (short) 0;
+			}
+			if (equalsClass(clazz, int.class, Integer.class)) {
+				return 0;
+			}
+			if (equalsClass(clazz, long.class, Long.class)) {
+				return 0L;
+			}
+			if (equalsClass(clazz, char.class, Character.class)) {
+				return '\u0000';
+			}
+			if (equalsClass(clazz, float.class, Float.class)) {
+				return 0.0f;
+			}
+			if (equalsClass(clazz, double.class, Double.class)) {
+				return 0.0d;
+			}
+		} else if (equalsClass(clazz, String.class, CharSequence.class)) {
+			return null;
 		}
 		return null;
 	}
 
-	private static Object getRandomValue(Class<?> clazz) {
-		if (clazz.isPrimitive()) {
-			if(equalsClass(clazz, byte.class, Byte.class)) {return 0x50;}
-			if(equalsClass(clazz, int.class, Integer.class)) {return 42;}
-			if(equalsClass(clazz, short.class, Short.class)) {return 2;}
-			if(equalsClass(clazz, long.class, Long.class)) {return 3;}
-			if(equalsClass(clazz, char.class, Character.class)) {return 'g';}
-			if(equalsClass(clazz, float.class, Float.class)) {return 6;}
-			if(equalsClass(clazz, double.class, Double.class)) {return 8;}
-			if(equalsClass(clazz, boolean.class, Boolean.class)) {return true;}
-			if(equalsClass(clazz, String.class, CharSequence.class)) {return "Albert";}
-		} else if(equalsClass(clazz, Class.class)) {
-			return Object.class;
-		} else if(equalsClass(clazz, Object.class)) {
-			return "Albert"; 
-		} else if(equalsClass(clazz, Field.class, Method.class)) {
-			return null;
-		} else if(equalsClass(clazz, X509Certificate.class)) {
-			return null;
-		} else if(equalsClass(clazz, File.class)) {
-			return new File("");
-		} else if(clazz.isArray()) {
-			Class<?> arrayClazz = clazz.getComponentType();
-			int nrDims = 1 + clazz.getName().lastIndexOf('[');
-			int[] dims = new int[nrDims];
-			for(int i=0;i<nrDims;i++) {
-				dims[i] = i+1;
+	private static Object getMinValue(Class<?> clazz) {
+		if (clazz != null && clazz.isPrimitive()) {
+			if (equalsClass(clazz, boolean.class, Boolean.class)) {
+				return false;
 			}
-			return Array.newInstance(arrayClazz, dims);
-		} else {
-			try {
-				if(ReflectionLoader.STAGE == clazz) {
-					return null;
-				}
-				if(Throwable.class == clazz) {
-					return null;
-				}
-				return clazz.getConstructor().newInstance();
-			}catch (Throwable e) {
-					try {
-						Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();
-						ArrayList<Constructor<?>> skipConstructor=new ArrayList<Constructor<?>>();
-						for(Constructor<?> c : declaredConstructors) {
-							try {
-								Object[] call = getParameters(c.getParameterTypes(), NULLVALUE);
-								if(ReflectionLoader.isAccess(c, null)) {
-									c.setAccessible(true);
-									return c.newInstance(call);
-								}else {
-									skipConstructor.add(c);
-								}
-							} catch (Throwable e2) {
-							}
-						}
-						for(Constructor<?> c : skipConstructor) {
-							try {
-								Object[] call = getParameters(c.getParameterTypes(), NULLVALUE);
-								c.setAccessible(true);
-								return c.newInstance(call);
-							} catch (Exception e2) {
-							}
-						}
-					}catch (Throwable e2) {
-					}
+			if (equalsClass(clazz, byte.class, Byte.class)) {
+				return Byte.MIN_VALUE;
+			}
+			if (equalsClass(clazz, int.class, Integer.class)) {
+				return Integer.MIN_VALUE;
+			}
+			if (equalsClass(clazz, short.class, Short.class)) {
+				return Short.MIN_VALUE;
+			}
+			if (equalsClass(clazz, long.class, Long.class)) {
+				return Long.MIN_VALUE;
+			}
+			if (equalsClass(clazz, char.class, Character.class)) {
+				return Character.MIN_VALUE;
+			}
+			if (equalsClass(clazz, float.class, Float.class)) {
+				return Float.MIN_VALUE;
+			}
+			if (equalsClass(clazz, double.class, Double.class)) {
+				return Double.MIN_VALUE;
+			}
+		} else if (equalsClass(clazz, String.class, CharSequence.class)) {
+			return "";
+		}
+		return null;
+	}
+
+	private static Object[] getCustomValue(Executable exec, Class<?>[] clazz, Object owner) {
+		if (clazz == null) {
+			return new Object[0];
+		}
+		Object[] items = new Object[clazz.length];
+		if (owner != null && owner instanceof ReflectionBlackBoxTester) {
+			ReflectionBlackBoxTester tester = (ReflectionBlackBoxTester) owner;
+			ObjectCondition customListener = tester.getCustom();
+			if (customListener != null) {
+				customListener.update(new SimpleEvent(exec, "parameter", null, items));
+				return items;
 			}
 		}
 		return null;
 	}
+
+	public ObjectCondition getCustom() {
+		return custom;
+	}
+
+	public ReflectionBlackBoxTester withCustom(ObjectCondition condition) {
+		this.custom = condition;
+		return this;
+	}
+
+	private static Object getRandomValue(Class<?> clazz) {
+		if (clazz != null && clazz.isPrimitive()) {
+			if (equalsClass(clazz, byte.class, Byte.class)) {
+				return (byte) 0x50;
+			}
+			if (equalsClass(clazz, int.class, Integer.class)) {
+				return 42;
+			}
+			if (equalsClass(clazz, short.class, Short.class)) {
+				return (short) 2;
+			}
+			if (equalsClass(clazz, long.class, Long.class)) {
+				return 3;
+			}
+			if (equalsClass(clazz, char.class, Character.class)) {
+				return 'g';
+			}
+			if (equalsClass(clazz, float.class, Float.class)) {
+				return 6;
+			}
+			if (equalsClass(clazz, double.class, Double.class)) {
+				return 8;
+			}
+			if (equalsClass(clazz, boolean.class, Boolean.class)) {
+				return true;
+			}
+		} else if (equalsClass(clazz, String.class, CharSequence.class)) {
+			return "Albert";
+		} else if (equalsClass(clazz, Class.class)) {
+			return Object.class;
+		} else if (equalsClass(clazz, Field.class, Method.class)) {
+			return null;
+		} else if (equalsClass(clazz, X509Certificate.class)) {
+			return null;
+		} else if (equalsClass(clazz, File.class)) {
+			return new File("");
+		} else if (clazz == byte[][].class) {
+			return new byte[][] { new byte[] { 1, 2 } };
+		} else if (clazz.isArray()) {
+			Class<?> arrayClazz = clazz.getComponentType();
+			int nrDims = 1 + clazz.getName().lastIndexOf('[');
+			int[] dims = new int[nrDims];
+			for (int i = 0; i < nrDims; i++) {
+				dims[i] = i + 1;
+			}
+			return Array.newInstance(arrayClazz, dims);
+		} else if (equalsClass(clazz, Object.class)) {
+			return ReflectionLoader.newInstance(clazz);
+		} else {
+			try {
+				if (ReflectionLoader.STAGE == clazz) {
+					return null;
+				}
+				if (Throwable.class == clazz) {
+					return null;
+				}
+				return ReflectionLoader.newInstanceSimple(clazz);
+			} catch (Throwable e) {
+				try {
+					Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();
+					ArrayList<Constructor<?>> skipConstructor = new ArrayList<Constructor<?>>();
+					for (Constructor<?> c : declaredConstructors) {
+						try {
+							Object[] call = getParameters(c, c.getParameterTypes(), TYPE_NULLVALUE, null);
+							if (ReflectionLoader.isAccess(c, null)) {
+								c.setAccessible(true);
+								return c.newInstance(call);
+							} else {
+								skipConstructor.add(c);
+							}
+						} catch (Throwable e2) {
+						}
+					}
+					for (Constructor<?> c : skipConstructor) {
+						try {
+							Object[] call = getParameters(c, c.getParameterTypes(), TYPE_NULLVALUE, null);
+							c.setAccessible(true);
+							return c.newInstance(call);
+						} catch (Exception e2) {
+						}
+					}
+				} catch (Throwable e2) {
+				}
+			}
+		}
+		return null;
+	}
+
 	private static Object getMaxValue(Class<?> clazz) {
-		if (clazz.isPrimitive()) {
-			if(equalsClass(clazz, boolean.class, Boolean.class)) {return false;}
-			if(equalsClass(clazz, byte.class, Byte.class)) {return Byte.MAX_VALUE;}
-			if(equalsClass(clazz, int.class, Integer.class)) {return Integer.MAX_VALUE;}
-			if(equalsClass(clazz, short.class, Short.class)) {return Short.MAX_VALUE;}
-			if(equalsClass(clazz, long.class, Long.class)) {return Long.MAX_VALUE;}
-			if(equalsClass(clazz, char.class, Character.class)) {return Character.MAX_VALUE;}
-			if(equalsClass(clazz, float.class, Float.class)) {return Float.MAX_VALUE;}
-			if(equalsClass(clazz, double.class, Double.class)) {return Double.MAX_VALUE;}
+		if (clazz != null && clazz.isPrimitive()) {
+			if (equalsClass(clazz, boolean.class, Boolean.class)) {
+				return false;
+			}
+			if (equalsClass(clazz, byte.class, Byte.class)) {
+				return Byte.MAX_VALUE;
+			}
+			if (equalsClass(clazz, int.class, Integer.class)) {
+				return Integer.MAX_VALUE;
+			}
+			if (equalsClass(clazz, short.class, Short.class)) {
+				return Short.MAX_VALUE;
+			}
+			if (equalsClass(clazz, long.class, Long.class)) {
+				return Long.MAX_VALUE;
+			}
+			if (equalsClass(clazz, char.class, Character.class)) {
+				return Character.MAX_VALUE;
+			}
+			if (equalsClass(clazz, float.class, Float.class)) {
+				return Float.MAX_VALUE;
+			}
+			if (equalsClass(clazz, double.class, Double.class)) {
+				return Double.MAX_VALUE;
+			}
+		}
+		return null;
+	}
+
+	private static Object getMiddleValue(Class<?> clazz) {
+		if (clazz != null && clazz.isPrimitive()) {
+			if (equalsClass(clazz, boolean.class, Boolean.class)) {
+				return true;
+			}
+			if (equalsClass(clazz, byte.class, Byte.class)) {
+				return Byte.MAX_VALUE;
+			}
+			if (equalsClass(clazz, int.class, Integer.class)) {
+				return 1000;
+			}
+			if (equalsClass(clazz, short.class, Short.class)) {
+				return (short) 1000;
+			}
+			if (equalsClass(clazz, long.class, Long.class)) {
+				return (long) 1000;
+			}
+			if (equalsClass(clazz, char.class, Character.class)) {
+				return Character.MAX_VALUE;
+			}
+			if (equalsClass(clazz, float.class, Float.class)) {
+				return (float) 1000;
+			}
+			if (equalsClass(clazz, double.class, Double.class)) {
+				return (double) 1000;
+			}
+		} else if (equalsClass(clazz, String.class, CharSequence.class)) {
+			return "Minions ipsum potatoooo hahaha poopayee tatata bala tu hahaha wiiiii butt po kass para tu. Aaaaaah poulet tikka masala chasy tulaliloo pepete.";
 		}
 		return null;
 	}
 
 	private String getLine(String packageName, Exception e, String clazzName) {
+		if (e == null) {
+			return null;
+		}
 		Throwable cause = e.getCause();
-		if(cause!=null) {
+		if (cause != null) {
 			String line = getLineFromThrowable(packageName, cause, clazzName);
-			if(line.length()>0) {
+			if (line.length() > 0) {
 				return line;
 			}
 		}
@@ -608,75 +853,33 @@ public class ReflectionBlackBoxTester {
 	}
 
 	private String getLineFromThrowable(String packageName, Throwable e, String clazzName) {
+		if (e == null) {
+			return "";
+		}
 		StackTraceElement[] stackTrace = e.getStackTrace();
-		for(StackTraceElement ste : stackTrace) {
-			String name = ste.getClassName();
-			if(name.startsWith(packageName) && !name.startsWith(packageName+".test")) {
-				return name+".java:"+ste.getLineNumber();
+		if (packageName != null) {
+			for (StackTraceElement ste : stackTrace) {
+				String name = ste.getClassName();
+				if (name.startsWith(packageName) && !name.startsWith(packageName + ".test")) {
+					return name + ".java:" + ste.getLineNumber();
+				}
 			}
 		}
 		return "";
 	}
 
-	private void checkDirectory(File directory, String pckgname,
-			ArrayList<Class<?>> classes) throws ClassNotFoundException {
-		File tmpDirectory;
-
-		if (directory.exists() && directory.isDirectory()) {
-			String[] files = directory.list();
-			if(files == null) {
-				return;
-			}
-			for (String file : files) {
-				if (file.endsWith(".class")) {
-					try {
-//						output(pckgname + '.' + file.substring(0, file.length() - 6), null, Net);
-						String className=pckgname;
-						if(className.length()>0) {
-							className += ".";
-						}
-						className += file.substring(0, file.length() - 6);
-						classes.add(Class.forName(className));
-					} catch (Exception e) {
-						// do nothing. this class hasn't been found by the loader, and we don't care.
-					}
-				} else if ((tmpDirectory = new File(directory, file)).isDirectory() && !file.equalsIgnoreCase("test") ) {
-					checkDirectory(tmpDirectory, pckgname + "." + file, classes);
-				}
-			}
-		}
-	}
-	/**
-	 * Attempts to list all the classes in the specified package as determined
-	 * by the context class loader
-	 *
-	 * @param pckgname
-	 *			the package name to search
-	 * @return a list of classes that exist within that package
-	 * @throws ClassNotFoundException
-	 *			 if something went wrong
-	 * @throws IOException
-	 * 			if something went wrong to read
-	 */
-	public ArrayList<Class<?>> getClassesForPackage(String pckgname)
-			throws ClassNotFoundException, IOException {
-		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
-		ClassLoader cld = Thread.currentThread()
-				.getContextClassLoader();
-		if(cld == null) {
-			return classes;
-		}
-		Enumeration<URL> resources = cld.getResources(pckgname.replace('.', '/'));
-		for (URL url = null; resources.hasMoreElements() && ((url = resources.nextElement()) != null);) {
-				checkDirectory(new File(URLDecoder.decode(url.getPath(), BaseItem.ENCODING)), pckgname, classes);
-		}
-		if(classes.size() == 0) {
-			Class<?> forName = Class.forName(pckgname);
-			if(forName != null) {
-				classes.add(forName);
-			}
-		}
-		return classes;
+	public ReflectionBlackBoxTester withLogger(NetworkParserLog logger) {
+		this.logger = logger;
+		return this;
 	}
 
+	public ReflectionBlackBoxTester withDisableClassError(boolean value) {
+		this.ignoreClassError = value;
+		return this;
+	}
+
+	public ReflectionBlackBoxTester withDisableSimpleException(boolean value) {
+		this.ignoreSimpleException = value;
+		return this;
+	}
 }

@@ -34,7 +34,6 @@ ext{
 
 gradle.projectsEvaluated {
 	if(args != "[buildLocalJar]") {
-		compileJava.dependsOn(npmPackages)
 		compileJava.dependsOn(compileJava16)
 		compileJava.dependsOn(compileJava17)
 		test.dependsOn(FinishTest)
@@ -42,18 +41,20 @@ gradle.projectsEvaluated {
 }
 
 task compileJava16(type: JavaCompile) {
-	source = fileTree(dir: 'src', exclude: ['**/test/**'])
+	source = fileTree(dir: 'src', exclude: ['**/test/**', 'jmh/**', 'gitsrc/**'])
 	destinationDir = file('build/classes/main16')
 	sourceCompatibility = '1.6'
 	targetCompatibility = '1.6'
 	classpath = files('build/classes/main16')
+	options.compilerArgs << "-Xlint:-options"
 }
 task compileJava17(type: JavaCompile) {
-	source = fileTree(dir: 'src', exclude: ['**/test/**'])
+	source = fileTree(dir: 'src', exclude: ['**/test/**', 'jmh/**', 'gitsrc/**'])
 	destinationDir = file('build/classes/main17')
 	sourceCompatibility = '1.7'
 	targetCompatibility = '1.7'
 	classpath = files('build/classes/main17')
+	options.compilerArgs << "-Xlint:-options"
 }
 
 jar{
@@ -102,6 +103,22 @@ task buildSourceJar(type: Jar, dependsOn: buildSourceJar18) {
 	exclude '**/test/**'
 	manifest = project.manifest {from sharedManifest}
 }
+task buildGitJar(type: Jar, dependsOn: compileJava18) {
+	description 'Build Jar with jgit-Files'
+	//sourceSets.main.output, sourceSets.main.allJava,
+	group "Jar"; from {
+			files(fileTree(dir: 'build/classes/main18'), fileTree(dir: 'src/main/resources'), file("gradle/version.gradle"),
+			sourceSets.main.allJava,
+			configurations.gitVersion.filter({it.name.startsWith("org.eclipse.jgit") || it.name.startsWith("slf4j-api")}).collect({it.isDirectory() ? it : zipTree(it)}))
+		}; classifier = 'git'
+	exclude '**/test/**'
+	exclude("**/META-INF/*.RSA")
+	exclude("**/META-INF/*.SF")
+	exclude("**/META-INF/maven/**")
+	exclude("plugin.properties")
+	manifest = project.manifest {from sharedManifest}
+}
+
 task buildLocalJar(type: Jar) {
 	archiveName='networkparser.local.jar'
 	description 'Build Local Jar with class-Files and Source-Files'

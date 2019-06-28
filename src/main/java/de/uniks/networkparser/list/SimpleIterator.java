@@ -7,11 +7,14 @@ import java.util.NoSuchElementException;
 
 /**
  * An optimized version of AbstractList.ListItr
+ * 
  * @author Stefan Lindel
  */
 public class SimpleIterator<E> implements ListIterator<E> {
-	private int cursor;		// index of next element to return
-	private int lastRet;	// index of last element returned; -1 if no such
+	/** index of next element to return */
+	private int cursor;
+	/** index of last element returned; -1 if no such */
+	private int lastRet;
 	private AbstractArray<E> list;
 	private int checkPointer = -1;
 
@@ -19,13 +22,22 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		this.with(list, 0);
 	}
 
+	public SimpleIterator(AbstractArray<E> list, boolean checkPointer) {
+		this.cursor = 0;
+		this.lastRet = -1;
+		this.list = list;
+		if (list != null && checkPointer) {
+			this.checkPointer = this.list.size();
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public SimpleIterator(Object collection) {
-		if(collection instanceof AbstractArray<?>) {
+		if (collection instanceof AbstractArray<?>) {
 			this.list = (AbstractArray<E>) collection;
 		} else if (collection instanceof List<?>) {
 			this.list = new SimpleList<E>();
-			this.list.withList((List<?>)collection);
+			this.list.withList((List<?>) collection);
 		}
 		this.cursor = 0;
 		this.lastRet = -1;
@@ -74,38 +86,51 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	}
 
 	public void add(E e) {
-		try {
-			int size = list.size();
-			int pos = list.hasKey(e);
-			if(pos>=0) {
-				list.grow(size + 1);
-				list.addKey(cursor, e, size + 1);
-				cursor++;
-				lastRet = -1;
-				if(this.checkPointer>=0) {
-					this.checkPointer = list.size();
-				}
+		if (list == null) {
+			return;
+		}
+		int size = list.size();
+		int pos = list.hasKey(e);
+		if (pos >= 0) {
+			list.grow(size + 1);
+			list.addKey(cursor, e, size + 1);
+			cursor++;
+			lastRet = -1;
+			if (this.checkPointer >= 0) {
+				this.checkPointer = list.size();
 			}
-		} catch (IndexOutOfBoundsException ex) {
-			throw new ConcurrentModificationException();
 		}
 	}
 
 	@Override
 	public boolean hasNext() {
-		return cursor<list.size;
+		return cursor < list.size;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public E next() {
-		if (cursor >= list.size()) {
+		if (list == null) {
+			return null;
+		}
+		int size = list.size();
+		if (cursor >= size) {
 			throw new ConcurrentModificationException();
 		}
-		if(this.checkPointer >= 0 && this.checkPointer != list.size()) {
+		if (this.checkPointer >= 0 && this.checkPointer != size) {
 			throw new ConcurrentModificationException();
 		}
 		lastRet = cursor;
 		cursor = cursor + 1;
+		if (list.index == 0) {
+			Object[] elements;
+			if (list.isComplex(size)) {
+				elements = (Object[]) list.elements[0];
+			} else {
+				elements = list.elements;
+			}
+			return (E) elements[lastRet];
+		}
 		return (E) list.get(lastRet);
 	}
 
@@ -117,7 +142,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 			list.removeByIndex(lastRet, AbstractArray.SMALL_KEY, list.index);
 			cursor = lastRet;
 			lastRet = -1;
-			if(this.checkPointer>=0) {
+			if (this.checkPointer >= 0) {
 				this.checkPointer = list.size();
 			}
 		} catch (IndexOutOfBoundsException ex) {
@@ -126,7 +151,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public SimpleIterator<E> with(AbstractArray<?> newList)	{
+	public SimpleIterator<E> with(AbstractArray<?> newList) {
 		this.cursor = 0;
 		this.lastRet = -1;
 		this.list = (AbstractArray<E>) newList;
@@ -138,7 +163,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	}
 
 	public SimpleIterator<E> withCheckPointer(boolean checkPointer) {
-		if(checkPointer) {
+		if (checkPointer && this.list != null) {
 			this.checkPointer = this.list.size();
 		} else {
 			this.checkPointer = -1;
@@ -147,7 +172,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	}
 
 	public E current() {
-		if(lastRet >=0) {
+		if (lastRet >= 0) {
 			return (E) list.get(lastRet);
 		}
 		return null;

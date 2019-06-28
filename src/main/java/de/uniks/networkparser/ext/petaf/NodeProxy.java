@@ -1,9 +1,10 @@
 package de.uniks.networkparser.ext.petaf;
 
+import de.uniks.networkparser.SendableItem;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,9 +32,9 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.list.SimpleList;
 
 public abstract class NodeProxy extends SendableItem implements Comparable<NodeProxy>, SendableEntityCreatorNoIndex {
-	public static final String TYPE_IN="IN";
-	public static final String TYPE_OUT="OUT";
-	public static final String TYPE_INOUT="INOUT";
+	public static final String TYPE_IN = "IN";
+	public static final String TYPE_OUT = "OUT";
+	public static final String TYPE_INOUT = "INOUT";
 
 	public static int BUFFER = 100 * 1024;
 	public static final String PROPERTY_SEND = "sendtime";
@@ -48,8 +49,10 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public static final String PROPERTY_ID = "id";
 
 	protected PropertyList propertyId = PropertyList.create(PROPERTY_ID);
-	protected PropertyList propertyUpdate = PropertyList.create(PROPERTY_ID, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_SEND);
-	protected PropertyList propertyInfo = PropertyList.create(PROPERTY_ID, PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_VERSION);
+	protected PropertyList propertyUpdate = PropertyList.create(PROPERTY_ID, PROPERTY_HISTORY, PROPERTY_FILTER,
+			PROPERTY_SEND);
+	protected PropertyList propertyInfo = PropertyList.create(PROPERTY_ID, PROPERTY_SEND, PROPERTY_RECEIVE,
+			PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_VERSION);
 	protected PropertyList property = PropertyList.create(PROPERTY_ID, PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_ONLINE,
 			PROPERTY_NODES, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_VERSION);
 
@@ -58,16 +61,16 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	protected long receivetime;
 	protected long lastSendTryTime;
 	protected long receiveBytes;
-	protected long sendBytes; // Full bytes
-	protected int lastSendCount; // Count of success sending
-	protected String version; // Runtimeversion of App
-	protected boolean online; // Boolean if last send is success
-	protected String history; // Hashcode of last Message
-	protected ObjectCondition filter; // Filter of World
+	protected long sendBytes; /* Full bytes */
+	protected int lastSendCount; /* Count of success sending */
+	protected String version; /* Runtimeversion of App */
+	protected boolean online; /* Boolean if last send is success */
+	protected String history; /* Hashcode of last Message */
+	protected ObjectCondition filter; /* Filter of World */
 	protected long no;
 	protected Space space;
 	protected String name;
-	protected NodeProxy nextNode;	// NextPeer for MyNodes
+	protected NodeProxy nextNode; /* NextPeer for MyNodes */
 
 	public String[] getUpdateProperties() {
 		return propertyUpdate.getList();
@@ -86,7 +89,6 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		return propertyId.getList();
 	}
 
-
 	public void connectToPeer() {
 		sendMessage(ConnectMessage.create());
 	}
@@ -103,7 +105,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public boolean sendPing() {
-		InfoMessage message=new InfoMessage();
+		InfoMessage message = new InfoMessage();
 		return sendMessage(message);
 	}
 
@@ -116,12 +118,12 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	protected boolean sending(Message msg) {
-		if(this.isValid() == false) {
+		if (this.isValid() == false) {
 			return true;
 		}
 		msg.withAddToReceived(this);
 		this.lastSendTryTime = System.currentTimeMillis();
-		if(this.space!= null) {
+		if (this.space != null) {
 			this.space.updateNetwork(TYPE_OUT, this);
 		}
 		return false;
@@ -134,31 +136,29 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public void updateReceive(int len, boolean setOnline) {
 		this.receivetime = System.currentTimeMillis();
 		this.receiveBytes += len;
-		if(setOnline) {
+		if (setOnline) {
 			this.withOnline(true);
 		}
 	}
 
 	public NodeProxy withType(String value) {
-		// if output is not configured, we don't allow OUT or INOUT as value...
-		// if(value.isInput()){
-		// }
+		/* if output is not configured, we don't allow OUT or INOUT as value... */
 		this.type = value;
 		return this;
 	}
 
 	public long getNewMsgNo() {
 		this.no++;
-		if(no<0) {
-			no =0;
+		if (no < 0) {
+			no = 0;
 		}
 		return no;
 	}
 
 	public void setSendTime(int bytes) {
-//		Long oldValue = sendtime;
+		Long oldValue = sendtime;
 		this.sendtime = System.currentTimeMillis();
-//		firePropertyChange(PROPERTY_SEND, oldValue, sendtime);
+		firePropertyChange(PROPERTY_SEND, oldValue, sendtime);
 		this.lastSendCount = 0;
 	}
 
@@ -185,9 +185,9 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public void setReceiveTime() {
-//		Long oldValue = receivetime;
+		Long oldValue = receivetime;
 		this.receivetime = System.currentTimeMillis();
-//		firePropertyChange(PROPERTY_RECEIVE, oldValue, receivetime);
+		firePropertyChange(PROPERTY_RECEIVE, oldValue, receivetime);
 	}
 
 	public Long getReceiveTime() {
@@ -208,14 +208,14 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public abstract boolean isSendable();
 
 	public int compareTo(NodeProxy o) {
-		if(getKey() == null) {
-			if(o.getKey() == null) {
+		if (getKey() == null) {
+			if (o.getKey() == null) {
 				return 0;
 			}
 			return 1;
 		}
-		if(o == null || o.getKey() == null) {
-			if(getKey() == null) {
+		if (o == null || o.getKey() == null) {
+			if (getKey() == null) {
 				return 0;
 			}
 			return -1;
@@ -223,17 +223,24 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		return getKey().compareTo(o.getKey());
 	}
 
-
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof NodeProxy) {
-			return compareTo((NodeProxy) obj) ==0;
+		if (obj instanceof NodeProxy) {
+			return compareTo((NodeProxy) obj) == 0;
 		}
 		return super.equals(obj);
 	}
 
 	public String getHistory() {
 		return history;
+	}
+
+	public Integer getHistoryNo() {
+		try {
+			return Integer.valueOf(history);
+		} catch (Exception e) {
+		}
+		return null;
 	}
 
 	public NodeProxy withHistory(String value) {
@@ -255,7 +262,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public boolean filter(Object value) {
-		if(filter != null) {
+		if (filter != null) {
 			return filter.update(value);
 		}
 		return true;
@@ -278,7 +285,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 			return false;
 		}
 		NodeProxy nodeProxy = (NodeProxy) element;
-		if(SendableEntityCreator.REMOVE_YOU.equalsIgnoreCase(type)) {
+		if (SendableEntityCreator.REMOVE_YOU.equalsIgnoreCase(type)) {
 			return nodeProxy.close();
 		}
 		if (PROPERTY_SEND.equals(attrName)) {
@@ -343,7 +350,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		if (PROPERTY_TYP.equals(attrName)) {
 			return nodeProxy.getType();
 		}
-		if(PROPERTY_ID.equals(attrName)) {
+		if (PROPERTY_ID.equals(attrName)) {
 			return nodeProxy.getKey();
 		}
 		return null;
@@ -361,7 +368,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 			oldValue.removeProxy(this);
 		}
 		this.space = value;
-		initProxy();
+		startProxy();
 		if (null != value) {
 			value.with(this);
 		}
@@ -382,7 +389,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		return space;
 	}
 
-	protected abstract boolean initProxy();
+	protected abstract boolean startProxy();
 
 	public NodeProxy next() {
 		return this.nextNode;
@@ -390,7 +397,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 
 	public NodeProxy setNextMyNode(NodeProxy nextNode) {
 		this.nextNode = nextNode;
-		if(nextNode == null) {
+		if (nextNode == null) {
 			return this;
 		}
 		nextNode.setNextMyNode(null);
@@ -398,20 +405,20 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public TaskExecutor getExecutor() {
-		if(this.space != null) {
+		if (this.space != null) {
 			return this.space.getExecutor();
 		}
-		//Fallback
+		/* Fallback */
 		return new SimpleExecutor();
 	}
 
 	public abstract String getKey();
 
-    public static boolean isInput(String value) {
-        return (value != null && value.indexOf(TYPE_IN)>=0);
-    }
+	public static boolean isInput(String value) {
+		return (value != null && value.indexOf(TYPE_IN) >= 0);
+	}
 
-    public static boolean isOutput(String value) {
-    	return (value != null && value.indexOf(TYPE_OUT)>=0);
-    }
+	public static boolean isOutput(String value) {
+		return (value != null && value.indexOf(TYPE_OUT) >= 0);
+	}
 }

@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +29,8 @@ import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 
-public class NodeBackup implements Runnable{
-	public static final String KEY="Backup";
+public class NodeBackup implements Runnable {
+	public static final String KEY = "Backup";
 	private SimpleEventCondition task;
 	private boolean runnable;
 	protected long sendtime;
@@ -43,13 +43,13 @@ public class NodeBackup implements Runnable{
 	}
 
 	public NodeBackup with(NodeProxy... nodeProxies) {
-		if(nodeProxies == null) {
+		if (nodeProxies == null) {
 			return this;
 		}
-		if(this.queries == null) {
+		if (this.queries == null) {
 			this.queries = new SimpleList<NodeProxy>();
 		}
-		for(NodeProxy proxy : nodeProxies) {
+		for (NodeProxy proxy : nodeProxies) {
 			this.queries.add(proxy);
 		}
 		return this;
@@ -67,21 +67,21 @@ public class NodeBackup implements Runnable{
 	}
 
 	public void run() {
-		if(task != null && runnable) {
+		if (task != null && runnable) {
 			this.sendtime = System.currentTimeMillis();
 
 			task.update(this.event);
-			if(this.space != null) {
+			if (this.space != null) {
 				SortedSet<NodeProxy> proxies = this.space.getNodeProxies();
-				// Add Saving the Datemodell
-				for(NodeProxy proxy : proxies ) {
-					if(proxy instanceof NodeProxyFileSystem) {
+				/* Add Saving the Datemodell */
+				for (NodeProxy proxy : proxies) {
+					if (proxy instanceof NodeProxyFileSystem) {
 						proxy.sending(null);
 					}
 				}
 			}
-			if(this.queries != null) {
-				for(NodeProxy proxy : this.queries) {
+			if (this.queries != null) {
+				for (NodeProxy proxy : this.queries) {
 					proxy.sending(null);
 				}
 

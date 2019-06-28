@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,6 @@ THE SOFTWARE.
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URI;
@@ -36,85 +35,202 @@ import java.util.Timer;
 
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.GraphConverter;
+import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.ext.generic.JarValidator;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
-import de.uniks.networkparser.ext.git.GitRevision;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.ext.io.StringPrintStream;
+import de.uniks.networkparser.ext.javafx.DialogBox;
 import de.uniks.networkparser.ext.javafx.GUIEvent;
 import de.uniks.networkparser.ext.javafx.JavaAdapter;
 import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
-import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.ext.story.Story;
+import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.gui.JavaViewAdapter;
+import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 
-public class DiagramEditor extends JavaAdapter implements ObjectCondition {
-	private static final String FILE404="<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL was not found on this server.</p></body></html>";
-	private static final String METHOD_GENERATE="generating";
+public class DiagramEditor extends JavaAdapter implements ObjectCondition, Converter {
+	private static final String FILE404 = "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL was not found on this server.</p></body></html>";
+	private static final String METHOD_GENERATE = "generating";
 	private SimpleController controller;
 	private Object logic;
 	private SimpleEventCondition listener;
-	private JavaBridgeFX bridge;
-	private String file;
-	private final int WIDTH=900;
-	private final int HEIGHT=600;
-	private boolean autoClose=true;
+	protected String file;
+	private final int WIDTH = 900;
+	private final int HEIGHT = 600;
+	protected boolean autoClose = true;
 	private JSEditor jsEditor;
+	private IdMap map;
+	private NetworkParserLog logger = new NetworkParserLog().withListener(new StringPrintStream());
+	private static final String EDITOR = "Editor.html";
+
+	private static DiagramEditor editor;
+
+	public static DiagramEditor edobs(Object... items) {
+		return edobs(false, items);
+	}
+
+	public NetworkParserLog getLogger() {
+		return logger;
+	}
+
+	public static DiagramEditor edobs(boolean all, Object... items) {
+		if (items == null) {
+			return null;
+		}
+		if (editor == null) {
+			editor = new DiagramEditor();
+			editor.type = TYPE_EDOBS;
+		}
+		if (editor.map == null) {
+			for (Object child : items) {
+				if (child instanceof IdMap) {
+					editor.map = (IdMap) child;
+					break;
+				}
+			}
+			if (editor.map == null)
+				editor.map = new IdMap();
+		}
+
+		for (Object child : items) {
+			if (child instanceof IdMap || child == null) {
+				continue;
+			}
+			SendableEntityCreator creator = editor.map.getCreatorClass(child);
+			if (creator == null) {
+				String id = child.getClass().getSimpleName();
+				id += "." + System.identityHashCode(child);
+				creator = new GenericCreator().withItem(child).withId(id);
+				editor.map.put(id, child, false);
+				editor.map.withCreator(creator);
+			} else if (editor.map.getId(child) == null) {
+				/* Ups No ID */
+				String id = child.getClass().getSimpleName();
+				id += "." + System.identityHashCode(child);
+				editor.map.put(id, child, false);
+			}
+		}
+
+		HTMLEntity entity = new HTMLEntity();
+		GraphList list = editor.map.toObjectDiagram(items[0]); /* TRY IT */
+		if (!all) {
+			SimpleList<String> ids = new SimpleList<String>();
+			for (Object item : items) {
+				String id = editor.map.getId(item);
+				ids.add(id);
+			}
+			Clazz[] array = list.getClazzes().toArray();
+			SimpleList<Clazz> foundClazz = new SimpleList<Clazz>();
+			for (Clazz clazz : array) {
+				if (ids.contains(clazz.getId()) == false) {
+					list.remove(clazz);
+					foundClazz.add(clazz);
+				}
+			}
+			Association[] assocs = list.getAssociations().toArray();
+			for (Association assoc : assocs) {
+				boolean found = false;
+				for (Clazz clazz : foundClazz) {
+					if (assoc.getClazz() == clazz || assoc.getOtherClazz() == clazz) {
+						found = true;
+						break;
+					}
+				}
+				if (found) {
+					list.remove(assoc);
+				}
+			}
+		}
+		GraphUtil.setGenPath(list, HTMLEntity.CLASSEDITOR);
+		FileBuffer resourceHandler = new FileBuffer();
+		entity.withScript(entity.getHeader(), resourceHandler.readResource("graph/diagram.js"));
+		entity.withScript(entity.getHeader(), resourceHandler.readResource("graph/dagre.min.js"));
+		entity.withStyle(resourceHandler.readResource("graph/diagramstyle.css"));
+		String graph = list.toString(new GraphConverter());
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("var json=");
+		sb.append(graph);
+		sb.append(";" + BaseItem.CRLF);
+		sb.append("window['editor'] = new ClassEditor(json).layout();");
+		sb.append("window['editor'].registerListener();");
+		entity.withScript(sb.toString());
+
+		String string = null;
+		try {
+			string = new File("neu.html").toURI().toURL().toString();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		FileBuffer.writeFile("neu.html", entity.toString());
+		converting(editor, string, null, false, false);
+		return editor;
+	}
 
 	public static boolean convertToPNG(HTMLEntity entity, String file, int... dimension) {
-		return converting(entity, file, true, true, dimension);
+		return converting(null, entity, file, true, true, dimension);
 	}
-	public static boolean convertToPNG(String url, String file, int...dimension) {
-		return converting(url, file, true, true, dimension);
+
+	public static boolean convertToPNG(String url, String file, int... dimension) {
+		return converting(null, url, file, true, true, dimension);
 	}
-	public static boolean convertToPNG(File localFile, String file, int...dimension) {
-		return converting(localFile, file, true, true, dimension);
+
+	public static boolean convertToPNG(File localFile, String file, int... dimension) {
+		return converting(null, localFile, file, true, true, dimension);
 	}
-	public static boolean converting(final Object entity, final String file, final boolean wait, final boolean autoClose, int...dimension) {
+
+	public static boolean converting(final DiagramEditor editor, final Object entity, final String file,
+			final boolean wait, final boolean autoClose, int... dimension) {
 		final int width, height;
-		if(dimension != null && dimension.length>1) {
+		final DiagramEditor editorWindow;
+		if (editor == null) {
+			editorWindow = new DiagramEditor();
+			editorWindow.type = DiagramEditor.TYPE_EDITOR;
+		} else {
+			editorWindow = editor;
+		}
+		if (dimension != null && dimension.length > 1) {
 			width = dimension[0];
 			height = dimension[1];
 		} else {
 			width = -1;
 			height = -1;
 		}
-		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
-		if(launcherClass == null) {
+		if (SimpleController.startFX() == false) {
 			return false;
 		}
-		ReflectionLoader.call(launcherClass, "startToolkit");
-		if(entity != null && file != null) {
+		if (entity != null && file != null) {
 			ReflectionLoader.call(ReflectionLoader.PLATFORM, "setImplicitExit", boolean.class, false);
 		}
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
-				DiagramEditor editor = new DiagramEditor();
-				editor.type = DiagramEditor.TYPE_EDITOR;
-				if(file != null) {
-					editor.file = file;
-					editor.type = DiagramEditor.TYPE_CONTENT;
-					editor.autoClose = autoClose;
-				}
-				editor.creating(stage, entity, width, height);
-				editor.withIcon(IdMap.class.getResource("np.png").toString());
-				editor.show(wait);
-			}
-		};
-		if(wait) {
+		if (file != null) {
+			editorWindow.file = file;
+			editorWindow.type = DiagramEditor.TYPE_CONTENT;
+			editorWindow.autoClose = autoClose;
+		}
+		Runnable runnable = DiagramEditorTask.createOpen(editorWindow, wait, entity, width, height);
+		if (wait) {
 			JavaAdapter.executeAndWait(runnable);
 		} else {
 			JavaAdapter.execute(runnable);
@@ -123,131 +239,161 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	}
 
 	public static void main(String[] args) {
-		if(args != null && args.length>0 && args[0] != null) {
-			if("GIT".equalsIgnoreCase(args[0])) {
+		NetworkParserLog logger = new NetworkParserLog().withListener(new StringPrintStream());
+		if (args != null && args.length > 0 && args[0] != null) {
+			if (GitRevision.MAINTAG.equalsIgnoreCase(args[0])) {
 				GitRevision revision = new GitRevision();
 				try {
-					int commit = -1;
-					if(args.length>1) {
+					int commit = 1;
+					if (args.length > 1) {
 						try {
 							commit = Integer.valueOf(args[1]);
-						}catch (Exception e) {
+						} catch (Exception e) {
 						}
 					}
-					System.out.println(revision.execute(commit));
-				}catch (Exception e) {
+					logger.debug(DiagramEditor.class, "main", revision.execute(commit));
+				} catch (Exception e) {
 					e.printStackTrace();
+					System.exit(-1);
 				}
 				return;
 			}
-			if("JARVALIDATOR".equalsIgnoreCase(args[0])) {
+			if ("NPM".equalsIgnoreCase(args[0])) {
+				if (new Gradle().loadNPM() == false) {
+					System.exit(-1);
+				}
+				return;
+			}
+			if ("INIT".equalsIgnoreCase(args[0])) {
+				String filename = Os.getFilename();
+				if (filename == null) {
+					System.exit(1);
+				}
+				if (filename.toLowerCase().endsWith(".jar") == false) {
+					System.exit(2);
+				}
+				Gradle gradle = new Gradle();
+				String projectName = null;
+				if (args.length > 1 && args[1] != null) {
+					projectName = args[1];
+				} else {
+					System.exit(3);
+				}
+				String licence = "MIT";
+				if (args.length > 2 && args[2] != null && args[2].length() < 10) {
+					licence = args[2];
+				}
+				boolean success = gradle.initProject(filename, projectName, licence);
+				if (success == false) {
+					System.exit(-1);
+				}
+				return;
+			}
+			if (JarValidator.MAINTAG.equalsIgnoreCase(args[0])) {
 				JarValidator validator = new JarValidator();
 				validator.withPath("build/libs");
-				int timeOut=-1;
-				for(String item : args) {
-					if(item == null) {
+				int timeOut = -1;
+				for (String item : args) {
+					if (item == null) {
 						continue;
 					}
 					item = item.toLowerCase();
-					if(item.startsWith("coverage=")) {
+					if (item.startsWith("coverage=")) {
 						String param = item.substring(9);
 						try {
 							Integer no = Integer.valueOf(param);
 							validator.withMinCoverage(no);
-						}catch (Exception e) {
+						} catch (Exception e) {
 						}
-					} else if(item.startsWith("path=")) {
+					} else if (item.startsWith("path=")) {
 						String param = item.substring(5);
 						validator.withPath(param);
-					} else if(item.startsWith("root=")) {
+					} else if (item.startsWith("root=")) {
 						String param = item.substring(5);
 						validator.withRootPath(param);
-					} else if(item.startsWith("time=")) {
+					} else if (item.startsWith("time=")) {
 						String param = item.substring(5);
 						try {
-							timeOut = Integer.valueOf(param)*1000;
-						}catch (Exception e) {
+							timeOut = Integer.valueOf(param) * 1000;
+						} catch (Exception e) {
 						}
-					} else if(item.startsWith("fatjar")) {
+					} else if (item.startsWith("fatjar")) {
 						validator.isAnalyseJar = true;
-					} else if(item.startsWith("licence")) {
+					} else if (item.startsWith("licence")) {
 						validator.isLicence = true;
-					} else if(item.startsWith("noerror")) {
+					} else if (item.startsWith("noerror")) {
 						validator.isError = false;
-					} else if(item.startsWith("nowarning")) {
+					} else if (item.startsWith("nowarning")) {
 						validator.isWarning = false;
-					} else if(item.startsWith("noinstance=")) {
-						//Filter for Instance of SubPackage
+					} else if (item.startsWith("noinstance=")) {
+						/* Filter for Instance of SubPackage */
 						validator.instancePackage = item.substring(11);
-					} else if(item.startsWith("noinstance")) {
+					} else if (item.startsWith("noinstance")) {
 						validator.isInstance = false;
 					}
 				}
-				// ADD TIME OUT
+				/* ADD TIME OUT */
 				Timer timer = null;
-				if(timeOut>0) {
-					System.out.println("FOUND TIMEOUT= "+timeOut);
+				if (timeOut > 0) {
+					logger.debug(null, "main", "FOUND TIMEOUT= " + timeOut);
 					timer = new Timer();
 					SimpleTimerTask task = new SimpleTimerTask(Thread.currentThread());
-					task.withTask(new Runnable() {
-						
-						@Override
-						public void run() {
-							System.err.println("TIMEOUT EXIT");
-							System.exit(1);
-						}
-					});
+					task.withTask(DiagramEditorTask.createExit(1, "TIMEOUT EXIT"));
 					timer.schedule(task, timeOut);
 				}
-				int exit=0;
-				System.out.println("CHECK CC = "+validator.isValidate + " ("+validator.getMinCoverage()+")");
-				if(validator.isValidate) {
+				int exit = 0;
+				logger.debug(null, "main",
+						"CHECK CC = " + validator.isValidate + " (" + validator.getMinCoverage() + ")");
+				if (validator.isValidate) {
 					validator.validate();
-					if(validator.analyseReport() == false) {
-						System.err.println("CodeCoverage not enough");
+					int result = validator.analyseReport();
+					if (result != 0) {
+
+						logger.error(null, "main", "CodeCoverage not enough (" + result + ")");
 						exit = -1;
 					}
 				}
-				if(validator.isAnalyseJar) {
-					// Check for Licence
-					if(validator.isError) {
+				if (validator.isAnalyseJar) {
+					/* Check for Licence */
+					if (validator.isError) {
 						int subExit = validator.searchFiles(System.err);
-						if(subExit < 0) {
+						if (subExit < 0) {
 							exit = subExit;
-							System.err.println("FatJar Error");
+							logger.error(null, "main", "FatJar Error");
 						}
-						if(validator.isValidate && subExit == 0 && validator.isExistFullJar() == false) {
-							System.err.println("No FatJar found");
+						if (validator.isValidate && subExit == 0 && validator.isExistFullJar() == false) {
+							logger.error(null, "main", "No FatJar found");
 							exit = -1;
 						}
-					}else {
+					} else {
 						validator.searchFiles(System.err);
 					}
 				}
-				if(timer != null) {
+				if (timer != null) {
 					timer.cancel();
 				}
-				if(exit < 0) {
+				if (exit < 0) {
 					System.exit(exit);
 				}
 				return;
 			}
-			if(args[0].toLowerCase().startsWith("test=")) {
-				ReflectionBlackBoxTester.mainTester(args);
-				return;
+			if (args[0].toLowerCase().startsWith("test=")) {
+				ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
+				tester.withLogger(logger);
+				tester.mainTester(args);
 			}
 		}
-		if(converting(null, null, false, true) == false) {
-			// NO JAVAFX Found
+		if (converting(null, null, null, false, true) == false) {
+			/* NO JAVAFX Found */
 			NodeProxyTCP server = NodeProxyTCP.createServer(8080);
 			server.withListener(new DiagramEditor());
-			if(server.start()) {
-				System.out.println("LISTEN ON: "+server.getKey());
-				if(ReflectionLoader.DESKTOP != null) {
+			if (server.start()) {
+				logger.debug(DiagramEditor.class, "main", "LISTEN ON: " + server.getKey());
+				if (ReflectionLoader.DESKTOP != null) {
 					Object desktop = ReflectionLoader.call(ReflectionLoader.DESKTOP, "getDesktop");
-					if(desktop != null) {
+					if (desktop != null) {
 						try {
-							ReflectionLoader.call(desktop, "browse", URI.class, new URI("http://"+server.getKey()));
+							ReflectionLoader.call(desktop, "browse", URI.class, new URI("http://" + server.getKey()));
 						} catch (URISyntaxException e) {
 						}
 					}
@@ -257,16 +403,16 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	}
 
 	public boolean executeWebServer(Message msg) {
-		String  request = msg.getMessage().toString();
-		if(request.startsWith("GET")) {
+		String request = msg.getMessage().toString();
+		if (request.startsWith("GET")) {
 			CharacterBuffer path = new CharacterBuffer();
-			for(int i=4;i<request.length();i++) {
-				if(request.charAt(i) == ' ') {
+			for (int i = 4; i < request.length(); i++) {
+				if (request.charAt(i) == ' ') {
 					break;
 				}
 				path.with(request.charAt(i));
 			}
-			if(path.equals("/")) {
+			if (path.equals("/")) {
 				HTMLEntity html = new HTMLEntity();
 				html.createScript("classEditor = new ClassEditor(\"board\");", html.getBody());
 				html.withHeader("diagram.js");
@@ -274,94 +420,106 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				html.withHeader("diagramstyle.css");
 				String response = html.toString(2);
 				writeHTTPResponse(msg, response, false);
-			} else if(path.equalsIgnoreCase("/diagram.js")) {
-				writeHTTPResponse(msg, FileBuffer.readResource("graph/diagram.js").toString(), false);
-			} else if(path.equalsIgnoreCase("/diagramstyle.css")) {
-				writeHTTPResponse(msg, FileBuffer.readResource("graph/diagramstyle.css").toString(), false);
-			} else if(path.equalsIgnoreCase("/jspdf.min.js")) {
-				writeHTTPResponse(msg, FileBuffer.readResource("graph/jspdf.min.js").toString(), false);
-			}else {
+			} else if (path.equalsIgnoreCase("/diagram.js")) {
+				writeHTTPResponse(msg, new FileBuffer().readResource("graph/diagram.js").toString(), false);
+			} else if (path.equalsIgnoreCase("/diagramstyle.css")) {
+				writeHTTPResponse(msg, new FileBuffer().readResource("graph/diagramstyle.css").toString(), false);
+			} else if (path.equalsIgnoreCase("/jspdf.min.js")) {
+				writeHTTPResponse(msg, new FileBuffer().readResource("graph/jspdf.min.js").toString(), false);
+			} else {
 				writeHTTPResponse(msg, FILE404, true);
 			}
 		}
 		return true;
 	}
 
-	private void writeHTTPResponse(Message message, String response, boolean error) {
-		if(error) {
+	private boolean writeHTTPResponse(Message message, String response, boolean error) {
+		if (message == null) {
+			return false;
+		}
+		if (error) {
 			message.write("HTTP/1.1 404 Not Found\n");
-		}else {
+		} else {
 			message.write("HTTP/1.1 200 OK\n");
 		}
-		message.write("Date: "+new DateTimeEntity().toGMTString()+"\n");
+		message.write("Date: " + new DateTimeEntity().toGMTString() + "\n");
 		message.write("Server: Java\n");
-		message.write("Last-Modified: "+new DateTimeEntity().toGMTString()+"\n");
-		message.write("Content-Length: "+response.length()+"\n");
+		message.write("Last-Modified: " + new DateTimeEntity().toGMTString() + "\n");
+		message.write("Content-Length: " + response.length() + "\n");
 		message.write("Connection: Closed\n");
 		message.write("Content-Type: text/html\n\n");
 		message.write(response);
 		Socket session = (Socket) message.getSession();
 		try {
-			session.close();
+			if (session != null) {
+				session.close();
+			}
+			return true;
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
+		return false;
 	}
-
 
 	@Override
 	public boolean update(Object value) {
-		if(value ==null) {
+		if (value == null) {
 			return false;
 		}
-		if(value instanceof Message) {
+		if (value instanceof Message) {
 			return executeWebServer((Message) value);
 		}
-		if(value instanceof SimpleEvent) {
+		if (value instanceof SimpleEvent) {
 			SimpleEvent evt = (SimpleEvent) value;
-			if(JavaViewAdapter.STATE.equalsIgnoreCase(evt.getNewValue().getClass().getName())) {
-				if(evt.getNewValue().toString().equals(JavaViewAdapter.SUCCEEDED)) {
-					Object win = super.executeScript("window", false);
-					ReflectionLoader.call(win, "setMember", String.class, "java", Object.class, this);
-					this.changed(evt);
+			Object newValue = evt.getNewValue();
+			if (newValue != null) {
+				if (JavaViewAdapter.STATE.equalsIgnoreCase(newValue.getClass().getName())) {
+					if (newValue.toString().equals(JavaViewAdapter.FAILED)) {
+						logger.error(this, "update", evt);
+					}
+					if (newValue.toString().equals(JavaViewAdapter.SUCCEEDED)) {
+						Object win = super.executeScript("window", false);
+						ReflectionLoader.call(win, "setMember", String.class, "JavaBridge", Object.class, this);
+						this.changed(evt);
 
-					// Load Editor
-					super.executeScript("window['editor'] = new ClassEditor(\"board\");", false);
+						if (TYPE_EDITOR.equalsIgnoreCase(type)) {
+							/* Load Editor */
+							super.executeScript("window['editor'] = new ClassEditor(\"board\");", false);
+						}
+					}
+					return true;
 				}
-				return true;
 			}
 		}
 		String name = (String) ReflectionLoader.callChain(value, "getEventType", "toString");
-		if(JavaViewAdapter.DRAGOVER.equalsIgnoreCase(name)) {
+		if (JavaViewAdapter.DRAGOVER.equalsIgnoreCase(name)) {
 			return onDragOver(value);
 		}
-		if(JavaViewAdapter.DRAGDROPPED.equalsIgnoreCase(name)) {
+		if (JavaViewAdapter.DRAGDROPPED.equalsIgnoreCase(name)) {
 			return onDragDropped(value);
 		}
-		if(JavaViewAdapter.ERROR.equalsIgnoreCase(name)) {
+		if (JavaViewAdapter.ERROR.equalsIgnoreCase(name)) {
 			return onError(value);
 		}
-		if(JavaViewAdapter.DRAGEXITED.equalsIgnoreCase(name)) {
-//			return onDragDropped(value);
+		if (JavaViewAdapter.DRAGEXITED.equalsIgnoreCase(name)) {
 			return onDragExited(value);
 		}
-		if(value instanceof GUIEvent) {
+		if (value instanceof GUIEvent) {
 			GUIEvent evt = (GUIEvent) value;
 			EventTypes evtName = evt.getEventType();
-			if(EventTypes.KEYPRESS == evtName) {
-				if(evt.getCode() == 123) {
+			if (EventTypes.KEYPRESS == evtName) {
+				if (evt.getCode() == 123) {
 					enableDebug();
 				}
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public JSEditor getJSEditor() {
-		if(this.jsEditor == null) {
+		if (this.jsEditor == null) {
 			Object JSwin = super.executeScript("window", false);
-			Object result  = ReflectionLoader.call(JSwin, "getMember", String.class, "editor");
+			Object result = ReflectionLoader.call(JSwin, "getMember", String.class, "editor");
 			jsEditor = new JSEditor(result);
 		}
 		return jsEditor;
@@ -373,34 +531,32 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 
 	public boolean save(Object value) {
 		JsonObject model;
-		if(value instanceof JsonObject) {
+		if (value instanceof JsonObject) {
 			model = (JsonObject) value;
-		}else {
-			model = new JsonObject().withValue((String) value);
+		} else {
+			model = new JsonObject().withValue("" + value);
 		}
 		String name = model.getString("package");
 		if (name == null || name.length() < 1) {
 			name = "model";
-			if(model.size()<1) {
+			if (model.size() < 1) {
 				return false;
 			}
 		}
 		DateTimeEntity entity = new DateTimeEntity();
 		name = name + "_" + entity.toString("yyyyMMdd_HHmmss") + ".json";
-		return FileBuffer.writeFile(name, model.toString())>=0;
+		return FileBuffer.writeFile(name, model.toString()) >= 0;
 	}
 
 	public void log(String value) {
-		this.owner.logScript(value, 0, this, null);
+		if (this.owner != null) {
+			this.owner.logScript(value, 0, this, null);
+		}
 	}
 
 	public String generate(String value) {
 		try {
-			Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-				public void uncaughtException(Thread t, Throwable e) {
-					DiagramEditor.this.saveException(e);
-				}
-			});
+			Thread.currentThread().setUncaughtExceptionHandler(DiagramEditorTask.createException(this));
 			this.generating(new JsonObject().withValue(value));
 		} catch (Exception e) {
 			this.saveException(e);
@@ -409,25 +565,23 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	}
 
 	public boolean generating(JsonObject model) {
-		if(this.listener != null) {
-			SimpleEvent event = new SimpleEvent(model, METHOD_GENERATE, null,null);
+		if (this.listener != null) {
+			SimpleEvent event = new SimpleEvent(model, METHOD_GENERATE, null, null);
 			event.with(model);
-			if(this.update(event)) {
+			if (this.update(event)) {
 				return true;
 			}
 		}
-		if(this.logic != null) {
+		if (this.logic != null) {
 			Object result = ReflectionLoader.call(this.logic, METHOD_GENERATE, JsonObject.class, model);
-			if(result instanceof Boolean) {
+			if (result instanceof Boolean) {
 				return (Boolean) result;
 			}
 		}
 		GraphConverter converter = new GraphConverter();
 		ClassModel modelGen = (ClassModel) converter.convertFromJson(model, new ClassModel());
-		if(modelGen == null) {
-//		if (model.has(GraphConverter.NODES) == false) {
-			System.err.println("no Nodes");
-			System.out.println("no Nodes");
+		if (modelGen == null) {
+			logger.error(this, "main", "no Nodes");
 			return false;
 		}
 		modelGen.generate("src/main/java");
@@ -436,46 +590,47 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 
 	protected boolean onDragOver(Object event) {
 		List<File> files = getFiles(event);
-		if(files != null) {
-			boolean error=true;
-			for(File file:files){
-				 String name = file.getName().toLowerCase();
-				if(name.indexOf("json", name.length() - 4) >= 0) {
+		if (files != null) {
+			boolean error = true;
+			for (File file : files) {
+				String name = file.getName().toLowerCase();
+				if (name.indexOf("json", name.length() - 4) >= 0) {
 					error = false;
 				}
 			}
-			if(!error) {
-				Object mode = ReflectionLoader.getField("COPY", ReflectionLoader.TRANSFERMODE);
+			if (!error) {
+				Object mode = ReflectionLoader.getField(ReflectionLoader.TRANSFERMODE, "COPY");
 				ReflectionLoader.call(event, "acceptTransferModes", ReflectionLoader.TRANSFERMODE, mode);
 				getJSEditor().setBoardStyle("OK");
-			}else {
-				Object mode = ReflectionLoader.getField("NONE", ReflectionLoader.TRANSFERMODE);
+			} else {
+				Object mode = ReflectionLoader.getField(ReflectionLoader.TRANSFERMODE, "NONE");
 				ReflectionLoader.call(event, "acceptTransferModes", ReflectionLoader.TRANSFERMODE, mode);
 				getJSEditor().setBoardStyle("Error");
 			}
 		}
-		ReflectionLoader.call(event,"consume");
+		ReflectionLoader.call(event, "consume");
 		return true;
 	}
+
 	protected boolean onDragDropped(Object event) {
 		List<File> files = getFiles(event);
-		if(files != null) {
-			for(File file : files){
+		if (files != null) {
+			for (File file : files) {
 				StringBuilder sb = new StringBuilder();
 				byte buf[] = new byte[1024];
 				int read;
 				FileInputStream is = null;
 				try {
-					is=new FileInputStream(file);
+					is = new FileInputStream(file);
 					do {
 						read = is.read(buf, 0, buf.length);
-						if (read>0) {
+						if (read > 0) {
 							sb.append(new String(buf, 0, read, "UTF-8"));
 						}
-					} while (read>=0);
+					} while (read >= 0);
 				} catch (IOException e) {
-				}finally {
-					if(is != null) {
+				} finally {
+					if (is != null) {
 						try {
 							is.close();
 						} catch (IOException e) {
@@ -498,73 +653,54 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	}
 
 	protected boolean onError(Object event) {
-		System.err.println(ReflectionLoader.call(event, "getMessage"));
+		logger.error(this, "onError", ReflectionLoader.call(event, "getMessage"));
 		return true;
 	}
 
 	@SuppressWarnings("unchecked")
 	protected List<File> getFiles(Object event) {
 		Object db = ReflectionLoader.call(event, "getDragboard");
-		if((Boolean) ReflectionLoader.call(db, "hasFiles")) {
-			List<File> files = (List<File>) ReflectionLoader.call(db, "getFiles");
-			return files;
+		if (db != null) {
+			if ((Boolean) ReflectionLoader.call(db, "hasFiles")) {
+				List<File> files = (List<File>) ReflectionLoader.call(db, "getFiles");
+				return files;
+			}
 		}
 		return null;
 	}
 
-	// NULL Default
 	public boolean load(Object item) {
 		boolean result = super.load(item);
-		if(result) {
+		if (result) {
 			return result;
 		}
 		HTMLEntity html = new HTMLEntity();
 		boolean loadFile = false;
-		//html.createScript("classEditor = new ClassEditor(\"board\");", html.getBody());
-		if(TYPE_EDITOR.equalsIgnoreCase(type)) {
+		boolean includeFiles = false;
+		/*
+		 * html.createScript("classEditor = new ClassEditor(\"board\");",
+		 * html.getBody());
+		 */
+		if (TYPE_EDITOR.equalsIgnoreCase(type) || TYPE_EXPORT.equalsIgnoreCase(type)) {
 			loadFile = true;
-			html.withScript(FileBuffer.readResource("graph/diagram.js").toString(), html.getHeader());
-			html.withHeader("dagre.min.js");
-			html.withHeader("jspdf.min.js");
-			html.withHeader("diagramstyle.css");
-			FileBuffer.writeFile("dagre.min.js", FileBuffer.readResource("graph/dagre.min.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("diagram.js",FileBuffer.readResource("graph/diagram.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("jspdf.min.js",FileBuffer.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("diagramstyle.css",FileBuffer.readResource("graph/diagramstyle.css"), FileBuffer.NONE);
 		}
-		if(TYPE_EXPORT.equalsIgnoreCase(type)) {
+		if (TYPE_EXPORTALL.equalsIgnoreCase(type)) {
 			loadFile = true;
-			html.withHeader("dagre.min.js");
-			html.withHeader("diagram.js");
-			html.withHeader("jspdf.min.js");
-			html.withHeader("diagramstyle.css");
-			FileBuffer.writeFile("dagre.min.js", FileBuffer.readResource("graph/dagre.min.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("diagram.js",FileBuffer.readResource("graph/diagram.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("jspdf.min.js",FileBuffer.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("diagramstyle.css",FileBuffer.readResource("graph/diagramstyle.css"), FileBuffer.NONE);
-		} 
-		if(TYPE_EXPORTALL.equalsIgnoreCase(type)) {
-			// Add external Files
-			loadFile = true;
-			html.withScript(readFile("graph/dagre.min.js"), html.getHeader());
-			html.withScript(readFile("graph/diagram.js"), html.getHeader());
-			html.withScript(readFile("graph/jspdf.min.js"), html.getHeader());
-			html.withScript(readFile("graph/diagramstyle.css"), html.getHeader());
+			includeFiles = true;
 		}
-		if(loadFile) {
-			FileBuffer.writeFile("Editor.html", html.toString(), FileBuffer.NONE);
+		Story.addResource(html, EDITOR, includeFiles);
+
+		if (loadFile) {
+			FileBuffer.writeFile(EDITOR, html.toString(), FileBuffer.NONE);
 			try {
-				String string = new File("Editor.html").toURI().toURL().toString();
+				String string = new File(EDITOR).toURI().toURL().toString();
 				ReflectionLoader.call(webEngine, "load", string);
 				return true;
 			} catch (MalformedURLException e) {
 			}
 			return true;
 		}
-		// Add external Files
-		html.withScript(readFile("graph/dagre.min.js"), html.getHeader());
-		html.withScript(readFile("graph/diagram.js"), html.getHeader());
-		html.withScript(readFile("graph/diagramstyle.css"), html.getHeader());
+		/* Add external Files */
 		ReflectionLoader.call(webEngine, "loadContent", html.toString());
 		return true;
 	}
@@ -574,53 +710,55 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		editor.creating(stage, url, -1, -1);
 		return editor;
 	}
-	private DiagramEditor creating(Object stage, Object url, int width, int height) {
-		if(stage == null) {
+
+	protected DiagramEditor creating(Object stage, Object url, int width, int height) {
+		if (stage == null) {
 			return this;
 		}
-		if(this.controller == null) {
+		if (this.controller == null) {
 			SimpleController controller = new SimpleController(stage);
 			this.controller = controller;
 			this.controller.withListener(this);
 		}
 		SimpleKeyValueList<String, String> parameterMap = controller.getParameterMap();
 
-		if(parameterMap != null) {
-			if(parameterMap.contains(TYPE_EXPORTALL)) {
+		if (parameterMap != null) {
+			if (parameterMap.contains(TYPE_EXPORTALL)) {
 				this.type = TYPE_EXPORTALL;
 			}
 		}
 		this.registerListener(this);
 		this.load(url);
-		JavaBridgeFX javaFX = new JavaBridgeFX(null, this, JavaBridgeFX.CONTENT_TYPE_NONE);
-		if(width<0) {
+		JavaBridgeFX javaFX = new JavaBridgeFX(this.map, this, JavaBridgeFX.CONTENT_TYPE_NONE);
+		if (width < 0) {
 			width = WIDTH;
 		}
-		if(height<0) {
+		if (height < 0) {
 			height = HEIGHT;
 		}
 		controller.withTitle("ClassdiagrammEditor");
 		controller.withSize(width, height);
 		controller.withErrorPath("errors");
-		this.bridge = javaFX;
+		this.owner = javaFX;
 		return this;
 	}
 
 	public void show(boolean waitFor) {
-		controller.show(bridge.getWebView(), waitFor, true);
+		controller.show(owner.getWebView(), waitFor, true);
 	}
-
 
 	public DiagramEditor withListener(Object item) {
 		this.logic = item;
-		if(item instanceof SimpleEventCondition) {
+		if (item instanceof SimpleEventCondition) {
 			this.listener = (SimpleEventCondition) logic;
 		}
 		return this;
 	}
 
 	public DiagramEditor withIcon(String icon) {
-		controller.withIcon(icon);
+		if (controller != null) {
+			controller.withIcon(icon);
+		}
 		return this;
 	}
 
@@ -630,74 +768,111 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	public SimpleController getController() {
 		return controller;
 	}
-	
+
 	@Override
 	public boolean changed(SimpleEvent evt) {
-		if(TYPE_CONTENT.equalsIgnoreCase(type) == false) {
+		if (TYPE_CONTENT.equalsIgnoreCase(type) == false) {
 			super.changed(evt);
 			return true;
 		}
-		if(SUCCEEDED.equals(""+evt.getNewValue())) {
-			// TEST
-			JavaAdapter.execute(new Runnable() {
-				@Override
-				public void run() {
-					screendump(null);
-				}
-			});
+		if (SUCCEEDED.equals("" + evt.getNewValue())) {
+			/* TEST */
+			JavaAdapter.execute(DiagramEditorTask.createScreenDump(this));
 			return true;
 		}
 		return true;
 	}
-	
+
 	public void screendump(String nameExtension) {
 		Object snapshotParametersClass = ReflectionLoader.getClass("javafx.scene.SnapshotParameters");
 		Object writableImageClass = ReflectionLoader.getClass("javafx.scene.image.WritableImage");
-		Object image = ReflectionLoader.call(webView, "snapshot", snapshotParametersClass, null, writableImageClass, null);
-
+		Object image = ReflectionLoader.call(webView, "snapshot", snapshotParametersClass, null, writableImageClass,
+				null);
+		if (image == null) {
+			return;
+		}
 		Class<?> swingUtil = ReflectionLoader.getClass("javafx.embed.swing.SwingFXUtils");
 		Object bufferedImageClass = ReflectionLoader.getClass("java.awt.image.BufferedImage");
-		Object bufferedImage = ReflectionLoader.call(swingUtil, "fromFXImage", ReflectionLoader.IMAGE, image, bufferedImageClass, null);
-		
+		Object bufferedImage = ReflectionLoader.call(swingUtil, "fromFXImage", ReflectionLoader.IMAGE, image,
+				bufferedImageClass, null);
+
 		String fileName = this.file;
-		if(nameExtension != null) {
+		if (nameExtension != null) {
 			int pos = fileName.indexOf(".");
-			if(pos<1) {
+			if (pos < 1) {
 				fileName = fileName + nameExtension;
-			}else {
-				fileName = fileName.substring(0, pos)+"-"+nameExtension+fileName.substring(pos);
+			} else {
+				fileName = fileName.substring(0, pos) + "-" + nameExtension + fileName.substring(pos);
 			}
 		}
-		ReflectionLoader.call(ReflectionLoader.IMAGEIO, "write", ReflectionLoader.RENDEREDIMAGE, bufferedImage, String.class, "png", File.class, new File(fileName));
-		if(autoClose) {
+		ReflectionLoader.call(ReflectionLoader.IMAGEIO, "write", ReflectionLoader.RENDEREDIMAGE, bufferedImage,
+				String.class, "png", File.class, new File(fileName));
+		if (autoClose) {
 			controller.close();
 		}
 	}
-	
+
 	public void export(String type, Object value, String name, String context) {
-		String typeName = "files"; 
-		if("PNG".equalsIgnoreCase(type)) {
+		if (this.controller == null) {
+			return;
+		}
+		String typeName = "files";
+		if ("PNG".equalsIgnoreCase(type)) {
 			typeName = "Portable Network Graphics";
-		} else if("SVG".equalsIgnoreCase(type)) {
+		} else if ("SVG".equalsIgnoreCase(type)) {
 			typeName = "Scalable Vector Graphics";
-		} else if("JSON".equalsIgnoreCase(type)) {
+		} else if ("JSON".equalsIgnoreCase(type)) {
 			typeName = "JavaScript Object Notation";
-		} else if("HTML".equalsIgnoreCase(type)) {
+		} else if ("HTML".equalsIgnoreCase(type)) {
 			typeName = "Hypertext Markup Language";
-		} else if("PDF".equalsIgnoreCase(type)) {
+		} else if ("PDF".equalsIgnoreCase(type)) {
 			typeName = "Portable Document Format";
 		}
-		String file = DialogBox.showFileSaveChooser("Export Diagramm", name, typeName, type, this.controller.getStage());
-		if(file != null) {
-			if(value instanceof String) {
+		String file = DialogBox.showFileSaveChooser("Export Diagramm", name, typeName, type,
+				this.controller.getStage());
+		if (file != null) {
+			if (value instanceof String) {
 				FileBuffer.writeFile(file, ((String) value).getBytes());
 			}
 		}
 	}
 
 	public void close() {
-		if(controller != null) {
+		if (controller != null) {
 			controller.close();
 		}
+	}
+
+	/**
+	 * Method for Save Model to Image
+	 * 
+	 * @param entity is the Model
+	 * @return converted String
+	 */
+	@Override
+	public String encode(BaseItem entity) {
+		if (entity instanceof GraphModel == false) {
+			return null;
+		}
+		GraphModel model = (GraphModel) entity;
+		HTMLEntity element = new HTMLEntity().withGraph(model);
+		String fileName = this.file;
+		if (fileName == null) {
+			fileName = model.getName();
+			if (fileName == null) {
+				fileName = "diagram";
+			}
+			fileName += ".png";
+		}
+		convertToPNG(element, fileName);
+		return fileName;
+	}
+
+	public static final DiagramEditor dump(String... values) {
+		DiagramEditor editor = new DiagramEditor();
+		if (values != null && values.length > 0) {
+			editor.file = values[0];
+		}
+		return editor;
 	}
 }

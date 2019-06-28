@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.sql;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,9 @@ import java.util.Comparator;
 
 import de.uniks.networkparser.list.SimpleList;
 
-public class SQLStatementList extends SimpleList<SQLStatement>{
+public class SQLStatementList extends SimpleList<SQLStatement> {
 	private final static SQLStatementComparator comparator = new SQLStatementComparator();
+
 	@Override
 	public Comparator<Object> comparator() {
 		return comparator;

@@ -9,13 +9,14 @@ import de.uniks.networkparser.json.JsonObject;
 
 /**
  * Created by alexw on 06.10.2016.
+ * 
  * @author alexw
  */
 abstract class ReceivingProxy implements Runnable {
 
 	protected Future<?> future = null;
 
-	protected boolean handleMessage(String messageContent){
+	protected boolean handleMessage(String messageContent) {
 		if (messageContent == null || "".equals(messageContent)) {
 			return true;
 		}
@@ -31,7 +32,6 @@ abstract class ReceivingProxy implements Runnable {
 				lookForMessage();
 			}
 		} catch (Exception e) {
-//			e.printStackTrace();
 		}
 	}
 
@@ -39,12 +39,12 @@ abstract class ReceivingProxy implements Runnable {
 		IdMap idMap = space.getMap();
 		String className = jsonObject.getString("class");
 		SendableEntityCreator creator = idMap.getCreator(className, true);
-		if(creator == null) {
+		if (creator == null) {
 			return null;
 		}
 		Object object = creator.getSendableInstance(false);
 		Set<String> keys = jsonObject.keySet();
-		for(String key : keys) {
+		for (String key : keys) {
 			creator.setValue(object, key, jsonObject.getValue(key), IdMap.VALUE);
 		}
 		return object;

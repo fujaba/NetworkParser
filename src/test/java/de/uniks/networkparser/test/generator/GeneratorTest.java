@@ -24,7 +24,6 @@ public class GeneratorTest {
 
 		template.generate(resultModel, null, new Attribute("name", DataType.STRING));
 		Assert.assertEquals("0: Declaration", template.toString());
-//		System.out.println(templateResult);
 
 	}
 }

@@ -3,7 +3,7 @@ package de.uniks.networkparser.list;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,8 +31,14 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
-	public static final String PROPERTY="items";
-	private ObjectCondition listener;
+	public static final String PROPERTY = "items";
+	protected ObjectCondition listener;
+
+	public SimpleSet(Object... objects) {
+		if (objects != null && objects.length > 0) {
+			init(objects);
+		}
+	}
 
 	@Override
 	public SimpleSet<V> getNewList(boolean keyValue) {
@@ -41,24 +47,36 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 
 	@Override
 	public boolean remove(Object o) {
-		return super.removeByObject(o)>=0;
+		return removeByObject(o) >= 0;
+	}
+
+	@Override
+	public int removeByObject(Object key) {
+		if (isReadOnly() || isVisible() == false) {
+			throw new UnsupportedOperationException("remove(" + key + ")");
+		}
+		return super.removeByObject(key);
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> c) {
+		if (isReadOnly() || isVisible() == false) {
+			throw new UnsupportedOperationException("retainAll(" + c + ")");
+		}
+		return super.retainAll(c);
 	}
 
 	@Override
 	public SimpleSet<V> clone() {
 		return getNewList(false).init(this);
 	}
+
 	@SuppressWarnings("unchecked")
 	public SimpleSet<V> subList(int fromIndex, int toIndex) {
 		return (SimpleSet<V>) super.subList(fromIndex, toIndex);
 	}
 
-	@Override
-	public boolean addAll(int index, Collection<? extends V> values) {
-		return super.addAll(index, values);
-	}
-
-	// Add Methods from SDMLib
+	/* Add Methods from SDMLib */
 	@Override
 	public String toString() {
 		CharacterBuffer buffer = new CharacterBuffer();
@@ -70,6 +88,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		CharacterBuffer buffer = new CharacterBuffer();
 		return toBuffer(buffer, separator).toString();
 	}
+
 	CharacterBuffer toBuffer(CharacterBuffer buffer, String separator) {
 		int len = this.size();
 		for (V elem : this) {
@@ -82,10 +101,10 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return buffer;
 	}
 
-	// ReadOnly Add all
+	/* ReadOnly Add all */
 	@Override
 	public V set(int index, V element) {
-		if (isReadOnly()) {
+		if (isReadOnly() || isVisible() == false) {
 			throw new UnsupportedOperationException("set(" + index + ")");
 		}
 		return super.set(index, element);
@@ -93,15 +112,23 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 
 	@Override
 	public void add(int index, V element) {
-		if (isReadOnly()) {
+		if (isReadOnly() || isVisible() == false) {
 			throw new UnsupportedOperationException("add(" + index + ")");
 		}
 		super.add(index, element);
 	}
 
 	@Override
+	public void clear() {
+		if (isReadOnly() || isVisible() == false) {
+			throw new UnsupportedOperationException("clear()");
+		}
+		super.clear();
+	}
+
+	@Override
 	public V remove(int index) {
-		if (isReadOnly()) {
+		if (isReadOnly() || isVisible() == false) {
 			throw new UnsupportedOperationException("remove(" + index + ")");
 		}
 		return super.remove(index);
@@ -109,7 +136,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 
 	@Override
 	public boolean add(V newValue) {
-		if (isReadOnly()) {
+		if (isReadOnly() || isVisible() == false) {
 			throw new UnsupportedOperationException("add()");
 		}
 		return super.add(newValue);
@@ -131,14 +158,14 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return result;
 	}
 
-	 public <ST extends AbstractList<?>> ST instanceOf(ST target) {
-		for(Object obj : this) {
-			if(obj != null && obj.getClass()==target.getTypClass()) {
+	public <ST extends AbstractList<?>> ST instanceOf(ST target) {
+		for (Object obj : this) {
+			if (obj != null && obj.getClass() == target.getTypClass()) {
 				target.with(obj);
 			}
 		}
 		return target;
-	 }
+	}
 
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleSet<V>> ST minus(Object other) {
@@ -158,10 +185,18 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	}
 
 	@Override
-	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, int index, Object value) {
-		if(this.listener != null) {
-			this.listener.update(new SimpleEvent(type, this, PROPERTY, index, newElement, oldElement, value, beforeElement));
+	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, int index,
+			Object value) {
+		if (this.listener != null) {
+			return this.listener
+					.update(new SimpleEvent(type, this, PROPERTY, index, oldElement, newElement, value, beforeElement));
 		}
 		return super.fireProperty(type, oldElement, newElement, beforeElement, index, value);
+	}
+
+	@Override
+	public SimpleSet<V> withList(Collection<?> values) {
+		super.withList(values);
+		return this;
 	}
 }

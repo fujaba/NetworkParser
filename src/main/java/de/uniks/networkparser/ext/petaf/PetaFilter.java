@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,12 +29,12 @@ import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class PetaFilter extends Filter {
-	public static final String UPDATE="update"; // UPDATE only send basic info
-	public static final String ID="id"; // UPDATE only send basic info
-	public static final String ATTRIBUTES = "attributes"; // ATTRIBUTES send all Attributes of Remote Proxy
-	public static final String INFO="info"; // Info send more Infos
+	public static final String UPDATE = "update"; /* UPDATE only send basic info */
+	public static final String ID = "id"; /* UPDATE only send basic info */
+	public static final String ATTRIBUTES = "attributes"; /* ATTRIBUTES send all Attributes of Remote Proxy */
+	public static final String INFO = "info"; /* Info send more Infos */
 
-	private String typ=UPDATE;
+	private String typ = UPDATE;
 	private String oldTyp;
 
 	public PetaFilter() {
@@ -45,14 +45,13 @@ public class PetaFilter extends Filter {
 	public void convertProperty(Object entity, String fullProp) {
 		super.convertProperty(entity, fullProp);
 
-
-		if(InfoMessage.PROPERTY_PROXIES.equals(fullProp) && entity instanceof InfoMessage) {
+		if (InfoMessage.PROPERTY_PROXIES.equals(fullProp) && entity instanceof InfoMessage) {
 			this.oldTyp = this.typ;
 			this.typ = INFO;
-		} else if(ConnectMessage.PROPERTY_RECEIVED.equals(fullProp) && entity instanceof ConnectMessage) {
+		} else if (ConnectMessage.PROPERTY_RECEIVED.equals(fullProp) && entity instanceof ConnectMessage) {
 			this.oldTyp = this.typ;
 			this.typ = INFO;
-		}else if(this.oldTyp != null) {
+		} else if (this.oldTyp != null) {
 			this.typ = this.oldTyp;
 			this.oldTyp = null;
 		}
@@ -60,15 +59,15 @@ public class PetaFilter extends Filter {
 
 	@Override
 	public String[] getProperties(SendableEntityCreator creator) {
-		if(creator instanceof NodeProxy) {
+		if (creator instanceof NodeProxy) {
 			NodeProxy npCreator = (NodeProxy) creator;
-			if(UPDATE.equalsIgnoreCase(typ)) {
+			if (UPDATE.equalsIgnoreCase(typ)) {
 				return npCreator.getUpdateProperties();
-			} else if(ATTRIBUTES.equalsIgnoreCase(typ)) {
+			} else if (ATTRIBUTES.equalsIgnoreCase(typ)) {
 				return npCreator.getProperties();
-			} else if(INFO.equalsIgnoreCase(typ)) {
+			} else if (INFO.equalsIgnoreCase(typ)) {
 				return npCreator.getInfoProperties();
-			} else if(ID.equalsIgnoreCase(typ)) {
+			} else if (ID.equalsIgnoreCase(typ)) {
 				return npCreator.getIDProperties();
 			}
 		}

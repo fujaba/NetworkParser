@@ -3,7 +3,7 @@ package de.uniks.networkparser.interfaces;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,8 +39,9 @@ public interface TemplateParser {
 	public static final int VALUE = 5;
 
 	public static final int METHOD = 6;
-	
+
 	public static final int TEMPLATEEND = Integer.MAX_VALUE;
 
-	public ObjectCondition parsing(CharacterBuffer template, LocalisationInterface customTemplate, boolean isExpression, boolean allowSpace, String... stopWords);
+	public ObjectCondition parsing(CharacterBuffer template, LocalisationInterface customTemplate, boolean isExpression,
+			boolean allowSpace, String... stopWords);
 }

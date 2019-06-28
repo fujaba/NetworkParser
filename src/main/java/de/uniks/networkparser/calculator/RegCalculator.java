@@ -3,7 +3,7 @@ package de.uniks.networkparser.calculator;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -55,7 +56,9 @@ public class RegCalculator {
 	}
 
 	public RegCalculator withOperator(Operator value) {
-		this.operators.put(value.getTag(), value);
+		if (value != null) {
+			this.operators.put(value.getTag(), value);
+		}
 		return this;
 	}
 
@@ -78,8 +81,7 @@ public class RegCalculator {
 
 		ArrayList<String> parts = new ArrayList<String>();
 		int pos;
-		if (tokener.getCurrentChar() == '('
-				&& tokener.charAt(tokener.length() - 1) == ')') {
+		if (tokener.getCurrentChar() == '(' && tokener.charAt(tokener.length() - 1) == ')') {
 			pos = tokener.position();
 			String value = tokener.getStringPart('(', ')');
 			if (value != null && tokener.position() == tokener.length()) {
@@ -105,15 +107,13 @@ public class RegCalculator {
 			}
 
 			if ((pos = BACKETSOPEN.indexOf(current)) >= 0) {
-				String value = tokener.getStringPart(BACKETSOPEN.charAt(pos),
-						BACKETSCLOSE.charAt(pos));
+				String value = tokener.getStringPart(BACKETSOPEN.charAt(pos), BACKETSCLOSE.charAt(pos));
 				if (value != null) {
 					if (defaultMulti) {
 						parts.add("*");
 					}
 					if (pos > 0) {
-						parts.add("(" + value.substring(1, value.length() - 1)
-								+ ")");
+						parts.add("(" + value.substring(1, value.length() - 1) + ")");
 					} else {
 						parts.add(value);
 					}
@@ -155,34 +155,31 @@ public class RegCalculator {
 			}
 			current = null;
 		}
-		if(parts.size()<1) {
-			parts.add(""+current);
+		if (parts.size() < 1) {
+			parts.add("" + current);
 		}
 
-		// Parsing Funciton & Parsing (
+		/* Parsing Funciton & Parsing ( */
 		int z = parts.size() - 1;
 		while (z >= 0) {
 			pos = parts.get(z).indexOf("(");
 			if (pos < 0) {
-				// Check for mathematical operators
+				/* Check for mathematical operators */
 				if (z > 0) {
 					Operator operator = operators.get(parts.get(z - 1));
 					if (operator != null && operator.getPriority() == LINE) {
 						if (z > 1) {
-							// Exist Pre Pre
-							Operator preOperator = operators.get(parts
-									.get(z - 2));
+							/* Exist Pre Pre */
+							Operator preOperator = operators.get(parts.get(z - 2));
 							if (preOperator == null) {
 								z--;
 								continue;
 							}
 						}
 						if (operator.getTag().equals("-")) {
-							parts.set(z - 1, ""
-									+ (Double.valueOf(parts.get(z)) * -1));
+							parts.set(z - 1, "" + (Double.valueOf(parts.get(z)) * -1));
 						} else {
-							parts.set(z - 1, ""
-									+ (Double.valueOf(parts.get(z))));
+							parts.set(z - 1, "" + (Double.valueOf(parts.get(z))));
 						}
 						parts.remove(z);
 						z--;
@@ -193,11 +190,9 @@ public class RegCalculator {
 				continue;
 			}
 			if (pos > 0) {
-				// Function
-				Operator operator = operators.get(parts.get(z).substring(0,
-						parts.get(z).indexOf("(")));
-				Double[] values = calculateFields(parts.get(z).substring(
-						pos + 1, parts.get(z).length() - 1));
+				/* Function */
+				Operator operator = operators.get(parts.get(z).substring(0, parts.get(z).indexOf("(")));
+				Double[] values = calculateFields(parts.get(z).substring(pos + 1, parts.get(z).length() - 1));
 				if (operator != null && values.length >= operator.getValues()) {
 					parts.set(z, "" + operator.calculate(values));
 				}
@@ -205,17 +200,13 @@ public class RegCalculator {
 			parts.set(z, "" + calculate(parts.get(z)));
 		}
 
-		// Point and Line Statement
+		/* Point and Line Statement */
 		for (int prio = 3; prio > 0; prio--) {
 			for (int i = 0; i < parts.size(); i++) {
 				Operator operator = operators.get(parts.get(i));
 				if (operator != null && operator.getPriority() == prio) {
-					parts.set(
-							i - 1,
-							""
-									+ operator.calculate(new Double[] {
-											Double.valueOf(parts.get(i - 1)),
-											Double.valueOf(parts.get(i + 1)) }));
+					parts.set(i - 1, "" + operator.calculate(
+							new Double[] { Double.valueOf(parts.get(i - 1)), Double.valueOf(parts.get(i + 1)) }));
 					parts.remove(i);
 					parts.remove(i);
 					i = i - 1;
@@ -225,15 +216,20 @@ public class RegCalculator {
 
 		Double[] result = new Double[parts.size()];
 		for (int i = 0; i < parts.size(); i++) {
-			result[i] = Double.valueOf(parts.get(i));
+			try {
+				result[i] = Double.valueOf(parts.get(i));
+			} catch (Exception e) {
+			}
 		}
 		return result;
 	}
 
-	private boolean addOperator(String value, CharacterBuffer tokener,
-			ArrayList<String> parts) {
+	private boolean addOperator(String value, CharacterBuffer tokener, List<String> parts) {
 		if (constants.containsKey(value)) {
-			// Its constants
+			/* Its constants */
+			if (parts == null) {
+				return false;
+			}
 			return parts.add("" + constants.get(value));
 		} else if (operators.containsKey(value)) {
 			if (operators.get(value).getPriority() == FUNCTION) {

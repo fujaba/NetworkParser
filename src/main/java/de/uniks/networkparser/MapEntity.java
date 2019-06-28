@@ -11,10 +11,11 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.xml.MapEntityStack;
 import de.uniks.networkparser.xml.XMLEntity;
+
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -35,10 +36,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 /**
- * @author Stefan
- * MapEntity for IdMap
+ * A Entity for Map
+ * 
+ * @author Stefan MapEntity for IdMap
  */
-public class MapEntity extends AbstractList<Object>{
+public class MapEntity extends AbstractList<Object> {
 	protected Filter filter;
 	protected int deep;
 	protected Object target;
@@ -51,17 +53,19 @@ public class MapEntity extends AbstractList<Object>{
 	private Tokener tokener;
 
 	public MapEntity(Filter filter, byte flag, IdMap map, Tokener tokener) {
-		if(filter != null) {
+		if (filter != null) {
 			this.filter = filter;
 		}
 		this.mapFlag = flag;
 		this.map = map;
-		this.grammar = map.getGrammar();
+		if (map != null) {
+			this.grammar = map.getGrammar();
+		}
 		this.tokener = tokener;
 	}
 
 	public MapEntity(IdMap map) {
-		if(map != null) {
+		if (map != null) {
 			this.filter = map.getFilter();
 			this.mapFlag = map.getFlag();
 			this.grammar = map.getGrammar();
@@ -76,8 +80,9 @@ public class MapEntity extends AbstractList<Object>{
 	public Filter getFilter() {
 		return filter;
 	}
+
 	public Entity encode(Object entity) {
-		if(tokener == null || tokener.getMap() == null) {
+		if (tokener == null || tokener.getMap() == null) {
 			return null;
 		}
 		return tokener.getMap().encode(entity, this);
@@ -95,10 +100,14 @@ public class MapEntity extends AbstractList<Object>{
 	public boolean isSearchForSuperClass() {
 		return (mapFlag & IdMap.FLAG_SEARCHFORSUPERCLASS) != 0;
 	}
+
 	public boolean isSimpleFormat() {
 		boolean result = (mapFlag & IdMap.FLAG_SIMPLEFORMAT) != 0;
-		if(result) {
+		if (result) {
 			return result;
+		}
+		if (filter == null) {
+			return false;
 		}
 		return filter.isSimpleFormat();
 	}
@@ -109,6 +118,7 @@ public class MapEntity extends AbstractList<Object>{
 	public Object getTarget() {
 		return target;
 	}
+
 	/**
 	 * @param target the target to set
 	 * @return The Target Object
@@ -119,7 +129,7 @@ public class MapEntity extends AbstractList<Object>{
 	}
 
 	public MapEntity withStrategy(String value) {
-		if(value != null) {
+		if (value != null) {
 			this.filter.withStrategy(value);
 		}
 		return this;
@@ -129,6 +139,7 @@ public class MapEntity extends AbstractList<Object>{
 		this.deep = value;
 		return this;
 	}
+
 	public int addDeep() {
 		deep++;
 		return deep;
@@ -152,7 +163,6 @@ public class MapEntity extends AbstractList<Object>{
 		return null;
 	}
 
-
 	/**
 	 * @return the stack
 	 */
@@ -161,18 +171,19 @@ public class MapEntity extends AbstractList<Object>{
 	}
 
 	public void pushStack(String className, Object entity, SendableEntityCreator creator) {
-		if(this.stack != null) {
+		if (this.stack != null) {
 			this.stack.withStack(className, entity, creator);
 		}
 		this.deep = this.deep + 1;
 	}
 
 	public void popStack() {
-		if(this.stack != null) {
+		if (this.stack != null) {
 			this.stack.popStack();
 		}
 		this.deep = this.deep - 1;
 	}
+
 	/**
 	 * @param stack the stack to set
 	 * @return ThisComponent
@@ -184,11 +195,11 @@ public class MapEntity extends AbstractList<Object>{
 
 	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Object entity, String className) {
 		CharacterBuffer result = new CharacterBuffer();
-		if(this.isSimpleFormat()) {
+		if (this.isSimpleFormat() || grammar.isFlatFormat()) {
 			return result;
 		}
 		boolean isComplex = filter.isSimpleFormat(entity, creator, className, map);
-		if(isComplex) {
+		if (isComplex) {
 			return result;
 		}
 		result.with(IdMap.ENTITYSPLITTER).with(Tokener.PROPS).with(IdMap.ENTITYSPLITTER);
@@ -199,9 +210,11 @@ public class MapEntity extends AbstractList<Object>{
 		this.filter = filter;
 		return this;
 	}
-
-	// Method for Filter
+	/* Method for Filter */
 	public String getId(Object entity, String className) {
+		if (filter == null) {
+			return null;
+		}
 		if (filter.isId(entity, className, map) == false) {
 			this.with(entity);
 		} else {
@@ -213,14 +226,15 @@ public class MapEntity extends AbstractList<Object>{
 		return null;
 	}
 
-	public Entity writeBasicValue(SendableEntityCreator creator, Entity entity, BaseItem parent, String className, String id) {
-		if((mapFlag & IdMap.FLAG_ID) == 0) {
-			if(creator instanceof SendableEntityCreatorTag) {
-				className = ((SendableEntityCreatorTag)creator).getTag();
+	public Entity writeBasicValue(SendableEntityCreator creator, Entity entity, BaseItem parent, String className,
+			String id) {
+		if ((mapFlag & IdMap.FLAG_ID) == 0) {
+			if (creator instanceof SendableEntityCreatorTag) {
+				className = ((SendableEntityCreatorTag) creator).getTag();
 			}
 			id = null;
-		}else if(filter.isShortClass()){
-			if(className != null && className.startsWith("de.uniks.networkparser.ext.petaf")) {
+		} else if (filter.isShortClass()) {
+			if (className != null && className.startsWith("de.uniks.networkparser.ext.petaf")) {
 				className = className.substring(className.lastIndexOf('.') + 1);
 			}
 		}
@@ -232,21 +246,21 @@ public class MapEntity extends AbstractList<Object>{
 	 * @return the addOwnerLink
 	 */
 	public boolean isAddOwnerLink(Object value) {
-		if((mapFlag & IdMap.FLAG_ID) != 0) {
+		if ((mapFlag & IdMap.FLAG_ID) != 0) {
 			return true;
 		}
-		if(stack != null) {
+		if (stack != null) {
 			return stack.getPrevItem() != value;
 		}
 		return false;
 	}
 
 	public int getIndexOfClazz(String clazzName) {
-		if(clazzName == null) {
+		if (clazzName == null) {
 			return -1;
 		}
 		int pos = 0;
-		for(Iterator<Object> i = this.iterator();i.hasNext();) {
+		for (Iterator<Object> i = this.iterator(); i.hasNext();) {
 			Object item = i.next();
 			if (clazzName.equalsIgnoreCase(item.getClass().getName())) {
 				return pos;
@@ -258,7 +272,7 @@ public class MapEntity extends AbstractList<Object>{
 
 	public int getIndexVisitedObjects(Object element) {
 		int pos = 0;
-		for(Iterator<Object> i = this.iterator();i.hasNext();) {
+		for (Iterator<Object> i = this.iterator(); i.hasNext();) {
 			Object item = i.next();
 			if (item == element) {
 				return pos;
@@ -269,14 +283,14 @@ public class MapEntity extends AbstractList<Object>{
 	}
 
 	public Object getVisitedObjects(int index) {
-		if (index>=0 && index < size()) {
+		if (index >= 0 && index < size()) {
 			return get(index);
 		}
 		return null;
 	}
 
 	public String getClazz(int pos) {
-		if(pos<0 || pos > size()) {
+		if (pos < 0 || pos > size()) {
 			return null;
 		}
 		Object item = get(pos);
@@ -288,33 +302,36 @@ public class MapEntity extends AbstractList<Object>{
 
 	public String getLastClazz() {
 		Object item = last();
-		if(item != null) {
+		if (item != null) {
 			return item.getClass().getName();
 		}
 		return null;
 	}
 
 	public Entity convertProperty(CharacterBuffer property, BaseItem parent) {
-		BaseItem child=parent;
-		while(property.charAt(0) == IdMap.ENTITYSPLITTER) {
-			if(property.length() == 1) {
+		BaseItem child = parent;
+		if (property == null) {
+			return null;
+		}
+		while (property.charAt(0) == IdMap.ENTITYSPLITTER) {
+			if (property.length() == 1) {
 				break;
 			}
-			// Its ChildValue
+			/* Its ChildValue */
 			int pos = property.indexOf(IdMap.ENTITYSPLITTER, 1);
 			if (pos < 0) {
 				property.trimStart(1);
 				break;
 			}
 			String label = property.substring(1, pos);
-			property.trimStart(label.length()+1);
+			property.trimStart(label.length() + 1);
 			if (child instanceof Entity) {
 				Entity entity = (Entity) child;
 				BaseItem newItem = entity.getElementBy(XMLEntity.PROPERTY_TAG, label);
-				if(newItem == null) {
+				if (newItem == null) {
 					newItem = child.getNewList(true);
-					if(newItem instanceof XMLEntity) {
-						((XMLEntity) newItem).setType(label);
+					if (newItem instanceof XMLEntity) {
+						((XMLEntity) newItem).withType(label);
 						entity.add(newItem);
 					} else {
 						((Entity) child).put(label, newItem);
@@ -323,7 +340,7 @@ public class MapEntity extends AbstractList<Object>{
 				child = newItem;
 			}
 		}
-		return (Entity)child;
+		return (Entity) child;
 	}
 
 	/**
@@ -338,11 +355,13 @@ public class MapEntity extends AbstractList<Object>{
 		this.tokenerFlag = (byte) (this.tokenerFlag | flag);
 		return this;
 	}
+
 	public MapEntity withoutTokenerFlag(byte flag) {
 		this.tokenerFlag = (byte) (this.tokenerFlag | flag);
 		this.tokenerFlag -= flag;
 		return this;
 	}
+
 	/**
 	 * @param flag is the Flag is Set
 	 * @return the type
@@ -361,13 +380,16 @@ public class MapEntity extends AbstractList<Object>{
 	}
 
 	public Tokener getTokener() {
-		if(tokener == null) {
+		if (tokener == null && map != null) {
 			tokener = map.jsonTokener;
 		}
 		return this.tokener;
 	}
 
 	public boolean isStrategyNew() {
+		if (this.filter == null) {
+			return true;
+		}
 		return SendableEntityCreator.NEW.equalsIgnoreCase(this.filter.getStrategy());
 	}
 }

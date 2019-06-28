@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf.messages;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ THE SOFTWARE.
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.UpdateAccumulate;
+import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.ext.petaf.ReceivingTimerTask;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyModel;
@@ -56,6 +56,7 @@ public class ChangeMessage extends ReceivingTimerTask {
 		this.entity = value;
 		return this;
 	}
+
 	public ChangeMessage withFilter(Filter filter) {
 		this.filter = filter;
 		return this;
@@ -78,8 +79,8 @@ public class ChangeMessage extends ReceivingTimerTask {
 
 	@Override
 	public BaseItem getMessage() {
-		if(msg == null && space != null) {
-			if(property == null) {
+		if (msg == null && space != null) {
+			if (property == null) {
 				msg = space.encode(entity, filter);
 			}
 		}
@@ -91,15 +92,15 @@ public class ChangeMessage extends ReceivingTimerTask {
 	}
 
 	@Override
-	public boolean runTask() throws Exception {
-		if(this.id == null || this.space == null) {
+	public boolean runTask() {
+		if (this.id == null || this.space == null) {
 			return false;
 		}
 		IdMap map = this.space.getMap();
 		Object element = map.getObject(this.id);
 		SendableEntityCreator creator = null;
-		if(element == null) {
-			if(this.entity instanceof String) {
+		if (element == null) {
+			if (this.entity instanceof String) {
 				String className = (String) this.entity;
 				creator = map.getCreator(className, true);
 				element = creator.getSendableInstance(true);
@@ -109,12 +110,12 @@ public class ChangeMessage extends ReceivingTimerTask {
 		} else {
 			creator = map.getCreatorClass(element);
 		}
-		if(element != null && creator != null) {
+		if (element != null && creator != null) {
 			Object currentValue = creator.getValue(element, this.property);
-			if((currentValue == null && this.oldValue == null) ||
-					(currentValue != null && currentValue.equals(this.oldValue))) {
-				UpdateAccumulate changeMessage=new UpdateAccumulate();
-				changeMessage.withTarget(element, creator, this.property);
+			if ((currentValue == null && this.oldValue == null)
+					|| (currentValue != null && currentValue.equals(this.oldValue))) {
+				UpdateCondition changeMessage = UpdateCondition.createUpdateCondition();
+				changeMessage.withAcumulateTarget(element, creator, this.property);
 				space.suspendNotification(changeMessage);
 				creator.setValue(element, property, this.newValue, SendableEntityCreator.UPDATE);
 				space.resetNotification();
@@ -125,28 +126,28 @@ public class ChangeMessage extends ReceivingTimerTask {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(attribute == null || entity instanceof ChangeMessage == false ) {
+		if (attribute == null || entity instanceof ChangeMessage == false) {
 			return false;
 		}
 		ChangeMessage message = (ChangeMessage) entity;
-		if(PROPERTY_OLD.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_OLD.equalsIgnoreCase(attribute)) {
 			return message.oldValue;
 		}
-		if(PROPERTY_NEW.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_NEW.equalsIgnoreCase(attribute)) {
 			return message.newValue;
 		}
-		if(PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
 			return message.property;
 		}
-		if(PROPERTY_CHANGECLASS.equalsIgnoreCase(attribute)) {
-			if(message.entity == null) {
+		if (PROPERTY_CHANGECLASS.equalsIgnoreCase(attribute)) {
+			if (message.entity == null) {
 				return null;
 			}
 			return message.entity.getClass().getName();
 		}
-		if(entity != null && PROPERTY_ID.equalsIgnoreCase(attribute)) {
+		if (entity != null && PROPERTY_ID.equalsIgnoreCase(attribute)) {
 			Space space = message.getSpace();
-			if(space != null) {
+			if (space != null) {
 				return space.getId(message.entity);
 			}
 		}
@@ -155,27 +156,27 @@ public class ChangeMessage extends ReceivingTimerTask {
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if(attribute == null || entity instanceof ChangeMessage == false ) {
+		if (attribute == null || entity instanceof ChangeMessage == false) {
 			return false;
 		}
 		ChangeMessage message = (ChangeMessage) entity;
-		if(PROPERTY_OLD.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_OLD.equalsIgnoreCase(attribute)) {
 			message.oldValue = value;
 			return true;
 		}
-		if(PROPERTY_NEW.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_NEW.equalsIgnoreCase(attribute)) {
 			message.newValue = value;
 			return true;
 		}
-		if(PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
 			message.property = (String) value;
 			return true;
 		}
-		if(PROPERTY_ID.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_ID.equalsIgnoreCase(attribute)) {
 			message.id = (String) value;
 			return true;
 		}
-		if(PROPERTY_CHANGECLASS.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_CHANGECLASS.equalsIgnoreCase(attribute)) {
 			message.entity = (String) value;
 			return true;
 		}
@@ -183,7 +184,7 @@ public class ChangeMessage extends ReceivingTimerTask {
 	}
 
 	protected void initialize(NodeProxyModel modell) {
-		if(modell == null) {
+		if (modell == null) {
 			return;
 		}
 		if (this.space == null) {

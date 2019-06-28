@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
@@ -32,7 +32,7 @@ public class EMFTest {
 		Assert.assertEquals(9, list.getClazzes().size());
 		Clazz segment = list.getClazzes().get(0);
 		Assert.assertEquals("RailwayContainer", segment.toString());
-		Assert.assertEquals("[RailwayContainer]->[RailwayElement|id:int],[RailwayContainer]->[Semaphore|signal:Signal],[RailwayContainer]->[Route],[RailwayElement]^-[TrackElement],[RailwayElement]^-[Route],[RailwayElement]^-[Semaphore],[RailwayElement]^-[SwitchPosition|position:Position],[RailwayElement]^-[Sensor],[Route]->[SwitchPosition],[Route]->[Semaphore],[Route]->[Sensor],[Segment|length:int]-^[TrackElement],[Sensor]->[TrackElement],[Switch|currentPosition:Position]->[SwitchPosition],[Switch]-^[TrackElement],[TrackElement]<-[TrackElement]", model.toString());
+		Assert.assertEquals("[RailwayContainer]->[RailwayElement|id:int],[RailwayContainer]->[Route],[RailwayContainer]->[Semaphore|signal:Signal],[RailwayElement]^-[Route],[RailwayElement]^-[Semaphore],[RailwayElement]^-[Sensor],[RailwayElement]^-[SwitchPosition|position:Position],[RailwayElement]^-[TrackElement],[Route]->[Semaphore],[Route]->[Sensor],[Route]->[SwitchPosition],[Segment|length:int]-^[TrackElement],[Sensor]->[TrackElement],[Switch|currentPosition:Position]->[SwitchPosition],[Switch]-^[TrackElement],[TrackElement]<-[TrackElement]", model.toString());
 	}
 
 	@Test
@@ -60,7 +60,7 @@ public class EMFTest {
 		Clazz student = list.createClazz("Student");
 		student.withAttribute("semester", DataType.INT);
 		student.withAttribute("name", DataType.STRING);
-		uni.withBidirectional(student, "student", Cardinality.MANY, "university", Cardinality.ONE);
+		uni.withBidirectional(student, "student", Association.MANY, "university", Association.ONE);
 		XMLEntity item = (XMLEntity) map.encode(list, new EMFTokener());
 
 		XMLEntity root =(XMLEntity) item.getChild(0);
@@ -92,7 +92,6 @@ public class EMFTest {
 		Assert.assertNotNull(map);
 		Object decode = map.decode(xmi);
 		Assert.assertNotNull(decode);
-//		System.out.println(decode);
 	}
 
 }

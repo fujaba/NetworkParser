@@ -5,7 +5,7 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,12 +27,11 @@ THE SOFTWARE.
 */
 /**
  * Modifier for Methods and Class
+ * 
  * @author Stefan Lindel
  */
 
 public class Modifier extends GraphMember {
-	public static final StringFilter<Modifier> NAME = new StringFilter<Modifier>(GraphMember.PROPERTY_NAME);
-
 	public static final Modifier PUBLIC = new Modifier("public");
 	public static final Modifier PACKAGE = new Modifier("");
 	public static final Modifier PROTECTED = new Modifier("protected");
@@ -46,6 +45,7 @@ public class Modifier extends GraphMember {
 	Modifier(String value) {
 		this.setName(value);
 	}
+
 	Modifier(Modifier value) {
 		this.setName(value.getName());
 	}
@@ -61,24 +61,27 @@ public class Modifier extends GraphMember {
 	}
 
 	public static Modifier create(Modifier... values) {
-		if(values == null || values.length < 1) {
+		if (values == null || values.length < 1 || values[0] == null) {
 			return null;
 		}
-		Modifier mod=new Modifier(values[0].getName());
+		Modifier mod = new Modifier(values[0].getName());
 		mod.withModifier(values);
 		return mod;
 	}
 
 	public boolean has(Modifier other) {
-		if(this.getName().equals(other.getName())) {
+		if (this.getName() == null || other == null) {
+			return false;
+		}
+		if (this.getName().equals(other.getName())) {
 			return true;
 		}
-		if(this.children != null) {
-			for(GraphMember member : this.getChildren()) {
-				if((member instanceof Modifier) == false) {
+		if (this.children != null) {
+			for (GraphMember member : this.getChildren()) {
+				if ((member instanceof Modifier) == false) {
 					continue;
 				}
-				if(((Modifier)member).has(other)) {
+				if (((Modifier) member).has(other)) {
 					return true;
 				}
 			}
@@ -93,24 +96,24 @@ public class Modifier extends GraphMember {
 
 	@Override
 	public String toString() {
-		CharacterBuffer buffer=new CharacterBuffer();
+		CharacterBuffer buffer = new CharacterBuffer();
 		String name = this.getName();
 		GraphSimpleSet list = this.getChildren();
-		if(name != null && name.length()>0) {
+		if (name != null && name.length() > 0) {
 			buffer.with(name);
-			if(list.size()>0) {
+			if (list.size() > 0) {
 				buffer.with(" ");
 			}
 		}
-		for(int i=0;i<list.size();i++) {
+		for (int i = 0; i < list.size(); i++) {
 			GraphMember member = list.get(i);
-			if((member instanceof Modifier) == false) {
+			if ((member instanceof Modifier) == false) {
 				continue;
 			}
 			name = member.getName();
-			if(name != null && name.length()>0) {
+			if (name != null && name.length() > 0) {
 				buffer.with(name);
-				if((i+1)<list.size()) {
+				if ((i + 1) < list.size()) {
 					buffer.with(" ");
 				}
 			}
@@ -120,13 +123,13 @@ public class Modifier extends GraphMember {
 
 	@Override
 	public boolean equals(Object obj) {
-		if(obj == null){
+		if (obj == null) {
 			return false;
 		}
-		if(obj.hashCode() == this.hashCode()) {
+		if (obj.hashCode() == this.hashCode()) {
 			return true;
 		}
-		if(obj instanceof Modifier) {
+		if (obj instanceof Modifier) {
 			return this.has((Modifier) obj);
 		}
 		return super.equals(obj);
@@ -135,11 +138,5 @@ public class Modifier extends GraphMember {
 	@Override
 	public int hashCode() {
 		return super.hashCode();
-	}
-
-	@Override
-	public Modifier without(GraphMember... values) {
-		super.without(values);
-		return this;
 	}
 }

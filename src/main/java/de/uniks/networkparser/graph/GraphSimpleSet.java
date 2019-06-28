@@ -5,7 +5,7 @@ import java.util.Comparator;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,53 +27,59 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.list.SimpleSet;
 
-public class GraphSimpleSet extends SimpleSet<GraphMember> {
+public class GraphSimpleSet extends SimpleSet<GraphMember> implements Comparator<Object> {
+	private boolean comparator = true;
 
-	private static Comparator<Object> comparator=new Comparator<Object>(){
-        @Override
-        public int compare(Object o1, Object o2) {
-        	if(o1 instanceof GraphMember == false || o2 instanceof GraphMember == false ){
-        		return 0;
-        	}
-        	String id1 = ((GraphMember) o1).getFullId();
-        	String id2 = ((GraphMember) o2).getFullId();
-        	if(id1 == id2) {
-        		return 0;
-        	}
-        	if(id1 == null) {
-        		return 1;
-        	}
-        	if(id2 == null) {
-        		return -1;
-        	}
-           return id1.compareTo(id2);
-        }
-    };
+	public static GraphSimpleSet create(boolean comparator) {
+		GraphSimpleSet set = new GraphSimpleSet();
+		set.comparator = comparator;
+		return set;
+	}
+
 	@Override
 	protected boolean checkValue(Object a, Object b) {
-		if(!(a instanceof GraphMember)) {
+		if (a instanceof GraphMember == false) {
 			return a.equals(b);
 		}
-		String idA = ((GraphMember)a).getName();
-		if(idA==null) {
+
+		String idA = ((GraphMember) a).getFullId();
+		if (idA == null) {
 			return a.equals(b);
 		}
 		String idB;
-		if(b instanceof String) {
-			idB = (String)b;
-		}else {
-			idB = ((GraphMember)b).getName();
+		if (b instanceof String) {
+			idB = (String) b;
+		} else {
+			idB = ((GraphMember) b).getFullId();
 		}
 		return idA.equalsIgnoreCase(idB);
 	}
 
 	@Override
 	public Comparator<Object> comparator() {
-		return comparator;
+		return this;
 	}
 
 	@Override
 	public boolean isComparator() {
-		return true;
+		return comparator;
+	}
+
+	public int compare(Object o1, Object o2) {
+		if (o1 instanceof GraphMember == false || o2 instanceof GraphMember == false) {
+			return 0;
+		}
+		String id1 = ((GraphMember) o1).getFullId();
+		String id2 = ((GraphMember) o2).getFullId();
+		if (id1 == id2) {
+			return 0;
+		}
+		if (id1 == null) {
+			return 1;
+		}
+		if (id2 == null) {
+			return -1;
+		}
+		return id1.compareTo(id2);
 	}
 }

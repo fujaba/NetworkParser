@@ -3,7 +3,7 @@ package de.uniks.networkparser.graph;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,9 +29,9 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.parser.SymTabEntry;
 
 public class SourceCode extends GraphMember {
-	public static final String NAME="SourceCode";
+	public static final String NAME = "SourceCode";
 	private CharacterBuffer content;
-	private SimpleKeyValueList<String, SimpleList<SymTabEntry>> keys=new SimpleKeyValueList<String, SimpleList<SymTabEntry>>();
+	private SimpleKeyValueList<String, SimpleList<SymTabEntry>> keys = new SimpleKeyValueList<String, SimpleList<SymTabEntry>>();
 	private boolean fileBodyHasChanged = false;
 	private String fileName;
 	private int size;
@@ -43,12 +43,13 @@ public class SourceCode extends GraphMember {
 	private int bodyStart;
 	private int endOfAttributeInitialization;
 	private int endOfBody;
+	private long endofBodyLine;
+	private long bodyStartLine;
 
 	public SourceCode() {
 		super();
 		this.name = NAME;
 	}
-
 
 	public SourceCode withFileName(String name) {
 		this.fileName = name;
@@ -60,11 +61,19 @@ public class SourceCode extends GraphMember {
 	}
 
 	public CharacterBuffer getContent() {
+		if (content == null) {
+			this.content = new CharacterBuffer();
+		}
 		return content;
 	}
+
 	public SourceCode withContent(CharacterBuffer content) {
 		this.content = content;
-		this.size = content.length();
+		if (content != null) {
+			this.size = content.length();
+		} else {
+			this.size = 0;
+		}
 		return this;
 	}
 
@@ -74,7 +83,7 @@ public class SourceCode extends GraphMember {
 
 	public SimpleList<SymTabEntry> getSymbolEntries(String type) {
 		SimpleList<SymTabEntry> list = keys.get(type);
-		if(list == null) {
+		if (list == null) {
 			list = new SimpleList<SymTabEntry>();
 			keys.add(type, list);
 		}
@@ -82,13 +91,13 @@ public class SourceCode extends GraphMember {
 	}
 
 	public SymTabEntry getSymbolEntry(String type, String name) {
-		if(name == null || type == null) {
+		if (name == null || type == null) {
 			return null;
 		}
 		SimpleList<SymTabEntry> list = keys.get(type.toLowerCase());
-		if(list != null) {
-			for(SymTabEntry entry : list) {
-				if(name.equals(entry.getValue())) {
+		if (list != null) {
+			for (SymTabEntry entry : list) {
+				if (name.equals(entry.getName())) {
 					return entry;
 				}
 			}
@@ -102,17 +111,21 @@ public class SourceCode extends GraphMember {
 
 	/**
 	 * Set the Parent of Element
-	 * @param parent  Set The Parent Element
+	 * 
+	 * @param parent Set The Parent Element
 	 * @return The Instance
 	 */
 	public GraphMember with(Clazz parent) {
 		this.parentNode = parent;
-		//REMOVE OLD SOURCE CODE
+		/* REMOVE OLD SOURCE CODE */
+		if (parent == null) {
+			return this;
+		}
 		GraphSimpleSet children = new GraphSimpleSet();
 		children.withList(parent.getChildren());
-		for(GraphMember item : children) {
-			if(item instanceof SourceCode) {
-				if(item != this) {
+		for (GraphMember item : children) {
+			if (item instanceof SourceCode) {
+				if (item != this) {
 					parent.remove(item);
 				}
 			}
@@ -124,34 +137,45 @@ public class SourceCode extends GraphMember {
 	public boolean isFileBodyHasChanged() {
 		return fileBodyHasChanged;
 	}
+
 	public void setFileBodyHasChanged(boolean fileBodyHasChanged) {
 		this.fileBodyHasChanged = fileBodyHasChanged;
 	}
 
 	public CharSequence subString(int start, int end) {
+		if (content == null) {
+			return null;
+		}
 		return content.subSequence(start, end);
 	}
+
 	public int getEndOfClassName() {
 		return endOfClassName;
 	}
+
 	public SourceCode withEndOfClassName(int value) {
 		this.endOfClassName = value;
 		return this;
 	}
+
 	public int getEndOfExtendsClause() {
 		return endOfExtendsClause;
 	}
+
 	public SourceCode withEndOfExtendsClause(int value) {
 		this.endOfExtendsClause = value;
 		return this;
 	}
+
 	public int getEndOfImports() {
 		return endOfImports;
 	}
+
 	public SourceCode withEndOfImports(int value) {
 		this.endOfImports = value;
 		return this;
 	}
+
 	public SourceCode withEndOfImplementsClause(int value) {
 		this.endOfImplementsClause = value;
 		return this;
@@ -160,14 +184,21 @@ public class SourceCode extends GraphMember {
 	public int getEndOfImplementsClause() {
 		return endOfImplementsClause;
 	}
-	public SourceCode withStartBody(int value) {
+
+	public SourceCode withStartBody(int value, long line) {
 		this.bodyStart = value;
+		this.bodyStartLine = line;
 		return this;
 	}
 
-	public int getBodyStart() {
+	public long getBodyStartLine() {
+		return bodyStartLine;
+	}
+
+	public int getStartBody() {
 		return bodyStart;
 	}
+
 	public SourceCode withEndOfAttributeInitialization(int value) {
 		this.endOfAttributeInitialization = value;
 		return this;
@@ -184,16 +215,21 @@ public class SourceCode extends GraphMember {
 
 	@Override
 	public String toString() {
-		return content.toString();
+		return getContent().toString();
 	}
 
-	public SourceCode withEndBody(int value) {
+	public SourceCode withEndBody(int value, long line) {
 		this.endOfBody = value;
+		this.endofBodyLine = line;
 		return this;
 	}
 
 	public int getEndOfBody() {
 		return endOfBody;
+	}
+
+	public long getEndofBodyLine() {
+		return endofBodyLine;
 	}
 
 	public SourceCode withStartImports(int value) {

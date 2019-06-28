@@ -1,6 +1,6 @@
 package de.uniks.networkparser.ext.story;
 
-import de.uniks.networkparser.ext.petaf.SendableItem;
+import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.list.ModelSet;
 
 public class Line extends SendableItem {
@@ -48,7 +48,7 @@ public class Line extends SendableItem {
 		setColor(value);
 		return this;
 	}
-	
+
 	public static final String PROPERTY_CHILDREN = "children";
 
 	private ModelSet<Task> children = null;
@@ -76,9 +76,11 @@ public class Line extends SendableItem {
 	}
 
 	public Line withoutChildren(Task... value) {
-		for (Task item : value) {
-			if (this.children != null && item != null) {
-				this.children.remove(item);
+		if(value != null) {
+			for (Task item : value) {
+				if (this.children != null && item != null) {
+					this.children.remove(item);
+				}
 			}
 		}
 		return this;

@@ -3,7 +3,7 @@ package de.uniks.networkparser.logic;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,19 +24,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.beans.PropertyChangeListener;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.TemplateParser;
 
 public class And extends ListCondition {
-	public static final String TAG="and";
+	public static final String TAG = "and";
 
 	/**
 	 * Static Method for instance a new Instance of And Object.
 	 *
-	 * @param conditions	All Conditions.
-	 * @return 			The new Instance
+	 * @param conditions All Conditions.
+	 * @return The new Instance
 	 */
 	public static And create(ObjectCondition... conditions) {
 		return new And().with(conditions);
@@ -47,6 +48,7 @@ public class And extends ListCondition {
 		super.with(values);
 		return this;
 	}
+
 	@Override
 	public And with(PropertyChangeListener... values) {
 		super.with(values);
@@ -55,6 +57,9 @@ public class And extends ListCondition {
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+		if(buffer == null) {
+			return;
+		}
 		buffer.skip();
 		buffer.skip();
 		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, true, "endand");

@@ -3,7 +3,7 @@ package de.uniks.networkparser.gui.controls;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ public class Label extends Control {
 	public static final String SPACER = "spacer";
 	public static final String TITLE = "title";
 	public static final String VALUE = "value";
-	
+
 	private String type;
 	private String value;
 
@@ -51,20 +51,19 @@ public class Label extends Control {
 	}
 
 	public boolean setValue(String value) {
-		if(value != this.value) {
+		if (value != this.value) {
 			this.value = value;
 			return true;
 		}
 		return false;
 	}
 
-
 	public String getValue() {
 		return this.value;
 	}
 
 	public int length() {
-		if(this.value== null ) {
+		if (this.value == null) {
 			return 0;
 		}
 		return this.value.length();

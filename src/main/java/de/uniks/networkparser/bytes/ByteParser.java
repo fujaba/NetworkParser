@@ -3,7 +3,7 @@ package de.uniks.networkparser.bytes;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,37 +32,39 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class ByteParser {
 	public Object decode(ByteBuffer buffer, BitEntityCreator creator) {
+		if (creator == null) {
+			return null;
+		}
 		SimpleKeyValueList<String, Object> values = new SimpleKeyValueList<String, Object>();
 		BitEntity[] bitProperties = creator.getBitProperties();
 		Object newInstance = creator.getSendableInstance(false);
 		for (BitEntity entity : bitProperties) {
 			Object element = getEntity(buffer, entity, values);
 			if (element != null) {
-				creator.setValue(newInstance, entity.getPropertyName(),
-						element, SendableEntityCreator.NEW);
+				creator.setValue(newInstance, entity.getPropertyName(), element, SendableEntityCreator.NEW);
 			}
 		}
 		return newInstance;
 	}
 
-	public Object getEntity(ByteBuffer buffer, BitEntity entry,
-			SimpleKeyValueList<String, Object> values) {
+	public Object getEntity(ByteBuffer buffer, BitEntity entry, SimpleKeyValueList<String, Object> values) {
+		if (entry == null) {
+			return null;
+		}
 		if (entry.size() < 1) {
-			// Reference or Value
+			/* Reference or Value */
 			if (entry.isType(BitEntity.BIT_REFERENCE)) {
 				String propertyName = entry.getPropertyName();
 				if (values.containsKey(propertyName)) {
 					return values.getValue(propertyName);
 				}
-			} else if (entry.isType(BitEntity.BIT_BYTE, BitEntity.BIT_NUMBER,
-					BitEntity.BIT_STRING)) {
-				// Value
+			} else if (entry.isType(BitEntity.BIT_BYTE, BitEntity.BIT_NUMBER, BitEntity.BIT_STRING)) {
+				/* Value */
 				return entry.getPropertyName();
 			}
 		}
-		// Wert ermitteln
-
-		// Init the Values
+		/* Wert ermitteln */
+		/* Init the Values */
 		ArrayList<ByteBuffer> results = new ArrayList<ByteBuffer>();
 		ArrayList<Integer> resultsLength = new ArrayList<Integer>();
 
@@ -78,8 +80,7 @@ public class ByteParser {
 
 			bit = new BitEntity().with(bitValue.size());
 			bit.with(bitValue.getProperty(), bitValue.getType());
-			int length = Integer.parseInt(""
-					+ getEntity(buffer,bit, values));
+			int length = Integer.parseInt("" + getEntity(buffer, bit, values));
 			int noOfByte = length / 8;
 			if (length % 8 > 0) {
 				noOfByte++;
@@ -105,24 +106,22 @@ public class ByteParser {
 				if (orientationTarget > 0) {
 					number = (number << (sourceBit));
 					if (orientationSource > 0)
-						// Source Target
+						/* Source Target */
 						number += sourceBits;
 					else {
-						// Bits vertauschen
+						/* Bits vertauschen */
 						for (int z = sourceBit; z > 0; z--) {
-							number += sourceBits
-									& (0x1 << sourceBit) << (sourceBit - z);
+							number += sourceBits & (0x1 << sourceBit) << (sourceBit - z);
 						}
 					}
 				} else {
 					if (orientationSource > 0)
-						// Source Target
+						/* Source Target */
 						number += sourceBits << sourceBit;
 					else {
-						// Bits vertauschen
+						/* Bits vertauschen */
 						for (int z = sourceBit; z > 0; z--) {
-							number += sourceBits
-									& (0x1 << sourceBit) << (sourceBit - z);
+							number += sourceBits & (0x1 << sourceBit) << (sourceBit - z);
 						}
 					}
 				}
@@ -145,13 +144,12 @@ public class ByteParser {
 			if (resultPos > 0) {
 				result.put((byte) number);
 			}
-
-			// Save one Result to List
+			/* Save one Result to List */
 			result.flip(true);
 			results.add(result);
 		}
 
-		// Merge all Results to one
+		/* Merge all Results to one */
 		int length = 0;
 		for (Integer item : resultsLength) {
 			length += item;
@@ -168,10 +166,8 @@ public class ByteParser {
 			length = resultsLength.get(i);
 			while (length > 0) {
 				byte theByte = source.getByte();
-				int sourceBit = (length < 8 - resultPos) ? length
-						: 8 - resultPos;
-				number = (number << (sourceBit))
-						+ (theByte & (0xff >> (8 - sourceBit)));
+				int sourceBit = (length < 8 - resultPos) ? length : 8 - resultPos;
+				number = (number << (sourceBit)) + (theByte & (0xff >> (8 - sourceBit)));
 				theByte = (byte) (theByte >> (sourceBit));
 				resultPos += sourceBit;
 				length -= sourceBit;
@@ -191,7 +187,7 @@ public class ByteParser {
 
 		result.flip(true);
 
-		// Set the Type
+		/* Set the Type */
 		Object element = null;
 
 		if (entry.getType() == BitEntity.BIT_BYTE) {

@@ -3,7 +3,7 @@ package de.uniks.networkparser.list;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,23 +29,23 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.logic.ChainCondition;
 import de.uniks.networkparser.logic.VariableCondition;
 
-public class ConditionSet extends SimpleSet<ObjectCondition>{
+public class ConditionSet extends SimpleSet<ObjectCondition> {
 	@Override
 	public boolean add(ObjectCondition newValue) {
-		if(newValue instanceof ChainCondition) {
-			ChainCondition cc= (ChainCondition) newValue;
+		if (newValue instanceof ChainCondition) {
+			ChainCondition cc = (ChainCondition) newValue;
 			return super.addAll(cc.getList());
 		}
 		return super.add(newValue);
 	}
 
 	public CharacterBuffer getAllValue(LocalisationInterface variables) {
-		CharacterBuffer buffer=new CharacterBuffer();
-		for(ObjectCondition item : this) {
-			if(item instanceof VariableCondition) {
+		CharacterBuffer buffer = new CharacterBuffer();
+		for (ObjectCondition item : this) {
+			if (item instanceof VariableCondition) {
 				VariableCondition vc = (VariableCondition) item;
 				Object result = vc.getValue(variables);
-				if(result != null) {
+				if (result != null) {
 					buffer.with(result.toString());
 				}
 			} else {

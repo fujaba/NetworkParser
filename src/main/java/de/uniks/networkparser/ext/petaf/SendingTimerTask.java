@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,9 +26,11 @@ THE SOFTWARE.
 
 public class SendingTimerTask extends SimpleTimerTask {
 	private NodeProxy sender;
+
 	public SendingTimerTask(Space space) {
 		super(space);
 	}
+
 	public SendingTimerTask withSender(NodeProxy sender) {
 		this.sender = sender;
 		return this;
@@ -37,20 +39,21 @@ public class SendingTimerTask extends SimpleTimerTask {
 	public NodeProxy getSender() {
 		return sender;
 	}
+
 	public Message getMessage() {
 		return null;
 	}
 
 	@Override
 	public boolean runTask() throws Exception {
-		if(super.runTask()) {
+		if (super.runTask()) {
 			return true;
 		}
 		Message message = getMessage();
-		if(message == null) {
+		if (message == null) {
 			return false;
 		}
-		if(sender != null) {
+		if (sender != null) {
 			getSpace().sendMessage(message, false, sender);
 		} else {
 			getSpace().sendMessageToPeers(message);

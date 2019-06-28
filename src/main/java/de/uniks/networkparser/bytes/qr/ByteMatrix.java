@@ -1,24 +1,8 @@
-/*
- * Copyright 2008 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *		http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package de.uniks.networkparser.bytes.qr;
 
 /**
- * JAVAPORT: The original code was a 2D array of ints, but since it only ever gets assigned
- * -1, 0, and 1, I'm going to use less memory and go with bytes.
+ * JAVAPORT: The original code was a 2D array of ints, but since it only ever
+ * gets assigned -1, 0, and 1, I'm going to use less memory and go with bytes.
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
@@ -42,26 +26,42 @@ public final class ByteMatrix {
 	}
 
 	public byte get(int x, int y) {
-		return bytes[y][x];
+		if (y >= 0 && x >= 0 && bytes.length > y && bytes[y].length > x) {
+			return bytes[y][x];
+		}
+		return 0;
 	}
 
 	/**
-	* @return an internal representation as bytes, in row-major order. array[y][x] represents point (x,y)
-	*/
+	 * @return an internal representation as bytes, in row-major order. array[y][x]
+	 *         represents point (x,y)
+	 */
 	public byte[][] getArray() {
 		return bytes;
 	}
 
-	public void set(int x, int y, byte value) {
-		bytes[y][x] = value;
+	public boolean set(int x, int y, byte value) {
+		if (y >= 0 && x >= 0 && bytes.length > y && bytes[y].length > x) {
+			bytes[y][x] = value;
+			return true;
+		}
+		return false;
 	}
 
-	public void set(int x, int y, int value) {
-		bytes[y][x] = (byte) value;
+	public boolean set(int x, int y, int value) {
+		if (y >= 0 && x >= 0 && bytes.length > y && bytes[y].length > x) {
+			bytes[y][x] = (byte) value;
+			return true;
+		}
+		return false;
 	}
 
-	public void set(int x, int y, boolean value) {
-		bytes[y][x] = (byte) (value ? 1 : 0);
+	public boolean set(int x, int y, boolean value) {
+		if (y >= 0 && x >= 0 && bytes.length > y && bytes[y].length > x) {
+			bytes[y][x] = (byte) (value ? 1 : 0);
+			return true;
+		}
+		return false;
 	}
 
 	public void clear(byte value) {
@@ -78,15 +78,15 @@ public final class ByteMatrix {
 		for (int y = 0; y < height; ++y) {
 			for (int x = 0; x < width; ++x) {
 				switch (bytes[y][x]) {
-					case 0:
-						result.append(" 0");
-						break;
-					case 1:
-						result.append(" 1");
-						break;
-					default:
-						result.append("  ");
-						break;
+				case 0:
+					result.append(" 0");
+					break;
+				case 1:
+					result.append(" 1");
+					break;
+				default:
+					result.append("  ");
+					break;
 				}
 			}
 			result.append('\n');

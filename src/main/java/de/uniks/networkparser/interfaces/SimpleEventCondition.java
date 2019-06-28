@@ -3,7 +3,7 @@ package de.uniks.networkparser.interfaces;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,10 +25,10 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.SimpleEvent;
 
-public abstract class SimpleEventCondition implements ObjectCondition{
+public abstract class SimpleEventCondition implements ObjectCondition {
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SimpleEvent == false) {
+		if (value instanceof SimpleEvent == false) {
 			return false;
 		}
 		return update((SimpleEvent) value);

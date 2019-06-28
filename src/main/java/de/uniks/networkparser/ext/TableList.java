@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import de.uniks.networkparser.list.SortingDirection;
 
 public class TableList extends SortedList<Object> implements SendableEntity, SendableEntityCreator {
 	public static final String PROPERTY_ITEMS = "items";
-	public static final String[] properties = new String[] {PROPERTY_ITEMS };
+	public static final String[] properties = new String[] { PROPERTY_ITEMS };
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 
 	public TableList() {
@@ -68,8 +68,7 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (SendableEntityCreator.REMOVE.equalsIgnoreCase(type)) {
 			attribute += SendableEntityCreator.REMOVE;
 		}
@@ -77,7 +76,7 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 	}
 
 	public boolean setIdMap(IdMap map) {
-		if(!isComparator() ) {
+		if (!isComparator()) {
 			return false;
 		}
 		if (comparator() instanceof EntityComparator<?>) {
@@ -90,8 +89,7 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 		if (PROPERTY_ITEMS.equalsIgnoreCase(attrName)) {
 			add(value);
 			return true;
-		} else if ((PROPERTY_ITEMS + SendableEntityCreator.REMOVE)
-				.equalsIgnoreCase(attrName)) {
+		} else if ((PROPERTY_ITEMS + SendableEntityCreator.REMOVE).equalsIgnoreCase(attrName)) {
 			remove(value);
 			return true;
 		}
@@ -99,12 +97,11 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 	}
 
 	@Override
-	protected boolean fireProperty(String type, Object oldValue, Object newValue,
-			Object beforeValue, int index, Object value) {
+	protected boolean fireProperty(String type, Object oldValue, Object newValue, Object beforeValue, int index,
+			Object value) {
 		boolean result = super.fireProperty(type, oldValue, newValue, beforeValue, index, value);
 
-		getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, oldValue,
-				newValue);
+		getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, oldValue, newValue);
 
 		return result;
 	}
@@ -119,19 +116,17 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 			if (!remove(item)) {
 				return false;
 			}
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, item,
-					null);
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, item, null);
 		}
 		return true;
 	}
 
-	public TableList withSort(String field, SortingDirection direction,
-			EntityValueFactory cellValueCreator) {
+	public TableList withSort(String field, SortingDirection direction, EntityValueFactory cellValueCreator) {
 
 		EntityComparator<Object> cpr;
 		if (isComparator() && comparator() instanceof EntityComparator<?>) {
 			cpr = (EntityComparator<Object>) comparator();
-		}else{
+		} else {
 			cpr = new EntityComparator<Object>();
 			withComparator(cpr);
 		}
@@ -161,15 +156,15 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 	}
 
 	public SortingDirection changeDirection() {
-		if(isComparator() && comparator() instanceof EntityComparator) {
-			return ((EntityComparator<?>)comparator()).changeDirection();
+		if (isComparator() && comparator() instanceof EntityComparator) {
+			return ((EntityComparator<?>) comparator()).changeDirection();
 
 		}
 		return null;
 	}
 
 	public Object[] getSortedIndex() {
-		if(!(comparator() instanceof EntityComparator<?>)){
+		if (!(comparator() instanceof EntityComparator<?>)) {
 			return null;
 		}
 		EntityComparator<Object> comparator = (EntityComparator<Object>) comparator();
@@ -190,15 +185,13 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 				int pos = 0;
 				for (Iterator<Object> i = iterator(); i.hasNext();) {
 					Object item = i.next();
-					returnValues[pos++] = cellCreator.getCellValue(item,
-							creator, column);
+					returnValues[pos++] = cellCreator.getCellValue(item, creator, column);
 				}
 			} else {
 				int pos = super.size() - 1;
 				for (Iterator<Object> i = iterator(); i.hasNext();) {
 					Object item = i.next();
-					returnValues[pos--] = cellCreator.getCellValue(item,
-							creator, column);
+					returnValues[pos--] = cellCreator.getCellValue(item, creator, column);
 				}
 			}
 			return returnValues;
@@ -207,7 +200,6 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 		return null;
 	}
 
-	// ==========================================================================
 	@Override
 	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
 		getPropertyChangeSupport().addPropertyChangeListener(listener);
@@ -220,15 +212,13 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 		return true;
 	}
 
-	public boolean removePropertyChangeListener(String name,
-			PropertyChangeListener listener) {
+	public boolean removePropertyChangeListener(String name, PropertyChangeListener listener) {
 		getPropertyChangeSupport().removePropertyChangeListener(name, listener);
 		return true;
 	}
 
 	@Override
-	public boolean addPropertyChangeListener(String name,
-			PropertyChangeListener listener) {
+	public boolean addPropertyChangeListener(String name, PropertyChangeListener listener) {
 		getPropertyChangeSupport().addPropertyChangeListener(name, listener);
 		return true;
 

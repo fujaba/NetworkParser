@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.io;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -68,17 +68,17 @@ public class ZipContainer {
 	public BaseItem getNewInstanceFromFileName(String fileName) {
 		if (fileName != null) {
 			int pos = fileName.lastIndexOf(".");
-			String extension ="";
-			if(pos>=0) {
+			String extension = "";
+			if (pos >= 0) {
 				extension = fileName.substring(pos + 1);
 				fileName = fileName.substring(0, pos);
 			}
-			if(BINARY.equals(extension)) {
+			if (BINARY.equals(extension)) {
 				return new ByteEntity();
 			} else if (XML.equals(extension)) {
 				return new XMLEntity();
 			} else if (JSON.equals(extension)) {
-				if("JsonArray".equals(fileName)) {
+				if ("JsonArray".equals(fileName)) {
 					return new JsonArray();
 				} else {
 					return new JsonObject();
@@ -89,9 +89,9 @@ public class ZipContainer {
 	}
 
 	public ZipOutputStream encode(BaseItem data, OutputStream stream, boolean closeStream) {
-		if(data != null) {
+		if (data != null) {
 			ZipOutputStream zos;
-			if(stream instanceof ZipOutputStream) {
+			if (stream instanceof ZipOutputStream) {
 				zos = (ZipOutputStream) stream;
 			} else {
 				zos = new ZipOutputStream(stream);
@@ -102,7 +102,7 @@ public class ZipContainer {
 				zos.putNextEntry(zipEntry);
 				zos.write(bytes, 0, bytes.length);
 				zos.closeEntry();
-				if(closeStream) {
+				if (closeStream) {
 					zos.close();
 				}
 			} catch (IOException e) {
@@ -113,8 +113,11 @@ public class ZipContainer {
 	}
 
 	public BaseItem decode(InputStream stream) {
+		if(stream == null) {
+			return null;
+		}
 		ZipInputStream zis;
-		if(stream instanceof ZipInputStream) {
+		if (stream instanceof ZipInputStream) {
 			zis = (ZipInputStream) stream;
 		} else {
 			zis = new ZipInputStream(stream);
@@ -122,17 +125,17 @@ public class ZipContainer {
 		try {
 			ZipEntry item = zis.getNextEntry();
 			byte[] buffer = new byte[2048];
-			while(item != null) {
-				if(item.isDirectory() == false) {
+			while (item != null) {
+				if (item.isDirectory() == false) {
 					BaseItem element = getNewInstanceFromFileName(item.getName());
-					if(element != null) {
-						CharacterBuffer output=new CharacterBuffer();
+					if (element != null) {
+						CharacterBuffer output = new CharacterBuffer();
 						int len = 0;
 						while ((len = zis.read(buffer)) > 0) {
 							output.write(buffer, len);
 						}
-						if(element instanceof Entity) {
-							((Entity)element).withValue(output);
+						if (element instanceof Entity) {
+							((Entity) element).withValue(output);
 						} else {
 							element.add(output.toString());
 						}
@@ -147,15 +150,3 @@ public class ZipContainer {
 		return null;
 	}
 }
-
-//	private BaseItem data;
-//
-//	public ZipContainer withData(BaseItem data) {
-//		this.data = data;
-//		return this;
-//	}
-//
-//
-//	public BaseItem getData() {
-//		return data;
-//	}

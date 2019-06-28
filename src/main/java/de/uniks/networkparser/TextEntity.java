@@ -3,7 +3,7 @@ package de.uniks.networkparser;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Comparator;
+
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
@@ -50,16 +51,19 @@ public class TextEntity implements EntityList {
 	}
 
 	private String parseItem(EntityStringConverter converter) {
+		if (converter == null) {
+			return null;
+		}
 		CharacterBuffer sb = new CharacterBuffer().with(converter.getPrefixFirst());
 		sb.with(this.tag);
-		 if(this.children != null) {
-			 for(int i=0;i<this.children.size();i++) {
-				 BaseItem child = this.children.get(i);
-				 if(i > 0) {
-					 sb.with(BaseItem.CRLF);
-				 }
-				 sb.with(child.toString(converter));
-			 }
+		if (this.children != null) {
+			for (int i = 0; i < this.children.size(); i++) {
+				BaseItem child = this.children.get(i);
+				if (i > 0) {
+					sb.with(BaseItem.CRLF);
+				}
+				sb.with(child.toString(converter));
+			}
 		}
 		sb.with(this.tagEnd);
 		return sb.toString();
@@ -70,28 +74,27 @@ public class TextEntity implements EntityList {
 		return parseItem(new EntityStringConverter());
 	}
 
-
 	@Override
 	public String toString(int indentFactor) {
 		return parseItem(new EntityStringConverter(indentFactor));
-    }
+	}
 
 	@Override
 	public boolean add(Object... values) {
-		if(values==null || values.length < 1){
+		if (values == null || values.length < 1) {
 			return false;
 		}
-		if(values[0] instanceof String) {
-			if(values.length == 1) {
-				if(this.tag == null) {
-					this.withTag((String)values[0]);
+		if (values[0] instanceof String) {
+			if (values.length == 1) {
+				if (this.tag == null) {
+					this.withTag((String) values[0]);
 				} else {
-					this.withChild(new TextEntity().withTag((String)values[0]));
+					this.withChild(new TextEntity().withTag((String) values[0]));
 				}
 			}
 		} else if (values.length % 2 == 1) {
-			for(Object item : values) {
-				if(item instanceof BaseItem) {
+			for (Object item : values) {
+				if (item instanceof BaseItem) {
 					this.withChild((BaseItem) item);
 				}
 			}
@@ -101,7 +104,7 @@ public class TextEntity implements EntityList {
 	}
 
 	private void withChild(BaseItem item) {
-		if(this.children == null) {
+		if (this.children == null) {
 			this.children = new SimpleList<BaseItem>();
 		}
 		this.children.add(item);
@@ -115,8 +118,9 @@ public class TextEntity implements EntityList {
 		this.tag = value;
 		return this;
 	}
+
 	public TextEntity withTag(char value) {
-		this.tag = ""+value;
+		this.tag = "" + value;
 		return this;
 	}
 
@@ -126,13 +130,13 @@ public class TextEntity implements EntityList {
 	}
 
 	public TextEntity withTagEnd(char value) {
-		this.tagEnd = ""+value;
+		this.tagEnd = "" + value;
 		return this;
 	}
 
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
-		if(keyValue) {
+		if (keyValue) {
 			return new SimpleList<Entity>();
 		}
 		return new TextEntity();
@@ -140,7 +144,7 @@ public class TextEntity implements EntityList {
 
 	@Override
 	public int size() {
-		if(this.children == null) {
+		if (this.children == null) {
 			return 0;
 		}
 		return this.children.size();
@@ -153,7 +157,7 @@ public class TextEntity implements EntityList {
 
 	@Override
 	public BaseItem getChild(int index) {
-		if(this.children == null) {
+		if (this.children == null) {
 			return null;
 		}
 		return this.children.get(index);

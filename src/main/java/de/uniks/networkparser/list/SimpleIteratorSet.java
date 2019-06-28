@@ -3,7 +3,7 @@ package de.uniks.networkparser.list;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,9 +27,9 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
+public class SimpleIteratorSet<K, V> implements ListIterator<Entry<K, V>> {
 	private SimpleKeyValueList<K, V> list;
-	private SimpleEntity<K,V> currentEntry;
+	private SimpleEntity<K, V> currentEntry;
 	private int cursor = -1;
 
 	public SimpleIteratorSet(SimpleKeyValueList<K, V> list) {
@@ -39,26 +39,27 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 
 	@SuppressWarnings("unchecked")
 	public SimpleIteratorSet(Object collection) {
-		if(collection instanceof SimpleKeyValueList<?,?>) {
+		if (collection instanceof SimpleKeyValueList<?, ?>) {
 			this.list = (SimpleKeyValueList<K, V>) collection;
-		} else if (collection instanceof Map<?,?>) {
-			this.list = new SimpleKeyValueList<K,V>();
-			this.list.withMap((Map<?,?>)collection);
+		} else if (collection instanceof Map<?, ?>) {
+			this.list = new SimpleKeyValueList<K, V>();
+			this.list.withMap((Map<?, ?>) collection);
 		}
 		this.currentEntry = new SimpleEntity<K, V>();
 	}
 
 	@Override
 	public boolean hasNext() {
-		return cursor<(this.list.size() - 1);
+		return cursor < (this.list.size() - 1);
 	}
+
 	public void reset() {
 		this.cursor = -1;
 	}
 
 	@Override
 	public Entry<K, V> next() {
-		if(!hasNext()) {
+		if (!hasNext()) {
 			return null;
 		}
 		cursor++;
@@ -70,7 +71,7 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 
 	@Override
 	public boolean hasPrevious() {
-		return cursor>0;
+		return cursor > 0;
 	}
 
 	@Override

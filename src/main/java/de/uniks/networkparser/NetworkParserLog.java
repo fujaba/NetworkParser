@@ -10,7 +10,7 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -87,26 +87,49 @@ public class NetworkParserLog extends Handler {
 	public static final String FATAL = "FATAL";
 	public static final String LOG = "LOG";
 
-	private byte flag = LOGLEVEL_ERROR + LOGLEVEL_INFO; // ERROR + INFO
-	private ObjectCondition condition;
+	/** ERROR + INFO */
+	private byte flag = LOGLEVEL_ERROR + LOGLEVEL_INFO; 
+	protected ObjectCondition condition;
 
 	/**
 	 * Log a message with debug log level.
 	 *
-	 * @param owner		The Element with call the Methods
-	 * @param method	The Caller-Method
-	 * @param message	log this message
+	 * @param owner   The Element with call the Methods
+	 * @param method  The Caller-Method
+	 * @param message log this message
 	 * @return if method must Cancel
 	 */
-	public boolean debug(Object owner, String method, String message) {
-		if(condition!= null) {
+	public boolean debug(Object owner, String method, Object message) {
+		if (condition != null) {
 			return condition.update(new SimpleEvent(owner, method, null, message).withType(DEBUG));
 		}
 		return false;
 	}
 
+	public boolean log(String type, Object... args) {
+		if (type == null || condition == null || args == null) {
+			return false;
+		}
+		if (args.length == 1) {
+			return condition.update(new SimpleEvent(this, null, null, args[0]).withType(type));
+		}
+		Object source = args[0];
+		if (source == null) {
+			return false;
+		}
+		if (args.length == 2) {
+			return condition.update(new SimpleEvent(source, null, null, args[1]).withType(type));
+		}
+
+		Object[] items = new Object[args.length - 1];
+		for (int i = 1; i < args.length; i++) {
+			items[i - 1] = args[i];
+		}
+		return condition.update(new SimpleEvent(source, null, null, items).withType(type));
+	}
+
 	public boolean print(Object owner, Object item) {
-		if(condition!= null) {
+		if (condition != null) {
 			return condition.update(new SimpleEvent(owner, null, null, item).withType(LOG));
 		}
 		return false;
@@ -115,20 +138,21 @@ public class NetworkParserLog extends Handler {
 	/**
 	 * Log a message with info log level.
 	 *
-	 * @param owner		The Element with call the Methods
-	 * @param method	The Caller-Method
-	 * @param message	log this message
-	 * @param params	advanced Information
+	 * @param owner   The Element with call the Methods
+	 * @param method  The Caller-Method
+	 * @param message log this message
+	 * @param params  advanced Information
 	 * @return boolean if method must Cancel
 	 */
 	public boolean info(Object owner, String method, String message, Object... params) {
-		if((flag & LOGLEVEL_INFO) != 0) {
-			if(condition!= null) {
-				Object values=params;
-				if(params != null && params.length == 1) {
+		if ((flag & LOGLEVEL_INFO) != 0) {
+			if (condition != null) {
+				Object values = params;
+				if (params != null && params.length == 1) {
 					values = params[0];
 				}
-				return condition.update(new SimpleEvent(owner, method, null, message).withModelValue(values).withType(INFO));
+				return condition
+						.update(new SimpleEvent(owner, method, null, message).withModelValue(values).withType(INFO));
 			}
 		}
 		return false;
@@ -148,16 +172,17 @@ public class NetworkParserLog extends Handler {
 	/**
 	 * Log a message with warn log level.
 	 *
-	 * @param owner		The Element with call the Methods
-	 * @param method	The Caller-Method
-	 * @param message	log this message
-	 * @param params	advanced Information
+	 * @param owner   The Element with call the Methods
+	 * @param method  The Caller-Method
+	 * @param message log this message
+	 * @param params  advanced Information
 	 * @return boolean if method must Cancel
 	 */
 	public boolean warn(Object owner, String method, String message, Object... params) {
-		if((flag & LOGLEVEL_WARNING) != 0) {
-			if(condition!= null) {
-				return condition.update(new SimpleEvent(owner, method, null, message).withModelValue(params).withType(WARNING));
+		if ((flag & LOGLEVEL_WARNING) != 0) {
+			if (condition != null) {
+				return condition
+						.update(new SimpleEvent(owner, method, null, message).withModelValue(params).withType(WARNING));
 			}
 		}
 		return false;
@@ -166,27 +191,52 @@ public class NetworkParserLog extends Handler {
 	/**
 	 * Log a message with error log level.
 	 *
-	 * @param owner		The Element with call the Methods
-	 * @param method	The Caller-Method
-	 * @param message		Typ of Log Value
-	 * @param params	advanced Information
+	 * @param owner   The Element with call the Methods
+	 * @param method  The Caller-Method
+	 * @param message Typ of Log Value
+	 * @param params  advanced Information
 	 * @return boolean if method must Cancel
 	 */
-	public boolean error(Object owner, String method, String message,
-			Object... params) {
-		if((flag & LOGLEVEL_ERROR) != 0) {
-			if(condition!= null) {
-				return condition.update(new SimpleEvent(owner, method, null, message).withModelValue(params).withType(ERROR));
+	public boolean error(Object owner, String method, Object message, Object... params) {
+		if ((flag & LOGLEVEL_ERROR) != 0) {
+			if (condition != null) {
+				return condition
+						.update(new SimpleEvent(owner, method, null, message).withModelValue(params).withType(ERROR));
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Log a message with fatal log level.
+	 *
+	 * @param owner   The Element with call the Methods
+	 * @param method  The Caller-Method
+	 * @param message Typ of Log Value
+	 * @param params  advanced Information
+	 * @return boolean if method must Cancel
+	 */
+	public boolean fatal(Object owner, String method, Object message, Object... params) {
+		if ((flag & LOGLEVEL_ERROR) != 0) {
+			if (condition != null) {
+				return condition
+						.update(new SimpleEvent(owner, method, null, message).withModelValue(params).withType(FATAL));
 			}
 		}
 		return false;
 	}
 
+	public boolean start(Object owner, String method, String msg) {
+		return info(owner, method, msg, "START");
+	}
+	public boolean end(Object owner, String method, String msg) {
+		return info(owner, method, msg, "END");
+	}
 	public boolean log(Object owner, String method, String msg, int level, Object... params) {
-		if(level == LOGLEVEL_ERROR) {
+		if (level == LOGLEVEL_ERROR) {
 			return this.error(owner, method, msg, params);
 		}
-		if(level == LOGLEVEL_WARNING) {
+		if (level == LOGLEVEL_WARNING) {
 			return this.warn(owner, method, msg, params);
 		}
 		return this.info(owner, method, msg, params);
@@ -197,31 +247,36 @@ public class NetworkParserLog extends Handler {
 		return this;
 	}
 
+	/** Publush LogRecord
+	*	SEVERE (highest value)
+	*	WARNING
+	*	INFO
+	*	CONFIG
+	*	FINE
+	*	FINER
+	*	FINEST (lowest value)
+	*/
 	@Override
 	public void publish(LogRecord record) {
-		 // <li>SEVERE (highest value)
-		 // <li>WARNING
-		// <li>INFO
-		// <li>CONFIG
-		// <li>FINE
-		// <li>FINER
-		// <li>FINEST  (lowest value)
-		if(global != null && global != this) {
-			global.publish(record);;
+		if (global != null && global != this) {
+			global.publish(record);
 			return;
 		}
-		String level = record.getLevel().toString();
-		if("SEVERE".equals(level)) {
+		if (record == null) {
+			return;
+		}
+		String level = "" + record.getLevel();
+		if ("SEVERE".equals(level)) {
 			this.error(record.getSourceClassName(), record.getSourceMethodName(), record.getMessage());
 		}
-		if("WARNING".equals(level)) {
+		if ("WARNING".equals(level)) {
 			this.warn(record.getSourceClassName(), record.getSourceMethodName(), record.getMessage());
 		}
 		this.info(record.getSourceClassName(), record.getSourceMethodName(), record.getMessage());
 	}
-	
+
 	public void trace(Object owner, String method, String message, Object... params) {
-		
+
 	}
 
 	@Override
@@ -232,31 +287,39 @@ public class NetworkParserLog extends Handler {
 	public void close() throws SecurityException {
 	}
 
-	public static NetworkParserLog createLogger(byte flag, boolean removeConsoleHandler, ObjectCondition... conditions) {
-		if(global != null) {
+	public static NetworkParserLog createLogger(byte flag, boolean removeConsoleHandler,
+			ObjectCondition... conditions) {
+		if (global != null) {
 			return global;
 		}
-		// suppress the logging output to the console
+		/* suppress the logging output to the console */
 		Logger rootLogger = Logger.getLogger("");
 		NetworkParserLog logger = new NetworkParserLog().withFlag(flag);
-		if(conditions != null && conditions.length>0) {
+		if (conditions != null && conditions.length > 0) {
 			logger.withListener(conditions[0]);
 		}
-		if(removeConsoleHandler) {
+		if (removeConsoleHandler) {
 			Handler[] handlers = rootLogger.getHandlers();
-			if(handlers != null && handlers.length>0 && handlers[0] instanceof ConsoleHandler)
-			if (handlers[0] instanceof ConsoleHandler) {
-				rootLogger.removeHandler(handlers[0]);
-			}
+			if (handlers != null && handlers.length > 0 && handlers[0] instanceof ConsoleHandler)
+				if (handlers[0] instanceof ConsoleHandler) {
+					rootLogger.removeHandler(handlers[0]);
+				}
 		}
 		rootLogger.addHandler(new NetworkParserLog());
 		global = logger;
 		return logger;
 	}
-	
+
 	static NetworkParserLog global;
 
 	public boolean isLevel(byte logLevel) {
 		return (flag & logLevel) != 0;
+	}
+
+	public String getRequesteApiVersion() {
+		return "1.8.99";
+	}
+
+	public void initialize() {
 	}
 }

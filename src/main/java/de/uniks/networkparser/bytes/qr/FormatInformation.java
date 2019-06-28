@@ -1,19 +1,3 @@
-/*
- * Copyright 2008 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *		http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package de.uniks.networkparser.bytes.qr;
 
 /**
@@ -49,15 +33,15 @@ final class FormatInformation {
 	private final byte dataMask;
 
 	private FormatInformation(int formatInfo) {
-		// Bits 3,4
+		/* Bits 3,4 */
 		errorCorrectionLevel = ErrorCorrectionLevel.forBits((formatInfo >> 3) & 0x03);
-		// Bottom 3 bits
+		/* Bottom 3 bits */
 		dataMask = (byte) (formatInfo & 0x07);
 	}
 
 	static int numBitsDiffering(int a, int b) {
-		a ^= b; // a now has a 1 bit exactly where its bit differs with b's
-		// Count bits set quickly with a series of lookups:
+		a ^= b; /* a now has a 1 bit exactly where its bit differs with b's */
+		/* Count bits set quickly with a series of lookups: */
 		return BITS_SET_IN_HALF_BYTE[a & 0x0F] + BITS_SET_IN_HALF_BYTE[(a >>> 4 & 0x0F)]
 				+ BITS_SET_IN_HALF_BYTE[(a >>> 8 & 0x0F)] + BITS_SET_IN_HALF_BYTE[(a >>> 12 & 0x0F)]
 				+ BITS_SET_IN_HALF_BYTE[(a >>> 16 & 0x0F)] + BITS_SET_IN_HALF_BYTE[(a >>> 20 & 0x0F)]
@@ -65,32 +49,36 @@ final class FormatInformation {
 	}
 
 	/**
-	 * Decoding Format Inforamtion
-	 * @param maskedFormatInfo1		format info indicator, with mask still applied
-	 * @param maskedFormatInfo2		second copy of same info; both are checked at the same time to establish best match
-	 * @return information about the format it specifies, or <code>null</code> if doesn't seem to match any known pattern
+	 * Decoding Format Information
+	 * 
+	 * @param maskedFormatInfo1 format info indicator, with mask still applied
+	 * @param maskedFormatInfo2 second copy of same info; both are checked at the
+	 *                          same time to establish best match
+	 * @return information about the format it specifies, or <code>null</code> if
+	 *         doesn't seem to match any known pattern
 	 */
 	static FormatInformation decodeFormatInformation(int maskedFormatInfo1, int maskedFormatInfo2) {
 		FormatInformation formatInfo = doDecodeFormatInformation(maskedFormatInfo1, maskedFormatInfo2);
 		if (formatInfo != null) {
 			return formatInfo;
 		}
-		// Should return null, but, some QR codes apparently
-		// do not mask this info. Try again by actually masking the pattern
-		// first
+		/*
+		 * Should return null, but, some QR codes apparently do not mask this info. Try
+		 * again by actually masking the pattern first
+		 */
 		return doDecodeFormatInformation(maskedFormatInfo1 ^ FORMAT_INFO_MASK_QR,
 				maskedFormatInfo2 ^ FORMAT_INFO_MASK_QR);
 	}
 
 	private static FormatInformation doDecodeFormatInformation(int maskedFormatInfo1, int maskedFormatInfo2) {
-		// Find the int in FORMAT_INFO_DECODE_LOOKUP with fewest bits differing
+		/* Find the int in FORMAT_INFO_DECODE_LOOKUP with fewest bits differing */
 		int bestDifference = Integer.MAX_VALUE;
 		int bestFormatInfo = 0;
 		for (int i = 0; i < FORMAT_INFO_DECODE_LOOKUP.length; i++) {
 			int[] decodeInfo = FORMAT_INFO_DECODE_LOOKUP[i];
 			int targetInfo = decodeInfo[0];
 			if (targetInfo == maskedFormatInfo1 || targetInfo == maskedFormatInfo2) {
-				// Found an exact match
+				/* Found an exact match */
 				return new FormatInformation(decodeInfo[1]);
 			}
 			int bitsDifference = numBitsDiffering(maskedFormatInfo1, targetInfo);
@@ -99,7 +87,7 @@ final class FormatInformation {
 				bestDifference = bitsDifference;
 			}
 			if (maskedFormatInfo1 != maskedFormatInfo2) {
-				// also try the other option
+				/* also try the other option */
 				bitsDifference = numBitsDiffering(maskedFormatInfo2, targetInfo);
 				if (bitsDifference < bestDifference) {
 					bestFormatInfo = decodeInfo[1];
@@ -107,9 +95,10 @@ final class FormatInformation {
 				}
 			}
 		}
-		// Hamming distance of the 32 masked codes is 7, by construction, so <=
-		// 3 bits
-		// differing means we found a match
+		/*
+		 * Hamming distance of the 32 masked codes is 7, by construction, so <= 3 bits
+		 * differing means we found a match
+		 */
 		if (bestDifference <= 3) {
 			return new FormatInformation(bestFormatInfo);
 		}

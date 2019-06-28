@@ -5,7 +5,7 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,6 @@ THE SOFTWARE.
 */
 
 public class Attribute extends Value {
-	public static final StringFilter<Attribute> NAME = new StringFilter<Attribute>(GraphMember.PROPERTY_NAME);
-
 	Attribute() {
 	}
 
@@ -46,7 +44,7 @@ public class Attribute extends Value {
 	@Override
 	public Modifier getModifier() {
 		Modifier modifier = super.getModifier();
-		if(modifier == null) {
+		if (modifier == null) {
 			modifier = new Modifier(Modifier.PRIVATE.getName());
 			super.withChildren(modifier);
 		}
@@ -58,7 +56,7 @@ public class Attribute extends Value {
 		return this;
 	}
 
-	// Redirect
+	/* Redirect */
 	@Override
 	public Attribute with(String value) {
 		super.with(value);
@@ -78,13 +76,16 @@ public class Attribute extends Value {
 	}
 
 	public String getValue(String typ, boolean shortName) {
-		if (typ.equals(GraphTokener.OBJECT)) {
-			if(DataType.STRING == this.type && !this.value.startsWith("\"")){
-				return "\""+ this.value + "\"";
+		if (GraphTokener.OBJECTDIAGRAM.equals(typ)) {
+			if (DataType.STRING == this.type && this.value != null && this.value.startsWith("\"") == false) {
+				return "\"" + this.value + "\"";
 			}
 			return this.value;
 		}
-		return getType().getName(shortName);
+		if (this.type != null) {
+			return this.type.getName(shortName);
+		}
+		return null;
 	}
 
 	public Annotation getAnnotation() {
@@ -101,38 +102,34 @@ public class Attribute extends Value {
 		CharacterBuffer sb = new CharacterBuffer();
 		sb.with(getName());
 		sb.with(':');
-		sb.with(getType().getName(true));
-		if(getValue()!= null) {
+		if (this.type != null) {
+			sb.with(this.type.getName(true));
+		}
+		if (getValue(GraphTokener.OBJECTDIAGRAM, false) != null) {
 			sb.with('=');
-			sb.with(getValue());
+			sb.with(getValue(GraphTokener.OBJECTDIAGRAM, false));
 		}
 		return sb.toString();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof Attribute) {
+		if (obj instanceof Attribute) {
 			Attribute other = (Attribute) obj;
 			String myName = this.getName();
-			if(myName == null){
+			if (myName == null) {
 				return other.getName() == null;
-			} else if(myName.equalsIgnoreCase(other.getName())){
+			} else if (myName.equalsIgnoreCase(other.getName())) {
 				return true;
 			}
-		} else if(obj instanceof Association) {
+		} else if (obj instanceof Association) {
 			Association assoc = (Association) obj;
 			String myName = this.getName();
-			if(myName == null){
-			} else if(myName.equalsIgnoreCase(assoc.getOther().getName())){
+			if (myName == null) {
+			} else if (myName.equalsIgnoreCase(assoc.getOther().getName())) {
 				return true;
 			}
 		}
 		return super.equals(obj);
-	}
-
-	@Override
-	public Attribute without(GraphMember... values) {
-		super.without(values);
-		return this;
 	}
 }

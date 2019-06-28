@@ -3,9 +3,8 @@ package de.uniks.networkparser.logic;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Feature;
-import de.uniks.networkparser.graph.FeatureProperty;
+import de.uniks.networkparser.graph.FeatureSet;
 import de.uniks.networkparser.graph.GraphMember;
-import de.uniks.networkparser.graph.util.FeatureSet;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -13,15 +12,16 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleSet;
 
 /**
- * @author Stefan
- * FeatureCondition for ModelFilter
+ * FeatureCondition for a Global Feature like Set, or PropertyChange
+ * 
+ * @author Stefan FeatureCondition for ModelFilter
  *
- * Format {{#feature SETCLASS=SimpleSet}}
+ *         Format {{#feature SETCLASS=SimpleSet}}
  */
 public class FeatureCondition extends CustomCondition<GraphMember> {
-	private static final String PROPERTY_FEATURE="variable.features";
-	public static final String TAG="feature";
-	private FeatureProperty feature;
+	private static final String PROPERTY_FEATURE = "variable.features";
+	public static final String TAG = "feature";
+	private Feature feature;
 
 	@Override
 	public String getKey() {
@@ -30,21 +30,23 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+		if (buffer == null) {
+			return;
+		}
 		CharacterBuffer temp = buffer.nextToken(false, SPLITEND, ENTER);
 		this.feature = Feature.valueOf(temp.toString()).create();
 		temp = buffer.nextToken(false, SPLITEND);
-		if(temp.length()>0) {
+		if (temp.length() > 0) {
 			String string = temp.toString();
-			if(SimpleSet.class.getSimpleName().equals(string) || SimpleSet.class.getName().equals(string)) {
+			if (SimpleSet.class.getSimpleName().equals(string) || SimpleSet.class.getName().equals(string)) {
 				this.feature.withClazzValue(SimpleSet.class);
-			}else {
+			} else {
 				this.feature.withStringValue(string);
 			}
 			buffer.skipChar(SPLITEND);
 		}
 		buffer.skip();
 	}
-
 
 	@Override
 	public FeatureCondition getSendableInstance(boolean isExpression) {
@@ -58,7 +60,7 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 
 	@Override
 	public CharSequence getValue(LocalisationInterface value) {
-		FeatureProperty feature = getFeature(value);
+		Feature feature = getFeature(value);
 		if (feature != null) {
 			SendableEntityCreator creator = (SendableEntityCreator) value;
 			Class<?> classValue = feature.getClassValue();
@@ -75,38 +77,38 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 		return null;
 	}
 
-	private FeatureProperty getFeature(Object value) {
-		if(value instanceof SendableEntityCreator) {
+	private Feature getFeature(Object value) {
+		if (value instanceof SendableEntityCreator) {
 			SendableEntityCreator creator = (SendableEntityCreator) value;
 			FeatureSet features = (FeatureSet) creator.getValue(creator, PROPERTY_FEATURE);
-			return features.getFeatureProperty(this.feature.getName());
+			return features.getFeature(this.feature);
 		}
 		return null;
 	}
 
 	@Override
 	public boolean update(Object value) {
-		if(feature == null) {
+		if (feature == null) {
 			return true;
 		}
-		if(this.isExpression == false && value instanceof ObjectCondition) {
-			return ((ObjectCondition)value).update(this);
+		if (this.isExpression == false && value instanceof ObjectCondition) {
+			return ((ObjectCondition) value).update(this);
 		}
-		FeatureProperty feature = getFeature(value);
-		if(feature != null) {
+		Feature feature = getFeature(value);
+		if (feature != null) {
 			Clazz clazz = getMember(value).getClazz();
 			return hasFeatureProperty(feature, clazz);
 		}
 		return false;
 	}
 
-	public boolean hasFeatureProperty(FeatureProperty property, Clazz... values) {
-		if(property != null) {
-			if(values == null) {
+	public boolean hasFeatureProperty(Feature property, Clazz... values) {
+		if (property != null) {
+			if (values == null) {
 				return true;
 			}
-			for(int i=0;i<values.length;i++) {
-				if(property.match(values[i]) == false) {
+			for (int i = 0; i < values.length; i++) {
+				if (property.match(values[i]) == false) {
 					return false;
 				}
 			}
@@ -117,12 +119,12 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 
 	@Override
 	public String toString() {
-		CharacterBuffer buffer=new CharacterBuffer();
+		CharacterBuffer buffer = new CharacterBuffer();
 		buffer.with("{{");
-		if(this.feature != null) {
+		if (this.feature != null) {
 			buffer.with(this.feature.getName().toString());
 			String stringValue = this.feature.getStringValue();
-			if(stringValue != null) {
+			if (stringValue != null) {
 				buffer.with(' ');
 				buffer.with(stringValue);
 			}

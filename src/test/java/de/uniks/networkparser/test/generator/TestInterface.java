@@ -3,6 +3,7 @@ package de.uniks.networkparser.test.generator;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Parameter;
@@ -11,7 +12,7 @@ public class TestInterface {
 
 	@Test
 	public void testClassAsInterface() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.interface_a");
@@ -19,13 +20,13 @@ public class TestInterface {
 
 		person.enableInterface();
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 
 	}
 
 	@Test
 	public void testClassAsInterfaceWithImplementedClass() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.interface_b");
@@ -40,13 +41,13 @@ public class TestInterface {
 
 		pupil.withSuperClazz(person);
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 
 	}
 
 	@Test
 	public void testMultipleInterfacesWithMultipleChildren() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.interface_c");
@@ -63,7 +64,7 @@ public class TestInterface {
 		secretary.withSuperClazz(person);
 		secretary.withSuperClazz(pupil);
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 
 	}
 

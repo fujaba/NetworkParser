@@ -2,12 +2,14 @@ package de.uniks.networkparser.parser;
 
 import java.util.ArrayList;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.SourceCode;
+import de.uniks.networkparser.interfaces.BaseItem;
 
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,9 +31,13 @@ THE SOFTWARE.
 */
 
 public class SymTabEntry {
+	public static final String TYPE_VOID = "void";
+
 	public static final String TYPE_IMPORT = "import";
 
+	public static final String TYPE_INTERFACE = "interface";
 	public static final String TYPE_CLASS = "class";
+	public static final String TYPE_ENUM = "enum";
 
 	public static final String TYPE_EXTENDS = "extends";
 	public static final String TYPE_IMPLEMENTS = "implements";
@@ -43,11 +49,13 @@ public class SymTabEntry {
 	public static final String TYPE_PACKAGE = "package";
 	public static final String TYPE_COMMENT = "comment";
 	public static final String TYPE_JAVADOC = "javadoc";
+	public static final String TYPE_BLOCK = "block";
 
 	public static final String TYPE_CONSTRUCTOR = "constructor";
 
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_VALUE = "value";
+	public static final String NOGEN = "//XXX NOGEN";
 
 	private String value;
 	private String type;
@@ -55,12 +63,12 @@ public class SymTabEntry {
 	private SymTabEntry next;
 	private SymTabEntry prev;
 
-	// SDMLIb Parser
+	/* SDMLIb Parser */
 	private int startPos;
 	private int endPos;
 	private int annotationsStartPos;
-	private int preCommentStartPos;
-	private int preCommentEndPos;
+/*	private int preCommentStartPos; */
+/*	private int preCommentEndPos; */
 	private String modifiers;
 	private String throwsTags;
 	private String annotations;
@@ -69,10 +77,16 @@ public class SymTabEntry {
 
 	private int annotationsEndPos;
 	private int bodyStartPos;
-	private String dataType; 	// DataType of Attribute or ReturnType of Method
-	private String params; // Parameter of Methods
+	private String dataType; /* DataType of Attribute or ReturnType of Method */
+	private String params; /* Parameter of Methods */
 	private SourceCode parent;
 	private String body;
+
+	private String name;
+
+	private long startLine;
+
+	private long endLine;
 
 	public SymTabEntry withParent(SourceCode parent) {
 		this.parent = parent;
@@ -83,14 +97,12 @@ public class SymTabEntry {
 		this.parent = parent;
 	}
 
-
 	public String getValue() {
 		return this.value;
 	}
 
 	public boolean setValue(String value) {
-		if((this.value == null && value != null) ||
-			(this.value != null && this.value.equals(value) == false)) {
+		if ((this.value == null && value != null) || (this.value != null && this.value.equals(value) == false)) {
 			this.value = value;
 			return true;
 		}
@@ -98,10 +110,10 @@ public class SymTabEntry {
 	}
 
 	public void add(CharSequence string) {
-		if(this.value == null) {
-			this.value = ""+string;
+		if (this.name == null) {
+			this.name = "" + string;
 		} else {
-			this.value += string;
+			this.name += string;
 		}
 	}
 
@@ -110,13 +122,24 @@ public class SymTabEntry {
 		return this;
 	}
 
+	public SymTabEntry withName(CharacterBuffer value) {
+		if (value != null) {
+			this.name = value.toString();
+		}
+		return this;
+	}
+
+	public SymTabEntry withName(String value) {
+		this.name = value;
+		return this;
+	}
+
 	public String getType() {
 		return this.type;
 	}
 
 	public boolean setType(String value) {
-		if((this.type == null && value != null) ||
-			(this.type != null && this.type.equals(value) == false)) {
+		if ((this.type == null && value != null) || (this.type != null && this.type.equals(value) == false)) {
 			this.type = value;
 			return true;
 		}
@@ -146,6 +169,7 @@ public class SymTabEntry {
 		}
 		return changed;
 	}
+
 	public boolean setPrev(SymTabEntry value) {
 		boolean changed = false;
 
@@ -166,21 +190,27 @@ public class SymTabEntry {
 	}
 
 	public String toString() {
-		StringBuilder sb= new StringBuilder();
+		CharacterBuffer sb = new CharacterBuffer();
 		toString(sb);
 		return sb.toString();
 	}
 
-	public void toString(StringBuilder sb) {
-		sb.append(this.value);
-		if(this.next != null) {
+	public boolean toString(CharacterBuffer sb) {
+		if (sb == null) {
+			return false;
+		}
+		sb.with(this.name);
+		if (this.next != null) {
 			this.next.toString(sb);
 		}
+		return true;
 	}
 
-	public SymTabEntry withPosition(int start, int end) {
+	public SymTabEntry withPosition(int start, int end, long startLine, long endLine) {
 		this.startPos = start;
 		this.endPos = end;
+		this.startLine = startLine;
+		this.endLine = endLine;
 		return this;
 	}
 
@@ -190,6 +220,14 @@ public class SymTabEntry {
 
 	public int getEndPos() {
 		return endPos;
+	}
+
+	public long getStartLine() {
+		return startLine;
+	}
+
+	public long getEndLine() {
+		return endLine;
 	}
 
 	public SymTabEntry withAnnotations(int start, int end) {
@@ -211,22 +249,8 @@ public class SymTabEntry {
 		return annotationsStartPos;
 	}
 
-	public SymTabEntry withPreComment(int start, int end) {
-		this.preCommentStartPos = start;
-		this.preCommentEndPos = end;
-		return this;
-	}
-
-	public int getPreCommentStartPos() {
-		return preCommentStartPos;
-	}
-
-	public int getPreCommentEndPos() {
-		return preCommentEndPos;
-	}
-
 	public SymTabEntry withModifiers(String modifiers) {
-		this.modifiers= modifiers;
+		this.modifiers = modifiers;
 		return this;
 	}
 
@@ -238,6 +262,7 @@ public class SymTabEntry {
 		this.throwsTags = throwsTags;
 		return this;
 	}
+
 	public String getThrowsTags() {
 		return throwsTags;
 	}
@@ -268,14 +293,21 @@ public class SymTabEntry {
 	public int getBodyStartPos() {
 		return bodyStartPos;
 	}
-	
+
 	public SymTabEntry withBody(String value) {
 		this.body = value;
 		return this;
 	}
-	
+
 	public String getBody() {
 		return body;
+	}
+
+	public boolean isNoGen() {
+		if (this.body == null) {
+			return false;
+		}
+		return body.indexOf(NOGEN) >= 0;
 	}
 
 	public SymTabEntry withDataType(String value) {
@@ -297,6 +329,13 @@ public class SymTabEntry {
 	}
 
 	public void writeBody(String value) {
-		this.parent.replaceAll(this.bodyStartPos+1, value);
+		if (this.parent != null) {
+			this.parent.replaceAll(this.bodyStartPos + 1, value);
+			this.body = "{" + BaseItem.CRLF + "\t" + value + BaseItem.CRLF + "}";
+		}
+	}
+
+	public String getName() {
+		return name;
 	}
 }

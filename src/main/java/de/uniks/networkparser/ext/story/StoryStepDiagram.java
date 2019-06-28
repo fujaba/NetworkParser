@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.story;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,10 @@ THE SOFTWARE.
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.converter.GraphConverter;
+import de.uniks.networkparser.graph.GraphImage;
+import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.GraphNode;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -42,49 +45,56 @@ public class StoryStepDiagram implements ObjectCondition {
 
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SimpleEvent == false) {
+		if (value instanceof SimpleEvent == false) {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
+		if (evt.getNewValue() instanceof HTMLEntity == false || evt.getSource() instanceof Story == false) {
+			return false;
+		}
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
 		Story story = (Story) evt.getSource();
 
-		if(this.model != null) {
-			element.withGraph(this.model);
-		}else if(filter!= null){
-			// Objectdiagramm
+		if (this.model != null) {
+			for (String item : HTMLEntity.GRAPHRESOURCES) {
+				if (element.getHeader(item) == null) {
+					/* DEFAULT TO EXTRACT TO DOC-FOLDER */
+					Story.addScript(story.getPath(), item, element);
+				}
+			}
+			element.withGraph(this.model, null);
+		} else if (filter != null) {
+			/* Objectdiagramm */
 			IdMap map = story.getMap();
-			// Save all Names
+			/* Save all Names */
 			SimpleKeyValueList<Object, String> ids = filter.getIds();
-			for(int i=0;i<ids.size();i++) {
+			for (int i = 0; i < ids.size(); i++) {
 				Object obj = ids.getKeyByIndex(i);
 				String name = ids.getValueByIndex(i);
 				map.put(name, obj, false);
 			}
-			 JsonArray jsonArray = new JsonArray();
-			
+			JsonArray jsonArray = new JsonArray();
 
 			SimpleList<Object> elements = filter.getElements();
-			// Add All Elements to JsonArray
-			for(Object object : elements) {
+			/* Add All Elements to JsonArray */
+			for (Object object : elements) {
 				JsonObject jsonObject = map.toJsonObject(object, filter);
 				jsonArray.add(jsonObject);
 			}
 
-	      // add icons
+			/* add icons */
 			SimpleKeyValueList<String, String> images = filter.getImages();
-			for(int i=0;i<images.size();i++) {
+			for (int i = 0; i < images.size(); i++) {
 				String id = images.getKeyByIndex(i);
 				JsonObject jsonObject = jsonArray.get(id);
-				if (jsonObject != null)
-				{
+				if (jsonObject != null) {
 					String image = images.getValueByIndex(i);
 					jsonObject.put("head", new JsonObject().withKeyValue("src", image));
 				}
 			}
-			// new diagram
+			/* new diagram */
 			GraphConverter graphConverter = new GraphConverter();
-			Entity objectModel = graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
+			Entity objectModel = graphConverter.convertToJson(GraphTokener.OBJECTDIAGRAM, jsonArray, true);
 			element.withGraph(objectModel);
 		}
 		return true;
@@ -94,7 +104,31 @@ public class StoryStepDiagram implements ObjectCondition {
 		this.model = model;
 		return this;
 	}
+
 	public void withFilter(StoryObjectFilter filter) {
 		this.filter = filter;
+	}
+
+	public GraphModel createUseCaseDiagram() {
+		GraphList useCase = new GraphList();
+		this.model = useCase;
+		useCase.withType(GraphTokener.OBJECTDIAGRAM);
+		return model;
+	}
+
+	public GraphImage cretaeActor() {
+		GraphImage actor = GraphImage.createActor();
+		if (this.model != null) {
+			this.model.add(actor);
+		}
+		return actor;
+	}
+
+	public GraphNode createElement(String value) {
+		GraphNode node = new GraphNode().with(value);
+		if (this.model != null) {
+			this.model.add(node);
+		}
+		return node;
 	}
 }

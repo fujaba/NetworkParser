@@ -15,10 +15,23 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.SortedList;
+import de.uniks.networkparser.list.SpeedList;
 import de.uniks.networkparser.test.model.SortedMsg;
+import de.uniks.networkparser.test.model.Student;
 
 public class SimpleArrayListTest {
 
+	@Test
+	public void testDebugInfo() {
+		Object[][] intern = new Object[5][2];
+		SimpleKeyValueList<Integer, Student> map = new SimpleKeyValueList<Integer, Student>();
+		for(int i=0;i<5;i++) {
+			Student stud = new Student().withName("Student "+i);
+			intern[i] = new Object[] {i, stud};
+			map.add(i, stud);
+		}
+	}
+	
 	@Test
 	public void testSetElement() {
 		SimpleSet<String> set=new SimpleSet<String>();
@@ -45,6 +58,12 @@ public class SimpleArrayListTest {
 		Assert.assertEquals(23, list.get(2).getNumber());
 		Assert.assertEquals(42, list.get(3).getNumber());
 		Assert.assertEquals(80, list.get(4).getNumber());
+	}
+	
+	@Test
+	public void testEMPTYLIST() {
+		SpeedList<Integer> list = new SpeedList<Integer>();
+		Assert.assertNotNull(list.toString());
 	}
 
 	@Test
@@ -362,4 +381,52 @@ public class SimpleArrayListTest {
 		Assert.assertEquals(3, map.size());
 	}
 
+	@Test
+	public void testReadOnly() {
+		SimpleSet<String> set = new SimpleSet<String>().with("Albert", "Stefan");
+		set.withFlag(SimpleSet.READONLY);
+		
+		try {
+			// Test Add
+			set.add("Karli");
+			Assert.assertEquals(2, set.size());
+			Assert.fail( "My method didn't throw when I expected it to" );
+		} catch (Exception expectedException) {}
+
+		ArrayList<String> arrayList = new ArrayList<String>();
+		arrayList.add("Karli");
+		set.addAll(arrayList);
+		Assert.assertEquals(2, set.size());
+
+		try {
+			set.remove("Stefan");
+			Assert.assertEquals(2, set.size());
+		} catch (Exception expectedException) {}
+
+		try {
+			arrayList = new ArrayList<String>();
+			arrayList.add("Stefan");
+			set.removeAll(arrayList);
+			Assert.assertEquals(2, set.size());
+		} catch (Exception expectedException) {}
+		
+		try {
+			arrayList = new ArrayList<String>();
+			arrayList.add("Stefan");
+			set.retainAll(arrayList);
+			Assert.assertEquals(2, set.size());
+		} catch (Exception expectedException) {}
+		
+//		set.removeIf(filter)
+
+		try {
+			set.clear();
+			Assert.assertEquals(2, set.size());
+			Assert.fail( "My method didn't throw when I expected it to" );
+		} catch (Exception expectedException) {}
+		//ITERATOR
+		//        public void remove() {
+//        public void set(E e) {
+//        public void add(E e) {
+	}
 }

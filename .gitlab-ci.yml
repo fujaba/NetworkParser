@@ -1,5 +1,5 @@
-#image: java:8
-image: cogniteev/oracle-java
+image: java:8
+#image: cogniteev/oracle-java
 before_script:
 - chmod +x gradlew
 stages:
@@ -9,7 +9,8 @@ stages:
 build_job:
   stage: build
   script:
-   - ./gradlew Test jacocoTestReport coveralls artifactoryPublish uploadArchives
+#   - ./gradlew Test jacocoTestReport coveralls --stacktrace
+    - ./gradlew Test -PTester=gitlab
 
 #cleanup_build_job:
 #  stage: cleanup_build

@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.story;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ public class StoryStepCondition implements ObjectCondition {
 	private Object value;
 	private String message;
 
-	public StoryStepCondition withCondition(String message, Object value,Condition<Object> condition) {
+	public StoryStepCondition withCondition(String message, Object value, Condition<Object> condition) {
 		this.condition = condition;
 		this.value = value;
 		this.message = message;
@@ -47,7 +47,7 @@ public class StoryStepCondition implements ObjectCondition {
 	}
 
 	public boolean checkCondition() {
-		if(this.condition != null) {
+		if (this.condition != null) {
 			return this.condition.update(value);
 		}
 		return true;
@@ -55,7 +55,7 @@ public class StoryStepCondition implements ObjectCondition {
 
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SimpleEvent == false) {
+		if (value instanceof SimpleEvent == false) {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
@@ -67,10 +67,10 @@ public class StoryStepCondition implements ObjectCondition {
 		p.withCloseTag();
 		XMLEntity textnode = element.createTag("div", div);
 		textnode.add("class", "notify-text");
-		if(success) {
+		if (success) {
 			div.add("class", "notify notify-green");
 			p.add("class", "symbol icon-tick");
-		}else {
+		} else {
 			div.add("class", "notify notify-red");
 			p.add("class", "symbol icon-error");
 		}

@@ -1,15 +1,17 @@
 package de.uniks.networkparser.test.generator;
 
+import org.junit.Test;
+
 import de.uniks.networkparser.ext.ClassModel;
-import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.ext.Os;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 
 public class TestRemoveCode {
-
-//	@Test
+	@Test
 	public void testRemoveAttribute() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		String rootDir = "src/test/java";
@@ -26,9 +28,9 @@ public class TestRemoveCode {
 
 	}
 
-//	@Test
+	@Test
 	public void testRemoveMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		String rootDir = "src/test/java";
@@ -45,9 +47,9 @@ public class TestRemoveCode {
 
 	}
 
-//	@Test
+	@Test
 	public void testRemoveClass() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		String rootDir = "src/test/java";
@@ -65,9 +67,9 @@ public class TestRemoveCode {
 
 	}
 
-//	@Test
+	@Test
 	public void testRemoveAssociation() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		String rootDir = "src/test/java";
@@ -77,7 +79,7 @@ public class TestRemoveCode {
 		Clazz person = model.createClazz("Person");
 		Clazz pupil = model.createClazz("Pupil");
 
-		person.withBidirectional(pupil, "pupils", Cardinality.MANY, "person", Cardinality.ONE);
+		person.withBidirectional(pupil, "pupils", Association.MANY, "person", Association.ONE);
 
 		model.generate(rootDir);
 

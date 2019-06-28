@@ -1,8 +1,9 @@
 package de.uniks.networkparser.bytes;
+
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,14 +37,12 @@ public class RSAKey {
 	public static final String BEGINPRIVATEKEY = "-----BEGIN PRIVATE RSA KEY-----\n";
 	public static final String ENDPRIVATEKEY = "-----END PRIVATE RSA KEY-----";
 
-	public static final Byte RSABYTE=48;
+	public static final Byte RSABYTE = 48;
 	public static final int SAFESIZE = 1024;
-	public static final String TAG="RSA";
-	// public
+	public static final String TAG = "RSA";
 	private BigInteger e;
-	// private
 	private BigInteger d;
-	// RSA-Modul
+	/* RSA-Modul */
 	private BigInteger N;
 
 	public RSAKey(BigInteger N) {
@@ -74,9 +73,10 @@ public class RSAKey {
 
 	/**
 	 * Sets the public exponent.
+	 * 
 	 * @param value The the Public Exponent
 	 * @return ThisComponent
-	*/
+	 */
 
 	public RSAKey withPubExp(BigInteger value) {
 		e = weedOut(value);
@@ -85,9 +85,10 @@ public class RSAKey {
 
 	/**
 	 * Sets the public exponent.
+	 * 
 	 * @param value The the Public Exponent
 	 * @return ThisComponent
-	 * */
+	 */
 	public RSAKey withPubExp(int value) {
 		BigInteger newValue = BigInteger.valueOf(value);
 		e = weedOut(newValue);
@@ -96,42 +97,66 @@ public class RSAKey {
 
 	/**
 	 * Performs the classical RSA computation.
+	 * 
 	 * @param message Encrypt a Message
 	 * @return Encoded Message
 	 */
 	public BigInteger encrypt(BigInteger message) {
-		if (message.divide(getModulus()).intValue() > 0) {
+		BigInteger modulus = getModulus();
+		if (modulus == null) {
+			return null;
+		}
+		if (message.divide(modulus).intValue() > 0) {
 			System.out.println("WARNUNG MODULUS MUST BIGGER (HASH-VALUE)");
 		}
 		return message.modPow(getPublicKey(), getModulus());
 	}
 
 	/**
-	 *  Performs the classical RSA computation.
-	 *  @param value Enscript the Value
-	 *  @return the enscripted Message
-	 * */
-	public StringBuilder encrypt(String value) {
+	 * Performs the classical RSA computation.
+	 * 
+	 * @param value Enscript the Value
+	 * @return the enscripted Message
+	 */
+	public CharacterBuffer encrypt(String value) {
+		if (value == null) {
+			return null;
+		}
 		return encrypt(value, value.length());
 	}
 
-	public StringBuilder decrypt(String message) {
-		return decrypt(new BigInteger(message));
+	public CharacterBuffer decrypt(String message) {
+		if (message != null) {
+			try {
+				return decrypt(new BigInteger(message));
+			} catch (Exception e) {
+			}
+		}
+		return null;
 	}
 
 	/**
 	 * Performs the classical RSA computation.
+	 * 
 	 * @param message Message to descrypt
 	 * @return the descrypted Message
-	**/
-	public StringBuilder decrypt(BigInteger message) {
-		BigInteger text = message.modPow(getPrivateKey(), getModulus());
+	 **/
+	public CharacterBuffer decrypt(BigInteger message) {
+		if (message == null) {
+			return null;
+		}
+		BigInteger privateKey = getPrivateKey();
+		BigInteger modulus = getModulus();
+		if (privateKey == null || modulus == null) {
+			return null;
+		}
+		BigInteger text = message.modPow(privateKey, modulus);
 		BigInteger divider = BigInteger.valueOf(1000);
 		int bitCount = text.bitCount();
-		StringBuilder sb=new StringBuilder(bitCount);
-		while(bitCount>=0) {
+		CharacterBuffer sb = new CharacterBuffer().withBufferLength(bitCount);
+		while (bitCount >= 0) {
 			BigInteger character = text.remainder(divider);
-			sb.setCharAt(bitCount, (char)character.intValue());
+			sb.setCharAt(bitCount, (char) character.intValue());
 			text = text.divide(divider);
 			bitCount--;
 		}
@@ -139,21 +164,27 @@ public class RSAKey {
 	}
 
 	public Entity sign(Entity value) {
-		String string = value.toString();
-		StringBuilder hashCode = encrypt(string, string.length());
-		//CHECK FOR HASHCODE ONLY
-		value.put(TAG, hashCode);
+		if (value != null) {
+			String string = value.toString();
+			CharacterBuffer hashCode = encrypt(string, string.length());
+			/* CHECK FOR HASHCODE ONLY */
+			value.put(TAG, hashCode);
+			return value;
+		}
 		return null;
 	}
 
-	public StringBuilder encrypt(String value, int group) {
-		StringBuilder sb = new StringBuilder();
-		StringBuilder item = new StringBuilder();
+	public CharacterBuffer encrypt(String value, int group) {
+		if (value == null) {
+			return null;
+		}
+		CharacterBuffer sb = new CharacterBuffer();
+		CharacterBuffer item = new CharacterBuffer();
 
 		int c = 0;
 		for (int i = 0; i < value.length(); i++) {
 			if (c == 0) {
-				item = new StringBuilder();
+				item = new CharacterBuffer();
 			}
 			char character = value.charAt(i);
 			if (character < 10) {
@@ -161,12 +192,12 @@ public class RSAKey {
 			} else if (character < 100) {
 				item.append("0" + (int) character);
 			} else {
-				item.append((int) character);
+				item.with(((int) character));
 			}
 			c++;
 			if (c == group) {
 				sb.append(encoding(item.toString()));
-				item = new StringBuilder();
+				item = new CharacterBuffer();
 				c = 0;
 			}
 		}
@@ -177,7 +208,18 @@ public class RSAKey {
 	}
 
 	private String encoding(String value) {
-		BigInteger encrypt = encrypt(new BigInteger(value));
+		if (value == null) {
+			return null;
+		}
+		BigInteger encrypt;
+		try {
+			encrypt = encrypt(new BigInteger(value));
+		} catch (Exception e) {
+			return null;
+		}
+		if (encrypt == null) {
+			return null;
+		}
 		String string = encrypt.toString();
 		int rest = string.length() % 3;
 		if (rest == 1) {
@@ -190,9 +232,10 @@ public class RSAKey {
 
 	/**
 	 * Weeds out bad inputs.
+	 * 
 	 * @param value The Value for Check
 	 * @return the checked Value
-	 * */
+	 */
 	private final BigInteger weedOut(BigInteger value) {
 		if (!isNull(value) && isPositive(value)) {
 			return value;
@@ -203,39 +246,51 @@ public class RSAKey {
 
 	/**
 	 * Returns true when the argument is greater than zero.
+	 * 
 	 * @param number Number for Check
 	 * @return if number is Positive
-	 * */
+	 */
 	private final boolean isPositive(BigInteger number) {
-		return (number.compareTo(BigInteger.ZERO) > 0);
+		return number != null && (number.compareTo(BigInteger.ZERO) > 0);
 	}
 
 	/**
 	 * Returns true when the argument is null.
+	 * 
 	 * @param value Value for Check
 	 * @return if Value is Null
-	 * */
+	 */
 	private final boolean isNull(Object value) {
 		return (value == null);
 	}
-	public static RSAKey generateKey(int p, int q, int max){
+
+	public static RSAKey generateKey(int p, int q, int max) {
 		return generateKey(BigInteger.valueOf(p), BigInteger.valueOf(q), max);
 	}
+
 	public static RSAKey generateKey() {
 		return generateKey(SAFESIZE);
 	}
+
 	public static RSAKey generateKey(int max) {
 		return generateKey(BigInteger.ZERO, BigInteger.ZERO, max);
 	}
 
 	public static RSAKey generateKey(BigInteger p, BigInteger q, int max) {
+		if (p == null || q == null) {
+			return null;
+		}
 		Random rand = new Random();
 		if (p.longValue() < 1) {
-			p = BigInteger.probablePrime(75 * max / 100, rand);
-			q = BigInteger.probablePrime(25 * max / 100, rand);
+			try {
+				p = BigInteger.probablePrime(75 * max / 100, rand);
+				q = BigInteger.probablePrime(25 * max / 100, rand);
+			} catch (Exception e) {
+				return null;
+			}
 		}
 		RSAKey key = new RSAKey(p.multiply(q));
-		// n is the modulus for the public key and the private keys
+		/* n is the modulus for the public key and the private keys */
 
 		BigInteger i;
 		BigInteger phi = computePhi(p, q);
@@ -252,22 +307,34 @@ public class RSAKey {
 
 	/**
 	 * Computes the LCM of the primes.
+	 * 
 	 * @param p first prime
 	 * @param q second prime
 	 * @return Phi
 	 */
 	private static BigInteger computePhi(BigInteger p, BigInteger q) {
+		if (p == null || q == null) {
+			return null;
+		}
 		return lcm(p.subtract(BigInteger.ONE), q.subtract(BigInteger.ONE));
 	}
 
 	/**
 	 * Computes the least common multiple.
+	 * 
 	 * @param a first value
 	 * @param b second value
 	 * @return the multiply of a,b
-	 * */
+	 */
 	private static BigInteger lcm(BigInteger a, BigInteger b) {
-		return (a.multiply(b).divide(a.gcd(b)));
+		if (a == null || b == null) {
+			return null;
+		}
+		try {
+			return (a.multiply(b).divide(a.gcd(b)));
+		} catch (Exception e) {
+		}
+		return null;
 	}
 
 	public static RSAKey getDecryptKey(BigInteger n, BigInteger privateKey) {
@@ -278,16 +345,16 @@ public class RSAKey {
 
 	@Override
 	public String toString() {
-		CharacterBuffer sb=new CharacterBuffer();
-		if(e != null) {
-			sb.with(BEGINPUBLICKEY+BaseItem.CRLF);
-			sb.with(getPublicStream().toString()+BaseItem.CRLF);
-			sb.with(ENDPUBLICKEY+BaseItem.CRLF);
+		CharacterBuffer sb = new CharacterBuffer();
+		if (e != null) {
+			sb.with(BEGINPUBLICKEY + BaseItem.CRLF);
+			sb.with(getPublicStream().toString() + BaseItem.CRLF);
+			sb.with(ENDPUBLICKEY + BaseItem.CRLF);
 		}
-		if(d != null) {
-			sb.with(BEGINPRIVATEKEY+BaseItem.CRLF);
-			sb.with(getPrivateStream().toString()+BaseItem.CRLF);
-			sb.with(ENDPRIVATEKEY+BaseItem.CRLF);
+		if (d != null) {
+			sb.with(BEGINPRIVATEKEY + BaseItem.CRLF);
+			sb.with(getPrivateStream().toString() + BaseItem.CRLF);
+			sb.with(ENDPRIVATEKEY + BaseItem.CRLF);
 		}
 		return sb.toString();
 	}
@@ -295,6 +362,7 @@ public class RSAKey {
 	public DERBuffer getPublicStream() {
 		return getStream(e);
 	}
+
 	public DERBuffer getPrivateStream() {
 		return getStream(d);
 	}
@@ -302,12 +370,13 @@ public class RSAKey {
 	public DERBuffer getStream(BigInteger key) {
 		DERBuffer bitString = new DERBuffer();
 
-		bitString.addGroup(RSABYTE, new Object[]{N, key});
+		bitString.addGroup(RSABYTE, new Object[] { N, key });
 		DERBuffer derBuffer = new DERBuffer();
-		derBuffer.addGroup(RSABYTE, new Object[]{
-				RSABYTE, new Object[]{DERBuffer.OBJECTID, new Byte[]{42, -122, 72, -122, -9, 13, 1, 1, 1}, DERBuffer.NULL},
-				DERBuffer.BITSTRING, bitString.toBytes()});
-		// 48 l:92[48 l:13 [ 6 l:9 [42, -122, 72, -122, -9, 13, 1, 1, 1],5 l:0] 3 l:75[n,e]]
+		derBuffer.addGroup(RSABYTE, new Object[] { RSABYTE,
+				new Object[] { DERBuffer.OBJECTID, new Byte[] { 42, -122, 72, -122, -9, 13, 1, 1, 1 }, DERBuffer.NULL },
+				DERBuffer.BITSTRING, bitString.toBytes() });
+		/* 48 l:92[48 l:13 [ 6 l:9 [42, -122, 72, -122, -9, 13, 1, 1, 1],5 l:0] 3 */
+		/* l:75[n,e]] */
 		return derBuffer;
 	}
 }

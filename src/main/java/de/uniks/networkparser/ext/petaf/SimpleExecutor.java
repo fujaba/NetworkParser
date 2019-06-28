@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,19 +25,19 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.DateTimeEntity;
 
-public class SimpleExecutor implements TaskExecutor{
-	private DateTimeEntity lastRun=new DateTimeEntity();
+public class SimpleExecutor implements TaskExecutor {
+	private DateTimeEntity lastRun = new DateTimeEntity();
 	private Space space;
 
 	@Override
 	public Object executeTask(Runnable task, int delay, int interval) {
 		try {
 			this.lastRun.withValue(System.currentTimeMillis());
-			if(task != null) {
+			if (task != null) {
 				task.run();
 			}
 		} catch (Exception e) {
-			if(space != null) {
+			if (space != null) {
 				space.handleException(e);
 			}
 		}
@@ -48,11 +48,11 @@ public class SimpleExecutor implements TaskExecutor{
 	public Object executeTask(Runnable task, int delay) {
 		try {
 			this.lastRun.withValue(System.currentTimeMillis());
-			if(task != null) {
+			if (task != null) {
 				task.run();
 			}
 		} catch (Exception e) {
-			if(space != null) {
+			if (space != null) {
 				space.handleException(e);
 			}
 		}
@@ -61,7 +61,7 @@ public class SimpleExecutor implements TaskExecutor{
 
 	@Override
 	public boolean handleMsg(Message message) {
-		if(space != null) {
+		if (space != null) {
 			return space.handleMsg(message);
 		}
 		return false;

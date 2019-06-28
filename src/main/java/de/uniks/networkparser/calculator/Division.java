@@ -3,7 +3,7 @@ package de.uniks.networkparser.calculator;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,12 +32,16 @@ public class Division implements Operator {
 
 	@Override
 	public double calculate(Double... values) {
-		if(values == null) {
+		if (values == null) {
 			return 0;
 		}
-		double result = values[0];
-		for(int i=1; i<values.length;i++) {
-			if(values[i] != 0) {
+		double result = 0;
+		Double value = values[0];
+		if (value != null) {
+			result = value;
+		}
+		for (int i = 1; i < values.length; i++) {
+			if (values[i] != 0) {
 				result /= values[i];
 			}
 		}

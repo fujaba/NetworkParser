@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.story;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,11 +27,12 @@ THE SOFTWARE.
 public class StoryUtil {
 	@SuppressWarnings("unchecked")
 	private static <T extends Throwable> void throwException(Throwable exception, Object dummy) throws T {
-		throw (T) exception;
+		if (exception != null) {
+			throw (T) exception;
+		}
 	}
 
-	public static void throwException(Throwable exception)
-	{
+	public static void throwException(Throwable exception) {
 		StoryUtil.<RuntimeException>throwException(exception, null);
 	}
 

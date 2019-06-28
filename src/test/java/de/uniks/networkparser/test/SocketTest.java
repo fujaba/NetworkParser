@@ -31,7 +31,6 @@ public class SocketTest {
 			@Override
 			public boolean update(Object value) {
 				Message msg = (Message) value;
-//				System.out.println(value);
 				msg.write("Welt");
 				return false;
 			}
@@ -48,7 +47,6 @@ public class SocketTest {
 			@Override
 			public boolean update(Object value) {
 				Assert.assertEquals(output[i++], value.toString());
-//				System.out.println();
 				return false;
 			}
 		});
@@ -63,6 +61,5 @@ public class SocketTest {
 		}
 		server.close();
 		client.close();
-//		System.out.println("END");
 	}
 }

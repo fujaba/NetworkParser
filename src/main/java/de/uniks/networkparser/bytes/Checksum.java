@@ -3,7 +3,7 @@ package de.uniks.networkparser.bytes;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -50,7 +50,7 @@ public abstract class Checksum {
 	/**
 	 * Updates the checksum with the specified byte.
 	 *
-	 * @param data		the byte
+	 * @param data the byte
 	 * @return success to add the new Value
 	 */
 	public boolean update(int data) {
@@ -61,7 +61,7 @@ public abstract class Checksum {
 	/**
 	 * Updates the checksum with the specified byte.
 	 *
-	 * @param b		the item to update
+	 * @param b the item to update
 	 * @return success
 	 */
 	public boolean update(byte b) {
@@ -72,23 +72,29 @@ public abstract class Checksum {
 	/**
 	 * Updates the current checksum with the specified array of bytes.
 	 *
-	 * @param bytes			the byte array to update the checksum with
-	 * @param offset		the start offset of the data
-	 * @param length		the number of bytes to use for the update
+	 * @param bytes  the byte array to update the checksum with
+	 * @param offset the start offset of the data
+	 * @param length the number of bytes to use for the update
+	 * @return success
 	 */
-	public void update(byte[] bytes, int offset, int length) {
+	public boolean update(byte[] bytes, int offset, int length) {
 		for (int i = offset; i < length + offset; i++) {
 			update(bytes[i]);
 		}
+		return true;
 	}
 
 	/**
 	 * Updates the current checksum with the specified array of bytes.
 	 *
-	 * @param bytes		bytearray of items
+	 * @param bytes bytearray of items
+	 * @return success
 	 */
-	public void update(byte[] bytes) {
-		update(bytes, 0, bytes.length);
+	public boolean update(byte[] bytes) {
+		if (bytes != null) {
+			return update(bytes, 0, bytes.length);
+		}
+		return false;
 	}
 
 	/**
@@ -129,10 +135,10 @@ public abstract class Checksum {
 		int count = 0;
 		while (value > 0) {
 			test[maxlen - 1 - count++] = (byte) (value % 256);
-			value = value >> 8; // um 1 Byte shiften
+			value = value >> 8; /* um 1 Byte shiften */
 		}
 		if (count == 0) {
-			return new byte[] {0x00 };
+			return new byte[] { 0x00 };
 		}
 		byte[] result = new byte[count];
 		for (int z = 0; z < count; z++) {

@@ -21,7 +21,7 @@ public class Group extends Control {
 		this.addBaseElements(PROPERTY_ELEMENTS);
 		this.addBaseElements(ORIENTATION);
 	}
-	
+
 	public SimpleList<Control> getElements() {
 		return elements;
 	}
@@ -30,8 +30,9 @@ public class Group extends Control {
 		addElement(elements);
 		return this;
 	}
+
 	public boolean addElement(Control... elements) {
-		if(elements == null) {
+		if (elements == null) {
 			return false;
 		}
 		boolean changed = false;
@@ -39,24 +40,24 @@ public class Group extends Control {
 			this.elements = new SimpleList<Control>();
 		}
 		for (Control control : elements) {
-			if(this.elements.add(control)) {
+			if (this.elements.add(control)) {
 				changed = true;
 				firePropertyChange(PROPERTY_ELEMENTS, null, control);
 			}
 		}
 		return changed;
 	}
-	
+
 	public String getOrientation() {
 		return orientation;
 	}
-	
+
 	public boolean setOrientation(String value) {
 		String oldValue = this.orientation;
 		this.orientation = value;
 		return firePropertyChange(ORIENTATION, oldValue, value);
 	}
-	
+
 	public Group withOrientation(String value) {
 		this.setOrientation(value);
 		return this;
@@ -66,8 +67,7 @@ public class Group extends Control {
 	public Object getValue(String key) {
 		if (ORIENTATION.equals(key)) {
 			return this.getOrientation();
-		}
-		else if (PROPERTY_ELEMENTS.equals(key)) {
+		} else if (PROPERTY_ELEMENTS.equals(key)) {
 			return this.getElements();
 		}
 		return super.getValue(key);
@@ -76,15 +76,14 @@ public class Group extends Control {
 	@Override
 	public boolean setValue(String key, Object value) {
 		if (ORIENTATION.equals(key)) {
-			return this.setOrientation(""+value);
-		}
-		else if (PROPERTY_ELEMENTS.equals(key)) {
-			if(value instanceof Control) {
-				return this.addElement((Control)value);
-			} else if(value instanceof Control[]) {
-				return this.addElement((Control[])value);
-			} else if(value instanceof Collection<?>) {
-				Collection<?> list = (Collection<?>)value;
+			return this.setOrientation("" + value);
+		} else if (PROPERTY_ELEMENTS.equals(key)) {
+			if (value instanceof Control) {
+				return this.addElement((Control) value);
+			} else if (value instanceof Control[]) {
+				return this.addElement((Control[]) value);
+			} else if (value instanceof Collection<?>) {
+				Collection<?> list = (Collection<?>) value;
 				Control[] array = ((Collection<?>) value).toArray(new Control[list.size()]);
 				return this.addElement(array);
 			}

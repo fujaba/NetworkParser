@@ -3,7 +3,7 @@ package de.uniks.networkparser.gui;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2017 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2017 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,14 +26,13 @@ THE SOFTWARE.
 import java.util.Comparator;
 
 import de.uniks.networkparser.DateTimeEntity;
-import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
-public class Column implements SendableEntityCreatorNoIndex {
+public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 	public static final int AUTOWIDTH = -1;
 
 	public static final String PROPERTY_ID = "id";
@@ -66,14 +65,10 @@ public class Column implements SendableEntityCreatorNoIndex {
 
 	public static final String FORMAT_DATE = "HH:MM:SS";
 
-	private static final String[] properties = new String[] {
-			Column.PROPERTY_ID,
-			Column.PROPERTY_ATTRIBUTE, Column.PROPERTY_NUMBERFORMAT,
-			Column.PROPERTY_EDITCOLUMN, Column.PROPERTY_LABEL,
-			Column.PROPERTY_DEFAULTTEXT, Column.PROPERTY_RESIZE,
-			Column.PROPERTY_VISIBLE, Column.PROPERTY_MOVABLE,
-			Column.PROPERTY_ALTTEXT, Column.PROPERTY_BROWSERID,
-			Column.PROPERTY_FIELDTYP, Column.PROPERTY_STYLE,
+	private static final String[] properties = new String[] { Column.PROPERTY_ID, Column.PROPERTY_ATTRIBUTE,
+			Column.PROPERTY_NUMBERFORMAT, Column.PROPERTY_EDITCOLUMN, Column.PROPERTY_LABEL,
+			Column.PROPERTY_DEFAULTTEXT, Column.PROPERTY_RESIZE, Column.PROPERTY_VISIBLE, Column.PROPERTY_MOVABLE,
+			Column.PROPERTY_ALTTEXT, Column.PROPERTY_BROWSERID, Column.PROPERTY_FIELDTYP, Column.PROPERTY_STYLE,
 			Column.PROPERTY_ACTIVESTYLE };
 
 	private Style style;
@@ -121,7 +116,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 	 * @param id the new id
 	 * @return itself
 	 */
-	public Column withID(String id){
+	public Column withID(String id) {
 		this.id = id;
 		return this;
 	}
@@ -133,14 +128,12 @@ public class Column implements SendableEntityCreatorNoIndex {
 		return label;
 	}
 
-
 	public String getLabelOrAttrName() {
 		if (label == null) {
 			return attrName;
 		}
 		return label;
 	}
-
 
 	/**
 	 * @param label the label to set
@@ -151,12 +144,10 @@ public class Column implements SendableEntityCreatorNoIndex {
 		return this;
 	}
 
-
 	/** @return the Attribute Name for display */
 	public String getAttrName() {
 		return attrName;
 	}
-
 
 	/**
 	 * @param attrName Attribute Name for display
@@ -167,10 +158,9 @@ public class Column implements SendableEntityCreatorNoIndex {
 		return this;
 	}
 
-
 	/**
 	 * @param attrName Attribute Name for display
-	 * @param edit is the Column is editable
+	 * @param edit     is the Column is editable
 	 * @return Itself
 	 */
 	public Column withAttribute(String attrName, boolean edit) {
@@ -182,14 +172,12 @@ public class Column implements SendableEntityCreatorNoIndex {
 		return this;
 	}
 
-
 	/**
 	 * @return the NumberFormat
 	 */
 	public String getNumberFormat() {
 		return numberFormat;
 	}
-
 
 	/**
 	 * @param value the NumberFormat to set
@@ -200,14 +188,12 @@ public class Column implements SendableEntityCreatorNoIndex {
 		return this;
 	}
 
-
 	/**
 	 * @return the editColumn
 	 */
 	public boolean isEditable() {
 		return isEditable;
 	}
-
 
 	/**
 	 * @param value the editColumn to set
@@ -218,93 +204,72 @@ public class Column implements SendableEntityCreatorNoIndex {
 		return this;
 	}
 
-
 	public boolean isResizable() {
 		return isResizable;
 	}
-
 
 	public Column withResizable(boolean isResizable) {
 		this.isResizable = isResizable;
 		return this;
 	}
 
-
-	public EntityValueFactory getCellValueCreator() {
-		return new EntityValueFactory();
-	}
-
-
 	public boolean isVisible() {
 		return isVisible;
 	}
-
 
 	public Column withVisible(boolean isVisible) {
 		this.isVisible = isVisible;
 		return this;
 	}
 
-
 	public Column withAltAttribute(String altAttribute) {
 		this.altAttribute = altAttribute;
 		return this;
 	}
 
-
 	public String getAltAttribute() {
 		return altAttribute;
 	}
 
-
 	public boolean isMovable() {
 		return isMovable;
 	}
-
 
 	public Column withMovable(boolean isMovable) {
 		this.isMovable = isMovable;
 		return this;
 	}
 
-
 	public GUIPosition getBrowserId() {
 		return browserId;
 	}
-
 
 	public Column withBrowserId(GUIPosition browserId) {
 		this.browserId = browserId;
 		return this;
 	}
 
-
 	public FieldTyp getFieldTyp() {
 		return fieldTyp;
 	}
-
 
 	public Column withFieldTyp(FieldTyp fieldTyp) {
 		this.fieldTyp = fieldTyp;
 		return this;
 	}
 
-
 	public String getDefaultText() {
 		return defaultText;
 	}
-
 
 	public Column withDefaultText(String defaultText) {
 		this.defaultText = defaultText;
 		return this;
 	}
 
-
 	public Style getStyle() {
 		return style;
 	}
-
 
 	public Style getOrCreateStyle() {
 		if (style == null) {
@@ -313,93 +278,74 @@ public class Column implements SendableEntityCreatorNoIndex {
 		return style;
 	}
 
-
 	public Column withStyle(Style value) {
 		this.style = value;
 		return this;
 	}
 
-
 	public Style getActiveStyle() {
 		return activestyle;
 	}
-
 
 	public Column withActiveStyle(Style activestyle) {
 		this.activestyle = activestyle;
 		return this;
 	}
 
-
 	public Column withActionHandler(CellHandler handler) {
 		this.handler = handler;
 		return this;
 	}
 
-
 	public CellHandler getListener() {
 		if (handler == null) {
-			handler = new CellHandler() {
-				@Override
-				public boolean onAction(Object entity,
-						SendableEntityCreator creator, double x, double y) {
-					return isEditable;
-				}
-			};
+			handler = this;
 		}
 		return handler;
 	}
-
 
 	public boolean isListener() {
 		return handler != null;
 	}
 
-
 	public Comparator<TableCellValue> getComparator() {
 		return comparator;
 	}
-
 
 	public Column withComparator(Comparator<TableCellValue> comparator) {
 		this.comparator = comparator;
 		return this;
 	}
 
-
 	public Column withComboValue(String value) {
-		if (this.numberFormat == null || !this.numberFormat.startsWith("[")
-			|| numberFormat.length() == 2) {
+		if (this.numberFormat == null || !this.numberFormat.startsWith("[") || numberFormat.length() == 2) {
 			this.numberFormat = "[" + value + "]";
 			return this;
 		}
-		this.numberFormat = this.numberFormat.substring(0,
-			this.numberFormat.length() - 1)
-			+ "," + value + "]";
+		this.numberFormat = this.numberFormat.substring(0, this.numberFormat.length() - 1) + "," + value + "]";
 		return this;
 	}
-
 
 	@Override
 	public String[] getProperties() {
 		return properties;
 	}
 
-
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new Column();
 	}
 
-
 	@Override
 	public Object getValue(Object entity, String attribute) {
+		if (entity instanceof Column == false || attribute == null) {
+			return null;
+		}
 		String attrName;
 		int pos = attribute.indexOf(".");
 		if (pos > 0) {
 			attrName = attribute.substring(0, pos);
-		}
-		else {
+		} else {
 			attrName = attribute;
 		}
 		Column that = (Column) entity;
@@ -434,10 +380,11 @@ public class Column implements SendableEntityCreatorNoIndex {
 		return null;
 	}
 
-
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
+		if (entity instanceof Column == false || attribute == null) {
+			return false;
+		}
 		Column that = (Column) entity;
 
 		if (attribute.equalsIgnoreCase(PROPERTY_ATTRIBUTE)) {
@@ -445,7 +392,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 			return true;
 		}
 		if (attribute.equalsIgnoreCase(PROPERTY_ID)) {
-			that.withID((String)value);
+			that.withID((String) value);
 			return true;
 		}
 		if (attribute.equalsIgnoreCase(PROPERTY_NUMBERFORMAT)) {
@@ -474,14 +421,9 @@ public class Column implements SendableEntityCreatorNoIndex {
 							oldStyle.setValue(oldStyle, prop, style.getValue(style, prop), SendableEntityCreator.NEW);
 						}
 					}
-					//					for(StyleCrea)
-				}
-				else {
+				} else {
 					that.withStyle((Style) value);
 				}
-			}
-			else {
-				System.out.println("FIXME");
 			}
 			return true;
 		}
@@ -516,7 +458,6 @@ public class Column implements SendableEntityCreatorNoIndex {
 		return false;
 	}
 
-
 	public Object getValue(Object entity, SendableEntityCreator creator) {
 		String attrName = getAttrName();
 		if (attrName != null) {
@@ -532,8 +473,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 				}
 				return value;
 			}
-		}
-		else if ("CLAZZ".equals(getNumberFormat())) {
+		} else if ("CLAZZ".equals(getNumberFormat())) {
 			if (entity != null) {
 				return entity.getClass().getSimpleName();
 			}
@@ -541,18 +481,20 @@ public class Column implements SendableEntityCreatorNoIndex {
 		return null;
 	}
 
-
-	public boolean setValue(Object controll, Object entity,
-			SendableEntityCreator creator, Object value) {
+	public boolean setValue(Object controll, Object entity, SendableEntityCreator creator, Object value) {
 		if (creator == null) {
 			return false;
 		}
 		return creator.setValue(entity, getAttrName(), value, SendableEntityCreator.UPDATE);
 	}
 
-
 	public Column withListener(CellHandler eventHandler) {
 		this.handler = eventHandler;
 		return this;
+	}
+
+	@Override
+	public boolean onAction(Object entity, SendableEntityCreator creator, double x, double y) {
+		return isEditable;
 	}
 }

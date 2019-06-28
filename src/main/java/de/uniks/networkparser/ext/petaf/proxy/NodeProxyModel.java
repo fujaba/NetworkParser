@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf.proxy;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,14 +39,14 @@ public class NodeProxyModel extends NodeProxy {
 
 	@Override
 	public String getKey() {
-		if(space == null) {
+		if (space == null) {
 			return null;
 		}
 		return getId();
 	}
 
 	public String getId() {
-		if(this.id != null) {
+		if (this.id != null) {
 			return this.id;
 		}
 		this.id = this.space.getKey(root);
@@ -63,7 +63,7 @@ public class NodeProxyModel extends NodeProxy {
 	}
 
 	@Override
-	protected boolean initProxy() {
+	protected boolean startProxy() {
 		return true;
 	}
 
@@ -71,6 +71,7 @@ public class NodeProxyModel extends NodeProxy {
 	public boolean isSendable() {
 		return false;
 	}
+
 	@Override
 	public Object getSendableInstance(boolean reference) {
 		return new NodeProxyModel(null);
@@ -80,20 +81,16 @@ public class NodeProxyModel extends NodeProxy {
 	public NodeProxy initSpace(Space space) {
 		super.initSpace(space);
 
-		// serialize model
+		/* serialize model */
 		IdMap map = space.getMap();
 		map.put("root", getModel(), true);
-
-//		Object modell = getModell();
-//		BaseItem value = this.space.encode(modell, null);
-//		String data = value.toString();
 
 		return this;
 	}
 
 	public NodeProxyModel setNextModel(NodeProxyModel model) {
 		this.nextModel = model;
-		if(model == null) {
+		if (model == null) {
 			return this;
 		}
 		model.setNextModel(null);

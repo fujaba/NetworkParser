@@ -6,7 +6,7 @@ import java.util.concurrent.CountDownLatch;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleObject;
 import de.uniks.networkparser.ext.JSEditor;
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.gui.BridgeCommand;
@@ -50,13 +51,17 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	protected JavaBridge owner;
 	protected Object webView;
 	protected Object webEngine;
-	private SimpleList<String> queue=new SimpleList<String>();
-	public static final String TYPE_EXPORT="EXPORT";
-	public static final String TYPE_EDITOR="EDITOR";
-	public static final String TYPE_EXPORTALL="EXPORTALL";
-	public static final String TYPE_CONTENT="CONTENT";
+	private SimpleList<String> queue = new SimpleList<String>();
+	public static final String TYPE_EXPORT = "EXPORT";
+	public static final String TYPE_EDITOR = "EDITOR";
+	public static final String TYPE_EXPORTALL = "EXPORTALL";
+	public static final String TYPE_CONTENT = "CONTENT";
+	public static final String TYPE_EDOBS = "EDOBS";
 	protected String type = TYPE_EXPORT;
 	private HTMLEntity entity;
+	private CountDownLatch doneLatch;
+	private Runnable newTask;
+	private NetworkParserLog logger;
 
 	public JavaAdapter withOwner(JavaBridge owner) {
 		this.owner = owner;
@@ -65,88 +70,102 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 
 	@Override
 	public boolean load(Object item) {
-		if(item instanceof String) {
+		if (item instanceof String) {
 			ReflectionLoader.call(webEngine, "load", item);
 			return true;
 		}
-		if(item instanceof File) {
-			File file = ((File)item);
-			if(file.exists() == false) {
-				System.out.println("FILE NOT FOUND");
+		if (item instanceof File) {
+			File file = ((File) item);
+			if (file.exists() == false) {
+				if (logger != null) {
+					logger.error(this, "load", "FILE NOT FOUND");
+				}
 			}
 			ReflectionLoader.call(webEngine, "load", file.toURI().toString());
 			return true;
 		}
 
-		if(item instanceof HTMLEntity == false) {
+		if (item instanceof HTMLEntity == false) {
 			return false;
 		}
 		HTMLEntity entity = (HTMLEntity) item;
-		if(TYPE_CONTENT.equalsIgnoreCase(type)) {
+		if (TYPE_CONTENT.equalsIgnoreCase(type)) {
 			ReflectionLoader.call(webEngine, "loadContent", entity.toString());
 			return true;
 		}
-		// Add Dummy Script
+		/* Add Dummy Script */
 		XMLEntity headers = entity.getHeader();
-		for(int i=0;i<headers.sizeChildren();i++) {
+		for (int i = 0; i < headers.sizeChildren(); i++) {
 			XMLEntity child = (XMLEntity) headers.getChild(i);
-			if(HTMLEntity.SCRIPT.equalsIgnoreCase(child.getTag())) {
-				// Load Script from File
+			if (HTMLEntity.SCRIPT.equalsIgnoreCase(child.getTag())) {
+				/* Load Script from File */
 				Object value = child.getValue(HTMLEntity.KEY_SRC);
-				if(value != null) {
-					// External Script
-					this._execute(readFile(""+value), false);
+				if (value != null) {
+					/* External Script */
+					this._execute(readFile("" + value), false);
 				} else {
-					// Inline Script
+					/* Inline Script */
 					this._execute(child.getValue(), false);
 				}
 			}
 		}
 
-		// Call Body Script
+		/* Call Body Script */
 		XMLEntity body = entity.getHeader();
-		for(int i=0;i<body.sizeChildren();i++) {
+		for (int i = 0; i < body.sizeChildren(); i++) {
 			XMLEntity child = (XMLEntity) body.getChild(i);
-			if(HTMLEntity.SCRIPT.equalsIgnoreCase(child.getTag())) {
-				if(child.has(HTMLEntity.KEY_SRC) == false) {
+			if (HTMLEntity.SCRIPT.equalsIgnoreCase(child.getTag())) {
+				if (child.has(HTMLEntity.KEY_SRC) == false) {
 					this._execute(child.getValue(), false);
 				}
 			}
 		}
 		Object engine = getWebEngine();
-		if(engine == null) {
+		if (engine == null) {
 			this.entity = entity;
 			try {
 				ReflectionLoader.call(ReflectionLoader.PLATFORM, "startup", Runnable.class, this);
-			}catch (Throwable e) {
+			} catch (Throwable e) {
 				JavaAdapter.execute(this);
 			}
 			return true;
 		}
 		registerListener(this);
-		// Load Real Content
+		/* Load Real Content */
 		ReflectionLoader.call(this.webEngine, "loadContent", String.class, entity.toString());
 		return true;
 	}
 
 	@Override
 	public void run() {
+		if (doneLatch != null && newTask != null) {
+			try {
+				Runnable task = newTask;
+				newTask = null;
+				task.run();
+			} finally {
+				doneLatch.countDown();
+			}
+		}
 		registerListener(this);
-		// Load Real Content
-		ReflectionLoader.call(this.webEngine, "loadContent", String.class, entity.toString());
+		/* Load Real Content */
+		if (this.webEngine != null && entity != null) {
+			ReflectionLoader.call(this.webEngine, "loadContent", String.class, entity.toString());
+		}
 	}
 
 	public boolean registerListener(ObjectCondition listener) {
 		Object engine = getWebEngine();
-		if(engine != null) {
+		if (engine != null) {
 			Object stateProperty = ReflectionLoader.callChain(this.webEngine, "getLoadWorker", "stateProperty");
 			GUIEvent eventListener = new GUIEvent().withListener(listener);
-			
-			Object proxy = ReflectionLoader.createProxy(eventListener, ReflectionLoader.CHANGELISTENER, ReflectionLoader.EVENTHANDLER);
+
+			Object proxy = ReflectionLoader.createProxy(eventListener, ReflectionLoader.CHANGELISTENER,
+					ReflectionLoader.EVENTHANDLER);
 			ReflectionLoader.call(stateProperty, "addListener", ReflectionLoader.CHANGELISTENER, proxy);
 			ReflectionLoader.call(webEngine, "setOnError", ReflectionLoader.EVENTHANDLER, proxy);
 			ReflectionLoader.call(webEngine, "setOnAlert", ReflectionLoader.EVENTHANDLER, proxy);
-			
+
 			ReflectionLoader.call(webView, "setOnDragExited", ReflectionLoader.EVENTHANDLER, proxy);
 			ReflectionLoader.call(webView, "setOnDragOver", ReflectionLoader.EVENTHANDLER, proxy);
 			ReflectionLoader.call(webView, "setOnDragDropped", ReflectionLoader.EVENTHANDLER, proxy);
@@ -155,19 +174,18 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		return true;
 	}
 
-
-	// CallBack Functions
+	/* CallBack Functions */
 	@Override
 	public boolean update(Object value) {
-		if(value == null) {
+		if (value == null) {
 			return false;
 		}
-		if(value instanceof String) {
-			JsonObject data = new JsonObject().withValue(""+value);
+		if (value instanceof String) {
+			JsonObject data = new JsonObject().withValue("" + value);
 			owner.fireEvent(data);
 			return true;
 		}
-		if(ReflectionLoader.JSOBJECT.isAssignableFrom(value.getClass())) {
+		if (ReflectionLoader.JSOBJECT.isAssignableFrom(value.getClass())) {
 			GUIEvent event = GUIEvent.create(value);
 			owner.fireEvent(event);
 			return true;
@@ -176,17 +194,21 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	}
 
 	public boolean changed(SimpleEvent event) {
-		if(SUCCEEDED.equals(""+event.getNewValue())) {
-			// FINISH
-			this.loadFinish();
-			return true;
+		if (event != null) {
+			if (SUCCEEDED.equals("" + event.getNewValue())) {
+				/* FINISH */
+				this.loadFinish();
+				return true;
+			}
 		}
 		return false;
 	}
 
 	public void showAlert(String value) {
-		if(value != null && value.length()>0) {
-			System.err.println(value);
+		if (value != null && value.length() > 0) {
+			if (logger != null) {
+				logger.error(this, "showAlert", value);
+			}
 		}
 	}
 
@@ -194,6 +216,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		owner.setApplyingChangeMSG(true);
 		JsonObject json = JsonObject.create(value);
 		IdMap map = owner.getMap();
+
 		Object encode = map.decode(json);
 		if (encode == null) {
 			SimpleObject newItem = SimpleObject.create(json);
@@ -205,31 +228,33 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 
 	/**
 	 * Reads the file and returns the content of the file as a string.
+	 * 
 	 * @param file the path of the file, that should be loaded
 	 * @return the content of the file as a string
 	 */
 	@Override
 	public String readFile(String file) {
-		if(file == null) {
+		if (file == null) {
 			return "";
 		}
 		FileBuffer buffer = new FileBuffer().withFile(file);
-		return buffer.toString();
+		return buffer.toString().trim();
 	}
 
 	/**
 	 * Asynchronous execute of the script.
+	 * 
 	 * @param script Script for executing
 	 * @return return value from Javascript
 	 */
 	@Override
 	public Object executeScript(String script) {
 		this.owner.logScript(script, NetworkParserLog.LOGLEVEL_INFO, this, "executeScript");
-		if(this.queue != null) {
-			// Must be cached
+		if (this.queue != null) {
+			/* Must be cached */
 			this.queue.add(script);
 		}
-		if(isFXThread() == false) {
+		if (Os.isFXThread() == false) {
 			JavaAdapter.execute(new JSEditor(this).withScript(script));
 			return null;
 		}
@@ -238,14 +263,17 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 
 	/**
 	 * Asynchronous execute of the script.
-	 * @param script Script for executing
+	 * 
+	 * @param script  Script for executing
 	 * @param convert convert Result
 	 * @return return value from Javascript
 	 */
 	public Object executeScript(String script, boolean convert) {
-		this.owner.logScript(script, NetworkParserLog.LOGLEVEL_INFO, this, "executeScript");
-		if(this.queue != null) {
-			// Must be cached
+		if (this.owner != null) {
+			this.owner.logScript(script, NetworkParserLog.LOGLEVEL_INFO, this, "executeScript");
+		}
+		if (this.queue != null) {
+			/* Must be cached */
 			this.queue.add(script);
 		}
 		return _execute(script, convert);
@@ -253,13 +281,14 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 
 	/**
 	 * synchronous Execute of script
-	 * @param script Script for executing
+	 * 
+	 * @param script  Script for executing
 	 * @param convert convert Result
 	 * @return return value from Javascript
 	 */
 	private Object _execute(String script, boolean convert) {
 		Object jsObject = ReflectionLoader.call(getWebEngine(), "executeScript", String.class, script);
-		if(convert && jsObject != null && ReflectionLoader.JSOBJECT.isAssignableFrom(jsObject.getClass())){
+		if (convert && jsObject != null && ReflectionLoader.JSOBJECT.isAssignableFrom(jsObject.getClass())) {
 			JsonObject item = convertJSObject(jsObject);
 			return item;
 		}
@@ -267,7 +296,9 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	}
 
 	/**
-	 * Converts a JSObject to a JsonObject Lazy and forces a load of the LazyJsonObject.
+	 * Converts a JSObject to a JsonObject Lazy and forces a load of the
+	 * LazyJsonObject.
+	 * 
 	 * @param element Element to Convert
 	 * @return JsonObjectLazy return new JsonObjectLazy
 	 */
@@ -276,21 +307,16 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		result.lazyLoad();
 		return result;
 	}
-	
-	public boolean isFXThread() {
-		Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread"); 
-		return Boolean.TRUE.equals(result);
-	}
 
 	@Override
 	public Object getWebView() {
-		if(webView == null) {
-			if(ReflectionLoader.WEBVIEW != null) {
-				Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread"); 
-				if(Boolean.TRUE.equals(result)){
+		if (webView == null) {
+			if (ReflectionLoader.WEBVIEW != null && Os.isJavaFX()) {
+				if (Os.isFXThread()) {
 					this.webView = ReflectionLoader.newInstance(ReflectionLoader.WEBVIEW);
 					this.webEngine = ReflectionLoader.call(this.webView, "getEngine");
-					ReflectionLoader.call(this.webView, "setMaxSize", double.class, Double.MAX_VALUE, double.class, Double.MAX_VALUE);
+					ReflectionLoader.call(this.webView, "setMaxSize", double.class, Double.MAX_VALUE, double.class,
+							Double.MAX_VALUE);
 				}
 			}
 		}
@@ -299,35 +325,40 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 
 	@Override
 	public Object getWebEngine() {
-		if(webEngine == null) {
+		if (webEngine == null) {
 			getWebView();
 		}
 		return webEngine;
 	}
 
-
 	protected void addAdapter(ObjectCondition eventListener) {
-		JsonObjectLazy executeScript = (JsonObjectLazy) _execute("bridge.addAdapter(new DiagramJS.DelegateAdapter());", true);
-		if(executeScript != null) {
-			Object reference = executeScript.getReference();
-			ReflectionLoader.calling(reference, "setAdapter", false, null, Object.class, eventListener);
+		if (TYPE_EDITOR.equals(type) == false) {
+			JsonObjectLazy executeScript = (JsonObjectLazy) _execute(
+					"bridge.addAdapter(new DiagramJS.DelegateAdapter());", true);
+			if (executeScript != null) {
+				Object reference = executeScript.getReference();
+				ReflectionLoader.calling(reference, "setAdapter", false, null, Object.class, eventListener);
+			}
 		}
 	}
 
 	@Override
 	public void loadFinish() {
 		addAdapter(this);
-		// REGISTER LISTENER
-		if(this.queue != null) {
-			while(this.queue.size() > 0 ) {
+		/* REGISTER LISTENER */
+		if (this.queue != null) {
+			while (this.queue.size() > 0) {
 				String command = this.queue.remove(0);
 				this._execute(command, false);
 			}
 		}
-		this.queue = null; // Disable QUEUE
+		this.queue = null; /* Disable QUEUE */
 	}
 
 	public boolean addListener(Control control, EventTypes type, String functionName, Object callBackClazz) {
+		if(this.owner == null) {
+			return false;
+		}
 		this.owner.addControl(control);
 		String id = control.getId();
 
@@ -355,50 +386,56 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		}
 		return callBackName;
 	}
-	
-	
-	public static void execute(final Runnable runnable) {
-		ReflectionLoader.call(ReflectionLoader.PLATFORMIMPL, "startup", Runnable.class, runnable);
-	}
-	public static void executeAndWait(final Runnable runnable) {
-		if(runnable == null) {
-			return;
-		}
-		if((Boolean) ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread")) {
-			runnable.run();
-			return;
-		}
-		final CountDownLatch doneLatch = new CountDownLatch(1);
-		Runnable task = new Runnable() {
 
-			@Override
-			public void run() {
-				try {
-					runnable.run();
-				} finally {
-					doneLatch.countDown();
-				}
-			}
-		};
+	public static void execute(final Runnable runnable) {
+		if (Os.isReflectionTest() == false) {
+			ReflectionLoader.call(ReflectionLoader.PLATFORMIMPL, "startup", Runnable.class, runnable);
+		}
+	}
+
+	public static JavaAdapter executeAndWait(final Runnable runnable) {
+		if (runnable == null) {
+			return null;
+		}
+		if (Os.isFXThread()) {
+			runnable.run();
+			return null;
+		}
+		JavaAdapter task = new JavaAdapter();
+		task.doneLatch = new CountDownLatch(1);
+		task.newTask = runnable;
 		execute(task);
 		try {
-			doneLatch.await();
+			task.doneLatch.await();
 		} catch (InterruptedException e) {
 		}
+		task.doneLatch = null;
+		return task;
 	}
+
 	/**
 	 * Enables Firebug Lite for debugging a webEngine.
 	 */
 	public void enableDebug() {
-		// https://getfirebug.com/firebug-lite.js#startOpened
-		String firebugLite="http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js";
-		String script = "if (!document.getElementById('FirebugLite')) {var E = document['createElementNS'] && document.documentElement.namespaceURI;E = E ? document.createElementNS(E, 'script') : document.createElement('script');E.setAttribute('id', 'FirebugLite');E.setAttribute('src', '"+firebugLite+"');E.setAttribute('FirebugLite', '4');(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(E);}";
-		String script2 = "console.log = function(message) { java.log(message); }"; // Now where ever console.log is called in your html you will get a log in Java console
-		Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread"); 
-		if(this.webEngine == null || Boolean.TRUE.equals(result) == false) {
+		/* https://getfirebug.com/firebug-lite.js#startOpened */
+		/*
+		 * firebugLite=
+		 * "http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js";
+		 */
+		String firebugLite = "https://getfirebug.com/releases/lite/latest/firebug-lite.js";
+		String script = "if (!document.getElementById('FirebugLite')) {var E = document['createElementNS'] && document.documentElement.namespaceURI;E = E ? document.createElementNS(E, 'script') : document.createElement('script');E.setAttribute('id', 'FirebugLite');E.setAttribute('src', '"
+				+ firebugLite
+				+ "');E.setAttribute('FirebugLite', '4');(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(E);}";
+		String script2 = "console.log = function(message) { java.log(message); }"; /*
+																					 * Now where ever console.log is
+																					 * called in your html you will get
+																					 * a log in Java console
+																					 */
+		boolean isFX = Os.isFXThread();
+		if (this.webEngine == null || isFX == false) {
 			JSEditor editor = new JSEditor(this).withScript(script);
 			JavaAdapter.execute(editor);
-			
+
 			editor = new JSEditor(this).withScript(script2);
 			JavaAdapter.execute(editor);
 			return;
@@ -406,6 +443,4 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		executeScript(script);
 		executeScript(script2);
 	}
-
 }
-

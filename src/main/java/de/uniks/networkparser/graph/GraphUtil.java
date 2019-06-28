@@ -2,38 +2,68 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.graph.util.ModifierSet;
+import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.TemplateItem;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
-/*
-NetworkParser
-Copyright (c) 2011 - 2015, Stefan Lindel
-All rights reserved.
-
-Licensed under the EUPL, Version 1.1 or (as soon they
-will be approved by the European Commission) subsequent
-versions of the EUPL (the "Licence");
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at:
-
-http://ec.europa.eu/idabc/eupl5
-
-Unless required by applicable law or agreed to in
-writing, software distributed under the Licence is
-distributed on an "AS IS" basis,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-express or implied.
-See the Licence for the specific language governing
-permissions and limitations under the Licence.
-*/
 /**
  * Special Util for package Method
  *
  * @author Stefan Lindel
  */
 public class GraphUtil {
+	private static SimpleList<String> noneDictionary = new SimpleList<String>().with("aircraft", "carp", "deer",
+			"salmon", "sheep", "trout");
+	private static SimpleList<String> oesDictionary = new SimpleList<String>().with("hero", "potato", "torpedo");
+
+	public static String getPlural(String singular) {
+		/* Zischlaut */
+		if (singular == null || singular.length() < 1) {
+			return null;
+		}
+		if (noneDictionary.contains(singular)) {
+			return singular;
+		}
+		if (singular.endsWith("ch") || singular.endsWith("s") || singular.endsWith("sh") || singular.endsWith("x")
+				|| singular.endsWith("z")) {
+			return singular + "es";
+		}
+		/* y Konsonant */
+		if (singular.endsWith("y")) {
+			return singular.subSequence(0, singular.length() - 1) + "ies";
+		}
+		/* -f/-fe wird zu -ves im Plural */
+		if (singular.endsWith("f") || singular.endsWith("fe")) {
+			return singular.subSequence(0, singular.length() - 1) + "ves";
+		}
+		/* -o wird zu -oes im Plural */
+		if (singular.endsWith("o")) {
+			if (oesDictionary.contains(singular)) {
+				return singular + "es";
+			}
+			return singular + "s";
+		}
+		return singular + "s";
+	}
+
+	public static boolean isPlural(String plural) {
+		if (noneDictionary.contains(plural)) {
+			return true;
+		}
+		if (plural == null || plural.length() < 1) {
+			return false;
+		}
+		if (plural.endsWith("s") == false) {
+			return false;
+		}
+		return true;
+	}
+
 	public static double compareName(String source, String other) {
+		if (source == null || other == null) {
+			return 0;
+		}
 		int counter = 0;
 		int caseDiff = 0;
 		double score = 0;
@@ -55,8 +85,49 @@ public class GraphUtil {
 		score += Math.abs(source.length() - other.length());
 		return score;
 	}
-	
+
+	public static final boolean isGenerate(GraphMember member) {
+		if (member == null) {
+			return false;
+		}
+		return member.isGenerate;
+	}
+
+	public static final boolean setGenerate(GraphMember member, boolean value) {
+		if (member != null) {
+			member.isGenerate = value;
+			return true;
+		}
+		return false;
+	}
+
+	public static final boolean setRole(GraphMember member, ObjectCondition value) {
+		if (member != null) {
+			member.withRole(value);
+			return true;
+		}
+		return false;
+	}
+
+	public static final ObjectCondition getRole(TemplateItem member) {
+		if (member != null && member instanceof GraphMember) {
+			return ((GraphMember) member).getRole();
+		}
+		return null;
+	}
+
+	public static final boolean withChildren(GraphMember member, GraphMember child) {
+		if (member != null) {
+			member.withChildren(child);
+			return true;
+		}
+		return false;
+	}
+
 	public static double compareType(String sourceType, String otherType) {
+		if (sourceType == null || otherType == null) {
+			return 1;
+		}
 		if (EntityUtil.isNumericType(sourceType) && EntityUtil.isNumericType(otherType)) {
 			return 0;
 		}
@@ -68,8 +139,7 @@ public class GraphUtil {
 		}
 		return -1;
 	}
-	
-	
+
 	public static final String getPackage(Class<?> classObj) {
 		if (classObj != null) {
 			return getPackage(classObj.getName());
@@ -89,19 +159,24 @@ public class GraphUtil {
 	}
 
 	public static final Clazz getByObject(GraphEntity item, String clazz, boolean fullName) {
-		if (clazz == null) {
+		if (clazz == null || item == null) {
 			return null;
 		}
 		return (Clazz) item.getByObject(clazz, fullName);
 	}
 
 	public static final GraphModel setGenPath(GraphModel model, String path) {
-		model.genPath = path;
+		if (model != null) {
+			model.genPath = path;
+		}
 		return model;
 	}
 
 	public static final String getGenPath(GraphModel model) {
-		return model.genPath;
+		if (model != null) {
+			return model.genPath;
+		}
+		return "";
 	}
 
 	public static final SimpleSet<Annotation> getAnnotations(GraphMember item) {
@@ -129,32 +204,59 @@ public class GraphUtil {
 		return collection;
 	}
 
-	public static final void setAssociation(GraphEntity entry, Association assoc) {
-		entry.with(assoc);
+	public static final boolean setAssociation(GraphEntity entry, Association assoc) {
+		if (entry != null) {
+			entry.with(assoc);
+			return true;
+		}
+		return false;
 	}
 
-	public static final void setGraphImage(Clazz clazz, GraphImage... images) {
-		clazz.with(images);
+	public static final boolean setGraphImage(Clazz clazz, GraphImage... images) {
+		if (clazz != null) {
+			clazz.with(images);
+			return true;
+		}
+		return false;
 	}
 
-	public static final void setLiteral(Clazz clazz, Literal... literals) {
-		clazz.with(literals);
+	public static final boolean setLiteral(Clazz clazz, Literal... literals) {
+		if (clazz != null) {
+			clazz.with(literals);
+			return true;
+		}
+		return false;
 	}
 
-	public static final void setModifierEntry(Clazz clazz, ModifyEntry modifier) {
-		clazz.with(modifier);
+	public static final boolean setModifierEntry(Clazz clazz, ModifyEntry modifier) {
+		if (clazz != null) {
+			clazz.with(modifier);
+			return true;
+		}
+		return false;
 	}
 
-	public static final void setClazzType(Clazz clazz, String clazzType) {
-		clazz.withType(clazzType);
+	public static final boolean setClazzType(Clazz clazz, String clazzType) {
+		if (clazz != null) {
+			clazz.withType(clazzType);
+			return true;
+		}
+		return false;
 	}
 
-	public static final void setImport(Clazz clazz, Import... importClazzes) {
-		clazz.with(importClazzes);
+	public static final boolean setImport(Clazz clazz, Import... importClazzes) {
+		if (clazz != null) {
+			clazz.with(importClazzes);
+			return true;
+		}
+		return false;
 	}
 
 	public static boolean setId(GraphEntity graphEntity, String id) {
-		return graphEntity.setId(id);
+		if (graphEntity != null) {
+			return graphEntity.setId(id);
+		}
+		return false;
 	}
 
 	public static final boolean isWithNoObjects(Clazz clazz) {
@@ -162,6 +264,13 @@ public class GraphUtil {
 			return false;
 		}
 		return (clazz.getModifier().has(Modifier.ABSTRACT) || Clazz.TYPE_INTERFACE.equals(clazz.getType()));
+	}
+
+	public static boolean isAbstract(Clazz clazz) {
+		if (clazz == null) {
+			return false;
+		}
+		return clazz.getModifier().has(Modifier.ABSTRACT);
 	}
 
 	public static final boolean isInterface(Clazz clazz) {
@@ -189,15 +298,16 @@ public class GraphUtil {
 		return (assoc.getOtherType() == AssociationTypes.ASSOCIATION
 				|| assoc.getOtherType() == AssociationTypes.UNDIRECTIONAL) && assoc.getType() == AssociationTypes.EDGE;
 	}
-	
+
 	public static final boolean isAssociation(Association assoc) {
-		if(assoc == null || assoc.getOther() == null) {
+		if (assoc == null || assoc.getOther() == null) {
 			return false;
 		}
-		if(isUndirectional(assoc)) {
+		if (isUndirectional(assoc)) {
 			return true;
 		}
-		return (assoc.getType() == AssociationTypes.ASSOCIATION && assoc.getOther().getType() == AssociationTypes.ASSOCIATION);
+		return (assoc.getType() == AssociationTypes.ASSOCIATION
+				&& assoc.getOther().getType() == AssociationTypes.ASSOCIATION);
 	}
 
 	public static final boolean isInterfaceAssociation(Association assoc) {
@@ -211,44 +321,75 @@ public class GraphUtil {
 	}
 
 	public static final CharacterBuffer getMethodParameters(Method method, boolean shortName) {
-		return method.getParameterString(shortName, false);
+		if (method == null) {
+			return null;
+		}
+		return method.getParameterString(shortName, false, true);
 	}
 
 	public static final ModifierSet getModifier(GraphMember member) {
 		ModifierSet set = new ModifierSet();
+		if (member == null) {
+			return set;
+		}
 		Modifier modifier = member.getModifier();
 		set.add(modifier);
-		for(GraphMember child : modifier.getChildren()) {
-			if(child instanceof Modifier) {
+		for (GraphMember child : modifier.getChildren()) {
+			if (child instanceof Modifier) {
 				set.add(child);
 			}
 		}
 		return set;
 	}
 
-	
 	public static final SimpleSet<Association> getOtherAssociations(Clazz clazz) {
 		SimpleSet<Association> collection = new SimpleSet<Association>();
+		if (clazz == null) {
+			return collection;
+		}
 		for (Association assoc : clazz.getAssociations()) {
 			collection.add(assoc.getOther());
 		}
 		return collection;
 	}
 
-	public static final GraphSimpleSet getChildren(GraphMember item) {
-		return item.getChildren();
+	public static final Modifier getVisible(GraphMember member) {
+		if (member == null) {
+			return Modifier.PACKAGE;
+		}
+		Modifier modifier = member.getModifier();
+		if (modifier.equals(Modifier.PACKAGE) || modifier.equals(Modifier.PRIVATE) || modifier.equals(Modifier.PUBLIC)
+				|| modifier.equals(Modifier.PROTECTED)) {
+			return modifier;
+		}
+		for (GraphMember child : modifier.getChildren()) {
+			if (child instanceof Modifier) {
+				if (child.equals(Modifier.PACKAGE) || child.equals(Modifier.PRIVATE) || child.equals(Modifier.PUBLIC)
+						|| child.equals(Modifier.PROTECTED)) {
+					return modifier;
+				}
+			}
+		}
+		return Modifier.PACKAGE;
 	}
-	
+
+	public static final GraphSimpleSet getChildren(TemplateItem item) {
+		if (item instanceof GraphMember) {
+			return ((GraphMember) item).getChildren();
+		}
+		return null;
+	}
+
 	public static final GraphSimpleSet getGraphDiff(GraphSimpleSet owner, GraphMember item) {
-		if(item == null) {
+		if (item == null) {
 			return owner;
 		}
-		if(owner == null) {
+		if (owner == null) {
 			owner = new GraphSimpleSet();
 		}
 		GraphSimpleSet children = item.getChildren();
-		for(GraphMember member : children) {
-			if(member instanceof GraphDiff) {
+		for (GraphMember member : children) {
+			if (member instanceof Match) {
 				owner.add(member);
 				continue;
 			}
@@ -258,37 +399,51 @@ public class GraphUtil {
 	}
 
 	public static final String getSeperator(Association item) {
-		return item.getSeperator();
+		if (item != null) {
+			return item.getSeperator();
+		}
+		return "";
 	}
 
 	public static final SimpleSet<GraphEntity> getNodes(GraphMember item) {
-		return item.getNodes();
+		if (item != null) {
+			return item.getNodes();
+		}
+		return null;
 	}
 
-	public static final GraphDiff getDifference(GraphMember item) {
-		return item.getDiff();
+	public static final Match getDifference(GraphMember item) {
+		if (item != null) {
+			return item.getDiff();
+		}
+		return null;
 	}
 
-	public static final void removeYou(GraphMember value) {
+	public static final boolean removeYou(GraphMember value) {
 		if (value == null) {
-			return;
+			return true;
 		}
 		value.setParentNode(null);
 		if (value instanceof Attribute) {
 			Attribute attribute = (Attribute) value;
 			Annotation annotation = attribute.getAnnotation();
-			value.without(annotation);
+			return value.remove(annotation);
 		}
 		if (value instanceof Association) {
 			Association assoc = (Association) value;
 			assoc.withOther(null);
-			assoc.without(assoc.getClazz());
+			return assoc.remove(assoc.getClazz());
 		}
 		if (value instanceof Clazz) {
 			Clazz clazz = (Clazz) value;
 			GraphSimpleSet collection = clazz.getChildren();
-			clazz.without(collection.toArray(new GraphMember[collection.size()]));
+			GraphMember[] list = collection.toArray(new GraphMember[collection.size()]);
+			for (GraphMember item : list) {
+				clazz.remove(item);
+			}
+			return true;
 		}
+		return false;
 	}
 
 	public static final boolean containsClazzAssociation(SimpleList<GraphMember> visited, Association assoc,
@@ -305,18 +460,18 @@ public class GraphUtil {
 			}
 			if (assocA.getName().equals(assoc.getName())) {
 				if (assocB.getName().equals(other.getName())) {
-					// Found Link ??
+					/* Found Link ?? */
 					foundAssoc = true;
 					if (assocA.getClazz() == assoc.getClazz()) {
 						if (assocB.getClazz() == other.getClazz()) {
-							// May be n-m
-							assocA.with(Cardinality.MANY);
-							assocB.with(Cardinality.MANY);
+							/* May be n-m */
+							assocA.with(Association.MANY);
+							assocB.with(Association.MANY);
 						} else {
-							assocA.with(Cardinality.MANY);
+							assocA.with(Association.MANY);
 						}
 					} else {
-						assocB.with(Cardinality.MANY);
+						assocB.with(Association.MANY);
 					}
 					break;
 				}
@@ -337,7 +492,7 @@ public class GraphUtil {
 		sb.with(':');
 		sb.with(assoc.getName());
 		sb.with("_");
-		sb.with(assoc.getCardinality().getValue());
+		sb.with(assoc.getCardinality());
 		sb.with(assoc.getSeperator());
 		assoc = assoc.getOther();
 		if (assoc != null) {
@@ -348,7 +503,7 @@ public class GraphUtil {
 			sb.with(':');
 			sb.with(assoc.getName());
 			sb.with("_");
-			sb.with(assoc.getCardinality().getValue());
+			sb.with(assoc.getCardinality());
 		}
 		return sb.toString();
 	}
@@ -370,6 +525,9 @@ public class GraphUtil {
 	}
 
 	public static final Clazz getParentClazz(GraphMember member) {
+		if (member == null) {
+			return null;
+		}
 		if (member instanceof Clazz) {
 			return (Clazz) member;
 		}
@@ -384,33 +542,109 @@ public class GraphUtil {
 		}
 		return null;
 	}
-	
+
 	public static final String createType(String value) {
-		if(value == null) {
+		if (value == null) {
 			return Clazz.TYPE_CLASS;
 		}
 		String trim = value.trim().toLowerCase();
-		if(trim.equals(Clazz.TYPE_ENUMERATION)) {
+		if (trim.equals(Clazz.TYPE_ENUMERATION)) {
 			return Clazz.TYPE_ENUMERATION;
 		}
-		if(trim.equals(Clazz.TYPE_INTERFACE)) {
+		if (trim.equals(Clazz.TYPE_INTERFACE)) {
 			return Clazz.TYPE_INTERFACE;
 		}
-		if(trim.equals(Clazz.TYPE_CREATOR)) {
+		if (trim.equals(Clazz.TYPE_CREATOR)) {
 			return Clazz.TYPE_CREATOR;
 		}
-		if(trim.equals(Clazz.TYPE_SET)) {
+		if (trim.equals(Clazz.TYPE_SET)) {
 			return Clazz.TYPE_SET;
 		}
-		if(trim.equals(Clazz.TYPE_PATTERNOBJECT)) {
+		if (trim.equals(Clazz.TYPE_PATTERNOBJECT)) {
 			return Clazz.TYPE_PATTERNOBJECT;
 		}
 		return Clazz.TYPE_CLASS;
+	}
 
+	public static final Clazz createClazzById(GraphModel model, String id) {
+		if (model == null || id == null) {
+			return null;
+		}
+		ClazzSet clazzes = model.getClazzes();
+		for (Clazz item : clazzes) {
+			if (id.equals(item.getId())) {
+				return item;
+			}
+		}
+		Clazz clazz = new Clazz();
+		clazz.setId(id);
+		model.add(clazz);
+		return clazz;
+	}
+
+	public static final GraphEntity setExternal(GraphEntity entity, boolean value) {
+		if (entity == null) {
+			return null;
+		}
+		entity.withExternal(value);
+		return entity;
+	}
+
+	public static final boolean isExternal(GraphEntity entity) {
+		if (entity == null) {
+			return false;
+		}
+		return entity.isExternal();
 	}
 
 	public static final DataType setClazz(DataType type, Clazz value) {
 		type.value = value;
 		return type;
+	}
+
+	public static final int createCardinality(String value) {
+		if ("one".equalsIgnoreCase(value) || "1".equalsIgnoreCase(value)) {
+			return Association.ONE;
+		}
+		if ("many".equalsIgnoreCase(value) || "n".equalsIgnoreCase(value)) {
+			return Association.MANY;
+		}
+		return 0;
+	}
+
+	public static final String getGraphPath(GraphModel value) {
+		if (value != null) {
+			return value.genPath;
+		}
+		return null;
+	}
+
+	public static final boolean setGraphPath(GraphModel model, String value) {
+		if (model != null) {
+			model.genPath = value;
+			return true;
+		}
+		return false;
+	}
+
+	public static final void remove(GraphMember model, GraphMember child) {
+		if (model != null) {
+			model.withChildren(child);
+		}
+	}
+
+	public static final String getCardinaltiy(int value) {
+		if (value == Association.ONE) {
+			return "ONE";
+		}
+		return "MANY";
+	}
+
+	public static boolean setChildren(GraphMember graphMember, GraphSimpleSet childrenSet) {
+		if (graphMember != null && graphMember.children != childrenSet) {
+			graphMember.children = childrenSet;
+			return true;
+		}
+		return false;
 	}
 }

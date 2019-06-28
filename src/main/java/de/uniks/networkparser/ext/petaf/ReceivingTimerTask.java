@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,8 +30,7 @@ public abstract class ReceivingTimerTask extends Message implements Runnable {
 	protected Runnable task;
 	protected Space space;
 
-
-	public ReceivingTimerTask withSpace(Space space){
+	public ReceivingTimerTask withSpace(Space space) {
 		handler.addListener(space);
 		this.space = space;
 		return this;
@@ -39,9 +38,9 @@ public abstract class ReceivingTimerTask extends Message implements Runnable {
 
 	@Override
 	public void run() {
-		try{
+		try {
 			runTask();
-		}catch(Exception e){
+		} catch (Exception e) {
 			handler.saveException(e, false);
 		}
 	}
@@ -50,8 +49,8 @@ public abstract class ReceivingTimerTask extends Message implements Runnable {
 		return space;
 	}
 
-	public boolean runTask() throws Exception {
-		if(this.task != null) {
+	public boolean runTask() {
+		if (this.task != null) {
 			task.run();
 			return true;
 		}

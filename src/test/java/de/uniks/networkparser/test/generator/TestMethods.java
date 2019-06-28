@@ -3,6 +3,7 @@ package de.uniks.networkparser.test.generator;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeMap;
@@ -13,56 +14,56 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_a");
 		Clazz person = model.createClazz("Person");
 
 		person.createMethod("think");
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
 
 	@Test
 	public void testClassWithVoidMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_b");
 		Clazz person = model.createClazz("Person");
 
 		person.createMethod("think", DataType.VOID);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
 
 	@Test
 	public void testClassWithVoidAndNamelessParameterMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_c");
 		Clazz person = model.createClazz("Person");
 
 		person.createMethod("think", DataType.VOID, new Parameter(DataType.STRING));
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
 
 	@Test
 	public void testClassWithVoidAndParameterMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_d");
 		Clazz person = model.createClazz("Person");
 
 		person.createMethod("think", DataType.VOID, new Parameter(DataType.STRING).with("value"));
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
@@ -71,7 +72,7 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithVoidAndClassParameterMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_e");
@@ -79,13 +80,13 @@ public class TestMethods {
 		Clazz room = model.createClazz("Room");
 
 		person.createMethod("think", DataType.VOID, new Parameter(DataType.create(room)).with("room"));
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 	}
 
 	@Test
 	public void testClassWithVoidAndSimpleClassParameterMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_f");
@@ -95,84 +96,84 @@ public class TestMethods {
 		person.createMethod("think", DataType.VOID, new Parameter(DataType.create(room)).with("room"));
 		person.createMethod("read", DataType.VOID, new Parameter(room).with("room"));
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 	}
 
 
 	@Test
 	public void testClassWithVoidAndSetParameterMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_g");
 		Clazz person = model.createClazz("Person");
 
 		person.createMethod("think", DataType.VOID, new Parameter(DataTypeSet.create(DataType.STRING)).with("values"));
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
 
 	@Test
 	public void testClassWithVoidAndMapParameterMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_h");
 		Clazz person = model.createClazz("Person");
 
 		person.createMethod("think", DataType.VOID, new Parameter(DataTypeMap.create(DataType.STRING, DataType.STRING)).with("values"));
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
 
 	@Test
 	public void testClassWithVoidAndMultipleParametersMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_i");
 		Clazz person = model.createClazz("Person");
 
 		person.createMethod("think", DataType.VOID, new Parameter(DataType.STRING).with("value"), new Parameter(DataType.INT));
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
 
 	@Test
 	public void testClassWithNonVoidMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_j");
 		Clazz person = model.createClazz("Person");
 
 		person.createMethod("think", DataType.STRING);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
 
 	@Test
 	public void testClassWithNonVoidAndParameterMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_k");
 		Clazz person = model.createClazz("Person");
 
 		person.createMethod("think", DataType.STRING, new Parameter(DataType.STRING));
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
 
 	@Test
 	public void testClassWithMultipleMethods() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_l");
@@ -180,14 +181,14 @@ public class TestMethods {
 
 		person.createMethod("think", DataType.STRING, new Parameter(DataType.STRING));
 		person.createMethod("dontThink", DataType.VOID);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
 
 	@Test
 	public void testClassWithMethodAndBody() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_m");
@@ -195,21 +196,21 @@ public class TestMethods {
 
 		person.createMethod("think", DataType.VOID)
 				.withBody("		String thought = \"\";\n");
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
 
 	@Test
 	public void testClassWithBooleanMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_n");
 		Clazz person = model.createClazz("Person");
 
 		person.createMethod("checkSomething", DataType.BOOLEAN);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 
 	}
 }

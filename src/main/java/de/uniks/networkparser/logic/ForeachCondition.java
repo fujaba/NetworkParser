@@ -9,21 +9,22 @@ import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.TemplateParser;
 
 /**
- * @author Stefan
- * FeatureCondition for ModelFilter
+ * For loop for Condition
+ * 
+ * @author Stefan FeatureCondition for ModelFilter
  *
- * Format {{#import value}}
+ *         Format {{#import value}}
  */
 public class ForeachCondition implements ParserCondition {
-	private static final String ITEM="item";
-	private static final String ITEMPOS="itemPos";
-	public static final String TAG="foreach";
+	private static final String ITEM = "item";
+	private static final String ITEMPOS = "itemPos";
+	public static final String TAG = "foreach";
 	private ObjectCondition expression;
 	private ObjectCondition loop;
 	private ObjectCondition preLoopCondition;
 	private ObjectCondition postLoopCondition;
 	private boolean notify;
-	
+
 	@Override
 	public String getKey() {
 		return TAG;
@@ -35,43 +36,38 @@ public class ForeachCondition implements ParserCondition {
 	}
 
 	/**
-	 * @param value		Set the new Expression
-	 * @return 			IfCondition Instance
+	 * @param value Set the new Expression
+	 * @return IfCondition Instance
 	 */
 	public ForeachCondition withExpression(ObjectCondition value) {
 		this.expression = value;
 		return this;
 	}
 
-
-
 	@Override
 	public boolean update(Object value) {
 		if (expression != null && loop != null) {
-			if(expression instanceof ParserCondition &&
-					value instanceof LocalisationInterface){
+			if (expression instanceof ParserCondition && value instanceof LocalisationInterface) {
 				ParserCondition parser = (ParserCondition) expression;
-				Object object = parser.getValue((LocalisationInterface)value);
-//
+				Object object = parser.getValue((LocalisationInterface) value);
 				LocalisationInterface variablen = (LocalisationInterface) value;
-//				Object object = creator.getValue(variablen);
-				if(object instanceof Collection<?>) {
+				if (object instanceof Collection<?>) {
 					Collection<?> collection = (Collection<?>) object;
-					int pos=0;
-					for(Object item : collection) {
+					int pos = 0;
+					for (Object item : collection) {
 						variablen.put(ITEMPOS, pos);
 						variablen.put(ITEM, item);
-						if(this.preLoopCondition != null && pos>0) {
+						if (this.preLoopCondition != null && pos > 0) {
 							this.preLoopCondition.update(value);
 						}
-						if(notify) {
+						if (notify) {
 							((LocalisationInterface) value).put(NOTIFY, this);
 						}
 						loop.update(value);
-						if(notify) {
+						if (notify) {
 							((LocalisationInterface) value).put(NOTIFY, null);
 						}
-						if(this.postLoopCondition != null && pos>0) {
+						if (this.postLoopCondition != null && pos > 0) {
 							this.postLoopCondition.update(value);
 						}
 						variablen.put(ITEM, null);
@@ -86,23 +82,25 @@ public class ForeachCondition implements ParserCondition {
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
-//		this.expression = StringCondition.create(buffer.nextToken(false, SPLITEND));
+		if(buffer == null) {
+			return;
+		}
 		buffer.skipChar(SPACE);
-		this.expression  = parser.parsing(buffer, customTemplate, true, true);
+		this.expression = parser.parsing(buffer, customTemplate, true, true);
 
 		buffer.skipChar(SPLITEND);
-		if(buffer.checkValues('#', '#')) {
-				this.notify = true;
+		if (buffer.checkValues('#', '#')) {
+			this.notify = true;
 		}
-		if(buffer.getCurrentChar() != SPLITEND) {
+		if (buffer.getCurrentChar() != SPLITEND) {
 			this.preLoopCondition = parser.parsing(buffer, customTemplate, true, true);
 		}
 		buffer.skipChar(SPLITEND);
 
-		// Add Children
+		/* Add Children */
 		this.loop = parser.parsing(buffer, customTemplate, false, true, "endfor");
 		buffer.skipChar(SPLITEND);
-		if(buffer.getCurrentChar() != SPLITEND) {
+		if (buffer.getCurrentChar() != SPLITEND) {
 			this.postLoopCondition = parser.parsing(buffer, customTemplate, true, true);
 		}
 		buffer.skipChar(SPLITEND);
@@ -129,6 +127,6 @@ public class ForeachCondition implements ParserCondition {
 
 	@Override
 	public String toString() {
-		return "{{#FOREACH "+expression+"}}"+loop+"{{#ENDFOREACH}}";
+		return "{{#FOREACH " + expression + "}}" + loop + "{{#ENDFOREACH}}";
 	}
 }

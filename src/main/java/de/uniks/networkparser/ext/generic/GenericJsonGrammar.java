@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.generic;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,22 +32,22 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 public class GenericJsonGrammar extends SimpleGrammar {
 	@Override
 	public SendableEntityCreator getSuperCreator(IdMap map, boolean searchForSuperCreator, Object modelItem) {
-		if(modelItem == null && !searchForSuperCreator) {
+		if (modelItem == null && !searchForSuperCreator) {
 			return null;
 		}
 		Class<?> search;
-		if(modelItem instanceof Class<?>) {
+		if (modelItem instanceof Class<?>) {
 			search = (Class<?>) modelItem;
-		}else if(modelItem != null) {
+		} else if (modelItem != null) {
 			search = modelItem.getClass();
 		} else {
 			return null;
 		}
-		for(Iterator<SendableEntityCreator> i =map.iterator();i.hasNext();){
+		for (Iterator<SendableEntityCreator> i = map.iterator(); i.hasNext();) {
 			SendableEntityCreator item = i.next();
 			Object prototype = item.getSendableInstance(true);
-			if(prototype instanceof Class<?>) {
-				if(((Class<?>)prototype).isAssignableFrom(search)){
+			if (prototype instanceof Class<?>) {
+				if (((Class<?>) prototype).isAssignableFrom(search)) {
 					return item;
 				}
 			}
@@ -57,8 +57,11 @@ public class GenericJsonGrammar extends SimpleGrammar {
 
 	@Override
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype) {
+		if (creator == null) {
+			return null;
+		}
 		Object entity = creator.getSendableInstance(prototype);
-		if(entity instanceof Class<?> == false || className == null){
+		if (entity instanceof Class<?> == false || className == null) {
 			return entity;
 		}
 		return ReflectionLoader.newInstance(className);
@@ -67,7 +70,9 @@ public class GenericJsonGrammar extends SimpleGrammar {
 	@Override
 	protected Class<?> getClassForName(String className) {
 		try {
-			return Class.forName(className);
+			if (className != null) {
+				return Class.forName(className);
+			}
 		} catch (ClassNotFoundException e) {
 		}
 		return null;

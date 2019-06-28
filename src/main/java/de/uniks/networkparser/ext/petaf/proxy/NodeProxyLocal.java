@@ -7,6 +7,7 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 
 /**
  * Local is a Proxy for testing
+ * 
  * @author Stefan
  */
 public class NodeProxyLocal extends NodeProxy {
@@ -16,15 +17,15 @@ public class NodeProxyLocal extends NodeProxy {
 
 	protected boolean sending(Message msg) {
 		boolean result = super.sending(msg);
-		if(listener != null) {
+		if (listener != null) {
 			String blob = this.space.convertMessage(msg);
 			SimpleEvent evt = new SimpleEvent(msg, PROPERTY_SEND, null, blob);
 			return listener.update(evt);
 		}
 		return result;
 	}
-	public String getID()
-	{
+
+	public String getID() {
 		return id;
 	}
 
@@ -32,8 +33,8 @@ public class NodeProxyLocal extends NodeProxy {
 		this.listener = value;
 		return this;
 	}
-	public NodeProxyLocal withID(String value)
-	{
+
+	public NodeProxyLocal withID(String value) {
 		String oldValue = value;
 		this.id = value;
 		firePropertyChange(PROPERTY_ID, oldValue, value);
@@ -47,7 +48,7 @@ public class NodeProxyLocal extends NodeProxy {
 
 	@Override
 	public Object getValue(Object element, String attrName) {
-		if(element instanceof NodeProxyLocal ) {
+		if (element instanceof NodeProxyLocal) {
 			NodeProxyLocal nodeProxy = (NodeProxyLocal) element;
 			if (PROPERTY_ID.equals(attrName)) {
 				return nodeProxy.getID();
@@ -58,7 +59,7 @@ public class NodeProxyLocal extends NodeProxy {
 
 	@Override
 	public boolean setValue(Object element, String attrName, Object value, String type) {
-		if(element instanceof NodeProxyLocal ) {
+		if (element instanceof NodeProxyLocal) {
 			NodeProxyLocal nodeProxy = (NodeProxyLocal) element;
 			if (PROPERTY_ID.equals(attrName)) {
 				nodeProxy.withID((String) value);
@@ -74,7 +75,7 @@ public class NodeProxyLocal extends NodeProxy {
 	}
 
 	@Override
-	protected boolean initProxy() {
+	protected boolean startProxy() {
 		this.type = NodeProxy.TYPE_OUT;
 		return true;
 	}

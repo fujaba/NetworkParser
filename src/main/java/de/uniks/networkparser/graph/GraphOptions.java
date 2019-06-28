@@ -1,36 +1,23 @@
 package de.uniks.networkparser.graph;
 
-/*
-NetworkParser
-Copyright (c) 2011 - 2013, Stefan Lindel
-All rights reserved.
-
-Licensed under the EUPL, Version 1.1 or (as soon they
-will be approved by the European Commission) subsequent
-versions of the EUPL (the "Licence");
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at:
-
-http://ec.europa.eu/idabc/eupl5
-
-Unless required by applicable law or agreed to in
-writing, software distributed under the Licence is
-distributed on an "AS IS" basis,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-express or implied.
-See the Licence for the specific language governing
-permissions and limitations under the Licence.
-*/
 import java.util.ArrayList;
-
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 
 public class GraphOptions {
-	// Options
-	public enum TYP{HTML, CANVAS, SVG, PDF};
-	public enum RANK{LR, TB};
-	public enum LINETYP{CENTER, SQUARE};
+	/* Options */
+	public enum TYP {
+		HTML, CANVAS, SVG, PDF
+	};
+
+	public enum RANK {
+		LR, TB
+	};
+
+	public enum LINETYP {
+		CENTER, SQUARE
+	};
+
 	private TYP display;
 	private LINETYP lineTyp;
 	private Boolean raster;
@@ -46,7 +33,7 @@ public class GraphOptions {
 	private Boolean rotateText;
 	private ArrayList<TYP> buttons;
 
-	public JsonObject getJson(){
+	public JsonObject getJson() {
 		JsonObject result = new JsonObject();
 
 		result.withKeyValue("display", display);
@@ -61,7 +48,7 @@ public class GraphOptions {
 		result.withKeyValue("propertyinfo", propertyInfo);
 		result.withKeyValue("rotatetext", rotateText);
 		result.withKeyValue("linetyp", lineTyp);
-		if(buttons != null){
+		if (buttons != null) {
 			result.withKeyValue("buttons", new JsonArray().with(buttons));
 		}
 		return result;
@@ -153,13 +140,13 @@ public class GraphOptions {
 	}
 
 	public GraphOptions withButton(TYP... values) {
-		if(values == null) {
+		if (values == null) {
 			return this;
 		}
-		if(this.buttons == null) {
+		if (this.buttons == null) {
 			this.buttons = new ArrayList<GraphOptions.TYP>();
 		}
-		for(TYP item : values) {
+		for (TYP item : values) {
 			this.buttons.add(item);
 		}
 		return this;

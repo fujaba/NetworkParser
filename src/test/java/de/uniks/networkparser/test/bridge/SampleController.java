@@ -120,8 +120,6 @@ public class SampleController {
 //					@Override
 //					public boolean update(Object value) {
 //						// blub.setValue("value", numberField.getValue());
-//						System.out.println(
-//								"NumberField:" + numberField.getValue());
 //						return true;
 //					}
 //				});
@@ -140,11 +138,11 @@ public class SampleController {
 		 * NumberField.this.setValue(key, value); } return false; } });
 		 */
 
-		javafx.scene.control.Button button = new javafx.scene.control.Button();
-		button.setOnAction(evt -> {
-			numberField
-					.setValue(Math.toIntExact(Math.round(Math.random() * 100)));
-		});
+//		javafx.scene.control.Button button = new javafx.scene.control.Button();
+//		button.setOnAction(evt -> {
+//			numberField
+//					.setValue(Math.toIntExact(Math.round(Math.random() * 100)));
+//		});
 //		buttonBar.getButtons().add(button);
 	}
 
@@ -167,7 +165,6 @@ public class SampleController {
 						blub.setValue("value",
 								Integer.valueOf("" + blub.getValue("value"))
 										+ 1);
-						System.out.println("Blub: " + blub.getValue());
 						return false;
 					}
 				});
@@ -196,7 +193,6 @@ public class SampleController {
 		IdMap map = javaBridge.getMap();
 		Object object = map.getObject("number");
 		Assert.assertNotNull(object);
-		// System.out.println(object);
 	}
 
 	public void add(SimpleEvent event) {

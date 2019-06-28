@@ -3,7 +3,7 @@ package de.uniks.networkparser.interfaces;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.beans.PropertyChangeListener;
+
 /**
  * The Interface SendableEntity. Add this Interface to your Modellentity to
  * activate the propertyChange Notification
@@ -33,16 +34,15 @@ public interface SendableEntity {
 	/**
 	 * Adds the property change listener.
 	 *
-	 * @param propertyName	the property name
-	 * @param listener		the listener
+	 * @param propertyName the property name
+	 * @param listener     the listener
 	 * @return boolean if add the PropertyChangeListener
 	 */
-	public boolean addPropertyChangeListener(String propertyName,
-			PropertyChangeListener listener);
+	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
 
 	public boolean addPropertyChangeListener(PropertyChangeListener listener);
 
 	public boolean removePropertyChangeListener(PropertyChangeListener listener);
 
-    public boolean removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
+	public boolean removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
 }

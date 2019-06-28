@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.javafx;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -34,35 +34,31 @@ public class JsonArrayLazy extends JsonArray {
 		this.ref = element;
 	}
 
-
 	public boolean lazyLoad() {
 		if (this.ref == null) {
 			return false;
 		}
 		if (this.loaded == false) {
 			this.loaded = true;
-		}
-		else {
+		} else {
 			return false;
 		}
 		int size = (Integer) ReflectionLoader.call(ref, "eval", "this.length;");
 		for (int i = 0; i < size; i++) {
 			Object value = ReflectionLoader.call(ref, "eval", "this[" + i + "]");
-			if(ReflectionLoader.JSOBJECT.isAssignableFrom(value.getClass())) {
+			if (ReflectionLoader.JSOBJECT.isAssignableFrom(value.getClass())) {
 				boolean isArray = (Boolean) ReflectionLoader.call(value, "eval", "Array.isArray(this);");
 
 				if (isArray) {
 					JsonArrayLazy child = new JsonArrayLazy(value);
 					this.add(child);
 					child.lazyLoad();
-				}
-				else {
+				} else {
 					JsonObjectLazy child = new JsonObjectLazy(value);
 					this.add(child);
 					child.lazyLoad();
 				}
-			}
-			else {
+			} else {
 				this.add(value);
 			}
 		}
@@ -72,10 +68,10 @@ public class JsonArrayLazy extends JsonArray {
 	@Override
 	protected Object getByIndex(int offset, int index, int size) {
 		Object result = super.getByIndex(offset, index, size);
-		if(result != null ) {
-			if(result instanceof JsonObjectLazy) {
+		if (result != null) {
+			if (result instanceof JsonObjectLazy) {
 				((JsonObjectLazy) result).lazyLoad();
-			} else if(result instanceof JsonArrayLazy) {
+			} else if (result instanceof JsonArrayLazy) {
 				((JsonArrayLazy) result).lazyLoad();
 			}
 		}

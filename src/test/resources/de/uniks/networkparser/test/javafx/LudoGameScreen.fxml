@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="676.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+	<children>
+		<GridPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+			<children>
+				<Circle id="h1_1" fill="#0fe2ff" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+				<Circle id="h1_2" fill="#0fe2ff" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+				<Circle id="f1_8" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+				<Circle id="l2_1" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+				<Circle id="s2_1" fill="ORANGE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="6" GridPane.rowIndex="0" />
+				<Circle id="h2_1" fill="ORANGE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="9" GridPane.rowIndex="0" />
+				<Circle id="h2_2" fill="ORANGE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="10" GridPane.rowIndex="0" />
+
+				<Circle id="h1_3" fill="#0fe2ff" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+				<Circle id="h1_4" fill="#0fe2ff" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+				<Circle id="f1_7" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+				<Circle id="t2_1" fill="ORANGE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+				<Circle id="f2_1" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+				<Circle id="h2_3" fill="ORANGE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="9" GridPane.rowIndex="1" />
+				<Circle id="h2_4" fill="ORANGE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="10" GridPane.rowIndex="1" />
+
+				<SVGPath content="m 523.6672,-127.41691 c 0,-2.26815 0,-4.53629 0,-6.80444 -2.69622,-2.9306 -5.66537,-5.65706 -8.02591,-8.84779 -0.39975,-1.43939 2.80176,-1.34326 3.93158,-2.08713 2.4873,-0.8364 4.96991,-1.68528 7.45439,-2.52918 0.79735,-1.81582 1.61081,-3.62515 2.43769,-5.42906 -1.72475,-1.82257 -3.96833,-3.63868 -4.10401,-6.24808 -0.26544,-3.89289 3.42022,-8.0349 7.73647,-7.28159 3.96738,0.53513 6.24186,4.78704 5.37132,8.29602 -0.31678,1.64662 -1.28422,3.09312 -2.48132,4.29261 1.16835,1.89434 2.23248,3.88626 3.82123,5.50145 3.82237,1.10643 7.91843,1.10123 11.72725,2.24402 -2.33574,3.77919 -4.86612,7.44257 -7.44483,11.07531 0.82981,4.37534 1.60468,8.76098 2.17415,13.17454 -3.95301,-1.52014 -7.90601,-3.04028 -11.85901,-4.56041 -3.50142,1.96315 -6.88602,4.12169 -10.47546,5.93578 -0.31399,-2.2173 -0.21787,-4.49441 -0.26355,-6.73205 z" fill="#0fe2ff" stroke="BLACK" strokeMiterLimit="1.0" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+				<SVGPath content="m 523.6672,-127.41691 c 0,-2.26815 0,-4.53629 0,-6.80444 -2.69622,-2.9306 -5.66537,-5.65706 -8.02591,-8.84779 -0.39975,-1.43939 2.80176,-1.34326 3.93158,-2.08713 2.4873,-0.8364 4.96991,-1.68528 7.45439,-2.52918 0.79735,-1.81582 1.61081,-3.62515 2.43769,-5.42906 -1.72475,-1.82257 -3.96833,-3.63868 -4.10401,-6.24808 -0.26544,-3.89289 3.42022,-8.0349 7.73647,-7.28159 3.96738,0.53513 6.24186,4.78704 5.37132,8.29602 -0.31678,1.64662 -1.28422,3.09312 -2.48132,4.29261 1.16835,1.89434 2.23248,3.88626 3.82123,5.50145 3.82237,1.10643 7.91843,1.10123 11.72725,2.24402 -2.33574,3.77919 -4.86612,7.44257 -7.44483,11.07531 0.82981,4.37534 1.60468,8.76098 2.17415,13.17454 -3.95301,-1.52014 -7.90601,-3.04028 -11.85901,-4.56041 -3.50142,1.96315 -6.88602,4.12169 -10.47546,5.93578 -0.31399,-2.2173 -0.21787,-4.49441 -0.26355,-6.73205 z" fill="#0fe2ff" stroke="BLACK" strokeMiterLimit="1.0" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+				<SVGPath content="m 523.6672,-127.41691 c 0,-2.26815 0,-4.53629 0,-6.80444 -2.69622,-2.9306 -5.66537,-5.65706 -8.02591,-8.84779 -0.39975,-1.43939 2.80176,-1.34326 3.93158,-2.08713 2.4873,-0.8364 4.96991,-1.68528 7.45439,-2.52918 0.79735,-1.81582 1.61081,-3.62515 2.43769,-5.42906 -1.72475,-1.82257 -3.96833,-3.63868 -4.10401,-6.24808 -0.26544,-3.89289 3.42022,-8.0349 7.73647,-7.28159 3.96738,0.53513 6.24186,4.78704 5.37132,8.29602 -0.31678,1.64662 -1.28422,3.09312 -2.48132,4.29261 1.16835,1.89434 2.23248,3.88626 3.82123,5.50145 3.82237,1.10643 7.91843,1.10123 11.72725,2.24402 -2.33574,3.77919 -4.86612,7.44257 -7.44483,11.07531 0.82981,4.37534 1.60468,8.76098 2.17415,13.17454 -3.95301,-1.52014 -7.90601,-3.04028 -11.85901,-4.56041 -3.50142,1.96315 -6.88602,4.12169 -10.47546,5.93578 -0.31399,-2.2173 -0.21787,-4.49441 -0.26355,-6.73205 z" fill="#0fe2ff" stroke="BLACK" strokeMiterLimit="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+				<SVGPath content="m 523.6672,-127.41691 c 0,-2.26815 0,-4.53629 0,-6.80444 -2.69622,-2.9306 -5.66537,-5.65706 -8.02591,-8.84779 -0.39975,-1.43939 2.80176,-1.34326 3.93158,-2.08713 2.4873,-0.8364 4.96991,-1.68528 7.45439,-2.52918 0.79735,-1.81582 1.61081,-3.62515 2.43769,-5.42906 -1.72475,-1.82257 -3.96833,-3.63868 -4.10401,-6.24808 -0.26544,-3.89289 3.42022,-8.0349 7.73647,-7.28159 3.96738,0.53513 6.24186,4.78704 5.37132,8.29602 -0.31678,1.64662 -1.28422,3.09312 -2.48132,4.29261 1.16835,1.89434 2.23248,3.88626 3.82123,5.50145 3.82237,1.10643 7.91843,1.10123 11.72725,2.24402 -2.33574,3.77919 -4.86612,7.44257 -7.44483,11.07531 0.82981,4.37534 1.60468,8.76098 2.17415,13.17454 -3.95301,-1.52014 -7.90601,-3.04028 -11.85901,-4.56041 -3.50142,1.96315 -6.88602,4.12169 -10.47546,5.93578 -0.31399,-2.2173 -0.21787,-4.49441 -0.26355,-6.73205 z" fill="#0fe2ff" stroke="BLACK" strokeMiterLimit="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+
+				<Circle id="f1_6" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+				<Circle id="t2_2" fill="ORANGE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+				<Circle id="f2_2" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+
+				<Circle id="f1_5" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+				<Circle id="t2_3" fill="ORANGE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+				<Circle id="f2_3" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+
+				<Circle id="s1_1" fill="#0fe2ff" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+				<Circle id="f1_1" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+				<Circle id="f1_2" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+				<Circle id="f1_3" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+				<Circle id="f1_4" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+				<Circle id="t2_4" fill="ORANGE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+				<Circle id="f2_4" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+				<Circle id="f2_5" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="7" GridPane.rowIndex="4" />
+				<Circle id="f2_6" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="8" GridPane.rowIndex="4" />
+				<Circle id="f2_7" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="9" GridPane.rowIndex="4" />
+				<Circle id="f2_8" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="10" GridPane.rowIndex="4" />
+
+				<Circle id="l1_1" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+				<Circle id="t1_1" fill="#0fe2ff" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+				<Circle id="t1_2" fill="#0fe2ff" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+				<Circle id="t1_3" fill="#0fe2ff" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+				<Circle id="t1_4" fill="#0fe2ff" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+				<Pane id="dice" prefHeight="60.0" prefWidth="60.0" style="-fx-border-color: BLACK;" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+				<Circle id="t2_4" fill="GREEN" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="6" GridPane.rowIndex="5" />
+				<Circle id="t2_3" fill="GREEN" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="7" GridPane.rowIndex="5" />
+				<Circle id="t2_2" fill="GREEN" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="8" GridPane.rowIndex="5" />
+				<Circle id="t2_1" fill="GREEN" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="9" GridPane.rowIndex="5" />
+				<Circle id="l2_1" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="10" GridPane.rowIndex="5" />
+
+				<Circle id="f4_8" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+				<Circle id="f4_7" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+				<Circle id="f4_6" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+				<Circle id="f4_5" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="3" GridPane.rowIndex="6" />
+				<Circle id="f4_4" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.rowIndex="6" />
+				<Circle id="t4_3" fill="RED" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="5" GridPane.rowIndex="6" />
+				<Circle id="f3_4" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="6" GridPane.rowIndex="6" />
+				<Circle id="f3_3" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="7" GridPane.rowIndex="6" />
+				<Circle id="f3_2" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="8" GridPane.rowIndex="6" />
+				<Circle id="f3_1" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="9" GridPane.rowIndex="6" />
+				<Circle id="s3_1" fill="GREEN" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="10" GridPane.rowIndex="6" />
+
+				<Circle id="f4_3" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.rowIndex="7" />
+				<Circle id="t4_3" fill="RED" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="5" GridPane.rowIndex="7" />
+				<Circle id="f3_5" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="6" GridPane.rowIndex="7" />
+
+				<Circle id="f3_2" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.rowIndex="8" />
+				<Circle id="t4_2" fill="RED" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="5" GridPane.rowIndex="8" />
+				<Circle id="f3_6" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="6" GridPane.rowIndex="8" />
+
+				<Circle id="h4_4" fill="RED" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+				<Circle id="h4_3" fill="RED" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+				<Circle id="f4_1" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.rowIndex="9" />
+				<Circle id="t4_1" fill="RED" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="5" GridPane.rowIndex="9" />
+				<Circle id="f3_7" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="6" GridPane.rowIndex="9" />
+				<Circle id="h3_4" fill="GREEN" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="9" GridPane.rowIndex="9" />
+				<Circle id="h3_3" fill="GREEN" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="10" GridPane.rowIndex="9" />
+
+				<Circle id="h4_2" fill="RED" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+				<Circle id="h4_1" fill="RED" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+				<Circle id="s4_1" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.rowIndex="10" />
+				<Circle id="l3_1" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="5" GridPane.rowIndex="10" />
+				<Circle id="f3_8" fill="WHITE" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="6" GridPane.rowIndex="10" />
+				<Circle id="h3_1" fill="GREEN" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="9" GridPane.rowIndex="10" />
+				<Circle id="h3_2" fill="GREEN" radius="30.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="10" GridPane.rowIndex="10" />
+				</children>
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+		</GridPane>
+		<Label id="p1" layoutX="16.0" layoutY="157.0" prefHeight="48.0" prefWidth="246.0" text="Alice" underline="true">
+         <font>
+            <Font name="Arial" size="36.0" />
+         </font></Label>
+         <TextField id="p1_textfield" visible="false" layoutX="16.0" layoutY="157.0" prefHeight="48.0" prefWidth="206.0" text="" />
+         
+		<Label id="p3" layoutX="430.0" layoutY="157.0" prefHeight="48.0" prefWidth="246.0" text="">
+         <font>
+            <Font name="Arial" size="36.0" />
+         </font></Label>
+		<Label id="p2" layoutX="430.0" layoutY="482.0" prefHeight="48.0" prefWidth="246.0" text="Bob">
+         <font>
+            <Font size="36.0" />
+         </font></Label>
+         <TextField id="p2_textfield" visible="false" layoutX="430.0" layoutY="482.0" prefHeight="48.0" prefWidth="206.0" text="" />
+		<Label id="p4" layoutX="16.0" layoutY="482.0" prefHeight="48.0" prefWidth="246.0" text="">
+         <font>
+            <Font name="Arial" size="36.0" />
+         </font></Label>
+	</children>
+</Pane>

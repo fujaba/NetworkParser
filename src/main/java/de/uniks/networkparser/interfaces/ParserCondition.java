@@ -3,7 +3,7 @@ package de.uniks.networkparser.interfaces;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,15 +26,19 @@ THE SOFTWARE.
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 public interface ParserCondition extends ObjectCondition {
-	public static final char SPLITEND='}';
-	public static final char SPLITSTART='{';
-	public static final char ENTER='=';
-	public static final char SPACE=' ';
-	public static final String NOTIFY="notify";
+	public static final char SPLITEND = '}';
+	public static final char SPLITSTART = '{';
+	public static final char ENTER = '=';
+	public static final char SPACE = ' ';
+	public static final String NOTIFY = "notify";
 
 	public Object getValue(LocalisationInterface variables);
+
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate);
+
 	public boolean isExpression();
+
 	public String getKey();
+
 	public Object getSendableInstance(boolean isExpression);
 }

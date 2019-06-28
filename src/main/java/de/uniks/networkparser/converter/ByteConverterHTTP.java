@@ -3,7 +3,7 @@ package de.uniks.networkparser.converter;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -53,19 +53,19 @@ public class ByteConverterHTTP extends ByteConverter {
 	/**
 	 * Decode http.
 	 *
-	 * @param values
-	 *			the bytes
+	 * @param values the bytes
 	 * @return the object
 	 */
 	@Override
 	public byte[] decode(CharSequence values) {
-		if(values instanceof String) {
-			return decode(((String)values).getBytes(Charset.forName(BaseItem.ENCODING)));
+		if (values instanceof String) {
+			return decode(((String) values).getBytes(Charset.forName(BaseItem.ENCODING)));
 		}
 		return null;
 	}
+
 	public byte[] decode(byte[] values) {
-		if(values == null) {
+		if (values == null || values.length < 1) {
 			return null;
 		}
 		int len = values.length;

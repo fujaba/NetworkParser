@@ -23,7 +23,7 @@ package de.uniks.networkparser.ext;
 
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.NetworkParserLog;
-import de.uniks.networkparser.ext.petaf.SendableItem;
+import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class LogItem extends SendableItem implements SendableEntityCreator {
@@ -34,8 +34,8 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 	public static final String PROPERTY_CURRENTTIME = "currenttime";
 	public static final String PROPERTY_THREADNAME = "threadName";
 	public static final String PROPERTY_MESSAGE = "message";
-	private final String[] properties = new String[] { LogItem.PROPERTY_CURRENTTIME, LogItem.PROPERTY_TIMESTAMP, LogItem.PROPERTY_THREADNAME,
-			LogItem.PROPERTY_TYPE, LogItem.PROPERTY_MESSAGE, };
+	private final String[] properties = new String[] { LogItem.PROPERTY_CURRENTTIME, LogItem.PROPERTY_TIMESTAMP,
+			LogItem.PROPERTY_THREADNAME, LogItem.PROPERTY_TYPE, LogItem.PROPERTY_MESSAGE, };
 
 	private static final long STARTTIME = System.currentTimeMillis();
 
@@ -70,14 +70,12 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 		return currentTime;
 	}
 
-	// ==========================================================================
-
 	public String getThreadName() {
 		return this.threadName;
 	}
 
 	public boolean setThreadName(String value) {
-		if (!(this.threadName == null) ? value == null : this.threadName.equals(value)) {
+		if(this.threadName != value || (this.threadName != null && this.threadName.equals(value) == false)) {
 			String oldValue = this.threadName;
 			this.threadName = value;
 			firePropertyChange(PROPERTY_THREADNAME, oldValue, value);
@@ -91,14 +89,12 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 		return this;
 	}
 
-	// ==========================================================================
-
 	public String getType() {
 		return this.type;
 	}
 
 	public boolean setType(String value) {
-		if (!(this.type == null) ? value == null : this.type.equals(value)) {
+		if(this.type != value || (this.type != null && this.type.equals(value) == false)) {
 			String oldValue = this.type;
 			this.type = value;
 			firePropertyChange(PROPERTY_TYPE, oldValue, value);
@@ -112,17 +108,16 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 		return this;
 	}
 
-	// ==========================================================================
 	public String getMessage() {
 		return this.message;
 	}
 
 	public boolean setMessage(String value) {
-		if (!(this.message == null) ? value == null : this.message.equals(value)) {
+		if(this.message != value || (this.message != null && this.message.equals(value) == false)) {
 			String oldValue = this.message;
 			this.message = value;
 			firePropertyChange(PROPERTY_MESSAGE, oldValue, value);
-			return true;
+			
 		}
 		return false;
 	}
@@ -162,7 +157,7 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 		if (PROPERTY_MESSAGE.equalsIgnoreCase(attribute)) {
 			return item.getMessage();
 		}
-		if(PROPERTY_CURRENTTIME.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_CURRENTTIME.equalsIgnoreCase(attribute)) {
 			return item.getCurrentDate();
 		}
 		return null;

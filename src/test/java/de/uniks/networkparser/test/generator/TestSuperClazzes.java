@@ -3,7 +3,8 @@ package de.uniks.networkparser.test.generator;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
-import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.ext.Os;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Modifier;
@@ -12,19 +13,19 @@ public class TestSuperClazzes {
 
 	@Test
 	public void testClazzAsSuperClazz() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_a");
 		Clazz person = model.createClazz("Person");
 		model.createClazz("Pupil").withSuperClazz(person);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 	}
 
 	@Test
 	public void testClazzAsKidClazz() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_b");
@@ -32,26 +33,26 @@ public class TestSuperClazzes {
 		Clazz pupil = model.createClazz("Pupil");
 
 		person.withKidClazzes(pupil);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 	}
 
 	@Test
 	public void testClazzAsSuperClazzWithMultipleKids() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_c");
 		Clazz person = model.createClazz("Person");
 		model.createClazz("Pupil").withSuperClazz(person);
 		model.createClazz("Teacher").withSuperClazz(person);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 	}
 
 	@Test
 	public void testChangeSuperClazz() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_d");
@@ -61,13 +62,13 @@ public class TestSuperClazzes {
 
 		pupil.withSuperClazz(person);
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 	}
 
 	@Test
 	public void testAbstractAssociation() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_e");
@@ -78,14 +79,14 @@ public class TestSuperClazzes {
 
 		person.withAttribute("name", DataType.STRING);
 
-		teacher.withBidirectional(person, "person", Cardinality.ONE, "teacher", Cardinality.ONE);
+		teacher.withBidirectional(person, "person", Association.ONE, "teacher", Association.ONE);
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	@Test
 	public void testMultipleAbstractAssociation() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_f");
@@ -97,9 +98,9 @@ public class TestSuperClazzes {
 
 		person.withAttribute("name", DataType.STRING);
 
-		teacher.withBidirectional(person, "person", Cardinality.ONE, "teacher", Cardinality.ONE);
+		teacher.withBidirectional(person, "person", Association.ONE, "teacher", Association.ONE);
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 //FIXME Wrong call of RemoveYou

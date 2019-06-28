@@ -3,7 +3,7 @@ package de.uniks.networkparser;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorIndexId;
 import de.uniks.networkparser.json.JsonObject;
@@ -35,10 +36,9 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntity {
 	protected String className;
-
 	protected String id;
 
-	//SimpleObject Creator Properties
+	/* SimpleObject Creator Properties */
 	private String[] properties;
 	private SimpleList<String> baseElements = new SimpleList<String>();
 	private boolean dirty = false;
@@ -52,18 +52,18 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 	}
 
 	protected void addBaseElements(String... elements) {
-		if(elements == null) {
+		if (elements == null) {
 			return;
 		}
-		for(String item : elements) {
-			if(this.baseElements.add(item)) {
+		for (String item : elements) {
+			if (this.baseElements.add(item)) {
 				this.dirty = true;
 			}
 		}
 	}
 
 	public boolean setClassName(String value) {
-		if(value != this.className) {
+		if (value != this.className) {
 			this.className = value;
 			return true;
 		}
@@ -75,7 +75,7 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 	}
 
 	public boolean setId(String value) {
-		if(value != this.id) {
+		if (value != this.id) {
 			this.id = value;
 			return true;
 		}
@@ -83,9 +83,9 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 	}
 
 	public Object getValue(String key) {
-		if(IdMap.ID.equals(key)) {
+		if (IdMap.ID.equals(key)) {
 			return this.getId();
-		} else if(IdMap.CLASS.equals(key)) {
+		} else if (IdMap.CLASS.equals(key)) {
 			return this.getClassName();
 		}
 		return values.get(key);
@@ -99,31 +99,33 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 	}
 
 	public boolean setValue(String key, Object value) {
+		if (key == null) {
+			return false;
+		}
 		key = key.trim();
 		boolean checked = false;
 		Object oldValue = null;
-		if(value instanceof String) {
-			if(IdMap.ID.equals(key)) {
+		if (value instanceof String) {
+			if (IdMap.ID.equals(key)) {
 				checked = true;
 				oldValue = this.getId();
 				this.setId((String) value);
-			} else if(IdMap.CLASS.equals(key)) {
+			} else if (IdMap.CLASS.equals(key)) {
 				oldValue = this.getClassName();
 				checked = true;
 				this.setClassName((String) value);
 			}
 		}
-		if(!checked){
+		if (!checked) {
 			int pos = this.values.indexOf(key);
 
 			if (pos < 0) {
 				oldValue = null;
-				if(this.values.add(key, value)) {
+				if (this.values.add(key, value)) {
 					this.baseElements.add(key);
 					this.dirty = true;
 				}
-			}
-			else {
+			} else {
 				oldValue = this.values.setValue(pos, value);
 			}
 		}
@@ -145,8 +147,8 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 	}
 
 	public Object withoutValue(String key) {
-		Object result =  this.values.remove(key);
-		if(result!= null) {
+		Object result = this.values.remove(key);
+		if (result != null) {
 			this.baseElements.remove(key);
 			this.dirty = true;
 		}
@@ -158,12 +160,13 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		SimpleObject result = new SimpleObject();
 		if (values != null) {
 			for (SimpleEntity<String, Object> item : values) {
-				result.setValue(item.getKey(), item.getValue());
+				if (item != null) {
+					result.setValue(item.getKey(), item.getValue());
+				}
 			}
 		}
 		return result;
 	}
-
 
 	public static SimpleObject create(String className, String key, Object value) {
 		SimpleObject result = new SimpleObject();
@@ -180,9 +183,11 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return result;
 	}
 
-
 	public static SimpleObject create(JsonObject json) {
 		SimpleObject result = new SimpleObject();
+		if (json == null) {
+			return result;
+		}
 
 		result.setId(json.getString(IdMap.ID));
 		Object className = json.get(IdMap.CLASS);
@@ -210,7 +215,6 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return this.properties;
 	}
 
-
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (entity instanceof SimpleObject) {
@@ -224,12 +228,10 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return setValue(attribute, value);
 	}
 
-
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new SimpleObject();
 	}
-
 
 	@Override
 	public String toString() {
@@ -241,8 +243,7 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 				sb.append(':');
 				sb.append(className);
 			}
-		}
-		else if (className != null) {
+		} else if (className != null) {
 			sb.append(className);
 		}
 		if (values.size() > 0) {
@@ -263,7 +264,6 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return sb.toString();
 	}
 
-
 	@Override
 	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		if (this.propertyChangeSupport == null)
@@ -271,7 +271,6 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		this.propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
 		return true;
 	}
-
 
 	@Override
 	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
@@ -281,7 +280,6 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return true;
 	}
 
-
 	@Override
 	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
 		if (this.propertyChangeSupport == null)
@@ -289,7 +287,6 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		this.propertyChangeSupport.removePropertyChangeListener(listener);
 		return true;
 	}
-
 
 	@Override
 	public boolean removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {

@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.io;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,39 +39,42 @@ import java.util.zip.ZipOutputStream;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.parser.excel.ExcelParser;
-import de.uniks.networkparser.parser.excel.ExcelSheet;
-import de.uniks.networkparser.parser.excel.ExcelWorkBook;
+import de.uniks.networkparser.parser.ExcelParser;
+import de.uniks.networkparser.parser.ExcelSheet;
+import de.uniks.networkparser.parser.ExcelWorkBook;
 
 public class ExcelBuffer {
 	public ExcelSheet parse(File file) {
+		if (file == null) {
+			return null;
+		}
 		ExcelSheet data = null;
 		ZipFile zipEntry = null;
 		try {
 			CharacterBuffer sharedStrings = null, sheetData = null;
-			zipEntry=new ZipFile(file);
+			zipEntry = new ZipFile(file);
 			InputStream inputStream;
 			ZipEntry entry = zipEntry.getEntry("xl/sharedStrings.xml");
-			if(entry != null) {
+			if (entry != null) {
 				inputStream = zipEntry.getInputStream(entry);
 				sharedStrings = readContext(inputStream);
 				inputStream.close();
 			}
 			entry = zipEntry.getEntry("xl/worksheets/sheet1.xml");
-			if(entry != null) {
+			if (entry != null) {
 				inputStream = zipEntry.getInputStream(entry);
 				sheetData = readContext(inputStream);
 				inputStream.close();
 			}
 			zipEntry.close();
 			zipEntry = null;
-			if(sheetData == null) {
+			if (sheetData == null) {
 				sheetData = new CharacterBuffer();
 			}
 			data = new ExcelParser().parseSheet(sharedStrings, sheetData);
 		} catch (IOException e) {
 		} finally {
-			if(zipEntry != null) {
+			if (zipEntry != null) {
 				try {
 					zipEntry.close();
 				} catch (IOException e) {
@@ -82,6 +85,9 @@ public class ExcelBuffer {
 	}
 
 	private CharacterBuffer readContext(InputStream is) {
+		if (is == null) {
+			return null;
+		}
 		final char[] buffer = new char[1024];
 		CharacterBuffer out = new CharacterBuffer();
 		try {
@@ -96,15 +102,19 @@ public class ExcelBuffer {
 		}
 		return out;
 	}
+
 	public boolean encode(File file, ExcelWorkBook workbook) {
-		boolean result=false;
+		boolean result = false;
 		ZipOutputStream zos = null;
+		if (workbook == null || file == null) {
+			return false;
+		}
 		try {
 			FileOutputStream fos = new FileOutputStream(file);
 			zos = new ZipOutputStream(fos);
 			ExcelParser excelParser = new ExcelParser();
 			SimpleKeyValueList<String, String> content = excelParser.createExcelContent(workbook);
-			for(Iterator<Entry<String, String>> iterator = content.entrySet().iterator();iterator.hasNext();){
+			for (Iterator<Entry<String, String>> iterator = content.entrySet().iterator(); iterator.hasNext();) {
 				Entry<String, String> entry = iterator.next();
 				ZipEntry zipEntry = new ZipEntry(entry.getKey());
 				zos.putNextEntry(zipEntry);
@@ -117,7 +127,7 @@ public class ExcelBuffer {
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
 		} finally {
-			if(zos != null) {
+			if (zos != null) {
 				try {
 					zos.close();
 				} catch (IOException e) {
@@ -127,11 +137,19 @@ public class ExcelBuffer {
 		return result;
 	}
 
-	public void addToZipFile(String fileName, String content, ZipOutputStream zos) throws FileNotFoundException, IOException {
+	public boolean addToZipFile(String fileName, String content, ZipOutputStream zos) {
+		if (fileName == null || zos == null || fileName.length() < 1) {
+			return false;
+		}
 		ZipEntry zipEntry = new ZipEntry(fileName);
-		zos.putNextEntry(zipEntry);
-		byte[] bytes = content.getBytes(BaseItem.ENCODING);
-		zos.write(bytes, 0, bytes.length);
-		zos.closeEntry();
+		try {
+			zos.putNextEntry(zipEntry);
+			byte[] bytes = content.getBytes(BaseItem.ENCODING);
+			zos.write(bytes, 0, bytes.length);
+			zos.closeEntry();
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 }

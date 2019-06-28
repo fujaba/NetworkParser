@@ -3,7 +3,7 @@ package de.uniks.networkparser.gui.controls;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -46,10 +46,12 @@ public class Button extends Input<String> {
 	public String getActionType() {
 		return actionType;
 	}
+
 	public Button withActionType(String graphicType) {
 		this.actionType = graphicType;
 		return this;
 	}
+
 	public Button withActionType(String graphicType, ObjectCondition conditon) {
 		this.actionType = graphicType;
 		this.addClickListener(conditon);
@@ -60,7 +62,7 @@ public class Button extends Input<String> {
 		super.setValue(value);
 		return this;
 	}
-	
+
 	@Override
 	public Button newInstance() {
 		return new Button();
