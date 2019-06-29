@@ -19,7 +19,7 @@ public class TestDiffer {
 		Clazz oldUniversity = oldModel.createClazz("University");
 		oldUniversity.createAttribute("name", DataType.INT);
 		
-		oldModel.generate("src/test/java");
+//		oldModel.generate("src/test/java");
 
 		ClassModel model = new ClassModel();
 		Clazz university = model.createClazz("University");
@@ -40,7 +40,7 @@ public class TestDiffer {
 		// SOLUTION 2
 			ClassModel gen = new ClassModel();
 			gen.add(diffs);
-			gen.generate("src/test/java");
+//			gen.generate("src/test/java");
 		
 		
 //		Differ differ = new Differ();

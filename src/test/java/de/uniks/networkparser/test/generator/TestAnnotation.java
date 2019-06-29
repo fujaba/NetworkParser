@@ -18,7 +18,7 @@ public class TestAnnotation {
 		Annotation annotation = Annotation.create("XmlElementWrapper", "name", "emails");
 		annotation.withImport("javax.xml.bind.annotation.XmlElementWrapper");
 		newAssoc.with(annotation);
-		model.generate("src/test/java");
+//		model.generate("src/test/java");
 //		@XmlElementWrapper(name = "emails")
 //		 @XmlElement(name = "email")
 	}

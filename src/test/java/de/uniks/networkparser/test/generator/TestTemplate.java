@@ -23,7 +23,6 @@ public class TestTemplate {
 		variables.put("number", "42");
 		
 		TemplateResultFragment entity = template.executeSimpleEntity(condition, variables);
-		System.out.println(entity.getValue());
 		Assert.assertNotNull(condition);
 	}
 	
@@ -44,7 +43,6 @@ public class TestTemplate {
 		Template template = Template.create(buffer.toString());
 		ObjectCondition condition = template.parsing(new FunctionCondition());
 		TemplateResultFragment entity = template.executeSimpleEntity(condition, model);
-		System.out.println();
 	}
 	
 	@Test
@@ -61,7 +59,6 @@ public class TestTemplate {
 		String value = "{{#if {{typecat}}!=SET? {{type}}... filter}}";
 		Template template = Template.create(value);
 		ObjectCondition condition = template.parsing();
-		System.out.println(condition);
 		Assert.assertNotNull(condition);
 	}
 	
@@ -72,7 +69,6 @@ public class TestTemplate {
 		ObjectCondition condition = template.parsing(new FunctionCondition());
 		
 		TemplateResultFragment entity = template.executeEntity(condition, null);
-		System.out.println(entity.getValue());
 		Assert.assertNotNull(condition);
 		Assert.assertNotNull(entity);
 	}

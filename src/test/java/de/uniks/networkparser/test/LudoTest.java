@@ -162,7 +162,7 @@ public class LudoTest {
 		
 		FileBuffer.writeFile("build/model.html", dumpHTML.toString());
 		
-		model.generate("src/test/java");
+//		model.generate("src/test/java");
 	}
 	
 	

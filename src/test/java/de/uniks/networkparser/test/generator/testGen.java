@@ -14,9 +14,12 @@ import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class testGen {
-
+	public static boolean ENABLE=false;
 	@Test
 	public void testModel() {
+		if(ENABLE == false) {
+			return;
+		}
 		ClassModel model = new ClassModel("de.uniks.networkparser.simple.modelA");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
@@ -54,6 +57,9 @@ public class testGen {
 
 //	@Test
 	public void testModelWithPrivate() {
+		if(ENABLE == false) {
+			return;
+		}
 		ClassModel model = new ClassModel("de.uniks.networkparser.simple.modelB");
 		Clazz person = model.createClazz("Person");
 		Attribute password = person.createAttribute("password", DataType.STRING);
