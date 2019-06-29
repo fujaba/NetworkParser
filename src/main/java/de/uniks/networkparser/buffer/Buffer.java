@@ -32,11 +32,11 @@ import de.uniks.networkparser.list.SimpleList;
  */
 
 public abstract class Buffer implements BufferItem {
-	public final static String STOPCHARSJSON = ",:]}/\\\"[{;=# ";
-	public final static String STOPCHARSXML = ",]}/\\\"[{;=# ";
-	public final static char[] STOPCHARSXMLEND = new char[] { '"', ',', ']', '}', '/', '\\', '[', '{', ';', '=', '#',
+	public static final String STOPCHARSJSON = ",:]}/\\\"[{;=# ";
+	public static final String STOPCHARSXML = ",]}/\\\"[{;=# ";
+	public static final char[] STOPCHARSXMLEND = new char[] { '"', ',', ']', '}', '/', '\\', '[', '{', ';', '=', '#',
 			'>', '\r', '\n', ' ' };
-	public final static char ENDLINE = '\n';
+	public static final char ENDLINE = '\n';
 
 	/** The index. */
 	protected int position;

@@ -53,7 +53,7 @@ import de.uniks.networkparser.xml.XMLEntity;
 
 public class JsonTokener extends Tokener {
 	/** The Constant JSON_PROPS. */
-	public final static String STOPCHARS = ",]}/\\\"[{;=# ";
+	public static final String STOPCHARS = ",]}/\\\"[{;=# ";
 	public static final char COMMENT = '#';
 	private boolean simpleFormat;
 

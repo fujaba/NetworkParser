@@ -26,54 +26,54 @@ THE SOFTWARE.
 import java.math.BigInteger;
 
 public class DERBuffer extends ByteBuffer {
-	public final static byte ARRAY = 0x00;
+	public static final byte ARRAY = 0x00;
 	/** Tag value indicating an ASN.1 "BOOLEAN" value. */
-	public final static byte BOOLEAN = 0x01;
+	public static final byte BOOLEAN = 0x01;
 
 	/** Tag value indicating an ASN.1 "INTEGER" value. */
-	public final static byte INTEGER = 0x02;
+	public static final byte INTEGER = 0x02;
 
 	/** Tag value indicating an ASN.1 "BIT STRING" value. */
-	public final static byte BITSTRING = 0x03;
+	public static final byte BITSTRING = 0x03;
 
 	/** Tag value indicating an ASN.1 "OCTET STRING" value. */
-	public final static byte OCTETSTRING = 0x04;
+	public static final byte OCTETSTRING = 0x04;
 
 	/** Tag value indicating an ASN.1 "NULL" value. */
-	public final static byte NULL = 0x05;
+	public static final byte NULL = 0x05;
 
 	/** Tag value indicating an ASN.1 "OBJECT IDENTIFIER" value. */
-	public final static byte OBJECTID = 0x06;
+	public static final byte OBJECTID = 0x06;
 
 	/** Tag value including an ASN.1 "ENUMERATED" value */
-	public final static byte ENUMERATED = 0x0A;
+	public static final byte ENUMERATED = 0x0A;
 
 	/** Tag value indicating an ASN.1 "UTF8String" value. */
-	public final static byte UTF8STRING = 0x0C;
+	public static final byte UTF8STRING = 0x0C;
 
 	/** Tag value including a "printable" string */
-	public final static byte PRINTABLESTRING = 0x13;
+	public static final byte PRINTABLESTRING = 0x13;
 
 	/** Tag value including a "teletype" string */
-	public final static byte T61STRING = 0x14;
+	public static final byte T61STRING = 0x14;
 
 	/** Tag value including an ASCII string */
-	public final static byte IA5STRING = 0x16;
+	public static final byte IA5STRING = 0x16;
 
 	/** Tag value indicating an ASN.1 "UTCTime" value. */
-	public final static byte UTCTIME = 0x17;
+	public static final byte UTCTIME = 0x17;
 
 	/** Tag value indicating an ASN.1 "GeneralizedTime" value. */
-	public final static byte GENERALIZEDTIME = 0x18;
+	public static final byte GENERALIZEDTIME = 0x18;
 
 	/** Tag value indicating an ASN.1 "GenerallString" value. */
-	public final static byte GENERALSTRING = 0x1B;
+	public static final byte GENERALSTRING = 0x1B;
 
 	/** Tag value indicating an ASN.1 "UniversalString" value. */
-	public final static byte UNIVERSALSTRING = 0x1C;
+	public static final byte UNIVERSALSTRING = 0x1C;
 
 	/** Tag value indicating an ASN.1 "BMPString" value. */
-	public final static byte BMPSTRING = 0x1E;
+	public static final byte BMPSTRING = 0x1E;
 
 	public void add(BigInteger paramBigInteger) {
 		if (paramBigInteger != null) {

@@ -34,8 +34,8 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
 public class YAMLTokener extends Tokener {
-	public final static char DASH = '-';
-	public final static String STOPCHARS = "=# ";
+	public static final char DASH = '-';
+	public static final String STOPCHARS = "=# ";
 	public static final char RETURN = '\n';
 	private SimpleKeyValueList<Object, SimpleKeyValueList<String, SimpleList<String>>> refs;
 

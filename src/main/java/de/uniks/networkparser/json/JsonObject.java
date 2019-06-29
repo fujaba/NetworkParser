@@ -90,8 +90,8 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  * @version 2011-11-24
  */
 public class JsonObject extends SimpleKeyValueList<String, Object> implements Entity {
-	public final static char START = '{';
-	public final static char END = '}';
+	public static final char START = '{';
+	public static final char END = '}';
 
 	public JsonObject() {
 		this.withAllowDuplicate(false);

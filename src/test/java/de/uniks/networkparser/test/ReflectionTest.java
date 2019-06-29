@@ -22,11 +22,13 @@ public class ReflectionTest {
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog();
 //		logger.withFlag(NetworkParserLog.LOGLEVEL_ALL).withListener(output);
-		logger.withFlag(NetworkParserLog.LOGLEVEL_ERROR).withListener(output);
+		logger.withFlag(NetworkParserLog.LOGLEVEL_ERROR);
+//		logger.withListener(output);
 		logger.withoutFlag(NetworkParserLog.LOGLEVEL_INFO);
 		tester.withDisableClassError(true);
 		tester.withDisableSimpleException(true);
 		tester.breakByErrorCount(100);
+		tester.withOverrideLogger(true);
 
 		tester.test("de.uniks.networkparser", logger);
 		
@@ -85,6 +87,7 @@ public class ReflectionTest {
 	public void testDiagramEditor() throws Exception {
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog();
+		tester.withOverrideLogger(true);
 		tester.test("de.uniks.networkparser.ext.DiagramEditor", logger);
 	}
 

@@ -44,11 +44,11 @@ public class SQLStatement {
 	private boolean enable = true;
 	private AbstractArray<?> values;
 	private SimpleKeyValueList<String, Object> conditions;
-	public final static String SPACE = " ";
-	public final static String EMPTY = "";
-	public final static String QUOTE = "'";
-	private final static String DRIVER = "DRIVER";
-	private final static String DATABASE = "DATABASE";
+	public static final String SPACE = " ";
+	public static final String EMPTY = "";
+	public static final String QUOTE = "'";
+	private static final String DRIVER = "DRIVER";
+	private static final String DATABASE = "DATABASE";
 
 	public SQLStatement(SQLCommand command) {
 		this.command = command;

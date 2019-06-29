@@ -10,6 +10,7 @@ import de.uniks.ludo.model.Ludo;
 import de.uniks.ludo.model.Player;
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.CharacterReader;
@@ -20,6 +21,7 @@ import de.uniks.networkparser.logic.Or;
 import de.uniks.networkparser.logic.StringCondition;
 
 public class StringTest {
+	
 	@Test
 	public void testgetString() {
 		CharacterBuffer test=new CharacterBuffer();
@@ -38,10 +40,11 @@ public class StringTest {
 
 	@Test
 	public void testObjectType() {
-		System.out.println(EntityUtil.getObjectType("byte"));
-		System.out.println(EntityUtil.getObjectType("int"));
-		System.out.println(EntityUtil.getObjectType("Integer"));
-		System.out.println(EntityUtil.getObjectType("Room"));
+		NetworkParserLog logger=new NetworkParserLog();
+		logger.info(EntityUtil.getObjectType("byte"));
+		logger.info(EntityUtil.getObjectType("int"));
+		logger.info(EntityUtil.getObjectType("Integer"));
+		logger.info(EntityUtil.getObjectType("Room"));
 	}
 	
 	@Test
@@ -297,13 +300,13 @@ public class StringTest {
 	}
 	@Test
 	public void testStringCompare() {
-		
-		
+		NetworkParserLog logger=new NetworkParserLog();
+
 		String text = "01 Maier Rothunde Montag 09:00";
 		String search = "Rothunde -Dienstag";
 
 		ObjectCondition condition = StringCondition.createSearchLogic(CharacterBuffer.create(search));
-		System.out.println(condition);
+		logger.info(condition.toString());
 				
 				
 		Ludo ludo = new Ludo();

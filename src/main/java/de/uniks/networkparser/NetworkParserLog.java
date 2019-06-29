@@ -134,6 +134,9 @@ public class NetworkParserLog extends Handler {
 		}
 		return false;
 	}
+	public boolean info(String message) {
+		return info(this, "info", message);
+	}
 
 	/**
 	 * Log a message with info log level.

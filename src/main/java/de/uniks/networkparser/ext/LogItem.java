@@ -27,8 +27,8 @@ import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class LogItem extends SendableItem implements SendableEntityCreator {
-	public final static String INCOMING = "Empfange";
-	public final static String OUTGOING = "Sende";
+	public static final String INCOMING = "Empfange";
+	public static final String OUTGOING = "Sende";
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_TIMESTAMP = "timestamp";
 	public static final String PROPERTY_CURRENTTIME = "currenttime";

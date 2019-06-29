@@ -52,19 +52,19 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class MessageSession {
-	public final static String TYPE_EMAIL = "EMAIL";
-	public final static String TYPE_XMPP = "XMPP";
-	public final static String TYPE_FCM = "FCM";
-	public final static String TYPE_PLAIN = "PLAIN";
-	public final static String TYPE_AMQ = "AMQ";
-	public final static String TYPE_MQTT = "MQTT";
+	public static final String TYPE_EMAIL = "EMAIL";
+	public static final String TYPE_XMPP = "XMPP";
+	public static final String TYPE_FCM = "FCM";
+	public static final String TYPE_PLAIN = "PLAIN";
+	public static final String TYPE_AMQ = "AMQ";
+	public static final String TYPE_MQTT = "MQTT";
 
-	public final static String RESPONSE_SERVERREADY = "220";
-	public final static String RESPONSE_MAILACTIONOKEY = "250";
-	public final static String RESPONSE_STARTMAILINPUT = "354";
-	public final static String RESPONSE_SMTP_AUTH_NTLM_BLOB_Response = "334";
-	public final static String RESPONSE_LOGIN_SUCCESS = "235";
-	public final static String RESPONSE_SERVICE_CLOSING_TRANSMISSION = "221";
+	public static final String RESPONSE_SERVERREADY = "220";
+	public static final String RESPONSE_MAILACTIONOKEY = "250";
+	public static final String RESPONSE_STARTMAILINPUT = "354";
+	public static final String RESPONSE_SMTP_AUTH_NTLM_BLOB_Response = "334";
+	public static final String RESPONSE_LOGIN_SUCCESS = "235";
+	public static final String RESPONSE_SERVICE_CLOSING_TRANSMISSION = "221";
 	public static final int SSL_PORT = 587;
 	public static final int AMQP_PORT = 5672;
 	public static final int MQTT_PORT = 1883;

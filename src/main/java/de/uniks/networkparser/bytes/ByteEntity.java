@@ -41,11 +41,11 @@ import de.uniks.networkparser.interfaces.Converter;
 
 public class ByteEntity implements ByteItem {
 	/** The Constant BIT OF A BYTE. */
-	public final static int BITOFBYTE = 8;
-	public final static int TYPEBYTE = 1;
+	public static final int BITOFBYTE = 8;
+	public static final int TYPEBYTE = 1;
 
-	public final static String TYPE = "TYPE";
-	public final static String VALUE = "VALUE";
+	public static final String TYPE = "TYPE";
+	public static final String VALUE = "VALUE";
 
 	/** The Byte Type. */
 	protected byte type;

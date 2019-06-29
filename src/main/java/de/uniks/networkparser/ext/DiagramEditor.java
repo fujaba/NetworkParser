@@ -843,6 +843,11 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		}
 	}
 
+	public DiagramEditor withLogger(NetworkParserLog logger) {
+		this.logger = logger;
+		return this;
+	}
+	
 	/**
 	 * Method for Save Model to Image
 	 * 

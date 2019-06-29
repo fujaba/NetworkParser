@@ -82,6 +82,7 @@ public class ReflectionBlackBoxTester {
 	private long startTime;
 	private int oldThreadCount;
 	private int breakByErrorCount = -1;
+	private boolean overrideLogger;
 
 	public void mainTester(String[] args) {
 		Object junitCore = ReflectionLoader.newInstanceStr("org.junit.runner.JUnitCore");
@@ -155,7 +156,7 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(ModelThread.class);
 
 		ignoreMethods.add(DEFAULTMETHODS,
-				new SimpleSet<String>().with("show*", "run*", "start*", "execute*", "consume", "subscribe", "main"));
+				new SimpleSet<String>().with("show*", "run*", "start*", "execute*", "consume", "subscribe", "main", "withLogger"));
 		/* Add for new Threads */
 		withIgnoreClazzes(SimpleController.class, "create", "init");
 		withIgnoreClazzes(JarValidator.class);
@@ -320,6 +321,16 @@ public class ReflectionBlackBoxTester {
 		} catch (Exception e) {
 		}
 		boolean isValid = true;
+		if(this.overrideLogger && this.logger != null) {
+			// ADD LOGGER
+			try {
+				Method withLogger = clazz.getMethod("withLogger", this.logger.getClass());
+				withLogger.invoke(obj, this.logger);
+			} catch (Exception e) {
+			}
+			
+		}
+		
 		for (Method m : clazz.getDeclaredMethods()) {
 			if (m.getDeclaringClass().isInterface()) {
 				continue;
@@ -880,6 +891,11 @@ public class ReflectionBlackBoxTester {
 
 	public ReflectionBlackBoxTester withDisableSimpleException(boolean value) {
 		this.ignoreSimpleException = value;
+		return this;
+	}
+	
+	public ReflectionBlackBoxTester withOverrideLogger(boolean value) {
+		this.overrideLogger = value;
 		return this;
 	}
 }
