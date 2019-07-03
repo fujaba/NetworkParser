@@ -396,7 +396,7 @@ public class ParserEntity {
 				break;
 
 			case '8':
-				if (!Character.isDigit(currentChar)) {
+				if (Character.isDigit(currentChar) == false) {
 					lookAheadToken.endPos = index - 1;
 					return;
 				}
@@ -605,7 +605,7 @@ public class ParserEntity {
 				result += currentWord();
 				nextToken();
 
-				while (!")".equals(currentWord())) {
+				while (")".equals(currentWord()) == false) {
 					result += currentWord();
 					nextToken();
 				}
@@ -672,7 +672,7 @@ public class ParserEntity {
 		if (SymTabEntry.TYPE_IMPLEMENTS.equals(currentWord())) {
 			skip(SymTabEntry.TYPE_IMPLEMENTS, true);
 
-			while (!currentKindEquals(Token.EOF) && !currentKindEquals('{')) {
+			while (currentKindEquals(Token.EOF) == false && currentKindEquals('{') == false) {
 				nextEntity = startNextSymTab(SymTabEntry.TYPE_IMPLEMENTS, currentWord());
 				nextEntity.withPosition(currentToken.startPos, currentToken.endPos, getLine(), getLine());
 
@@ -755,7 +755,7 @@ public class ParserEntity {
 		skip("<", false);
 		typeString.with('<');
 
-		while (!currentKindEquals('>') && !currentKindEquals(Token.EOF)) {
+		while (currentKindEquals('>') == false && currentKindEquals(Token.EOF) == false) {
 			if (currentKindEquals('<')) {
 				parseGenericTypeDefPart(typeString);
 			} else {
@@ -775,7 +775,7 @@ public class ParserEntity {
 		boolean isDebug = this.update instanceof DebugCondition;
 		code.withStartBody(currentToken.startPos, getLine());
 
-		while (!currentKindEquals(Token.EOF) && !currentKindEquals('}')) {
+		while (currentKindEquals(Token.EOF) == false && currentKindEquals('}') == false) {
 			if (isDebug) {
 				if (logger != null) {
 					logger.debug(this, "parsing", "Parsing: " + getCurrentLine());
@@ -793,7 +793,7 @@ public class ParserEntity {
 			code.withEndBody(previousToken.startPos, getLine());
 		}
 
-		if (!currentKindEquals(Token.EOF)) {
+		if (currentKindEquals(Token.EOF) == false) {
 			skip("}", true);
 		}
 	}
@@ -837,7 +837,7 @@ public class ParserEntity {
 		}
 
 		if (currentTokenEquals(SymTabEntry.TYPE_CLASS) || currentTokenEquals(SymTabEntry.TYPE_INTERFACE)) {
-			while (!currentTokenEquals("{") && currentKindEquals(Token.EOF) == false) {
+			while (currentTokenEquals("{") == false && currentKindEquals(Token.EOF) == false) {
 				nextToken();
 			}
 			skipBody();
@@ -1044,7 +1044,7 @@ public class ParserEntity {
 		/* '(' (type name[,] )* ') [throws type , (type,)*] */
 		skip("(", true);
 
-		while (!currentKindEquals(Token.EOF) && !currentKindEquals(')')) {
+		while (currentKindEquals(Token.EOF) == false && currentKindEquals(')') == false) {
 			int typeStartPos = currentToken.startPos;
 			parseTypeRef();
 			int typeEndPos = currentToken.startPos - 1;
@@ -1083,7 +1083,7 @@ public class ParserEntity {
 	}
 
 	private void skipTo(char c) {
-		while (!currentKindEquals(c) && !currentKindEquals(Token.EOF)) {
+		while (currentKindEquals(c) == false && currentKindEquals(Token.EOF) == false) {
 			nextToken();
 		}
 	}
@@ -1313,7 +1313,7 @@ public class ParserEntity {
 
 		String attrName = symTabEntry.getName();
 		if (EntityUtil.isPrimitiveType(type)) {
-			if (!classContainsAttribut(attrName, symTabEntry.getType())) {
+			if (classContainsAttribut(attrName, symTabEntry.getType()) == false) {
 				this.getClazz().withAttribute(attrName, DataType.create(symTabEntry.getDataType()));
 			}
 		} else {
@@ -1410,7 +1410,7 @@ public class ParserEntity {
 				done = true;
 			}
 		}
-		if (!done) {
+		if (done == false) {
 			/* did not find reverse role, add as attribute */
 			boolean found = false;
 
@@ -1584,7 +1584,7 @@ public class ParserEntity {
 
 			method.withParent(this.getClazz());
 
-			if (!symTabEntry.getAnnotations().isEmpty()) {
+			if (symTabEntry.getAnnotations().isEmpty() == false) {
 				method.with(new Annotation(symTabEntry.getAnnotations()));
 			}
 			method.with(new Throws(symTabEntry.getThrowsTags()));

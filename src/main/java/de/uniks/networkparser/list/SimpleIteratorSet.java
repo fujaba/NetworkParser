@@ -59,7 +59,7 @@ public class SimpleIteratorSet<K, V> implements ListIterator<Entry<K, V>> {
 
 	@Override
 	public Entry<K, V> next() {
-		if (!hasNext()) {
+		if (hasNext() == false) {
 			return null;
 		}
 		cursor++;

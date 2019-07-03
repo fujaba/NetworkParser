@@ -12,7 +12,7 @@ public abstract class GraphEntity extends GraphMember {
 		if (this.name == null) {
 			return null;
 		}
-		if (!shortName) {
+		if (shortName == false) {
 			if (name.indexOf('.') < 0 && this.parentNode != null) {
 				String parentName = ((GraphMember) this.parentNode).getName();
 				if (parentName != null && parentName.isEmpty() == false) {

@@ -237,7 +237,7 @@ final class BitArray implements Cloneable {
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof BitArray)) {
+		if (o instanceof BitArray == false) {
 			return false;
 		}
 		BitArray other = (BitArray) o;

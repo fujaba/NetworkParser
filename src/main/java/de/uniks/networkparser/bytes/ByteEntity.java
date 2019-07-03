@@ -211,7 +211,7 @@ public class ByteEntity implements ByteItem {
 				}
 			}
 		}
-		if (!isPrimitive || type == ByteTokener.DATATYPE_CLAZZTYPE || type == ByteTokener.DATATYPE_CLAZZTYPELONG) {
+		if (isPrimitive == false || type == ByteTokener.DATATYPE_CLAZZTYPE || type == ByteTokener.DATATYPE_CLAZZTYPELONG) {
 			type = EntityUtil.getType(type, value.length, isLast);
 			EntityUtil.writeByteHeader(buffer, type, value.length);
 		}

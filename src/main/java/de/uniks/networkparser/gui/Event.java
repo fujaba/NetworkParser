@@ -80,7 +80,7 @@ public class Event extends JsonObject implements SendableEntityCreator {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (!(entity instanceof Event)) {
+		if (entity instanceof Event == false) {
 			return null;
 		}
 		Event e = (Event) entity;
@@ -99,7 +99,7 @@ public class Event extends JsonObject implements SendableEntityCreator {
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (!(entity instanceof Event)) {
+		if (entity instanceof Event == false) {
 			return false;
 		}
 		Event e = (Event) entity;

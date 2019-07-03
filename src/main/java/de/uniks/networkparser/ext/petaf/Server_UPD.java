@@ -103,7 +103,7 @@ public class Server_UPD extends Thread implements Server {
 
 	public void runServer() {
 		Thread.currentThread().setName(proxy.getPort() + " broadcast server");
-		while (!isInterrupted() && this.run) {
+		while (isInterrupted() == false && this.run) {
 			try {
 				byte[] receiveData = new byte[proxy.getBufferSize()];
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);

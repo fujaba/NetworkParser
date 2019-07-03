@@ -76,7 +76,7 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 	}
 
 	public boolean setIdMap(IdMap map) {
-		if (!isComparator()) {
+		if (isComparator() == false) {
 			return false;
 		}
 		if (comparator() instanceof EntityComparator<?>) {
@@ -113,7 +113,7 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 	public boolean removeAllFromItems() {
 		Object[] array = toArray(new Object[size()]);
 		for (Object item : array) {
-			if (!remove(item)) {
+			if (remove(item) == false) {
 				return false;
 			}
 			getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, item, null);
@@ -164,7 +164,7 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 	}
 
 	public Object[] getSortedIndex() {
-		if (!(comparator() instanceof EntityComparator<?>)) {
+		if (comparator() instanceof EntityComparator<?> == false) {
 			return null;
 		}
 		EntityComparator<Object> comparator = (EntityComparator<Object>) comparator();

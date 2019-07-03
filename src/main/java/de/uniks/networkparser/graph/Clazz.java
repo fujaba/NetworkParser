@@ -396,7 +396,7 @@ public class Clazz extends GraphEntity {
 		}
 
 		ClazzSet collection = getEdgeClazzes(type, null);
-		if (!transitive) {
+		if (transitive == false) {
 			return collection;
 		}
 		int size = collection.size();
@@ -421,7 +421,7 @@ public class Clazz extends GraphEntity {
 	public ClazzSet getSuperClazzes(boolean transitive) {
 		repairAssociations();
 		ClazzSet collection = getEdgeClazzes(AssociationTypes.GENERALISATION, null);
-		if (!transitive) {
+		if (transitive == false) {
 			return collection;
 		}
 		int size = collection.size();
@@ -607,7 +607,7 @@ public class Clazz extends GraphEntity {
 	 */
 	public ClazzSet getKidClazzes(boolean transitive) {
 		ClazzSet kidClazzes = getEdgeClazzes(AssociationTypes.EDGE, AssociationTypes.GENERALISATION);
-		if (!transitive) {
+		if (transitive == false) {
 			return kidClazzes;
 		}
 		int size = kidClazzes.size();

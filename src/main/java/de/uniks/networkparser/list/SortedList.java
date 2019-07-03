@@ -78,7 +78,7 @@ public class SortedList<V> extends SimpleList<V> {
 	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleList<V>> ST tailSet(V fromElement, boolean inclusive) {
-		if (!isComparator()) {
+		if (isComparator() == false) {
 			return null;
 		}
 		BaseItem newList = getNewList(false);
@@ -120,7 +120,7 @@ public class SortedList<V> extends SimpleList<V> {
 	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleList<V>> ST headSet(V toElement, boolean inclusive) {
-		if (!isComparator()) {
+		if (isComparator() == false) {
 			return null;
 		}
 		BaseItem newList = getNewList(false);
@@ -141,7 +141,7 @@ public class SortedList<V> extends SimpleList<V> {
 	}
 
 	public V higher(V toElement) {
-		if (!isComparator()) {
+		if (isComparator() == false) {
 			return null;
 		}
 		for (int pos = 0; pos < size(); pos++) {

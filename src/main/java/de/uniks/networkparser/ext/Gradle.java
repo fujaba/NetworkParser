@@ -451,12 +451,10 @@ public class Gradle implements ObjectCondition {
 				}
 				File outputFile = new File(outputName);
 				if (tarEntry.isDirectory()) {
-//					SSystem.out..println("outputFile Directory ---- "+ outputFile.getAbsolutePath());
-					if (!outputFile.exists()) {
+					if (outputFile.exists() == false) {
 						outputFile.mkdirs();
 					}
 				} else {
-//					SSystem.out..println("outputFile File ---- " + outputFile.getAbsolutePath());
 					outputFile.getParentFile().mkdirs();
 					FileOutputStream fos = new FileOutputStream(outputFile);
 					FileBuffer.copy(tis, fos);

@@ -178,7 +178,7 @@ public class SHA2 {
 	 * @return ThisComponent
 	 */
 	public SHA2 finish(byte[] out) {
-		if (!this.finished) {
+		if (this.finished == false) {
 			int bytesHashed = this.bytesHashed;
 			int left = this.bufferLength;
 			int bitLenHi = (bytesHashed / 0x20000000) | 0;

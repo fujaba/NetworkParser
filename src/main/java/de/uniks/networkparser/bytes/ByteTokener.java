@@ -226,7 +226,7 @@ public class ByteTokener extends Tokener {
 			/* Kill Empty Fields */
 			ByteItem[] array = msg.toArray(new ByteItem[msg.size()]);
 			for (int i = array.length - 1; i > 0; i--) {
-				if (!array[i].isEmpty()) {
+				if (array[i].isEmpty() == false) {
 					break;
 				}
 				msg.remove(i);

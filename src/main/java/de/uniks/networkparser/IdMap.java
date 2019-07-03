@@ -561,7 +561,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 		if (key != null) {
 			return false;
 		}
-		if (!(newObject instanceof Comparable<?>)) {
+		if (newObject instanceof Comparable<?> == false) {
 			return false;
 		}
 		SendableEntityCreator creator = getCreatorClass(newObject);

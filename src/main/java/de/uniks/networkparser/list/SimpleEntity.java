@@ -134,8 +134,9 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof Map.Entry))
+		if (o instanceof Map.Entry == false ) {
 			return false;
+		}
 		Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
 		return eq(key, e.getKey()) && eq(value, e.getValue());
 	}

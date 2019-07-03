@@ -69,7 +69,7 @@ public class DataType {
 		if (primitivAllow) {
 			return result;
 		}
-		if (!shortName || result == null || result.lastIndexOf(".") < 0) {
+		if (shortName  == false || result == null || result.lastIndexOf(".") < 0) {
 			return EntityUtil.convertPrimitiveToObjectType(result);
 		}
 		return EntityUtil.convertPrimitiveToObjectType(result.substring(result.lastIndexOf(".") + 1));

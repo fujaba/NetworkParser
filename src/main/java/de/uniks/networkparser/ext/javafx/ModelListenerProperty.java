@@ -156,7 +156,7 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 			return false;
 		}
 		this.viewProperty = newObservable;
-		if (!newObservable.equals(observable)) {
+		if (newObservable.equals(observable) == false) {
 			unbind();
 			observable = newObservable;
 			ReflectionLoader.call(observable, "addListener", ReflectionLoader.INVALIDATIONLISTENER, this);

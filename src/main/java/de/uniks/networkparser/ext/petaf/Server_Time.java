@@ -83,7 +83,7 @@ public class Server_Time extends Thread implements Server {
 		ByteBuffer out = ByteBuffer.allocate(8);
 		out.order(ByteOrder.BIG_ENDIAN);
 
-		while (!isInterrupted() && this.run) {
+		while (isInterrupted() == false && this.run) {
 			try {
 				in.clear();
 				SocketAddress client = channel.receive(in);

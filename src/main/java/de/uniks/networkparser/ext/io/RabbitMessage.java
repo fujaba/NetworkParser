@@ -644,7 +644,7 @@ public class RabbitMessage {
 		while (in.position() < endPos) {
 			String name = in.getShortstr();
 			Object value = readFieldValue(in);
-			if (!table.containsKey(name)) {
+			if (table.containsKey(name) == false) {
 				table.put(name, value);
 			}
 		}

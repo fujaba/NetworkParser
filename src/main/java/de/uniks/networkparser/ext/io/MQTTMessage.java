@@ -315,7 +315,7 @@ public class MQTTMessage {
 			message.names = new String[10];
 			message.data = new int[10];
 			boolean end = false;
-			while (!end) {
+			while (end == false) {
 				try {
 					message.names[message.code] = message.decodeUTF8(buffer);
 					message.data[message.code++] = buffer.getByte();
@@ -329,7 +329,7 @@ public class MQTTMessage {
 			message.code = 0;
 			message.names = new String[10];
 			boolean end = false;
-			while (!end) {
+			while (end == false) {
 				try {
 					message.names[message.code] = message.decodeUTF8(buffer);
 				} catch (Exception e) {

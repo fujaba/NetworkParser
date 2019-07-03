@@ -1250,7 +1250,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		} else {
 			pos = position() - 1;
 		}
-		while (!isEnd()) {
+		while (isEnd() == false) {
 			current = getChar();
 			if (current.compareTo(end) == 0) {
 				count--;

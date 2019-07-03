@@ -195,7 +195,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 
 	public BaseItem withAllowEmptyValue(boolean value) {
 		this.setFlag((byte) (this.flag | ALLOWEMPTYVALUE));
-		if (!value) {
+		if (value == false) {
 			this.setFlag((byte) (this.flag - ALLOWEMPTYVALUE));
 		}
 		return this;
@@ -213,7 +213,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 	public AbstractArray<V> withVisible(boolean value) {
 
 		this.setFlag((byte) (this.flag | VISIBLE));
-		if (!value) {
+		if (value == false) {
 			this.setFlag((byte) (this.flag - VISIBLE));
 		}
 		return this;
@@ -582,7 +582,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 			}
 			return size;
 		}
-		if (!isAllowDuplicate()) {
+		if (isAllowDuplicate() == false) {
 			int pos = indexOf(element, size);
 			if (pos >= 0) {
 				return pos;
@@ -912,7 +912,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 	}
 
 	public int getPositionKey(Object o, boolean last) {
-		if (!isComplex(size)) {
+		if (isComplex(size) == false) {
 			if (last) {
 				return lastIndexOf(o);
 			}
@@ -963,7 +963,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 			for (int i = 0; i < hashCodes.length; i++) {
 				if (checkValue(o, hashCodes[i])) {
 					lastIndex = i;
-					if (!last) {
+					if (last == false) {
 						break;
 					}
 				}
@@ -990,7 +990,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 			}
 			indexItem = transformIndex((Integer) hashCodes[index], len);
 			if (checkValue(o, getByIndex(offset, indexItem, size))) {
-				if (!last) {
+				if (last == false) {
 					break;
 				}
 				lastIndex = indexItem;
@@ -1009,7 +1009,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 	}
 
 	protected boolean checkValue(Object a, Object b) {
-		if (!isCaseSensitive()) {
+		if (isCaseSensitive() == false) {
 			if (a instanceof String && b instanceof String) {
 				return ((String) a).equalsIgnoreCase((String) b);
 			}
@@ -1057,7 +1057,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		if (keys == null)
 			return true;
 		for (Object e : keys)
-			if (!contains(e)) {
+			if (contains(e) == false) {
 				return false;
 			}
 		return true;
@@ -1111,7 +1111,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		Object item = removeItem(index, offset, offsetIndex);
 		if (item != null) {
 			size--;
-			if (!shrink(size)) {
+			if (shrink(size) == false) {
 				if (offsetIndex == index) {
 					return item;
 				}
@@ -1248,7 +1248,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 			}
 			return this.getByIndex(SMALL_KEY, pos, size);
 		}
-		if (!(key instanceof String)) {
+		if (key instanceof String == false) {
 			return null;
 		}
 		String keyString = "" + key;
@@ -1365,7 +1365,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 
 		Iterator<?> it = new SimpleIterator<V>(this);
 		while (it.hasNext()) {
-			if (!c.contains(it.next())) {
+			if (c.contains(it.next()) == false) {
 				it.remove();
 				modified = true;
 			}

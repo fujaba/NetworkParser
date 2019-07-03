@@ -232,14 +232,14 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 				this.borders.put(position, new GUILine().withColor(color).withWidth(width));
 				this.propertyChange(PROPERTY_BORDER, null, this.borders);
 			} else {
-				if (!border.isCustomLine()) {
+				if (border.isCustomLine() == false) {
 					border.withColor(color);
 					border.withWidth(width);
 					this.propertyChange(PROPERTY_BORDER, null, this.borders);
 				}
 			}
 		} else if (border != null) {
-			if (!border.isCustomLine()) {
+			if (border.isCustomLine() == false) {
 				this.borders.remove(position);
 				this.propertyChange(PROPERTY_BORDER, null, this.borders);
 			}

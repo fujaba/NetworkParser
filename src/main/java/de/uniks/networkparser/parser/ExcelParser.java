@@ -136,7 +136,7 @@ public class ExcelParser {
 		for (SimpleList<ExcelCell> row : data) {
 			boolean first = true;
 			for (ExcelCell cell : row) {
-				if (!first) {
+				if (first == false) {
 					result.with(SEMICOLON);
 				}
 				result.with(cell.getContentAsString());

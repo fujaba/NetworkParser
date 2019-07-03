@@ -388,7 +388,7 @@ public final class BitMatrix implements Cloneable {
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof BitMatrix)) {
+		if (o instanceof BitMatrix == false) {
 			return false;
 		}
 		BitMatrix other = (BitMatrix) o;

@@ -146,7 +146,7 @@ public class YUMLConverter implements Converter {
 	}
 
 	public String parseEntity(GraphEntity entity, SimpleList<GraphMember> visited, String type, boolean shortName) {
-		if (!(entity instanceof Clazz)) {
+		if (entity instanceof Clazz == false) {
 			return "";
 		}
 		Clazz clazzEntity = (Clazz) entity;
@@ -195,7 +195,7 @@ public class YUMLConverter implements Converter {
 
 			while (i.hasNext()) {
 				element = i.next();
-				if (!(element instanceof Attribute)) {
+				if (element instanceof Attribute == false) {
 					continue;
 				}
 				attribute = (Attribute) element;

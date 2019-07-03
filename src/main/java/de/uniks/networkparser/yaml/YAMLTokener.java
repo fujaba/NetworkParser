@@ -225,7 +225,7 @@ public class YAMLTokener extends Tokener {
 						if (currentToken.endsWith("]", true)) {
 							value = currentToken.substring(0, currentToken.length() - 1);
 						}
-						if (!value.trim().equals("")) {
+						if (value.trim().equals("") == false ) {
 							setValue(creator, obj, attrName, value);
 						}
 					}
@@ -258,11 +258,11 @@ public class YAMLTokener extends Tokener {
 		}
 
 		/* read attributes */
-		while (!currentToken.equals("") && !currentToken.equals("-")) {
+		while (currentToken.equals("") == false && !currentToken.equals("-")) {
 			String attrName = currentToken.rtrim(':').toString();
 			currentToken = buffer.nextString();
 			/* many values */
-			while (!currentToken.equals("") && !currentToken.endsWith(":", true) && !currentToken.equals("-")) {
+			while (currentToken.equals("") == false && !currentToken.endsWith(":", true) && !currentToken.equals("-")) {
 				String attrValue = currentToken.toString();
 				setValue(creator, obj, attrName, attrValue);
 				currentToken = buffer.nextString();

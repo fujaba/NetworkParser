@@ -57,7 +57,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			this.setValue(pos, (V) value);
 			return this;
 		}
-		if (!(key instanceof String)) {
+		if (key instanceof String == false) {
 			return this;
 		}
 		String keyString = "" + key;

@@ -118,7 +118,7 @@ final class FormatInformation {
 	}
 
 	public boolean equals(Object o) {
-		if (!(o instanceof FormatInformation)) {
+		if (o instanceof FormatInformation == false) {
 			return false;
 		}
 		FormatInformation other = (FormatInformation) o;

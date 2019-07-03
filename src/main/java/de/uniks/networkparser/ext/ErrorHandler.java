@@ -221,7 +221,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		}
 		File dirPath = new File(path);
 		dirPath = new File(dirPath.getPath());
-		if (!dirPath.exists()) {
+		if (dirPath.exists() == false) {
 			if (dirPath.mkdirs()) {
 				return path;
 			}

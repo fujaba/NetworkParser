@@ -229,7 +229,7 @@ class NioZipEncoding {
 		if (charset == null) {
 			return null;
 		}
-		if (!useReplacement) {
+		if (useReplacement == false) {
 			return this.charset.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
 					.onUnmappableCharacter(CodingErrorAction.REPORT);
 		} else {

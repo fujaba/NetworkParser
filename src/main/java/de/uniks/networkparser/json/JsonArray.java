@@ -190,11 +190,11 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	@Override
 	protected String parseItem(EntityStringConverter converter) {
 		Iterator<Object> iterator = iterator();
-		if (!iterator.hasNext()) {
+		if (iterator.hasNext() == false) {
 			return "[]";
 		}
 
-		if (!isVisible()) {
+		if (isVisible() == false) {
 			return "[" + size() + " Items]";
 		}
 		/* First Element */

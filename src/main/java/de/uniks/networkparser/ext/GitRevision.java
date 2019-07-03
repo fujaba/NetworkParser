@@ -363,7 +363,7 @@ public class GitRevision {
 			if (child.isDirectory()) {
 				createdComment(sourcePath + child.getName() + "/", licence, values);
 			} else {
-				if (!child.getAbsolutePath().endsWith(".java")) {
+				if (child.getAbsolutePath().endsWith(".java") == false) {
 					continue;
 				}
 			}

@@ -607,7 +607,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 					if (proxy.isSendable()) {
 						msg.withAddToReceived(proxy);
 					}
-				} else if (!proxy.isReconnecting(this.tryReconnectTimeSecond)) {
+				} else if (proxy.isReconnecting(this.tryReconnectTimeSecond) == false) {
 					sendProxies.add(proxy);
 				}
 			}
@@ -624,12 +624,12 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 					if (proxy.isSendable()) {
 						msg.withAddToReceived(proxy);
 					}
-				} else if (!proxy.isReconnecting(this.tryReconnectTimeSecond)) {
+				} else if (proxy.isReconnecting(this.tryReconnectTimeSecond) == false) {
 					sendProxies.add(proxy);
 				}
 			}
 		}
-		if (!out) {
+		if (out == false) {
 			return;
 		}
 		if (receiverProxy.size() < 1 && this.proxies.size() > 0) {

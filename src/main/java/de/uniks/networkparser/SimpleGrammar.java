@@ -60,7 +60,7 @@ public class SimpleGrammar implements Grammar {
 		}
 		JsonObject props = new JsonObject();
 		for (int i = 0; i < item.size(); i++) {
-			if (!IdMap.CLASS.equalsIgnoreCase(item.getKeyByIndex(i))) {
+			if (IdMap.CLASS.equalsIgnoreCase(item.getKeyByIndex(i)) == false) {
 				props.put(item.getKeyByIndex(i), item.getValueByIndex(i));
 			}
 

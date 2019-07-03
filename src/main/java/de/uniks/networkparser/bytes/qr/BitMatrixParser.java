@@ -167,7 +167,7 @@ public final class BitMatrixParser {
 				int i = readingUp ? dimension - 1 - count : count;
 				for (int col = 0; col < 2; col++) {
 					/* Ignore bits covered by the function pattern */
-					if (!functionPattern.get(j - col, i)) {
+					if (functionPattern.get(j - col, i) == false) {
 						/* Read a bit */
 						bitsRead++;
 						currentByte <<= 1;

@@ -232,7 +232,7 @@ public class FileClassModel extends ClassModel {
 				msg.add("ERROR:" + currentPackage + ".missing.ClassDoc(" + currentFileName + ":" + lineClass + ")");
 			} else {
 				/* Check if there is a line like * some text */
-				if (!Pattern.compile("\\u002A \\w+").matcher(classDoc).find()) {
+				if (Pattern.compile("\\u002A \\w+").matcher(classDoc).find() == false) {
 					/* There is no text, put a missing doc description error */
 					msg.add("WARNING:" + currentPackage + ".missing.ClassDocText(" + currentFileName + ":" + lineClass
 							+ ")");
@@ -333,7 +333,7 @@ public class FileClassModel extends ClassModel {
 							+ ")");
 				} else {
 					/* Check if there is a line like * some text */
-					if (!Pattern.compile("\\u002A \\s*[\\w+<]").matcher(methodDoc).find()) {
+					if (Pattern.compile("\\u002A \\s*[\\w+<]").matcher(methodDoc).find() == false) {
 						if (match.contains(" get") || match.contains(" set") || match.contains(" is")
 								|| match.contains(" with")) {
 							/* no nessessary Comment for getter and Setter */
@@ -345,7 +345,7 @@ public class FileClassModel extends ClassModel {
 					}
 
 					/* Check if there are parameters in the method declaration */
-					if (!match.contains("()")) {
+					if (match.contains("()") == false) {
 						/* Get all parameters from method declaration */
 						String temp = match.substring(match.indexOf("(") + 1, match.indexOf(")"))
 								.replaceAll("<[^\\)]*>", "");
@@ -375,7 +375,7 @@ public class FileClassModel extends ClassModel {
 					}
 
 					/* Check if there is a return type in the method */
-					if (!match.contains("void")) {
+					if (match.contains("void") == false) {
 						/* There is no tag and text */
 						if (methodDoc.split("@return").length == 1) {
 							/* There is no tag and no text */

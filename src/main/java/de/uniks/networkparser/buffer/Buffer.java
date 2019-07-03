@@ -354,7 +354,7 @@ public abstract class Buffer implements BufferItem {
 			try {
 				if (value.indexOf('.') > -1 || value.indexOf('e') > -1 || value.indexOf('E') > -1) {
 					d = Double.valueOf(value.toString());
-					if (!d.isInfinite() && !d.isNaN()) {
+					if (d.isInfinite() == false && d.isNaN() == false) {
 						return d;
 					}
 				} else {
@@ -380,7 +380,7 @@ public abstract class Buffer implements BufferItem {
 		}
 		while (this.position() < len) {
 			char currentChar = getCurrentChar();
-			if (currentChar == search && (!notEscape || lastChar != '\\')) {
+			if (currentChar == search && (notEscape == false || lastChar != '\\')) {
 				return true;
 			}
 			lastChar = currentChar;
@@ -417,7 +417,7 @@ public abstract class Buffer implements BufferItem {
 				}
 			} else {
 				for (char zeichen : character) {
-					if (currentChar == zeichen && (!notEscape || lastChar != '\\')) {
+					if (currentChar == zeichen && (notEscape == false || lastChar != '\\')) {
 						return true;
 					}
 				}

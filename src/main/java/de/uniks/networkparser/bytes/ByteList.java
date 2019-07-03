@@ -162,13 +162,13 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	}
 
 	private boolean isPrimitive(boolean isDynamic) {
-		if (!isDynamic) {
+		if (isDynamic == false) {
 			return false;
 		}
 		if (this.size() < 1) {
 			return false;
 		}
-		if (!(this.get(this.size() - 1) instanceof ByteEntity)) {
+		if (this.get(this.size() - 1) instanceof ByteEntity == false) {
 			return false;
 		}
 		if (this.get(0).getType() != ByteTokener.DATATYPE_CLAZZTYPE) {

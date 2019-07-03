@@ -700,10 +700,9 @@ public class EMFTokener extends Tokener {
 			String srcRoleName = null;
 			XMLEntity parent = (XMLEntity) parentList.getValueByIndex(i);
 			String srcClassName = parent.getString(EMFTokener.NAME);
-			if (!eref.has(EOpposite)) {
-/*				srcRoleName = tgtRoleName+"_back"; */
-			} else {
+			if (eref.has(EOpposite)) {
 				srcRoleName = EntityUtil.getId(eref.getString(EOpposite));
+		/*	 else 			srcRoleName = tgtRoleName+"_back"; */
 			}
 			Association srcAssoc = getOrCreate(items, model, srcClassName, srcRoleName);
 			/* Create as Unidirection */

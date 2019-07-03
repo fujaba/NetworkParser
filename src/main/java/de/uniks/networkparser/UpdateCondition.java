@@ -327,11 +327,11 @@ public class UpdateCondition implements ObjectCondition {
 			Entity child;
 
 			/* OldValue */
-			if (!change.has(SendableEntityCreator.REMOVE)) {
+			if (change.has(SendableEntityCreator.REMOVE)) {
+				child = tokener.newInstance();
+			} else {
 				child = (Entity) change.getValue(SendableEntityCreator.REMOVE);
 				change.put(SendableEntityCreator.REMOVE, child);
-			} else {
-				child = tokener.newInstance();
 			}
 			SendableEntityCreator creatorClass = map.getCreatorClass(oldValue);
 			if (creatorClass != null) {
@@ -346,11 +346,11 @@ public class UpdateCondition implements ObjectCondition {
 			}
 
 			/* NewValue */
-			if (!change.has(SendableEntityCreator.UPDATE)) {
+			if (change.has(SendableEntityCreator.UPDATE)) {
+				child = tokener.newInstance();
+			} else {
 				child = (Entity) change.getValue(SendableEntityCreator.UPDATE);
 				change.put(SendableEntityCreator.UPDATE, child);
-			} else {
-				child = tokener.newInstance();
 			}
 
 			creatorClass = map.getCreatorClass(newValue);

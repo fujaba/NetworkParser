@@ -28,7 +28,7 @@ abstract class ReceivingProxy implements Runnable {
 	@Override
 	public void run() {
 		try {
-			while (!Thread.interrupted()) {
+			while (Thread.interrupted() == false) {
 				lookForMessage();
 			}
 		} catch (Exception e) {

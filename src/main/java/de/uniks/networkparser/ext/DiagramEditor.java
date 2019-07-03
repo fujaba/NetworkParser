@@ -135,7 +135,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 
 		HTMLEntity entity = new HTMLEntity();
 		GraphList list = editor.map.toObjectDiagram(items[0]); /* TRY IT */
-		if (!all) {
+		if (all == false) {
 			SimpleList<String> ids = new SimpleList<String>();
 			for (Object item : items) {
 				String id = editor.map.getId(item);
@@ -598,7 +598,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 					error = false;
 				}
 			}
-			if (!error) {
+			if (error == false) {
 				Object mode = ReflectionLoader.getField(ReflectionLoader.TRANSFERMODE, "COPY");
 				ReflectionLoader.call(event, "acceptTransferModes", ReflectionLoader.TRANSFERMODE, mode);
 				getJSEditor().setBoardStyle("OK");

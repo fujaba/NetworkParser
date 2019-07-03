@@ -488,7 +488,7 @@ public class GraphConverter implements Converter {
 					.with(source.getName(false), ":", edge.getName(), "-", target.getName(false), ":", otherName)
 					.toString();
 
-			if (!ids.contains(id)) {
+			if (ids.contains(id) == false) {
 				Match diff = GraphUtil.getDifference(edge);
 				if (diff != null && diff.getCount() > 0) {
 					child.put(COUNTER, diff.getCount());
@@ -663,7 +663,7 @@ public class GraphConverter implements Converter {
 			return result;
 		}
 		for (GraphMember item : children) {
-			if (!(item instanceof Attribute)) {
+			if (item instanceof Attribute == false) {
 				continue;
 			}
 			Attribute attribute = (Attribute) item;

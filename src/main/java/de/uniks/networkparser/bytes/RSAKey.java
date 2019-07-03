@@ -237,7 +237,7 @@ public class RSAKey {
 	 * @return the checked Value
 	 */
 	private final BigInteger weedOut(BigInteger value) {
-		if (!isNull(value) && isPositive(value)) {
+		if (isNull(value) == false && isPositive(value)) {
 			return value;
 		} else {
 			return null;

@@ -334,7 +334,7 @@ public class ModelHistory implements ObjectCondition {
 			historyKid = jsonObject.getValue(fieldName + SendableEntityCreator.REMOVE);
 		}
 
-		if (!(historyKid instanceof Entity)) {
+		if (historyKid instanceof Entity == false) {
 			return null;
 		}
 

@@ -38,7 +38,7 @@ public class ReaderComm implements Runnable {
 	public void start(NodeProxyBroker broker, String threadName) {
 		this.threadName = threadName;
 		this.broker = broker;
-		if (!running) {
+		if (running == false) {
 			running = true;
 		}
 	}

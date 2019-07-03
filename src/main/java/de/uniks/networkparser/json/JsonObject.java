@@ -178,7 +178,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 			return "{}";
 		}
 
-		if (!isVisible()) {
+		if (isVisible() == false) {
 			return "{" + size() + " values}";
 		}
 		converter.add();

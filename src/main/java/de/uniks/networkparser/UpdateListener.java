@@ -178,7 +178,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 				break;
 			}
 		}
-		if (!done) {
+		if (done == false) {
 			/* this property is not part of the replicated model, do not replicate
 			   if propertyname is not found and the name is REMOVE_YOU it remove it from the IdMap */
 			if (SendableEntityCreator.REMOVE_YOU.equals(property)) {
@@ -264,7 +264,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 	 * @return the MasterObject, if successful
 	 */
 	public Object execute(Entity updateMessage, Filter filter) {
-		if (!updateMessage.has(SendableEntityCreator.UPDATE) && !updateMessage.has(SendableEntityCreator.REMOVE)) {
+		if (updateMessage.has(SendableEntityCreator.UPDATE) == false && updateMessage.has(SendableEntityCreator.REMOVE) == false) {
 			return null;
 		}
 		if (this.map == null) {

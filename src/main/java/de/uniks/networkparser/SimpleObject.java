@@ -116,7 +116,7 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 				this.setClassName((String) value);
 			}
 		}
-		if (!checked) {
+		if (checked == false) {
 			int pos = this.values.indexOf(key);
 
 			if (pos < 0) {
