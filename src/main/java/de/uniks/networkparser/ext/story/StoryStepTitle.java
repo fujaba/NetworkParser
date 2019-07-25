@@ -31,8 +31,9 @@ import de.uniks.networkparser.xml.XMLEntity;
 public class StoryStepTitle implements ObjectCondition {
 	private String title;
 
-	public void setTitle(String title) {
+	public StoryStepTitle withTitle(String title) {
 		this.title = title;
+		return this;
 	}
 
 	@Override

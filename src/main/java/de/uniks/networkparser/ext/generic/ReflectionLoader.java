@@ -503,6 +503,10 @@ public class ReflectionLoader {
 				}
 			}
 			Constructor<?> constructor = instance.getDeclaredConstructor(methodArguments);
+			if(Modifier.isProtected(constructor.getModifiers())) {
+				constructor.setAccessible(true);
+				return constructor.newInstance(methodArgumentsValues);
+			}
 			return constructor.newInstance(methodArgumentsValues);
 		} catch (Exception e) {
 			if (logger != null && showError) {

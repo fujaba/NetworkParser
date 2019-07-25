@@ -40,7 +40,7 @@ public class StoryTest {
 
 		story.addDiagram(model);
 
-		story.dumpHTML();
+		story.writeToFile();
 	}
 	
 	@Test
@@ -54,7 +54,7 @@ public class StoryTest {
 		// MSUT BE A LINK TO JACOCO AGENT
 		storyTest.withAgent("lib/jacocoagent.jar");
 		story.add(storyTest);
-		story.dumpHTML();
+		story.writeToFile();
 	}
 
 
@@ -79,13 +79,13 @@ public class StoryTest {
 		Story winGame  = book.createStory("WinGame");
 		Assert.assertNotNull(winGame);
 
-		book.dumpIndexHTML();
+		book.writeToFile();
 	}
 	@Test
 	public void testStorySimple() {
 		Story story = new Story();
 		story.addText("Sample");
-		story.dumpHTML();
+		story.writeToFile();
 	}
 
 	@Test
@@ -123,7 +123,7 @@ public class StoryTest {
 	@Test
 	public void testSimple() {
 		ClassModel ludoModel = new ClassModel();
-		Story story = new Story().withLabel("playing Ludo");
+		Story story = new Story().withTitle("playing Ludo");
 		story.addText("This is the Ludo Model", true);
 		story.addDiagram(ludoModel);
 		story.addText("next Step is Testing", true);
@@ -134,7 +134,7 @@ public class StoryTest {
 		story.addSourceCode(1, 14);
 		story.addText("Moockup", true);
 		story.addImage("doc/gui_mockup.png");
-		story.dumpHTML();
+		story.writeToFile();
 	}
 	
 }

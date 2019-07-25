@@ -65,22 +65,24 @@ jar{
 }
 
 task buildCoreJar16(type: Jar, dependsOn: jar) {
+	description 'Build Jar with NetworkParser-Core for Java 1.6'
 	group "Jar"; from fileTree(dir: 'build/classes/main16'); classifier = 'core16'
 	manifest = project.manifest {from sharedManifest}
 }
 
 task buildCoreJar17(type: Jar, dependsOn: buildCoreJar16) {
+	description 'Build Jar with NetworkParser-Corefor Java 1.7'
 	group "Jar"; from fileTree(dir: 'build/classes/main17'); classifier = 'core17'
 	manifest = project.manifest {from sharedManifest}
 }
 task buildCoreJar18(type: Jar, dependsOn: buildCoreJar17) {
-	description 'Build Jar with NetworkParser-Core without dependency of JavaFX and Reflection'
+	description 'Build Jar with NetworkParser-Core for Java 1.8'
 	group "Jar"; from fileTree(dir: 'build/classes/main18'); classifier = 'core18';
 	excludes = ['**/test/**']
 	manifest = project.manifest {from sharedManifest}
 }
 task buildCoreJar19(type: Jar, dependsOn: buildCoreJar18) {
-	description 'Build Jar with NetworkParser-Core without dependency of JavaFX and Reflection'
+	description 'Build Jar with NetworkParser-Core for Java 1.9'
 	group "Jar";from sourceSets.main.output; classifier = 'core19';
 	excludes = ['**/test/**']
 	manifest = project.manifest {from sharedManifest}

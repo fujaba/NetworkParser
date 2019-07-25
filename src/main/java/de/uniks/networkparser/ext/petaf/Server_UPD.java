@@ -41,8 +41,12 @@ public class Server_UPD extends Thread implements Server {
 
 	public Server_UPD(NodeProxyServer proxy, boolean asyn) {
 		this.proxy = proxy;
-		if (init() && asyn) {
-			start();
+		if(init()) {
+			if (asyn) {
+				start();
+			}
+		}else {
+			run = false;
 		}
 	}
 
@@ -72,7 +76,7 @@ public class Server_UPD extends Thread implements Server {
 		}
 	}
 
-	public DatagramPacket createSendPacket() {
+	public DatagramPacket createSendPacket(int port) {
 		byte[] sendData = new byte[proxy.getBufferSize()];
 		if (proxy.getSpace() != null) {
 			sendData = proxy.getSpace().getReplicationInfo().toString().getBytes();
@@ -82,14 +86,17 @@ public class Server_UPD extends Thread implements Server {
 			IPAddress = InetAddress.getByName("localhost");
 		} catch (UnknownHostException e) {
 		}
-		DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, proxy.getPort());
+		DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
 		return sendPacket;
 	}
 
 	public DatagramPacket runClient() {
-		DatagramPacket message = createSendPacket();
+		DatagramPacket message = createSendPacket(proxy.getReceivePort());
 		DatagramPacket receivePacket;
 		try {
+			if(socket == null) {
+				
+			}
 			socket.send(message);
 
 			byte[] receiveData = new byte[proxy.getBufferSize()];
@@ -126,7 +133,14 @@ public class Server_UPD extends Thread implements Server {
 		try {
 			/* Switch for Client / Server */
 			if (proxy != null && NodeProxy.isInput(proxy.getType())) {
-				socket = new DatagramSocket(proxy.getPort());
+				int port = this.proxy.getPort();
+				try {
+					socket = new DatagramSocket(port);
+				}catch (Exception e) {
+					socket = new DatagramSocket();
+					this.proxy.withPort(socket.getLocalPort());
+					this.proxy.withReceivePort(port);
+				}
 			} else {
 				socket = new DatagramSocket();
 			}

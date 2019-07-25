@@ -26,12 +26,11 @@ THE SOFTWARE.
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
@@ -53,6 +52,8 @@ public class GitRevision {
 	private boolean full = false;
 	private int max = -1;
 	private String path;
+	private String username;
+	private String password;
 
 	public GitRevision withPath(String path) {
 		this.path = path;
@@ -67,8 +68,7 @@ public class GitRevision {
 		return json;
 	}
 
-	@SuppressWarnings("unchecked")
-	public JsonObject execute(int maxCommit) {
+	private Object getRepository() {
 		if (ReflectionLoader.FILEREPOSITORYBUILDER == null) {
 			return null;
 		}
@@ -83,16 +83,35 @@ public class GitRevision {
 		File projectFile = null;
 		if (new File(localPath + ".git/config").exists()) {
 			file = new File(localPath + ".git");
-			projectFile = new File(localPath);
+			projectFile = file;
 		} else if (new File(localPath + "config").exists()) {
 			file = new File(localPath);
-			projectFile = file.getParentFile();
+			projectFile = file;
 		}
 		if (file == null) {
 			return null;
 		}
-		Object builder = ReflectionLoader.newInstance(ReflectionLoader.FILEREPOSITORYBUILDER);
 		Object repository = null;
+		try {
+			Object builder = ReflectionLoader.newInstance(ReflectionLoader.FILEREPOSITORYBUILDER);
+			ReflectionLoader.call(builder, "setWorkTree", File.class, file);
+			if (projectFile != null && "".equals(projectFile.getName()) == false) {
+				ReflectionLoader.call(builder, "setGitDir", File.class, projectFile);
+			}
+			repository = ReflectionLoader.callChain(builder, "readEnvironment", "findGitDir", "build");
+			/* scan environment GIT_* variables */
+			/* scan up the file system tree */
+		}catch(Exception e) {
+		}
+		return repository;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public JsonObject execute(int maxCommit) {
+		Object repository = getRepository();
+		if(repository == null) {
+			return null;
+		}
 		Map<String, ?> allRefs = null;
 		LinkedHashSet<String> branches = new LinkedHashSet<String>();
 		String id = null;
@@ -102,14 +121,6 @@ public class GitRevision {
 
 		int count = 0;
 		try {
-			ReflectionLoader.call(builder, "setWorkTree", File.class, file);
-			if (projectFile != null && "".equals(projectFile.getName()) == false) {
-				ReflectionLoader.call(builder, "setGitDir", File.class, projectFile);
-			}
-			repository = ReflectionLoader.callChain(builder, "readEnvironment", "findGitDir", "build");
-			/* scan environment GIT_* variables */
-			/* scan up the file system tree */
-
 			calcGitTag(repository, info);
 			allRefs = (Map<String, ?>) ReflectionLoader.call(repository, "getAllRefs");
 			try {
@@ -135,9 +146,7 @@ public class GitRevision {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			if (repository != null) {
-				ReflectionLoader.call(repository, "close");
-			}
+			ReflectionLoader.call(repository, "close");
 		}
 		if (allRefs != null) {
 			if (id == null) {
@@ -266,11 +275,11 @@ public class GitRevision {
 		return minor;
 	}
 
-	@SuppressWarnings("unchecked")
 	private JsonObject commitInfo(JsonArray map, Object repository, Object objectID, Object newerrId) throws Exception {
+		Object walk=null;
 		try {
 			JsonObject jsonObject = new JsonObject();
-			Object walk = ReflectionLoader.newInstance(ReflectionLoader.REVWALK, ReflectionLoader.REPOSITORY,
+			walk = ReflectionLoader.newInstance(ReflectionLoader.REVWALK, ReflectionLoader.REPOSITORY,
 					repository);
 			Object commit = null;
 			if (objectID != null) {
@@ -296,7 +305,7 @@ public class GitRevision {
 					Object newerCommit = ReflectionLoader.call(walk, "parseCommit", newerrId);
 					Object reader = ReflectionLoader.call(repository, "newObjectReader");
 					Object newerTreeIter = ReflectionLoader.newInstance(ReflectionLoader.CANONICALTREEPARSER);
-					List<Object> diffs = null;
+					Collection<?> diffs = null;
 					Object tree = ReflectionLoader.call(newerCommit, "getTree");
 					if (tree != null) {
 						ReflectionLoader.call(newerTreeIter, "reset", tree);
@@ -308,7 +317,7 @@ public class GitRevision {
 							git = ReflectionLoader.call(git, "diff");
 							git = ReflectionLoader.call(git, "setNewTree", newerTreeIter);
 							git = ReflectionLoader.call(git, "setOldTree", newTreeIter);
-							diffs = (List<Object>) ReflectionLoader.call(git, "call");
+							diffs = (Collection<?>) ReflectionLoader.call(git, "call");
 						}
 					}
 					if (diffs != null) {
@@ -328,9 +337,10 @@ public class GitRevision {
 				}
 				map.add(jsonObject);
 			}
-			ReflectionLoader.call(walk, "close");
 			return jsonObject;
 		} catch (Exception e) {
+		} finally {
+			ReflectionLoader.call(walk, "close");
 		}
 		return null;
 	}
@@ -383,23 +393,94 @@ public class GitRevision {
 		File dir = new File(localPath);
 		File gitDir = new File(localPath + ".git/");
 		gitDir.mkdirs();
+		Object git =null;
 		try {
 
 			Object initGIT = ReflectionLoader.call(ReflectionLoader.GIT, "init");
 			ReflectionLoader.call(initGIT, "setDirectory", dir);
 			ReflectionLoader.call(initGIT, "setGitDir", gitDir);
-			Object git = ReflectionLoader.call(initGIT, "call");
+			git = ReflectionLoader.call(initGIT, "call");
 			if (remoteURL != null) {
 				new URL(remoteURL);
 				Object config = ReflectionLoader.callChain(git, "getRepository", "getConfig");
 				ReflectionLoader.call(config, "setString", "remote", "origin", "url", remoteURL);
 				ReflectionLoader.call(config, "save");
 			}
-			ReflectionLoader.call(git, "close");
 		} catch (Exception e) {
 			return false;
+		}finally {
+			if(git != null) {
+				ReflectionLoader.call(git, "close");
+			}
 		}
 		return true;
+	}
+	
+	public GitRevision withAuthentification(String username, String password) {
+		if(username == null || password == null) {
+			return this;
+		}
+		this.username = username;
+		this.password = password;
+		
+		if(username == null || username.length()<1) {
+			this.username  = System.getProperty("user.name");
+		}
+		if(password == null || password.length()<1) {
+			this.password = System.getProperty("git");
+		}
+		return this;
+	}
+	
+	public boolean pull(String... commitId) {
+		Object repository = getRepository();
+		if(repository == null) {
+			return false;
+		}
+		// org.eclipse.jgit.lib.Repository
+		String updateId = null;
+		try {
+			if(commitId != null && commitId.length>0) {
+				updateId = commitId[0];
+			}
+			if(updateId == null) {
+				// CHECKOUT FIRST
+				//FIRST FETCH
+				//SECOND CHECKOUT
+				updateId = "master";
+			}
+			Class<?> ref = ReflectionLoader.getClass("org.eclipse.jgit.lib.Repository");
+			Object fetch = ReflectionLoader.newInstance("org.eclipse.jgit.api.FetchCommand", ref, repository);
+			
+			Object storedConfig = ReflectionLoader.call(repository, "getConfig");
+			String url = (String) ReflectionLoader.call(storedConfig, "getString", String.class, "remote", String.class, "origin", String.class, "url");
+//			if (url == null) {
+//			  Set<String> remoteNames = repository2.getRemoteNames();
+//			  url = storedConfig.getString("remote", remoteNames.iterator().next(), "url");
+//			}
+			if(url != null) {
+				ReflectionLoader.call(fetch, "setRemote", String.class, url);
+//				fetch.setRemote(url);
+			}
+			String[] refs = new String[] {"+refs/heads/*:refs/remotes/origin/*","+refs/tags/*:refs/tags/*", "+refs/notes/*:refs/notes/*"};
+			ReflectionLoader.call(fetch,"setRefSpecs", String[].class,refs);  
+			if(this.username != null &&  this.password != null) {
+				Object credentials = ReflectionLoader.newInstance("org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider", String.class, username, String.class, password);
+				Object credition = ReflectionLoader.getClass("org.eclipse.jgit.transport.CredentialsProvider");
+				ReflectionLoader.call(fetch, "setCredentialsProvider", credition, credentials);
+			}
+			ReflectionLoader.call(fetch, "call");
+			Object checkout = ReflectionLoader.newInstance("org.eclipse.jgit.api.CheckoutCommand", ref, repository);
+			ReflectionLoader.call(checkout, "setStartPoint", "origin/"+updateId);
+			ReflectionLoader.call(checkout, "setCreateBranch", boolean.class, true);
+			ReflectionLoader.call(checkout, "setName", updateId);
+			ReflectionLoader.call(checkout, "call");
+		}catch (Throwable e) {
 
+			e.printStackTrace();
+		} finally {
+			ReflectionLoader.call(repository, "close");
+		}
+		return false;
 	}
 }

@@ -95,7 +95,7 @@ public class LudoTest {
 		//story.addCode();
 //		story.addDiagram(endSituationModel);
 
-		story.dumpHTML("ludo.html");
+		story.writeToFile("ludo.html");
 	}
 	
 	public void stepError() {

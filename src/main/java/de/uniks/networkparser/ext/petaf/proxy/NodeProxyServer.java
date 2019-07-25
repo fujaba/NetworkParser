@@ -36,6 +36,7 @@ public class NodeProxyServer extends NodeProxy {
 	public static final String PROPERTY_PORT = "port";
 	private int port = 9876;
 	private int bufferSize = 1024;
+	private int receivePort = 9876;
 	private Server server;
 	private String serverType;
 
@@ -70,6 +71,7 @@ public class NodeProxyServer extends NodeProxy {
 
 	public NodeProxyServer withPort(int value) {
 		this.port = value;
+		this.receivePort = value;
 		return this;
 	}
 
@@ -126,7 +128,9 @@ public class NodeProxyServer extends NodeProxy {
 				}
 			} else {
 				/* Server.BROADCAST */
-				this.server = new Server_UPD(this, true);
+				Server_UPD updServer = new Server_UPD(this, true); 
+				this.server = updServer;
+				this.online = this.server.isRun();
 			}
 		}
 		return true;
@@ -135,5 +139,31 @@ public class NodeProxyServer extends NodeProxy {
 	public static NodeProxy createServer(int port) {
 		NodeProxyServer proxy = new NodeProxyServer(NodeProxy.TYPE_IN).withPort(port);
 		return proxy;
+	}
+	
+	public static NodeProxyServer search(int port) {
+		NodeProxyServer proxy = new NodeProxyServer(NodeProxy.TYPE_IN);
+		proxy.withPort(port);
+		return proxy;
+	}
+	
+	public boolean sendSearch() {
+		Server_UPD server = (Server_UPD) this.server;
+//		DatagramPacket createSendPacket = server.createSendPacket();
+		server.runClient();
+		// If(This IsOnline False) May be a valid Breadcast on this Port
+//		if(this.online == false) {
+//		}
+//			
+//		}
+		return false;
+	}
+	
+	public NodeProxyServer withReceivePort(int port) {
+		this.receivePort = port;
+		return this;
+	}
+	public int getReceivePort() {
+		return receivePort;
 	}
 }

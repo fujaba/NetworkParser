@@ -47,7 +47,7 @@ public class SimpleUsage {
 		story.addDescription("3", "Deserialization");
 		story.addDescription("4", string);
 
-		story.dumpHTML();
+		story.writeToFile();
 		
 		
 		// end::serialization[]

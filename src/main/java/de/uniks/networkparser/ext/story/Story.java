@@ -42,16 +42,21 @@ import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.logic.Equals;
 import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.xml.HTMLEntity;
+import de.uniks.networkparser.xml.XMLEntity;
 
 public class Story extends StoryElement implements Comparable<Story> {
 	private String outputFile;
-	private String label;
 	private SimpleList<ObjectCondition> steps = new SimpleList<ObjectCondition>();
 	private int counter = -1;
 	private boolean breakOnAssert = true;
 	private IdMap map;
 	private String path = "doc/";
-
+	private HTMLEntity elements;
+	
+	public Story() {
+		this.add(new StoryStepTitle());
+	}
+	
 	public static String addResource(HTMLEntity entity, String name, boolean include) {
 		name = name.replace('\\', '/');
 		if (name.toLowerCase().endsWith(".html") == false) {
@@ -78,10 +83,6 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return name;
 	}
 
-	public Story() {
-		this.add(new StoryStepTitle());
-	}
-
 	public void add(ObjectCondition step) {
 		this.steps.add(step);
 	}
@@ -98,23 +99,49 @@ public class Story extends StoryElement implements Comparable<Story> {
 		}
 		return this;
 	}
+	
+	public StoryStepTitle getTitle() {
+		for(ObjectCondition element : steps) {
+			if (element instanceof StoryStepTitle) {
+				return (StoryStepTitle) element;
+			}
+		}
+		return null;
+	}
 
 	public String getLabel() {
-		if (this.label == null && this.outputFile != null) {
+		StoryStepTitle title = getTitle();
+		String label = null;
+		if(title != null) {
+			label = title.getTitle();
+			if(label != null) {
+				return label;
+			}
+		}
+		if (this.outputFile != null) {
 			int pos = this.outputFile.lastIndexOf('/');
 			int temp = this.outputFile.lastIndexOf('\\');
 			if (temp > pos) {
 				pos = temp;
 			}
 			if (pos >= 0) {
-				this.label = this.outputFile.substring(pos + 1);
+				label = this.outputFile.substring(pos + 1);
+				if(title != null && label != null) {
+					title.withTitle(label);
+				}
 			}
 		}
-		return this.label;
+		return label;
 	}
+	
 
-	public Story withLabel(String value) {
-		this.label = value;
+	public Story withTitle(String text) {
+		StoryStepTitle title = getTitle();
+		if(title != null) {
+			title.withTitle(text);
+		}else {
+			steps.add(new StoryStepTitle().withTitle(text));
+		}
 		return this;
 	}
 
@@ -190,7 +217,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 		if (firstStep instanceof StoryStepTitle) {
 			StoryStepTitle titleStep = (StoryStepTitle) firstStep;
 			if (titleStep.getTitle() == null) {
-				titleStep.setTitle(step.getMethodName());
+				titleStep.withTitle(step.getMethodName());
 			}
 		}
 	}
@@ -225,28 +252,35 @@ public class Story extends StoryElement implements Comparable<Story> {
 		add(new StoryStepImage().withFile(imageFile));
 	}
 
-	public boolean dumpHTML() {
-		return writeToFile(this.outputFile);
-	}
-
-	public boolean dumpHTML(String fileName) {
-		return writeToFile(fileName);
-	}
-
-	protected boolean writeToFile(String fileName) {
-		if (fileName == null || fileName.length() < 1) {
+	public boolean writeToFile(String... fileName) {
+		String file = null;
+		if(fileName == null) { 
+			file = this.outputFile;
+		}else if(fileName.length>0) {
+			file = fileName[0];
+		}
+		if (file == null || file.length() < 1) {
 			if (steps.size() < 1) {
 				return false;
 			}
 			/* get FileName from Stack */
 			StoryStepSourceCode step = new StoryStepSourceCode().withCode(this.getClass(), 2);
-			fileName = step.getFileName();
-			if (fileName == null || fileName.length() < 1) {
+			file = step.getFileName();
+			if (file == null || file.length() < 1) {
 				return false;
 			}
 		}
 		HTMLEntity output = new HTMLEntity();
 		output.withEncoding(HTMLEntity.ENCODING);
+		if(elements != null) {
+			XMLEntity body = elements.getBody();
+			if(body != null) {
+				for(int i=0;i<body.sizeChildren();i++) {
+					BaseItem child = body.getChild(i);
+					output.add(child);
+				}
+			}
+		}
 
 		SimpleEvent evt = new SimpleEvent(this, null, null, output);
 		for (ObjectCondition step : steps) {
@@ -256,7 +290,13 @@ public class Story extends StoryElement implements Comparable<Story> {
 		}
 		EntityStringConverter converter = new EntityStringConverter(2);
 		converter.withPath(path);
-		return FileBuffer.writeFile(path + fileName, output.toString(converter)) >= 0;
+		if(file.indexOf(".")<1) {
+			file = file + ".html";
+		}
+		if(output.getBody() == null || output.getBody().size()<1) {
+			return false;
+		}
+		return FileBuffer.writeFile(path + file, output.toString(converter)) >= 0;
 	}
 
 	public static boolean addScript(String path, String name, HTMLEntity entry) {
@@ -327,13 +367,14 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return map;
 	}
 
-	public void finish() {
+	public boolean finish() {
 		for (ObjectCondition step : steps) {
 			if (step instanceof StoryStepSourceCode) {
 				StoryStepSourceCode sourceCode = (StoryStepSourceCode) step;
 				sourceCode.finish();
 			}
 		}
+		return true;
 	}
 
 	private boolean addCondition(StoryStepCondition step) {
@@ -342,7 +383,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 		}
 		this.add(step);
 		if (step.checkCondition() == false && breakOnAssert) {
-			this.dumpHTML();
+			this.writeToFile();
 			Method assertClass = null;
 			try {
 				assertClass = Class.forName("org.junit.Assert").getMethod("assertTrue", String.class, boolean.class);
@@ -487,5 +528,26 @@ public class Story extends StoryElement implements Comparable<Story> {
 		}
 		this.add(step);
 		return step;
+	}
+
+	/**
+	 * Create a new Scenario with caption
+	 * @param caption The Title of the new Scenario
+	 * @return a new Cucumber Scenario
+	 */
+	public Cucumber createScenario(String caption) {
+		Cucumber cucumber = Cucumber.createScenario(caption);
+		this.add(cucumber);
+		return cucumber;
+	}
+
+	public Story addRefreshButton() {
+		if(this.elements == null) {
+			this.elements = new HTMLEntity();
+		}
+		XMLEntity btn = this.elements.createTag("button");
+		btn.with("onclick", "window.location.reload();", "style", "position:absolute;right:20px;");
+		btn.withValueItem("&#8635;");
+		return this;
 	}
 }

@@ -780,7 +780,7 @@ public class Storyboards {
 
 //FIXME		storyboard.addObjectDiagram(rootObject);
 
-		storyboard.dumpHTML();
+		storyboard.writeToFile();
 	}
 
 	/**
@@ -1050,7 +1050,7 @@ public class Storyboards {
 
 		story.addObjectDiagramOnlyWith(university.getStudents());
 */
-		story.dumpHTML();
+		story.writeToFile();
 	}
 
 	/**
@@ -1574,7 +1574,7 @@ public class Storyboards {
 			story.addTable(table);
 		}
 		*/
-		story.dumpHTML();
+		story.writeToFile();
 	}
 
 	/*public Table addAssignments(Row row) {

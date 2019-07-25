@@ -1,5 +1,6 @@
 package de.uniks.networkparser.ext.story;
 
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.graph.GraphList;
@@ -8,13 +9,18 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.parser.Token;
+import de.uniks.networkparser.xml.HTMLEntity;
 
-public class Cucumber {
+public class Cucumber implements ObjectCondition {
 	public static final String TYPE_SCENARIO = "scenario";
 	public static final String TYPE_TITLE = "title";
 	public static final String TYPE_GIVEN = "given";
 	public static final String TYPE_WHEN = "when";
 	public static final String TYPE_THEN = "then";
+	public static final String TYPE_STARTSITUATION = "start situation";
+	public static final String TYPE_ACTION = "action";
+	public static final String TYPE_RESULTSITUATION = "result situation"; 
+	
 	public static final String TYPE_DEFINITION = "definition";
 
 	private Cucumber parent;
@@ -39,7 +45,7 @@ public class Cucumber {
 		if (values == null || values.length < 1) {
 			typeDictionary.add("alice", "Player");
 			typeDictionary.add("bob", "Player");
-			typeDictionary.add("alert", "Player");
+			typeDictionary.add("albert", "Player");
 			typeDictionary.add("stefan", "Player");
 			typeDictionary.add("ludo", "Game");
 			typeDictionary.add("startingArea", "Place");
@@ -349,5 +355,45 @@ public class Cucumber {
 			return parent.getTokenType(value);
 		}
 		return test;
+	}
+	
+	@Override
+	public boolean update(Object value) {
+		if(value instanceof SimpleEvent == false) {
+			return false;
+		}
+		this.analyse();
+		if(this.model != null) {
+			SimpleEvent event = (SimpleEvent) value;
+			Object newValue = event.getNewValue();
+			if(newValue instanceof HTMLEntity) {
+				HTMLEntity output = (HTMLEntity) newValue;
+				output.withGraph(this.model);
+			}
+		}
+		return true;
+	}
+	
+	public Cucumber withText(String type, String text) {
+		if(TYPE_TITLE.equalsIgnoreCase(type)) {
+			this.withTitle(text);
+			return this;
+		}
+		if(TYPE_DEFINITION.equalsIgnoreCase(type) ) {
+			this.Definition(text);
+			return this;
+		}
+		if(TYPE_GIVEN.equalsIgnoreCase(type) || TYPE_STARTSITUATION.equalsIgnoreCase(type)) {
+			this.Given(text);
+			return this;
+		}
+		if(TYPE_WHEN.equalsIgnoreCase(type) || TYPE_ACTION.equalsIgnoreCase(type)) {
+			this.When(text);
+			return this;
+		}
+		if(TYPE_THEN.equalsIgnoreCase(type) || TYPE_RESULTSITUATION.equalsIgnoreCase(type)) {
+			this.Then(text);
+		}
+		return this;
 	}
 }

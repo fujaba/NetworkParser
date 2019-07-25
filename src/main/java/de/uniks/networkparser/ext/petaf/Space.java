@@ -22,6 +22,7 @@ import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyFileSystem;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyLocal;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyModel;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyServer;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
@@ -1103,5 +1104,14 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	public Space withModelExecutor(ObjectCondition modelExecutor) {
 		this.map.withModelExecutor(modelExecutor);
 		return this;
+	}
+
+	public NodeProxyServer search(int port) {
+		NodeProxyServer server = NodeProxyServer.search(port);
+		this.with(server);
+		
+		server.sendSearch();
+		
+		return server;
 	}
 }

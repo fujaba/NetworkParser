@@ -96,6 +96,7 @@ public class StringPrintStream extends PrintStream implements ObjectCondition {
 		Object newValue = event.getNewValue();
 		if (newValue != null) {
 			String msg = "" + newValue;
+
 			if (msg.length() > 0) {
 				if (NetworkParserLog.ERROR.equals(event.getType())) {
 					System.err.println(event.getType() + ": " + msg);

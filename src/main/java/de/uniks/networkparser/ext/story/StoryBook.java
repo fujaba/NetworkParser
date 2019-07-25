@@ -1,9 +1,11 @@
 package de.uniks.networkparser.ext.story;
 
 import de.uniks.networkparser.SendableItem;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.ModelSet;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -17,12 +19,17 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 	private String outputFile;
 	private SortedSet<StoryElement> children = new SortedSet<StoryElement>(true);
 
-	public boolean dumpIndexHTML() {
-		return dumpIndexHTML("");
-	}
-
-	public boolean dumpIndexHTML(String subDir) {
-		if (this.outputFile == null) {
+	public boolean writeToFile(String... directory) {
+		String subDir  = "";
+		if(directory != null) {
+			if(directory.length>0) {
+				subDir =directory[0]; 
+			}
+			if(directory.length>0) {
+				this.outputFile = directory[1];
+			}
+		}
+		if (this.outputFile == null || subDir == null) {
 			return false;
 		}
 		HTMLEntity output = new HTMLEntity();
@@ -45,9 +52,14 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		}
 
 		for (StoryElement subStory : children) {
-			XMLEntity link = refHtml.createTag("A", refHtml.getBody());
-			link.add("href", subStory.getOutputFile());
-			link.withValueItem(subStory.getLabel());
+			if(subStory.writeToFile()) {
+				String subFile = subStory.getOutputFile();
+				if(subFile != null) {
+					XMLEntity link = refHtml.createTag("A", refHtml.getBody());
+					link.add("href", subStory.getOutputFile());
+					link.withValueItem(subStory.getLabel());
+				}
+			}
 		}
 		return FileBuffer.writeFile(fileName + "index.html", output.toString()) >= 0;
 	}
@@ -112,9 +124,15 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 	}
 
 	public Story createStory(String title) {
-		Story value = new Story().withLabel(title);
+		Story value = new Story().withTitle(title);
 		withStory(value);
 		return value;
+	}
+	public Cucumber createScenario(String title) {
+		Story value = new Story().withTitle(title);
+		withStory(value);
+		Cucumber scenario = value.createScenario(title);
+		return scenario;
 	}
 
 	public ModelSet<Line> getPart() {
@@ -201,5 +219,60 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 			}
 		}
 		return element;
+	}
+
+	public StoryBook createFromFile(String fileName) {
+		CharacterBuffer readFile = FileBuffer.readFile(fileName);
+		SimpleList<String> lines = readFile.splitStrings('\n');
+		if (lines.size() < 1) {
+			return null;
+		}
+		// FOR EVERY STORY CREATE A NEW CUCUMBER
+		for(int i=0;i<lines.size();i++) {
+			String line = lines.get(i);
+			String lCase = line.toLowerCase();
+			if(lCase.startsWith(Cucumber.TYPE_TITLE)) {
+				// NEW ONE
+				String text = line.substring(6).trim();
+				Story value = new Story().withTitle(text);
+				withStory(value);
+				Cucumber cucumber = value.createScenario(text);
+				// Internal FOR
+				// start situation, action, result situation
+				CharacterBuffer sub=new CharacterBuffer();
+				String type = null;
+				for(i++;i<lines.size();i++) {
+					line = lines.get(i).trim();
+					if(line.length()<1) {
+						continue;
+					}
+					lCase = line.toLowerCase();
+					if(lCase.startsWith(Cucumber.TYPE_TITLE)) {
+						i--;
+						 break;
+					}
+					int pos =line.indexOf(":"); 
+					if(pos>0) {
+						if(type != null) {
+							cucumber.withText(type, sub.toString());
+						}
+						type = line.substring(0, pos);
+						sub.clear();
+						sub.with(line.substring(pos+1).trim());
+					} else {
+						sub.with(' ').with(line);
+					}
+				}
+				if(type != null) {
+					cucumber.withText(type, sub.toString());
+				}
+			}
+		}
+		return this;
+	}
+
+	public StoryBook withPath(String string) {
+		this.outputFile = string;
+		return this;
 	}
 }

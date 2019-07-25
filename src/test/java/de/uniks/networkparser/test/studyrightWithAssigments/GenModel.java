@@ -143,7 +143,7 @@ public class GenModel {
 //      model.generate("src/test/java"); // usually don't specify anything here, then it goes into src
 		code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
 
-		story.dumpHTML();
+		story.writeToFile();
 //TODO TEST DUSPOTATUIONs		model.getGenerator().withFeature(Feature.getStandAlone().with(Feature.PATTERN));
 		model.getGenerator().removeAndGenerate("src/test/java");
 	}

@@ -82,7 +82,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	protected boolean autoClose = true;
 	private JSEditor jsEditor;
 	private IdMap map;
-	private NetworkParserLog logger = new NetworkParserLog().withListener(new StringPrintStream());
+	private static NetworkParserLog logger = new NetworkParserLog().withListener(new StringPrintStream());
 	private static final String EDITOR = "Editor.html";
 
 	private static DiagramEditor editor;
@@ -265,27 +265,48 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 				return;
 			}
 			if ("INIT".equalsIgnoreCase(args[0])) {
+				if(ReflectionLoader.GIT == null) {
+					DiagramEditor.logger("no GIT found");
+				}
 				String filename = Os.getFilename();
 				if (filename == null) {
 					System.exit(1);
 				}
+				int i=1;
 				if (filename.toLowerCase().endsWith(".jar") == false) {
-					System.exit(2);
+					if (args.length > i && args[i] != null) {
+						filename =args[i].toLowerCase();
+					}
+					if (filename.toLowerCase().endsWith(".jar") == false) {
+						System.exit(2);
+					}
+					i++;
 				}
 				Gradle gradle = new Gradle();
 				String projectName = null;
-				if (args.length > 1 && args[1] != null) {
-					projectName = args[1];
+				if (args.length > i && args[i] != null) {
+					projectName = args[i];
 				} else {
 					System.exit(3);
 				}
+				DiagramEditor.logger("Init Project: "+projectName);
+				i++;
 				String licence = "MIT";
-				if (args.length > 2 && args[2] != null && args[2].length() < 10) {
-					licence = args[2];
+				if (args.length > i && args[i] != null && args[i].length() < 10) {
+					licence = args[i];
 				}
+				gradle.withLogger(DiagramEditor.logger);
 				boolean success = gradle.initProject(filename, projectName, licence);
 				if (success == false) {
 					System.exit(-1);
+				}
+				i++;
+				if (args.length > i && args[i] != null ) {
+					String remoteURL = args[i];
+					GitRevision revision = new GitRevision();
+					revision.withPath(gradle.getProjectPath());
+					revision.init(remoteURL);
+					logger("GIT Init");
 				}
 				return;
 			}
@@ -399,6 +420,12 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 					}
 				}
 			}
+		}
+	}
+	
+	private static void logger(String msg) {
+		if(DiagramEditor.logger != null) {
+			DiagramEditor.logger.info(msg);
 		}
 	}
 
@@ -844,7 +871,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	}
 
 	public DiagramEditor withLogger(NetworkParserLog logger) {
-		this.logger = logger;
+		DiagramEditor.logger = logger;
 		return this;
 	}
 	

@@ -14,6 +14,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import de.uniks.networkparser.DateTimeEntity;
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
@@ -39,6 +40,16 @@ public class Gradle implements ObjectCondition {
 	public static final String GIT = "git";
 	public static final String GRADLE = "gradle";
 	private String path;
+	private String projectPath;
+	private NetworkParserLog logger;
+	
+	public String getProjectPath() {
+		return projectPath;
+	}
+	
+	public String getPath() {
+		return path;
+	}
 
 	public Gradle withPath(String value) {
 		this.path = value;
@@ -46,14 +57,28 @@ public class Gradle implements ObjectCondition {
 	}
 
 	public boolean initProject(String jarFile, String projectName, String licence) {
-		if (Os.isReflectionTest() || jarFile == null) {
+		if (Os.isReflectionTest() || jarFile == null || projectName == null) {
 			return false;
 		}
 		File file;
 		String localPath;
 		if (path == null) {
-			file = new File(".");
-			localPath = "";
+			int pos = -1;
+			if(projectName.indexOf("/")>0) {
+				pos = projectName.lastIndexOf("/");
+			}else if(projectName.indexOf("\\")>0) {
+				pos = projectName.lastIndexOf("\\");
+			}
+			if(pos>0) {
+				localPath = projectName.substring(0, pos+1);
+				file = new File(localPath);
+				projectName = projectName.substring(pos+1);
+				this.path = localPath;
+			}else {
+				file = new File(".");
+				localPath = "";
+				this.path = "";
+			}
 		} else {
 			file = new File(path);
 			localPath = path;
@@ -72,6 +97,7 @@ public class Gradle implements ObjectCondition {
 			localPath += projectName + "/";
 			new File(localPath).mkdirs();
 		}
+		projectPath = localPath;
 		JarFile jar;
 		try {
 			jar = new JarFile(jarPath + jarFile);
@@ -91,9 +117,16 @@ public class Gradle implements ObjectCondition {
 			e.printStackTrace();
 		}
 		writeProjectPath(localPath, projectName);
+		log("Project created");
 		writeGradle(localPath, projectName, licence);
-		extractGradleFiles(localPath);
+		log("Gradle added");
 		return true;
+	}
+	private Gradle log(String msg) {
+		if(this.logger != null) {
+			this.logger.info(msg);
+		}
+		return this;
 	}
 
 	public void writeProjectPath(String path, String name) {
@@ -102,8 +135,19 @@ public class Gradle implements ObjectCondition {
 		}
 		XMLContainer container = new XMLContainer().withStandardPrefix();
 		XMLEntity classpath = container.createChild("classpath");
-		classpath.createChild("classpathentry", "kind", "src", "path", "src/main/java");
+		XMLEntity child = classpath.createChild("classpathentry", "kind", "src", "path", "src/main/java");
+		XMLEntity attributes = child.createChild("attributes");
+		attributes.createChild("attribute", "name","gradle_scope","value","main");
+		attributes.createChild("attribute", "name","gradle_used_by_scope","value","main,test");
+		
+		child = classpath.createChild("classpathentry", "kind", "src", "path", "src/test/java");
+			attributes = child.createChild("attributes");
+		attributes.createChild("attribute", "name","gradle_scope","value","main");
+		attributes.createChild("attribute", "name","gradle_used_by_scope","value","main,test");
+		
+		
 		classpath.createChild("classpathentry", "kind", "con", "path", "org.eclipse.jdt.launching.JRE_CONTAINER");
+//		classpath.createChild("classpathentry", "kind", "con", "path", "org.eclipse.jdt.junit.JUNIT_CONTAINER/5");
 		classpath.createChild("classpathentry", "kind", "con", "path",
 				"org.eclipse.buildship.core.gradleclasspathcontainer");
 		classpath.createChild("classpathentry", "kind", "output", "path", "bin");
@@ -118,12 +162,26 @@ public class Gradle implements ObjectCondition {
 		XMLEntity buildCommand = buildSpec.createChild("buildCommand");
 		buildCommand.createChild("name", "org.eclipse.jdt.core.javabuilder");
 		buildCommand.createChild("arguments", "");
+		
+
+		buildCommand = buildSpec.createChild("buildCommand");
+		buildCommand.createChild("name", "org.eclipse.buildship.core.gradleprojectbuilder");
+		buildCommand.createChild("arguments", "");
+		
 		XMLEntity natures = projectDescription.createChild("natures");
 		natures.createChild("nature", "org.eclipse.jdt.core.javanature");
+		natures.createChild("nature", "org.eclipse.buildship.core.gradleprojectnature");
 		FileBuffer.writeFile(path + ".project", container.toString(2));
 
 		new File(path + "src/main/java").mkdirs();
+		new File(path + "src/test/java").mkdirs();
 		new File(path + "bin").mkdirs();
+		
+		new File(path + ".settings").mkdirs();
+		CharacterBuffer buffer = new CharacterBuffer();
+		buffer.withLine("connection.project.dir=");
+		buffer.withLine("eclipse.preferences.version=1");
+		FileBuffer.writeFile(path + ".settings\\org.eclipse.buildship.core.prefs", buffer.toString());
 	}
 
 	public static Object getType(String type) {
@@ -259,7 +317,14 @@ public class Gradle implements ObjectCondition {
 			FileBuffer.writeFile(path + ".gitignore", sb.toString());
 		}
 
-		file = new File(path + "gradle.zip");
+		if(	this.path != null) {
+			file = new File(this.path + "gradle.zip");
+			if(file.exists() == false) {
+				file = new File(path + "gradle.zip");
+			}
+		}else {
+			file = new File(path + "gradle.zip");
+		}
 		if (file.exists() == false) {
 			HTMLEntity http = NodeProxyTCP.getHTTP("https://services.gradle.org/distributions/");
 			String body = http.getBody().toString();
@@ -274,7 +339,7 @@ public class Gradle implements ObjectCondition {
 
 			FileBuffer.writeFile(path + "gradle.zip", binary.array());
 		}
-
+		extractGradleFiles(path, file);
 		/* NOW WRITE build.gradle */
 		file = new File(path + "build.gradle");
 		if (file.exists() == false) {
@@ -312,11 +377,10 @@ public class Gradle implements ObjectCondition {
 		return true;
 	}
 
-	public void extractGradleFiles(String path) {
-		if (path == null) {
+	public void extractGradleFiles(String path, File file) {
+		if (path == null || file == null) {
 			return;
 		}
-		File file = new File(path + "gradle.zip");
 		if (file.exists() == false) {
 			return;
 		}
@@ -532,13 +596,13 @@ public class Gradle implements ObjectCondition {
 				int pos = items.indexOf("<div class=\"field-items\">");
 				if (pos > 0) {
 					content = new XMLEntity().withValue(body.getValue().substring(pos));
-//					body = body.getElementBy("CLASS", "content");
 				}
 			}
 			if (content != null && content instanceof XMLEntity) {
 				CharacterBuffer text = getLicenceText((XMLEntity) content, new CharacterBuffer(), projectName);
 				if (text != null && text.length() > 0) {
 					FileBuffer.writeFile(path + "licence.txt", text.toString());
+					log("Licence added");
 				}
 			}
 		}
@@ -570,5 +634,10 @@ public class Gradle implements ObjectCondition {
 			}
 		}
 		return buffer;
+	}
+
+	public Gradle withLogger(NetworkParserLog logger) {
+		this.logger = logger;
+		return this;
 	}
 }

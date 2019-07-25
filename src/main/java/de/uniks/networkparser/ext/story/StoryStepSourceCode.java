@@ -102,6 +102,9 @@ public class StoryStepSourceCode implements ObjectCondition {
 				if (pos > 0) {
 					this.fileName = full.substring(pos + 1);
 					this.packageName = full.substring(0, pos);
+				}else {
+					this.fileName = full;
+					this.packageName = "";
 				}
 
 				this.contentFile = "src/test/java/" + this.packageName.replace('.', '/') + "/" + ste.getFileName();
@@ -121,9 +124,10 @@ public class StoryStepSourceCode implements ObjectCondition {
 		return methodName;
 	}
 
-	public void finish() {
+	public boolean finish() {
 		getLineFromThrowable();
 		this.readFile();
+		return true;
 	}
 
 	private CharacterBuffer analyseLine(CharacterBuffer line) {

@@ -46,6 +46,7 @@ import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.Server;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.xml.HTMLEntity;
 
@@ -68,7 +69,7 @@ public class NodeProxyTCP extends NodeProxy {
 	protected String url;
 	protected int timeOut;
 	public static final String LOCALHOST = "127.0.0.1";
-	protected Server_TCP serverSocket;
+	protected Server serverSocket;
 	protected boolean allowAnswer = false;
 
 	/**
@@ -731,9 +732,7 @@ public class NodeProxyTCP extends NodeProxy {
 		return false;
 	}
 
-	public static NodeProxy search(int port) {
-		/* Create BroadCast and search in Local Network */
-		return null;
+	public static NodeProxyServer search(int port) {
+		return NodeProxyServer.search(port);
 	}
-
 }

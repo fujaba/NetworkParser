@@ -150,163 +150,172 @@ public class CucumberStdRule implements ObjectCondition {
 		return true;
 	}
 
-	private boolean analyseTokens(SimpleKeyValueList<String, Boolean> values) {
+	private boolean analyseSentense(String sentence) {
+		String[] token = sentence.split(" ");
 		int z;
-		for (int i = 0; i < values.size(); i++) {
-			String string = values.getKeyByIndex(i);
-			String[] token = string.split(" ");
-			/* Test for replace Link Names */
-			if (assocs.size() > 0) {
-				for (z = 0; z < token.length; z++) {
-					int found = assocs.indexOf(token[z]);
-					int n;
-					if (found < 0 && token[z].endsWith("s")) {
-						for (n = 0; n < assocs.size(); n++) {
-							String key = assocs.getKeyByIndex(n);
-							if (token[z].startsWith(key)) {
-								found = n;
-								break;
-							}
-						}
-					}
-					if (found >= 0) {
-						ClazzSet elements = assocs.getValueByIndex(found);
-						boolean transform = true;
-						if (z > 0) {
-							if (elements.contains((Object) token[z - 1])) {
-								transform = false;
-							}
-						}
-						if (transform) {
-							String[] newToken = new String[token.length + (elements.size() + elements.size() - 1) - 1];
-							for (n = 0; n < z; n++) {
-								newToken[n] = token[n];
-							}
-							int temp = z;
-							for (n = 0; n < elements.size(); n++) {
-								newToken[n + temp] = elements.get(n).getId();
-								if (n < elements.size() - 1) {
-									temp++;
-									newToken[n + temp] = "and";
-								}
-							}
-							n = n + temp;
-							temp = z + 1;
-							while (temp < token.length) {
-								newToken[n++] = token[temp++];
-							}
-							token = newToken;
+		/* Test for replace Link Names */
+		if (assocs.size() > 0) {
+			for (z = 0; z < token.length; z++) {
+				int found = assocs.indexOf(token[z]);
+				int n;
+				if (found < 0 && token[z].endsWith("s")) {
+					for (n = 0; n < assocs.size(); n++) {
+						String key = assocs.getKeyByIndex(n);
+						if (token[z].startsWith(key)) {
+							found = n;
+							break;
 						}
 					}
 				}
+				if (found >= 0) {
+					ClazzSet elements = assocs.getValueByIndex(found);
+					boolean transform = true;
+					if (z > 0) {
+						if (elements.contains((Object) token[z - 1])) {
+							transform = false;
+						}
+					}
+					if (transform) {
+						String[] newToken = new String[token.length + (elements.size() + elements.size() - 1) - 1];
+						for (n = 0; n < z; n++) {
+							newToken[n] = token[n];
+						}
+						int temp = z;
+						for (n = 0; n < elements.size(); n++) {
+							newToken[n + temp] = elements.get(n).getId();
+							if (n < elements.size() - 1) {
+								temp++;
+								newToken[n + temp] = "and";
+							}
+						}
+						n = n + temp;
+						temp = z + 1;
+						while (temp < token.length) {
+							newToken[n++] = token[temp++];
+						}
+						token = newToken;
+					}
+				}
 			}
-			char[] types = new char[token.length];
-			for (z = 0; z < token.length; z++) {
-				if (types[z] == 0) {
-					types[z] = Token.UNKNOWN;
-				}
-				Character type = cucumber.getTokenType(token[z]);
-				if (type != null) {
-					types[z] = type;
-					continue;
-				}
-				if (token[z].equalsIgnoreCase("and")) {
-					types[z] = Token.AND;
-					types[z - 1] = Token.NOMEN;
-					types[z + 1] = Token.NOMEN;
-				}
+		}
+
+		char[] types = new char[token.length];
+		for (z = 0; z < token.length; z++) {
+			if (types[z] == 0) {
+				types[z] = Token.UNKNOWN;
 			}
-			for (z = 0; z < token.length; z++) {
-				if (types[z] != Token.UNKNOWN) {
-					continue;
+			Character type = cucumber.getTokenType(token[z]);
+			if (type != null) {
+				types[z] = type;
+				continue;
+			}
+			if (token[z].equalsIgnoreCase("and")) {
+				types[z] = Token.AND;
+				types[z - 1] = Token.NOMEN;
+				types[z + 1] = Token.NOMEN;
+			}
+		}
+		for (z = 0; z < token.length; z++) {
+			if (types[z] != Token.UNKNOWN) {
+				continue;
+			}
+			if (z < 1) {
+				types[z] = Token.NOMEN;
+				continue;
+			}
+			if (types[z - 1] == Token.ATTRNAME) {
+				types[z] = Token.ATTRVALUE;
+				continue;
+			}
+			if (types[z - 1] == Token.ATTR) {
+				try {
+					Double.parseDouble(token[z]);
+					types[z] = Token.ATTRVALUE;
+				} catch (NumberFormatException e) {
+					types[z] = Token.ATTRNAME;
 				}
-				if (z < 1) {
-					types[z] = Token.NOMEN;
-					continue;
+				continue;
+			}
+
+			if (types[z - 1] == Token.NOMEN) {
+				types[z] = Token.VERB;
+			} else {
+				types[z] = Token.NOMEN;
+			}
+		}
+		for (z = 0; z < token.length; z++) {
+			if (types[z] == Token.NOMEN) {
+				getClazz(token[z]);
+			} else if (types[z] == Token.ATTRNAME && (types[z - 2] == Token.NOMEN
+					|| types[z - 1] == Token.ATTRNAME && types[z - 3] == Token.NOMEN)) {
+				Clazz clazz;
+				if (types[z - 1] == Token.ATTRNAME) {
+					clazz = getClazz(token[z - 3]);
+				} else {
+					clazz = getClazz(token[z - 2]);
+				}
+				DataType type = DataType.STRING;
+				String name = "value";
+				try {
+					Double.parseDouble(token[z+1]);
+					type = DataType.DOUBLE;
+					try {
+						Integer.parseInt(token[z+1]);
+						type = DataType.INT;
+					} catch (Exception e) {
+					}
+				} catch (NumberFormatException e) {
 				}
 				if (types[z - 1] == Token.ATTRNAME) {
-					types[z] = Token.ATTRVALUE;
-					continue;
+					name = token[z - 1];
 				}
-				if (types[z - 1] == Token.ATTR) {
-					try {
-						Double.parseDouble(token[z]);
-						types[z] = Token.ATTRVALUE;
-					} catch (NumberFormatException e) {
-						types[z] = Token.ATTRNAME;
+				clazz.createAttribute(name, type).withValue(token[z+1]);
+			} else if (types[z] == Token.VERB) {
+				int source = Association.ONE;
+				int target = Association.ONE;
+				if (z > 1 && types[z - 2] == Token.AND) {
+					if (token[z].endsWith("s") && token[z].equals("has") == false) {
+						token[z] = token[z].substring(0, token[z].length() - 1);
 					}
-					continue;
+					source = Association.MANY;
 				}
-
-				if (types[z - 1] == Token.NOMEN) {
-					types[z] = Token.VERB;
-				} else {
-					types[z] = Token.NOMEN;
+				if (z + 2 < types.length && types[z + 2] == Token.AND) {
+					target = Association.MANY;
 				}
-			}
-			for (z = 0; z < token.length; z++) {
-				if (types[z] == Token.NOMEN) {
-					getClazz(token[z]);
-				} else if (types[z] == Token.ATTRNAME && (types[z - 2] == Token.NOMEN
-						|| types[z - 1] == Token.ATTRNAME && types[z - 3] == Token.NOMEN)) {
-					Clazz clazz;
-					if (types[z - 1] == Token.ATTRNAME) {
-						clazz = getClazz(token[z - 3]);
-					} else {
-						clazz = getClazz(token[z - 2]);
-					}
-					DataType type = DataType.STRING;
-					String name = "value";
-					try {
-						Double.parseDouble(token[z]);
-						type = DataType.DOUBLE;
-						try {
-							Integer.parseInt(token[z]);
-							type = DataType.INT;
-						} catch (Exception e) {
-						}
-					} catch (NumberFormatException e) {
-					}
-					if (types[z - 1] == Token.ATTRNAME) {
-						name = token[z - 1];
-					}
-					clazz.createAttribute(name, type).withValue(token[z]);
-				} else if (types[z] == Token.VERB) {
-					int source = Association.ONE;
-					int target = Association.ONE;
-					if (z > 1 && types[z - 2] == Token.AND) {
-						if (token[z].endsWith("s") && token[z].equals("has") == false) {
-							token[z] = token[z].substring(0, token[z].length() - 1);
-						}
-						source = Association.MANY;
-					}
-					if (z + 2 < types.length && types[z + 2] == Token.AND) {
-						target = Association.MANY;
-					}
-					int s = z - 1;
-					int t = z + 1;
-					if (s >= 0) {
+				int s = z - 1;
+				int t = z + 1;
+				if (s >= 0) {
+					do {
+						Clazz sourceClazz = getClazz(token[s]);
 						do {
-							Clazz sourceClazz = getClazz(token[s]);
-							do {
-								Clazz targetClazz = getClazz(token[t]);
-								sourceClazz.withUniDirectional(targetClazz, getLinkName(token[z]), target);
-								addToAssoc(source, sourceClazz, token[z]);
-								if (t + 1 < types.length && types[t + 1] == Token.AND) {
-									t += 2;
-								} else {
-									break;
-								}
-							} while (t <= types.length);
-							if (s > 0 && types[s - 1] == Token.AND) {
-								s -= 2;
+							Clazz targetClazz = getClazz(token[t]);
+							sourceClazz.withUniDirectional(targetClazz, getLinkName(token[z]), target);
+							addToAssoc(source, sourceClazz, token[z]);
+							if (t + 1 < types.length && types[t + 1] == Token.AND) {
+								t += 2;
 							} else {
 								break;
 							}
+						} while (t <= types.length);
+						if (s > 0 && types[s - 1] == Token.AND) {
+							s -= 2;
+						} else {
+							break;
+						}
 
-						} while (s >= 0);
-					}
+					} while (s >= 0);
 				}
+			}
+		}
+		return true;
+	}
+	
+	private boolean analyseTokens(SimpleKeyValueList<String, Boolean> values) {
+		for (int i = 0; i < values.size(); i++) {
+			String string = values.getKeyByIndex(i);
+			String[] sentences = string.split("\\.");
+			for(int s=0;s<sentences.length;s++) {
+				analyseSentense(sentences[s].trim());
 			}
 			values.setValue(i, Boolean.TRUE);
 		}
