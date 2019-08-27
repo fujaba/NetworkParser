@@ -18,6 +18,7 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 	public static final String MODIFIER_CHANGE = "change";
 	public static final String MODIFIER_ADD = "add";
 	public static final String MODIFIER_REMOVE = "remove";
+	public static final String MODIFIER_ROLE = "role";
 	private Object match;
 	private String modifier = MODIFIER_SEARCH;
 
@@ -159,31 +160,33 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 		return last.finding(false);
 	}
 
-	private boolean findCondition() {
+	private boolean findCondition(String modifier) {
 		if(condition == null) {
 			return false;
 		}
 		if(condition instanceof Pattern) {
 			return condition.update(this);
 		}
-		SimpleIterator<Object> iterator = getIterator();
-		if(iterator != null) {
-			PatternEvent event = new PatternEvent(this, MODIFIER_SEARCH);
-			while(iterator.hasNext()) {
-				Object candidate = iterator.next();
-				event.setCandidate(candidate);
-				if(condition.update(event)) {
-					return true;
+		if(MODIFIER_ROLE.equalsIgnoreCase(modifier)) {
+			SimpleIterator<Object> iterator = getIterator();
+			if(iterator != null) {
+				PatternEvent event = new PatternEvent(this, MODIFIER_SEARCH);
+				while(iterator.hasNext()) {
+					Object candidate = iterator.next();
+					event.setCandidate(candidate);
+					if(condition.update(event)) {
+						return true;
+					}
 				}
 			}
 		}
-		return false;
+		return condition.update(this);
 	}
 	
 	private boolean finding(boolean save) {
 		/* Backwards */
 		
-		if (findCondition() == false) {
+		if (findCondition(null) == false) {
 			/* Not found */
 			if (parent == null) {
 				return false; 
@@ -194,7 +197,7 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 				this.match = null;
 				this.iterator = null;
 				if (condition != null) {
-					findCondition();
+					findCondition(MODIFIER_ROLE);
 				}
 			}
 
