@@ -312,6 +312,36 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	/**
+	 * Create a new Tag as Child of Body Parent
+	 *
+	 * @param tag        the new Tag
+	 * @param parentNode Optional May be a child of Body or Body or head
+	 * @return the created XMLEntity Item
+	 */
+	public XMLEntity createBodyTag(String tag, String... values) {
+		if (tag == null) {
+			return null;
+		}
+		String[] tags = tag.split("\\.");
+		XMLEntity parent = this.body, child = null;
+		for (int i = tags.length - 1; i >= 0; i--) {
+			child = new XMLEntity().withType(tags[i]);
+			parent.withChild(child);
+			parent = child;
+		}
+		if(values != null && values.length>0) {
+			if(values.length == 1) {
+				parent.withValue(values[0]);
+			}else if(values.length % 2 == 0){
+				for(int i=0;i<values.length;i+=2) {
+					parent.withKeyValue(values[i], values[i+1]);
+				}
+			}
+		}
+		return parent;
+	}
+
+	/**
 	 * Create a new Tag as Child of Parent
 	 *
 	 * @param tag        the new Tag
@@ -494,16 +524,15 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	public HTMLEntity withNewLine() {
-		XMLEntity xmlEntity = new XMLEntity();
-		xmlEntity.withValue("<br />\r\n");
-		this.body.withChild(xmlEntity);
+		XMLEntity child = new XMLEntity().withType("br").withCloseTag();
+		child.withValue(BaseItem.CRLF);
+		this.body.withChild(child);
 		return this;
 	}
 
 	public HTMLEntity withText(String text) {
-		XMLEntity xmlEntity = new XMLEntity();
-		xmlEntity.withValue(text);
-		this.body.withChild(xmlEntity);
+		XMLEntity child = new XMLEntity().withValue(text);
+		this.body.withChild(child);
 		return this;
 	}
 

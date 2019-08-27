@@ -43,6 +43,8 @@ public class Token {
 	public static final char POINT = '.';
 	/* AttributeValue */
 	public static final char ATTRVALUE = '0';
+	/* AttributeValue */
+	public static final char ATTRTYPE = '1';
 	/* And */
 	public static final char AND = '&'; 
 	/* Verb */

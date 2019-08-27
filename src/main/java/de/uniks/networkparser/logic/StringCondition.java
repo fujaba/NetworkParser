@@ -52,11 +52,11 @@ public class StringCondition implements ParserCondition {
 			}
 			if (itemValue instanceof String) {
 				if (this.type == EQUALS) {
-					return itemValue.equals(value);
+					return itemValue.equals(this.value);
 				} else if (this.type == EQUALSIGNORECASE) {
-					return ((String) itemValue).equalsIgnoreCase("" + value);
+					return ((String) itemValue).equalsIgnoreCase(""+this.value);
 				} else if (this.type == CONTAINS) {
-					return ((String) itemValue).contains("" + value);
+					return ((String) itemValue).contains("" + this.value);
 				}
 			}
 			return false;

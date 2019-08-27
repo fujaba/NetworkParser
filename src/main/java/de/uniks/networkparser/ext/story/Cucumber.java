@@ -2,8 +2,10 @@ package de.uniks.networkparser.ext.story;
 
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.Pattern;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -36,9 +38,16 @@ public class Cucumber implements ObjectCondition {
 	private SimpleKeyValueList<String, Character> tokens = new SimpleKeyValueList<String, Character>();
 	private String title;
 	private GraphList model;
+	private Pattern pattern;
 
 	public GraphList getModel() {
 		return model;
+	}
+	
+	public ClassModel getClassModel(String packageName) {
+		ClassModel classModel = new ClassModel(packageName);
+		classModel.add(model);
+		return classModel;
 	}
 
 	public Cucumber addTypeDicitonary(String... values) {
@@ -52,6 +61,8 @@ public class Cucumber implements ObjectCondition {
 
 			typeDictionary.add("token", "Stone");
 			typeDictionary.add("startarea", "Place");
+			
+			addDictionary("name", "String", Token.ATTRTYPE);
 			return this;
 		}
 		for (int i = 0; i < values.length - 1; i += 2) {
@@ -60,6 +71,11 @@ public class Cucumber implements ObjectCondition {
 			}
 		}
 		return this;
+	}
+	
+	public void addDictionary(String name, String type, char token) {
+		typeDictionary.add(name, type);
+		tokens.add(name, token);
 	}
 
 	public Cucumber addTokenRule(String token, char type) {
@@ -368,6 +384,34 @@ public class Cucumber implements ObjectCondition {
 			Object newValue = event.getNewValue();
 			if(newValue instanceof HTMLEntity) {
 				HTMLEntity output = (HTMLEntity) newValue;
+				// Write File
+				output.createBodyTag("h1", this.getTitle());
+				output.createBodyTag("p", TYPE_DEFINITION+":");
+				for(int i=0;i<this.definition.size();i++) {
+					output.createBodyTag("div", this.definition.getKeyByIndex(i));
+				}
+				
+				CharacterBuffer buffer=new CharacterBuffer();
+				output.createBodyTag("p", TYPE_STARTSITUATION+":");
+				for(int i=0;i<this.given.size();i++) {
+					buffer.append(this.given.getKeyByIndex(i));
+				}
+				output.createBodyTag("div", buffer.toString());
+				
+				buffer.clear();
+				output.createBodyTag("p", TYPE_ACTION+":");
+				for(int i=0;i<this.when.size();i++) {
+					buffer.append(this.when.getKeyByIndex(i));
+				}
+				output.createBodyTag("div", buffer.toString());
+				
+				buffer.clear();
+				output.createBodyTag("p", TYPE_RESULTSITUATION+":");
+				for(int i=0;i<this.then.size();i++) {
+					buffer.append(this.then.getKeyByIndex(i));
+				}
+				output.createBodyTag("div", buffer.toString());
+
 				output.withGraph(this.model);
 			}
 		}
@@ -395,5 +439,14 @@ public class Cucumber implements ObjectCondition {
 			this.Then(text);
 		}
 		return this;
+	}
+
+	public Cucumber withPattern(Pattern pattern) {
+		this.pattern = pattern;
+		return this;
+	}
+	
+	public Pattern getPattern() {
+		return pattern;
 	}
 }

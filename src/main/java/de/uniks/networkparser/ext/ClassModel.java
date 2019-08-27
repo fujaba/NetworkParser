@@ -1,7 +1,4 @@
 package de.uniks.networkparser.ext;
-
-import java.util.Collection;
-
 /*
 The MIT License
 
@@ -28,18 +25,25 @@ THE SOFTWARE.
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.graph.Annotation;
+import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.AssociationSet;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.ClazzSet;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureSet;
+import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.graph.ModifyEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.HTMLEntity;
+import java.util.Collection;
 
 public class ClassModel extends GraphModel {
 	public static final int ONE = 1;
@@ -171,10 +175,48 @@ public class ClassModel extends GraphModel {
 			}
 			if (item instanceof Annotation) {
 				super.withAnnotation((Annotation) item);
+			} else if (item instanceof Association) {
+				Association assoc = (Association) item;
+				this.with(assoc);
 			} else if (item instanceof Clazz) {
 				Clazz clazz = (Clazz) item;
 				clazz.setClassModel(this);
-			} else {
+			} else if(item instanceof GraphModel){
+				GraphModel model = (GraphModel) item;
+				ClazzSet clazzes = model.getClazzes();
+				AssociationSet associations = model.getAssociations();
+				// TEST CLAZZES
+				if(model instanceof GraphList) {
+					String type = ((GraphList)model).getType();
+					if(GraphTokener.OBJECTDIAGRAM.equalsIgnoreCase(type)) {
+						ClazzSet newList = new ClazzSet();
+						SimpleKeyValueList<Clazz, Clazz> mapping = new SimpleKeyValueList<Clazz, Clazz>(); 
+						for(Clazz clazz : clazzes) {
+							Clazz newClazz = newList.getClazz(clazz.getName());
+							if(newClazz == null) {
+								newClazz = new Clazz(clazz.getName());
+								newList.add(newClazz);
+							}
+							for(Attribute attr : clazz.getAttributes()) {
+								newClazz.createAttribute(attr.getName(), attr.getType());
+							}
+							mapping.add(clazz, newClazz);
+						}
+						this.add(newList);
+						// Mapping Association
+						for(Association assoc : associations) {
+							Association other = assoc.getOther();
+							Clazz sourceNew = mapping.get(other.getClazz());
+							Clazz targetNew = mapping.get(assoc.getClazz());
+							sourceNew.createBidirectional(targetNew, assoc.getName(), assoc.getCardinality(), other.getName(), other.getCardinality());
+						}
+
+						return true;
+					}
+				}
+				this.add(clazzes);
+				this.add(associations);
+			}else {
 				add = false;
 			}
 		}

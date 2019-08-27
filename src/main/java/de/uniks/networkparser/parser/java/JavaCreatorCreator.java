@@ -31,7 +31,7 @@ public class JavaCreatorCreator extends Template {
 				"        IdMap map = new IdMap().withSession(session);",
 				"",
 					"{{#foreach {{generatedclazz}}}}",
-					"	map.withCreator(new {{item}}"+creatorPrefix+"());",
+					"	map.withCreator(new {{item.name}}"+creatorPrefix+"());",
 					"{{#endfor}}",
 				"        return map;",
 				"   }",

@@ -6,6 +6,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.graph.Pattern;
+import de.uniks.networkparser.graph.PatternEvent;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.AbstractList;
@@ -164,6 +165,21 @@ public class PatternCondition implements ObjectCondition {
 					}
 				}
 				return true;
+			}else if(Pattern.MODIFIER_SEARCH.equals(event.getPropertyName())) {
+				// Search Link and save back to Pattern
+				if(event instanceof PatternEvent == false) {
+					return false;
+				}
+				PatternEvent pe = (PatternEvent) event;
+				Object newObject = event.getNewValue();
+				Pattern pattern = (Pattern) event.getSource();
+				IdMap map = pattern.getMap();
+				SendableEntityCreator creator = map.getCreatorClass(newObject);
+				if (creator != null) {
+					Object newValue = creator.getValue(newObject, getLinkName());
+					pe.addCandidate(newValue);
+					return true;
+				}
 			}
 		}
 		if (value instanceof Pattern == false) {
@@ -225,6 +241,9 @@ public class PatternCondition implements ObjectCondition {
 	public String toString() {
 		if (this.excelSheet != null) {
 			return excelSheet.toString();
+		}
+		if(this.value == null && this.link != null) {
+			return " " + this.link+ " ";
 		}
 		return super.toString();
 	}

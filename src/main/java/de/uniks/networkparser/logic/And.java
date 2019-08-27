@@ -48,7 +48,7 @@ public class And extends ListCondition {
 		super.with(values);
 		return this;
 	}
-
+	
 	@Override
 	public And with(PropertyChangeListener... values) {
 		super.with(values);

@@ -41,6 +41,8 @@ public interface TemplateParser {
 	public static final int METHOD = 6;
 
 	public static final int TEMPLATEEND = Integer.MAX_VALUE;
+	
+	public String[] getLastStopWords();
 
 	public ObjectCondition parsing(CharacterBuffer template, LocalisationInterface customTemplate, boolean isExpression,
 			boolean allowSpace, String... stopWords);

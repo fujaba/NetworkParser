@@ -66,7 +66,7 @@ public class JavaAttribute extends Template {
 				"		return false;", "	}",
 				"",
 				"{{#endif}}",
-				"	public {{modifiers} }{{file.member}} with{{Name}}({{type}} value){{#if {{file.member.type}}==interface}};",
+				"	public {{modifiers} }{{file.member.name}} with{{Name}}({{type}} value){{#if {{file.member.type}}==interface}};",
 				"", "{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}} {",
 				"		set{{Name}}(value);",

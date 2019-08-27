@@ -172,8 +172,18 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 				pos = position;
 			}
 			return buffer.byteAt(pos) == btrValue;
+		}else if(event.getSource() instanceof ObjectCondition) {
+			ObjectCondition oc = (ObjectCondition) event.getSource();
+			if(this.value != null) {
+				event.setPropagationId(this.getKey());
+				
+				if(oc.update(event) ) {
+					Object item = event.getNewValue();
+					return this.value.equals(item);
+				}
+			}
+			return oc.update(event);
 		}
-
 		if (event.getPropertyName() == null) {
 			return false;
 		}
@@ -344,7 +354,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		/* CHECK IF CURRENT = */
-		if(buffer == null) {
+		if(buffer == null || parser ==  null) {
 			return;
 		}
 		/* MAY BE A EQUALS */
@@ -363,7 +373,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		} else {
 			this.withPosition(0);
 		}
-		ObjectCondition child = parser.parsing(buffer, customTemplate, true, true);
+		ObjectCondition child = parser.parsing(buffer, customTemplate, true, true, parser.getLastStopWords());
 
 		if (currentChar == '!') {
 			child = new Not().with(child);

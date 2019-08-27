@@ -639,6 +639,20 @@ public class GraphUtil {
 		}
 		return "MANY";
 	}
+	
+	public static Object getValue(DataType type, String value) {
+		if(value == null || type == null) {
+			return value;
+		}
+		if(DataType.INT.equals(type)) {
+			return Integer.valueOf(value);
+		}else if(DataType.DOUBLE.equals(type)) {
+			return Double.valueOf(value);
+		}else if(DataType.BOOLEAN.equals(type)) {
+			return Boolean.valueOf(value);
+		}
+		return value;
+	}
 
 	public static boolean setChildren(GraphMember graphMember, GraphSimpleSet childrenSet) {
 		if (graphMember != null && graphMember.children != childrenSet) {

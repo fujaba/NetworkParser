@@ -107,7 +107,7 @@ public class JavaSetCreator extends Template {
 				"{{#foreach childtransitive}}",
 				"{{#if {{item.className}}==" + Attribute.class.getName() + "}}",
 				"		if ({{name}}.PROPERTY_{{item.NAME}}.equalsIgnoreCase(attribute)) {",
-				"			return element.{{#debug true}}{{#if {{item.type}}==boolean?is:get}}{{item.Name}}();",
+				"			return element.{{#if {{item.type}}==boolean?is:get}}{{item.Name}}();",
 				"		}",
 				"",
 				"{{#endif}}",

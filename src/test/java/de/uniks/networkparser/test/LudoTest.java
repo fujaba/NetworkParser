@@ -44,7 +44,7 @@ public class LudoTest {
 			
 		
 		scenario.Given("Alice and Seb play ludo. Alice has dice with value 5");
-		scenario.When("Bob has dice with 1");
+		scenario.When("Bob has dice with value 1");
 		scenario.Then("Alice is currentplayer from ludo");
 		scenario.analyse();
 		

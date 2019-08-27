@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.PatternCondition;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -12,7 +13,7 @@ import de.uniks.networkparser.list.SimpleIterator;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
-public class Pattern implements Iterator<Object>, Iterable<Object> {
+public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondition {
 	public static final String MODIFIER_SEARCH = "search";
 	public static final String MODIFIER_CHANGE = "change";
 	public static final String MODIFIER_ADD = "add";
@@ -47,6 +48,11 @@ public class Pattern implements Iterator<Object>, Iterable<Object> {
 			candidates = new SimpleSet<Object>();
 		}
 		this.candidates.add(match);
+	}
+	
+	public Pattern withCondition(ObjectCondition condition) {
+		this.condition = condition;
+		return this;
 	}
 
 	public Pattern() {
@@ -118,6 +124,11 @@ public class Pattern implements Iterator<Object>, Iterable<Object> {
 	public <ST extends Object> ST getMatch(Class<ST> clazz) {
 		return (ST) match;
 	}
+	
+	public boolean find(Object condition) {
+		this.withCandidates(condition);
+		return find();
+	}
 
 	public boolean find() {
 		SimpleSet<Pattern> chain = getChain();
@@ -148,12 +159,34 @@ public class Pattern implements Iterator<Object>, Iterable<Object> {
 		return last.finding(false);
 	}
 
+	private boolean findCondition() {
+		if(condition == null) {
+			return true;
+		}
+		if(condition instanceof Pattern) {
+			return condition.update(this);
+		}
+		SimpleIterator<Object> iterator = getIterator();
+		if(iterator != null) {
+			PatternEvent event = new PatternEvent(this, MODIFIER_SEARCH);
+			while(iterator.hasNext()) {
+				Object candidate = iterator.next();
+				event.setCandidate(candidate);
+				if(condition.update(event)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	private boolean finding(boolean save) {
 		/* Backwards */
-		if (condition == null || condition.update(this) == false) {
+		
+		if (findCondition() == false) {
 			/* Not found */
 			if (parent == null) {
-				return false;
+				return false; 
 			}
 			boolean finding = parent.finding(save);
 			if (save) {
@@ -161,7 +194,7 @@ public class Pattern implements Iterator<Object>, Iterable<Object> {
 				this.match = null;
 				this.iterator = null;
 				if (condition != null) {
-					condition.update(this);
+					findCondition();
 				}
 			}
 
@@ -289,5 +322,43 @@ public class Pattern implements Iterator<Object>, Iterable<Object> {
 			creatorClass.setValue(this.match, property, value, SendableEntityCreator.NEW);
 		}
 		return false;
+	}
+
+	@Override
+	public boolean update(Object value) {
+		if(value == null) {
+			return false;
+		}
+		 if(value instanceof Clazz) {
+			return false;
+		} 
+		Object item = null;
+		if(value instanceof SimpleEvent) {
+			String linkName;
+			SimpleEvent event = (SimpleEvent) value;
+			item = event.getNewValue();
+			PatternEvent pe = (PatternEvent) event;
+			Object id = event.getPropagationId();
+			if(id instanceof String) {
+				linkName = (String) id;
+			}else {
+				linkName = event.getPropertyName();
+				}
+			IdMap map = this.getMap();
+			SendableEntityCreator creator = map.getCreatorClass(item);
+			if (creator != null) {
+				Object newValue = creator.getValue(item, linkName);
+				pe.addCandidate(newValue);
+				return true;
+			}
+		}else {
+			item = value;
+		}
+		return item != null;
+	}
+
+	public Pattern withMap(IdMap map) {
+		this.map = map;
+		return this;
 	}
 }

@@ -141,6 +141,14 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 					if (list.add((ObjectCondition) condition) == false) {
 						return false;
 					}
+				} else if(condition instanceof ListCondition) {
+					ListCondition listCon = (ListCondition) condition;
+					SimpleSet<ObjectCondition> list2 = listCon.getList();
+					if(list2 != null) {
+						for(ObjectCondition con : list2) {
+							list.add(con);
+						}
+					}
 				}
 			}
 			return true;

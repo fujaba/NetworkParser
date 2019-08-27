@@ -264,7 +264,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 				return false;
 			}
 			/* get FileName from Stack */
-			StoryStepSourceCode step = new StoryStepSourceCode().withCode(this.getClass(), 2);
+			StoryStepSourceCode step = new StoryStepSourceCode().withCode(this.getClass(), 1);
 			file = step.getFileName();
 			if (file == null || file.length() < 1) {
 				return false;
@@ -293,7 +293,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 		if(file.indexOf(".")<1) {
 			file = file + ".html";
 		}
-		if(output.getBody() == null || output.getBody().size()<1) {
+		if(output.getBody() == null || output.getBody().sizeChildren()<1) {
 			return false;
 		}
 		return FileBuffer.writeFile(path + file, output.toString(converter)) >= 0;

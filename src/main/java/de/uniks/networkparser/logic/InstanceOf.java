@@ -27,6 +27,7 @@ import java.beans.PropertyChangeEvent;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -45,7 +46,7 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 	public static final String VALUE = "value";
 
 	/** Variable of ClazzName. */
-	private Class<?> clazzName;
+	private Object clazzName;
 
 	/** Variable of WhiteList of ClassNames. */
 	private boolean whiteList;
@@ -105,6 +106,20 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 	public static InstanceOf create(Class<?> clazzName) {
 		return new InstanceOf().withClazzName(clazzName);
 	}
+	
+	public static InstanceOf create(Object clazzName) {
+		InstanceOf result = new InstanceOf();
+		if(clazzName instanceof Class<?>) {
+			return result.withClazzName((Class<?>)clazzName);
+		}
+		if(clazzName instanceof Clazz) {
+			return result.withClazzName(((Clazz) clazzName).getName(true));
+		}
+		if(clazzName != null) {
+			return result.withClazzName(clazzName.getClass());
+		}
+		return result;
+	}
 
 	/**
 	 * Static Method for instance a new Instance of InstanceOf Object.
@@ -135,14 +150,17 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 
 	/** @return The ClazzName */
 	public Class<?> getClazzName() {
-		return clazzName;
+		if(clazzName instanceof Class<?>) {
+			return (Class<?>) clazzName;
+		}
+		return null;
 	}
 
 	/**
 	 * @param value The new ClazzName
 	 * @return InstacneOf Instance
 	 */
-	public InstanceOf withClazzName(Class<?> value) {
+	public InstanceOf withClazzName(Object value) {
 		this.clazzName = value;
 		return this;
 	}
@@ -175,6 +193,20 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 		return this;
 	}
 
+	private boolean checkClazz(Object value) {
+		if(this.clazzName == null || value == null) {
+			return false;
+		}
+		Class<?> clazzElement = getClazzName();
+		if(clazzElement != null ) {
+			return clazzElement.isInstance(value);
+		}
+		if(this.clazzName instanceof String) {
+			return this.clazzName.equals(value.getClass().getName());
+		}
+		return false;
+	}
+	
 	@Override
 	public boolean update(Object evt) {
 		/* Filter for ClazzTyp */
@@ -184,7 +216,7 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 		PropertyChangeEvent event = (PropertyChangeEvent) evt;
 		if (this.clazzName != null) {
 			Object newValue = event.getNewValue();
-			if (this.clazzName.isInstance(newValue) == false) {
+			if(checkClazz(newValue) == false) {
 				/* Check for whiteList */
 				if (evt instanceof SimpleEvent) {
 					SimpleEvent se = (SimpleEvent) evt;
@@ -211,5 +243,16 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 	public InstanceOf withWhiteList(boolean whiteList) {
 		this.whiteList = whiteList;
 		return this;
+	}
+ 	
+	@Override
+	public String toString() {
+		if(clazzName != null) {
+			if(clazzName instanceof Clazz) {
+				return this.getClass().getSimpleName()+" "+clazzName;
+			}
+			return this.getClass().getSimpleName()+" "+clazzName;
+		}
+		return super.toString();
 	}
 }

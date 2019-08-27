@@ -89,6 +89,8 @@ public class Template implements TemplateParser {
 	protected boolean metaModel;
 	protected boolean includeSuperValues;
 	protected SimpleList<Template> children;
+	
+	private String[] lastStopWords;
 
 	public Template(String name) {
 		this.id = name;
@@ -248,7 +250,6 @@ public class Template implements TemplateParser {
 			if (values != null) {
 				stopCharacter = new String(values);
 			}
-
 		}
 		startDif = 2;
 
@@ -359,6 +360,7 @@ public class Template implements TemplateParser {
 						// CHECK NEXT TOKEN
 						char nextChar = buffer.getChar();
 						if (nextChar == ENTER) {
+							this.lastStopWords = stopWords;
 							Equals equalsExpression = new Equals();
 							equalsExpression.create(buffer, this, customTemplate);
 							equalsExpression.withLeft(child);
@@ -367,6 +369,7 @@ public class Template implements TemplateParser {
 							} else {
 								child = equalsExpression;
 							}
+							this.lastStopWords = null;
 						} else {
 							// MAY BE ANOTHER CHAR
 							buffer.skip(-1);
@@ -805,5 +808,10 @@ public class Template implements TemplateParser {
 		customTemplates.add(new DebugCondition());
 		customTemplates.add(new Not());
 		return customTemplates;
+	}
+
+	@Override
+	public String[] getLastStopWords() {
+		return lastStopWords;
 	}
 }

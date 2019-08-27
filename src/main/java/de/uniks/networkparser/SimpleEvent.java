@@ -13,7 +13,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  * 
  * @author Stefan Lindel
  */
-public final class SimpleEvent extends PropertyChangeEvent {
+public class SimpleEvent extends PropertyChangeEvent {
 	private static final long serialVersionUID = 1L;
 	/** Variable for Deep from Root. */
 	private int depth;
@@ -120,7 +120,7 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	public int getDepth() {
 		return depth;
 	}
-
+	
 	public SimpleEvent withValue(int value) {
 		this.depth = value;
 		return this;
