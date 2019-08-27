@@ -161,7 +161,7 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 
 	private boolean findCondition() {
 		if(condition == null) {
-			return true;
+			return false;
 		}
 		if(condition instanceof Pattern) {
 			return condition.update(this);

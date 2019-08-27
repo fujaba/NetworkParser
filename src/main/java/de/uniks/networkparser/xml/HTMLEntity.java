@@ -315,7 +315,7 @@ public class HTMLEntity implements BaseItem {
 	 * Create a new Tag as Child of Body Parent
 	 *
 	 * @param tag        the new Tag
-	 * @param parentNode Optional May be a child of Body or Body or head
+	 * @param values Optional May be a child of Body or Body or head
 	 * @return the created XMLEntity Item
 	 */
 	public XMLEntity createBodyTag(String tag, String... values) {
