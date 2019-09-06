@@ -58,6 +58,10 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 		}
 		return super.addKey(pos, element, size);
 	}
+ 
+	public boolean remove(Object o) {
+		return super.removeByObject(o) >= 0;
+	}
 
 	/**
 	 * <p>

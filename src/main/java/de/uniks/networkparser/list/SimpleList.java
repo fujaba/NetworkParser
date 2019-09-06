@@ -48,11 +48,6 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	}
 
 	@Override
-	public boolean remove(Object o) {
-		return super.removeByObject(o) >= 0;
-	}
-
-	@Override
 	public boolean add(V e) {
 		return super.add(e);
 	}

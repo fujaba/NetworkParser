@@ -535,6 +535,9 @@ public class DialogBox implements ObjectCondition {
 			}
 		} else {
 			/* SWING??? */
+			if(ReflectionLoader.JFRAME == null) {
+				return null;
+			}
 			ReflectionLoader.logger = new PrintStream(System.out);
 			if (parentObj == null || ReflectionLoader.JFRAME.isAssignableFrom(parentObj.getClass()) == false) {
 				parentObj = ReflectionLoader.newInstance(ReflectionLoader.JFRAME);
@@ -553,6 +556,9 @@ public class DialogBox implements ObjectCondition {
 				ReflectionLoader.call(fileChooser, "setFileFilter", fileFilter, filter);
 			}
 			Class<?> componentClass = ReflectionLoader.getClass("java.awt.Component");
+			if(componentClass == null) {
+				return null;
+			}
 			if ("save".equals(art)) {
 				userSelection = (Integer) ReflectionLoader.call(fileChooser, "showSaveDialog", componentClass,
 						parentObj);

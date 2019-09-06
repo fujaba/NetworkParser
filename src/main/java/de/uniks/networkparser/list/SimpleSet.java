@@ -46,11 +46,6 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	}
 
 	@Override
-	public boolean remove(Object o) {
-		return removeByObject(o) >= 0;
-	}
-
-	@Override
 	public int removeByObject(Object key) {
 		if (isReadOnly() || isVisible() == false) {
 			throw new UnsupportedOperationException("remove(" + key + ")");
