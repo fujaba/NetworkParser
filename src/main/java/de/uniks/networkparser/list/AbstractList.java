@@ -60,7 +60,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 	}
  
 	public boolean remove(Object o) {
-		return super.removeByObject(o) >= 0;
+		return this.removeByObject(o) >= 0;
 	}
 
 	/**
