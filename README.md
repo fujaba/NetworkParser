@@ -47,6 +47,11 @@ The Framework have many other features like:
 
 [![Open Source Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/fujaba/networkparser.svg)](http://isitmaintained.com/project/fujaba/networkparser "Average time to resolve an issue")
+
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/fujaba/networkparser.svg)](http://isitmaintained.com/project/fujaba/networkparser "Percentage of issues still open")
+
+
 Project Managment
 
 [![Join the chat at https://gitter.im/NetworkParser/Lobby](https://badges.gitter.im/NetworkParser/Lobby.svg)](https://gitter.im/NetworkParser/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
