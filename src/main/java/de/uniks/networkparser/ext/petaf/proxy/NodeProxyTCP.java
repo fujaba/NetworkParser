@@ -26,6 +26,7 @@ THE SOFTWARE.
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.DatagramPacket;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -39,10 +40,13 @@ import java.util.Set;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.RESTServiceTask;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.ReceivingTimerTask;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
+import de.uniks.networkparser.ext.petaf.Server_UPD;
+import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -69,8 +73,12 @@ public class NodeProxyTCP extends NodeProxy {
 	protected String url;
 	protected int timeOut;
 	public static final String LOCALHOST = "127.0.0.1";
-	protected Server serverSocket;
+	protected Server server;
 	protected boolean allowAnswer = false;
+	
+	
+	private int receivePort = 9876;
+	private String serverType;
 
 	/**
 	 * Fallback Executor for Simple Using Serverclasses
@@ -268,9 +276,10 @@ public class NodeProxyTCP extends NodeProxy {
 
 	@Override
 	public boolean close() {
-		if (this.serverSocket != null) {
-			this.serverSocket.close();
-			this.serverSocket = null;
+		if (this.server != null) {
+			boolean succces = this.server.close();
+			this.server = null;
+			return succces;
 		}
 		return true;
 	}
@@ -279,22 +288,38 @@ public class NodeProxyTCP extends NodeProxy {
 	protected boolean startProxy() {
 		boolean isInput = NodeProxy.isInput(getType());
 		if (url == null && getType() == null || isInput) {
-			if (serverSocket != null) {
+			if (server != null) {
 				return true;
 			}
-			/* Incoming Proxy */
-			if (isInput == false) {
-				withType(NodeProxy.TYPE_IN);
-			}
-			serverSocket = new Server_TCP(this);
-			if (url == null) {
-				try {
-					String url = InetAddress.getLocalHost().getHostAddress();
-					if (LOCALHOST.equals(url) == false) {
-						this.url = url;
-					}
-				} catch (UnknownHostException e) {
+			if (Server.TCP.equals(this.serverType)) {
+				/* Incoming Proxy */
+				if (isInput == false) {
+					withType(NodeProxy.TYPE_IN);
 				}
+				server = new Server_TCP(this);
+				if (url == null) {
+					try {
+						String url = InetAddress.getLocalHost().getHostAddress();
+						if (LOCALHOST.equals(url) == false) {
+							this.url = url;
+						}
+					} catch (UnknownHostException e) {
+					}
+				}
+			} else if (Server.TIME.equals(this.serverType)) {
+			} else if (Server.REST.equals(this.serverType)) {
+				Space space = this.getSpace();
+				if (space != null) {
+					IdMap map = space.getMap();
+					NodeProxyModel model = space.getModel();
+					Object root = model.getModel();
+					this.server = new RESTServiceTask(receivePort, map, root);
+				}
+			} else {
+				/* Server.BROADCAST */
+				Server_UPD updServer = new Server_UPD(this, true); 
+				this.server = updServer;
+				this.online = this.server.isRun();
 			}
 		} else {
 			withType(NodeProxy.TYPE_OUT);
@@ -723,6 +748,11 @@ public class NodeProxyTCP extends NodeProxy {
 		this.timeOut = value;
 		return this;
 	}
+	
+	public NodeProxyTCP withServerType(String type) {
+		this.serverType = type;
+		return this;
+	}
 
 	@Override
 	public boolean isValid() {
@@ -731,8 +761,43 @@ public class NodeProxyTCP extends NodeProxy {
 		}
 		return false;
 	}
+	
+	public DatagramPacket executeBroadCast(boolean async) {
+		if (async) {
+			this.server = new Server_UPD(this, true);
+		} else {
+			Server_UPD server = new Server_UPD(this, false);
+			this.server = server;
+			return server.runClient();
+		}
+		return null;
+	}
+	
+	
+	public int getBufferSize() {
+		return BUFFER;
+	}
 
-	public static NodeProxyServer search(int port) {
-		return NodeProxyServer.search(port);
+	public boolean sendSearch() {
+		Server_UPD server = (Server_UPD) this.server;
+		DatagramPacket packet = server.runClient();
+		if(packet.getLength()>0) {
+			ByteBuffer buffer = new ByteBuffer().with(packet.getData());
+			this.space.setReplicationInfo(buffer);
+		}
+		// If(This IsOnline False) May be a valid Breadcast on this Port
+		return false;
+	}
+	
+	public static NodeProxyTCP search(int port) {
+		return NodeProxyTCP.createServer(port);
+	}
+	
+	public NodeProxyTCP withReceivePort(int port) {
+		this.receivePort = port;
+		return this;
+	}
+	public int getReceivePort() {
+		return receivePort;
 	}
 }

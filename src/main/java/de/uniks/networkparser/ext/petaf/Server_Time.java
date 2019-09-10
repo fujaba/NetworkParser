@@ -33,16 +33,16 @@ import java.nio.ByteOrder;
 import java.nio.channels.DatagramChannel;
 import java.util.Date;
 
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyServer;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.Server;
 
 public class Server_Time extends Thread implements Server {
 	protected boolean run = true;
 	private int port = 37;
-	private NodeProxyServer proxy;
+	private NodeProxyTCP proxy;
 	private DatagramChannel channel;
 
-	public Server_Time(NodeProxyServer proxy, boolean asyn) {
+	public Server_Time(NodeProxyTCP proxy, boolean asyn) {
 		this.proxy = proxy;
 		if (init() && asyn) {
 			start();

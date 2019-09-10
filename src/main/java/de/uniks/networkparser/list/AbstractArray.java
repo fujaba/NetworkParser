@@ -512,11 +512,25 @@ public abstract class AbstractArray<V> implements BaseItem {
 		}
 		int end = source.length - this.index;
 		if (size > end) {
-			System.arraycopy(source, this.index, dest, 0, end);
+			int pos=0;
+			while(pos<=end) {
+				dest[pos] = source[this.index+pos];
+				pos++;
+			}
 			int len = size - end;
-			System.arraycopy(source, 0, dest, end, len);
+			while(pos<=len) {
+				dest[pos] = source[end+pos];
+				pos++;
+			}
+//			System.arraycopy(source, this.index, dest, 0, end);
+//			System.arraycopy(source, 0, dest, end, len);
 		} else {
-			System.arraycopy(source, this.index, dest, 0, size);
+			int pos=0;
+			while(pos<size) {
+				dest[pos] = source[this.index+pos];
+				pos++;
+			}
+//			System.arraycopy(source, this.index, dest, 0, size);
 		}
 		return dest;
 	}
@@ -1394,8 +1408,9 @@ public abstract class AbstractArray<V> implements BaseItem {
 	 * @return an array containing the elements of the list
 	 */
 	public <T> T[] toArray(T[] a) {
-		if (a == null)
+		if (a == null) {
 			return null;
+		}
 		Object[] elementData;
 		if (isComplex(size)) {
 			elementData = (Object[]) elements[SMALL_KEY];

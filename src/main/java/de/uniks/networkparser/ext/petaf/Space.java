@@ -1,5 +1,7 @@
 package de.uniks.networkparser.ext.petaf;
 
+import java.util.Collection;
+
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -9,6 +11,7 @@ import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.UpdateCondition;
+import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.converter.ByteConverterString;
 import de.uniks.networkparser.ext.ErrorHandler;
@@ -22,7 +25,6 @@ import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyFileSystem;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyLocal;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyModel;
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyServer;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
@@ -142,11 +144,13 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		return this;
 	}
 
-	public Space withName(String name) {
-		this.name = name;
+	public Space withName(String... name) {
+		if(name != null && name.length>0) {
+			this.name = name[0];
+		}
 		return this;
 	}
-
+	
 	public Space withName(String name, Object root) {
 		this.withName(name);
 		this.createModel(root, name + ".json");
@@ -366,6 +370,24 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		}
 		result.put(PROPERTY_PROXY, proxies);
 		return result;
+	}
+	
+	public boolean setReplicationInfo(Buffer msg) {
+		Tokener tokener = getTokener();
+		Entity result = tokener.newInstance();
+		result.withValue(msg);
+		Object value = result.getValue(PROPERTY_PROXY);
+		if(value != null && value instanceof Collection<?>) {
+			IdMap idMap = this.getMap();
+			Collection<?> list = (Collection<?>) value;
+			for(Object item : list) {
+				Object proxy = idMap.decode(item);
+				if(proxy != null && proxy instanceof NodeProxy) {
+					this.with((NodeProxy) proxy);
+				}
+			}
+		}
+		return true;
 	}
 
 	public SortedSet<NodeProxy> getNodeProxies(ObjectCondition... filters) {
@@ -1106,12 +1128,17 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		return this;
 	}
 
-	public NodeProxyServer search(int port) {
-		NodeProxyServer server = NodeProxyServer.search(port);
-		this.with(server);
+	public NodeProxyTCP search(int port) {
+		NodeProxyTCP proxy = NodeProxyTCP.createServer(port);
+		this.with(proxy);
+		proxy.sendSearch();
+		return proxy;
+	}
+
+	public NodeProxyTCP createServer(int port) {
+		NodeProxyTCP proxy = NodeProxyTCP.createServer(port);
+		this.with(proxy);
 		
-		server.sendSearch();
-		
-		return server;
+		return proxy;
 	}
 }

@@ -30,22 +30,22 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyServer;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Server;
 
 public class Server_UPD extends Thread implements Server {
 	protected boolean run = true;
 	protected DatagramSocket socket;
-	private NodeProxyServer proxy;
+	private NodeProxyTCP proxy;
 
-	public Server_UPD(NodeProxyServer proxy, boolean asyn) {
+	public Server_UPD(NodeProxyTCP proxy, boolean asyn) {
 		this.proxy = proxy;
-		if(init()) {
+		if (init()) {
 			if (asyn) {
 				start();
 			}
-		}else {
+		} else {
 			run = false;
 		}
 	}
@@ -94,8 +94,8 @@ public class Server_UPD extends Thread implements Server {
 		DatagramPacket message = createSendPacket(proxy.getReceivePort());
 		DatagramPacket receivePacket;
 		try {
-			if(socket == null) {
-				
+			if (socket == null) {
+
 			}
 			socket.send(message);
 
@@ -136,7 +136,7 @@ public class Server_UPD extends Thread implements Server {
 				int port = this.proxy.getPort();
 				try {
 					socket = new DatagramSocket(port);
-				}catch (Exception e) {
+				} catch (Exception e) {
 					socket = new DatagramSocket();
 					this.proxy.withPort(socket.getLocalPort());
 					this.proxy.withReceivePort(port);
