@@ -41,11 +41,11 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 	private SimpleKeyValueList<String, Integer> value = new SimpleKeyValueList<String, Integer>();
 	private SimpleKeyValueList<Object, String> classes = new SimpleKeyValueList<Object, String>();
 
-	public static JacocoColumn create() {
+	public static JacocoColumn create(boolean showError) {
 		JacocoColumn jacocoColumn = new JacocoColumn();
 		Class<?> proxyClass = ReflectionLoader.getSimpleClass(COLUMRENDERER);
 		if (proxyClass == null) {
-			if (ReflectionBlackBoxTester.isTester() == false) {
+			if (ReflectionBlackBoxTester.isTester() == false && showError) {
 				System.out.println("NO JACOCO FOUND ON BUILD-PATH");
 			}
 			return null;

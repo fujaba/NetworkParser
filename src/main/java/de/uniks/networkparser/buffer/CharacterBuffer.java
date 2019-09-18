@@ -1403,7 +1403,11 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	 * @return a List of String Parts
 	 */
 	public SimpleList<String> splitStrings(char split) {
+		
 		SimpleList<String> result = new SimpleList<String>();
+		if(buffer == null) {
+			return result;
+		}
 		if (start > buffer.length || start < 0) {
 			return result;
 		}

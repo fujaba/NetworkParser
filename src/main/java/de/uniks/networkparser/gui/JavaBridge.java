@@ -32,6 +32,7 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleObject;
 import de.uniks.networkparser.buffer.Buffer;
+import de.uniks.networkparser.ext.DiagramEditor;
 import de.uniks.networkparser.gui.controls.Control;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -114,14 +115,10 @@ public class JavaBridge implements ObjectCondition {
 		entity.withScript(script);
 
 		if (CONTENT_TYPE_EXCLUDE.equals(type)) {
-			entity.withHeader("diagram.js");
-			entity.withHeader("material.css");
-			entity.withHeader("style.css");
+			DiagramEditor.addGraphType(null, entity);
 		} else {
 			if (this.resourceHandler != null) {
-				entity.withScript(entity.getHeader(), this.resourceHandler.readResource("graph/diagram.js"));
-				entity.withStyle(this.resourceHandler.readResource("graph/material.css"));
-				entity.withStyle(this.resourceHandler.readResource("graph/style.css"));
+				DiagramEditor.addGraphType(this.resourceHandler, entity);
 			}
 		}
 		return entity;

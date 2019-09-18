@@ -52,12 +52,6 @@ public class MavenXML {
 		return updated;
 	}
 
-	public void writeJavascript(File path) {
-		if(path != null) {
-			FileBuffer.writeReourceFile(path.getAbsolutePath() + "/" + JSFILE, "graph/diagram.js");
-		}
-	}
-
 	public boolean writeIndexHtml(File startingDirectory, ArtifactList fullList) {
 		if (fullList == null || fullList.size() < 1) {
 			return false;

@@ -32,6 +32,7 @@ import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.MapListener;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.Server;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -131,6 +132,16 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 
 	public Space withCreator(IdMap value) {
 		this.map.with(value);
+		return this;
+	}
+	
+	public Space withListener(ObjectCondition listener) {
+		for(NodeProxy proxy : this.proxies) {
+			if(proxy instanceof NodeProxyTCP) {
+				NodeProxyTCP tcpProxy = (NodeProxyTCP) proxy;
+				tcpProxy.withListener(listener);
+			}
+		}
 		return this;
 	}
 
@@ -363,7 +374,8 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		result.put(PROPERTY_NAME, this.name);
 		EntityList proxies = tokener.newInstanceList();
 		MapEntity entity = new MapEntity(getMap());
-		for (NodeProxy proxy : this.proxies) {
+		for(int i=0;i<this.proxies.size();i++) {
+			NodeProxy proxy = this.proxies.get(i);
 			if (NodeProxy.isOutput(proxy.getType())) {
 				proxies.add(tokener.encode(proxy, entity));
 			}
@@ -530,7 +542,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 			return true;
 		}
 		SortedSet<NodeProxy> target;
-		if (proxies == null && (sendAnyhow || msg.isSendAnyHow())) {
+		if ((proxies == null || proxies.length<1) && (sendAnyhow || msg.isSendAnyHow())) {
 			target = this.proxies;
 		} else {
 			target = new SortedSet<NodeProxy>(true);
@@ -1137,6 +1149,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 
 	public NodeProxyTCP createServer(int port) {
 		NodeProxyTCP proxy = NodeProxyTCP.createServer(port);
+		proxy.withServerType(Server.TCP);
 		this.with(proxy);
 		
 		return proxy;

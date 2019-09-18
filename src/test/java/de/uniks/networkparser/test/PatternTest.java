@@ -7,11 +7,6 @@ import de.uniks.networkparser.graph.Pattern;
 import de.uniks.networkparser.test.model.ferryman.Bank;
 import de.uniks.networkparser.test.model.ferryman.Boat;
 import de.uniks.networkparser.test.model.ferryman.River;
-import de.uniks.networkparser.test.model.ludo.Field;
-import de.uniks.networkparser.test.model.ludo.Label;
-import de.uniks.networkparser.test.model.ludo.Ludo;
-import de.uniks.networkparser.test.model.ludo.Pawn;
-import de.uniks.networkparser.test.model.ludo.util.LudoCreator;
 import de.uniks.networkparser.test.model.util.RiverCreator;
 
 public class PatternTest {

@@ -2,7 +2,10 @@ package de.uniks.networkparser.ext.story;
 
 import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.DiagramEditor;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.ModelSet;
 import de.uniks.networkparser.list.SimpleList;
@@ -32,18 +35,12 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		if (this.outputFile == null || subDir == null) {
 			return false;
 		}
-		HTMLEntity output = new HTMLEntity();
-		/* INDEX HTML */
-		output.withEncoding(HTMLEntity.ENCODING);
 		XMLEntity frameset = XMLEntity.TAG("frameset").withKeyValue("cols", "250,*");
 		frameset.createChild("frame").withKeyValue("src", "refs.html").withKeyValue("name", "Index");
 		frameset.createChild("frame").withKeyValue("name", "Main");
-		frameset.createChild("noframes")
-				.withValue("<body><p><a href='refs.html'>Index</a> <a href='refs.html'>Main</a></p></body>");
-		output.with(frameset);
-
+		
 		HTMLEntity refHtml = new HTMLEntity();
-		refHtml.withHeader("../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css");
+		DiagramEditor.addGraphType(new FileBuffer(), refHtml, ".css", this.outputFile);
 		refHtml.withEncoding(HTMLEntity.ENCODING);
 		int pos = this.outputFile.lastIndexOf('/');
 		String fileName = "";
@@ -51,17 +48,63 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 			fileName = subDir + this.outputFile.substring(0, pos) + "/";
 		}
 
+		XMLEntity body = refHtml.getBody();
+		body.createChild("p", "<a href='title.html' target=\"Main\">Index</a>");
 		for (StoryElement subStory : children) {
 			if(subStory.writeToFile()) {
-				String subFile = subStory.getOutputFile();
+				String subFile = subStory.getOutputFile(true);
 				if(subFile != null) {
+					
+					refHtml.createChild("p");
 					XMLEntity link = refHtml.createTag("A", refHtml.getBody());
-					link.add("href", subStory.getOutputFile());
+					if(subFile.endsWith(".html")) {
+						link.add("href", subFile);
+					}else {
+						link.add("href", subFile+".html");
+					}
+					link.add("target", "Main");
 					link.withValueItem(subStory.getLabel());
 				}
 			}
 		}
-		return FileBuffer.writeFile(fileName + "index.html", output.toString()) >= 0;
+		
+		// CREATE MAIN
+		HTMLEntity titleHtml = new HTMLEntity();
+		titleHtml.withEncoding(HTMLEntity.ENCODING);
+		
+		
+		CharacterBuffer licence = FileBuffer.readFile("licence.txt");
+		String[] lines = licence.toString().split("\n");
+		if(lines.length>0) {
+			String[] words = lines[0].split(" ");
+			titleHtml.createBodyTag("h1", words[words.length-1]);
+			titleHtml.createBodyTag("h2", "created "+words[words.length-2]);
+			if(licence.indexOf("Permission is hereby granted, free of charge,")>0) {
+				String logoImage="<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"166\" width=\"321\"><g stroke-width=\"35\" stroke=\"#A31F34\"><path d=\"m17.5,0v166m57-166v113m57-113v166m57-166v33m58,20v113\"/><path d=\"m188.5,53v113\" stroke=\"#8A8B8C\"/><path d=\"m229,16.5h92\" stroke-width=\"33\"/></g></svg>";
+				titleHtml.createBodyTag("div", logoImage);
+			}
+			
+			HTMLEntity licenceHTML =new HTMLEntity();
+			licenceHTML.withEncoding(HTMLEntity.ENCODING);
+			licenceHTML.createBodyTag("div", licence.toString().replaceAll("\r\n", "<br/>"));
+			body.createChild("p", "<a href='licence.html' target=\"Main\">Licence</a>");
+			FileBuffer.writeFile(fileName + "licence.html", licenceHTML.toString());
+		}
+//		 
+//		titleHtml.html'
+		
+		frameset.createChild("noframes", body.toString());
+
+		/* INDEX HTML */
+		CharacterBuffer output = new CharacterBuffer();
+		output.append("<html>");
+		output.append(frameset.toString());
+		output.append("</html>");
+		
+		boolean result = FileBuffer.writeFile(fileName + "index.html", output.toString()) >= 0;
+		FileBuffer.writeFile(fileName + "refs.html", refHtml.toString());
+		FileBuffer.writeFile(fileName + "title.html", titleHtml.toString());
+		return result;
 	}
 
 	public StoryBook withTask(Task... value) {
@@ -122,11 +165,23 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		}
 		return this;
 	}
+	
+	public StoryStepJUnit createStoryStepJUnit(String... packageName) {
+		StoryStepJUnit storyElement = new StoryStepJUnit();
+		if(packageName != null && packageName.length>0) {
+			storyElement.withPackageName(packageName[0]);
+		}
+		this.children.add(storyElement);
+		return storyElement;
+	}
 
-	public Story createStory(String title) {
-		Story value = new Story().withTitle(title);
-		withStory(value);
-		return value;
+	public Story createStory(String... title) {
+		Story story = new Story();
+		if(title != null && title.length>0) {
+			story.withTitle(title[0]);
+		}
+		withStory(story);
+		return story;
 	}
 	public Cucumber createScenario(String title) {
 		Story value = new Story().withTitle(title);
@@ -274,5 +329,23 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 	public StoryBook withPath(String string) {
 		this.outputFile = string;
 		return this;
+	}
+
+	public ClassModel getClassModel(String packageName) {
+		ClassModel classModel = new ClassModel(packageName);
+		for(StoryElement element :this.children) {
+			if(element instanceof Story) {
+				Story subStory = (Story) element;
+				for(ObjectCondition condition : subStory.getSteps()) {
+					if(condition instanceof Cucumber) {
+						// Right ONe please Merge
+						Cucumber cucumber = (Cucumber) condition;
+						ClassModel subModel = cucumber.getClassModel(packageName);
+						classModel.add(subModel);
+					}
+				}
+			}
+		}
+		return classModel;
 	}
 }

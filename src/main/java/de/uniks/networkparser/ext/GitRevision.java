@@ -29,8 +29,10 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
@@ -62,9 +64,11 @@ public class GitRevision {
 
 	public JsonObject execute() throws IOException {
 		JsonObject json = execute(max);
-		System.setProperty("Branchname", json.getString(BRANCHNAME));
-		System.setProperty("LastCommit", json.getString(LASTCOMMIT));
-		System.setProperty("Revisionnumber", json.getString(REVISIONNUMBER));
+		if(json != null) {
+			System.setProperty("Branchname", json.getString(BRANCHNAME));
+			System.setProperty("LastCommit", json.getString(LASTCOMMIT));
+			System.setProperty("Revisionnumber", json.getString(REVISIONNUMBER));
+		}
 		return json;
 	}
 
@@ -202,6 +206,7 @@ public class GitRevision {
 		return full;
 	}
 
+	@SuppressWarnings("unchecked")
 	public int calcGitTag(Object repository, JsonObject info) {
 		if (ReflectionLoader.REPOSITORY == null || repository == null
 				|| ReflectionLoader.REPOSITORY.isAssignableFrom(repository.getClass()) == false) {
@@ -211,13 +216,34 @@ public class GitRevision {
 		int mayor = 0;
 		String tag = null;
 		String tagHash = "";
-		@SuppressWarnings("unchecked")
 		Map<String, Object> tags = (Map<String, Object>) ReflectionLoader.call(repository, "getTags");
-		int versionNumber = 1;
+		SimpleKeyValueList<String, String> tagNames=new SimpleKeyValueList<String, String>();
 		for (Iterator<Entry<String, Object>> i = tags.entrySet().iterator(); i.hasNext();) {
 			Entry<String, Object> entry = i.next();
 			try {
-				String id = entry.getKey().trim();
+				tagNames.add(entry.getKey().trim(), (String) ReflectionLoader.call(entry.getValue(), "getName"));
+				
+			}catch (Exception e) {
+			}
+		}
+		if(tags == null || tags.size() == 0) {
+			Object refDatabase = ReflectionLoader.call(repository, "getRefDatabase");
+			List<?> refs = (List<?>) ReflectionLoader.call(refDatabase, "getRefsByPrefix", "refs/tags/");
+			if(refs.size() >0) {
+				for(int i=0;i<refs.size();i++) {
+					try {
+						String id = (String) ReflectionLoader.call(refs.get(i), "getTagName");
+						String hashValue = (String) ReflectionLoader.call(refs.get(i), "getObject", "name");
+						tagNames.add(ReflectionLoader.call(id, hashValue));
+					}catch (Exception e) {
+					}
+				}
+			}
+		}
+		int versionNumber = 1;
+		for(int i=0;i<tagNames.size();i++) {
+			try {
+				String id = tagNames.getKeyByIndex(i);
 				int start = id.indexOf(".");
 				int vNumber = 0;
 				int mayorNumber = 0;
@@ -235,26 +261,21 @@ public class GitRevision {
 				}
 				Integer value = Integer.valueOf(id);
 				if (value > 0) {
-					if (mayorNumber > mayor) {
-						tag = entry.getKey().trim();
+					if (mayorNumber > mayor || value > minor) {
+						tag = id;
 						mayor = mayorNumber;
-						tagHash = (String) ReflectionLoader.call(entry.getValue(), "getName");
-						versionNumber = vNumber;
-						minor = value;
-					} else if (value > minor) {
-						tag = entry.getKey().trim();
-						tagHash = (String) ReflectionLoader.call(entry.getValue(), "getName");
+						tagHash = tagNames.getValueByIndex(i);
 						versionNumber = vNumber;
 						minor = value;
 					} else if (value == minor) {
 						if (versionNumber == 0) {
-							tagHash = (String) ReflectionLoader.call(entry.getValue(), "getName");
+							tagHash = tagNames.getValueByIndex(i);
 							versionNumber = vNumber;
-							tag = entry.getKey().trim();
+							tag = id;
 						} else if (vNumber > versionNumber) {
-							tag = entry.getKey().trim();
+							tag = id;
 							versionNumber = vNumber;
-							tagHash = (String) ReflectionLoader.call(entry.getValue(), "getName");
+							tagHash = tagNames.getValueByIndex(i);
 						}
 						minor = value;
 					}
@@ -264,7 +285,6 @@ public class GitRevision {
 			}
 		}
 		info.put(MAYOR, mayor);
-		System.out.println(minor);
 		if (minor < 0) {
 			info.put(MINOR, 0);
 		} else {

@@ -27,6 +27,7 @@ THE SOFTWARE.
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleException;
@@ -69,7 +70,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 			path = name.substring(0, name.lastIndexOf("/")) + "/";
 		}
 		Class<?> listClass = GraphList.class;
-		for (String item : HTMLEntity.GRAPHRESOURCES) {
+		for (String item : HTMLEntity.GRAPH_RESOURCES) {
 			String content = FileBuffer.readResource(listClass.getResourceAsStream(item)).toString();
 			entity.addResources(include, path + item, content);
 			if (include == false) {
@@ -258,7 +259,13 @@ public class Story extends StoryElement implements Comparable<Story> {
 			file = this.outputFile;
 		}else if(fileName.length>0) {
 			file = fileName[0];
+		}else if(this.getTitle() != null) {
+			StoryStepTitle title = this.getTitle();
+			if(title.getTitle() != null) {
+				file = EntityUtil.getValidChars(title.getTitle().trim(), 50);
+			}
 		}
+		
 		if (file == null || file.length() < 1) {
 			if (steps.size() < 1) {
 				return false;
@@ -478,8 +485,15 @@ public class Story extends StoryElement implements Comparable<Story> {
 		this.addCondition(step);
 	}
 
-	public String getOutputFile() {
-		return outputFile;
+	public String getOutputFile(boolean calculate) {
+		if(calculate == false || outputFile != null) {
+			return outputFile;
+		}
+		StoryStepTitle title = this.getTitle();
+		if(title != null && title.getTitle() != null) {
+			return EntityUtil.getValidChars(title.getTitle().trim(), 50);
+		}
+		return null;
 	}
 
 	/**
@@ -537,6 +551,14 @@ public class Story extends StoryElement implements Comparable<Story> {
 	 */
 	public Cucumber createScenario(String caption) {
 		Cucumber cucumber = Cucumber.createScenario(caption);
+		if(caption != null) {
+			int pos = caption.indexOf(":");
+			if(pos>0) {
+				this.withTitle(caption.substring(pos+1));
+			}else {
+				this.withTitle(caption);
+			}
+		}
 		this.add(cucumber);
 		return cucumber;
 	}
@@ -549,5 +571,9 @@ public class Story extends StoryElement implements Comparable<Story> {
 		btn.with("onclick", "window.location.reload();", "style", "position:absolute;right:20px;");
 		btn.withValueItem("&#8635;");
 		return this;
+	}
+	
+	public SimpleList<ObjectCondition> getSteps() {
+		return steps;
 	}
 }

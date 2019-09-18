@@ -216,6 +216,13 @@ public class ReflectionBlackBoxTester {
 		}
 		return true;
 	}
+	public static final boolean clearTester() {
+		String property = System.getProperty("Tester");
+		if (property != null && property.length() >0) {
+			System.setProperty("Tester", null);
+		}
+		return true;
+	}
 
 	public boolean execute(String... path) {
 		try {

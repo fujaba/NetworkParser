@@ -51,7 +51,7 @@ import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class StoryStepJUnit implements ObjectCondition {
+public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 	private static final String BLACKBOXFILE = "backbox.txt";
 	private ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 	private NetworkParserLog logger = new NetworkParserLog().withListener(this);
@@ -66,10 +66,17 @@ public class StoryStepJUnit implements ObjectCondition {
 	private GraphModel model;
 
 	public StoryStepJUnit() {
-		this.column = JacocoColumn.create();
+		initColumn(false);
+	}
+	public boolean initColumn(boolean showError) {
+		if(this.column != null) {
+			return true;
+		}
+		this.column = JacocoColumn.create(showError);
 		if (this.column != null) {
 			this.addColumn("BBT", column);
 		}
+		return this.column != null;
 	}
 
 	public Feature addGroup(String label) {
@@ -171,6 +178,7 @@ public class StoryStepJUnit implements ObjectCondition {
 	public boolean executeBlackBoxTest(String path) {
 		this.task = path;
 		try {
+			initColumn(true);
 			tester.test(packageName, logger);
 		} catch (Exception e) {
 			return false;
@@ -210,6 +218,7 @@ public class StoryStepJUnit implements ObjectCondition {
 				|| NetworkParserLog.DEBUG.equalsIgnoreCase(evt.getType())
 				|| NetworkParserLog.ERROR.equalsIgnoreCase(evt.getType())) {
 			/* Event from BlackBoxTester */
+			System.out.println("WRITE HTML: "+this.task+"::"+packageName +" EXEC");
 			return this.executeBlackBoxEvent(evt);
 		}
 
@@ -245,6 +254,7 @@ public class StoryStepJUnit implements ObjectCondition {
 
 		/* Now Add */
 		/* ADD RESULT TO STORY DOCUMENTATION FOR BLACKBOX AND JACOCO */
+		System.out.println("WRITE HTML");
 		this.writeHTML(path + "jacoco.exec", path + "jacoco", label);
 		CharacterBuffer indexFile = FileBuffer.readFile(path + "jacoco/index.html");
 		if (indexFile != null) {
@@ -466,5 +476,20 @@ public class StoryStepJUnit implements ObjectCondition {
 		if(logger != null) {
 			logger.start(test, method, "start Method");
 		}
+	}
+
+	@Override
+	public String getOutputFile(boolean calculate) {
+		return "jacoco/index.html";
+	}
+
+	@Override
+	public String getLabel() {
+		return "Jacoco";
+	}
+
+	@Override
+	public boolean writeToFile(String... fileName) {
+		return true;
 	}
 }

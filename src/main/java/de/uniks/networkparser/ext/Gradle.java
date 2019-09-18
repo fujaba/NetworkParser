@@ -586,6 +586,7 @@ public class Gradle implements ObjectCondition {
 		}
 		sb.withLine("		'Bundle-ClassPath': '.'");
 		sb.withLine("}");
+		sb.withLine("sourceSets.main.java.srcDirs = files(\"gen\")");
 
 		HTMLEntity response = NodeProxyTCP.getHTTP("https://opensource.org/licenses/" + licence, new HTMLEntity());
 		if (response != null) {
@@ -639,5 +640,42 @@ public class Gradle implements ObjectCondition {
 	public Gradle withLogger(NetworkParserLog logger) {
 		this.logger = logger;
 		return this;
+	}
+
+	public void initTest() {
+		CharacterBuffer buildGradle = FileBuffer.readFile(path + "build.gradle");
+		
+		buildGradle.withLine("apply plugin: 'jacoco'");
+		buildGradle.withLine("jacoco.toolVersion = \"0.8.+\"");
+//		buildGradle.withLine("sourceSets.main.java.srcDirs = files(\"gen\")
+		buildGradle.withLine("jacocoTestReport {");
+		buildGradle.withLine("		group = \"Reporting\"");
+		buildGradle.withLine("		description = \"Generate Jacoco coverage reports after running tests.\"");
+		buildGradle.withLine("		executionData = files(\"${buildDir}/jacoco/test.exec\")");
+		buildGradle.withLine("		reports {");
+		buildGradle.withLine("			xml {");
+		buildGradle.withLine("				enabled = true");
+		buildGradle.withLine("				//Following value is a file");
+		buildGradle.withLine("				destination = new File(\"${buildDir}/test-results/jacoco.xml\")");
+		buildGradle.withLine("			}");
+		buildGradle.withLine("			csv{");
+		buildGradle.withLine("				destination = new File(\"${buildDir}/jacoco/report.csv\")");
+		buildGradle.withLine("				enabled = true");
+		buildGradle.withLine("			}");
+		buildGradle.withLine("			html {");
+		buildGradle.withLine("				enabled = true");
+		buildGradle.withLine("				//Following value is a folder");
+		buildGradle.withLine("				destination = new File(\"doc/jacoco/\")");
+		buildGradle.withLine("			}");
+		buildGradle.withLine("		}");
+		buildGradle.withLine("		afterEvaluate {");
+		buildGradle.withLine("					classDirectories = files(classDirectories.files.collect {");
+		buildGradle.withLine("						fileTree(dir: it, exclude: ['**/javafx/**'])");
+		buildGradle.withLine("					})");
+		buildGradle.withLine("		}");
+		buildGradle.withLine("}");
+		buildGradle.withLine("test.finalizedBy jacocoTestReport");
+		
+		FileBuffer.writeFile(path + "build.gradle", buildGradle.toString());
 	}
 }

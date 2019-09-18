@@ -39,6 +39,7 @@ public class Cucumber implements ObjectCondition {
 	private String title;
 	private GraphList model;
 	private Pattern pattern;
+	private boolean dirty;
 
 	public GraphList getModel() {
 		return model;
@@ -46,6 +47,9 @@ public class Cucumber implements ObjectCondition {
 	
 	public ClassModel getClassModel(String packageName) {
 		ClassModel classModel = new ClassModel(packageName);
+		if(this.dirty ) {
+			this.analyse();
+		}
 		classModel.add(model);
 		return classModel;
 	}
@@ -128,21 +132,25 @@ public class Cucumber implements ObjectCondition {
 
 	public Cucumber Given(String value) {
 		given.add(value, false);
+		this.dirty = true;
 		return this;
 	}
 
 	public Cucumber When(String value) {
 		when.add(value, false);
+		this.dirty = true;
 		return this;
 	}
 
 	public Cucumber Then(String value) {
 		then.add(value, false);
+		this.dirty = true;
 		return this;
 	}
 
 	public Cucumber Definition(String value) {
 		definition.add(value, false);
+		this.dirty = true;
 		return this;
 	}
 
@@ -313,6 +321,7 @@ public class Cucumber implements ObjectCondition {
 				return false;
 			}
 		}
+		this.dirty = false;
 		return true;
 	}
 
@@ -411,8 +420,9 @@ public class Cucumber implements ObjectCondition {
 					buffer.append(this.then.getKeyByIndex(i));
 				}
 				output.createBodyTag("div", buffer.toString());
-
-				output.withGraph(this.model);
+				ClassModel model=new ClassModel();
+				model.add(this.model);
+				output.withGraph(model);
 			}
 		}
 		return true;

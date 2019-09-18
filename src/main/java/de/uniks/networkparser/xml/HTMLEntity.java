@@ -52,9 +52,9 @@ public class HTMLEntity implements BaseItem {
 	public static final String KEY_SRC = "src";
 	public static final String GRAPH = "Graph";
 	public static final String CLASSEDITOR = "ClassEditor";
-	public static final String[] GRAPHRESOURCES = new String[] { "diagramstyle.css", "diagram.js", "dagre.min.js",
-			"jspdf.min.js" };
-	public static final String[] CODEESOURCES = new String[] { "highlight.pack.js", "highlightjs-line-numbers.min.js" };
+	public static final String[] GRAPH_RESOURCES = new String[] {  "diagramstyle.css", "diagram.js", "dagre.min.js", "jspdf.min.js" };
+	public static final String[] CODE_RESOURCES = new String[] { "highlight.pack.js", "highlightjs-line-numbers.min.js", };
+	public static final String[] PROJECT_RESOURCES = new String[] {"d3.min.js"};
 
 	private XMLEntity body = new XMLEntity().withType("body");
 	private XMLEntity header = new XMLEntity().withType("head");
@@ -471,7 +471,7 @@ public class HTMLEntity implements BaseItem {
 		if (path != null) {
 			/* Add graph-framework - Test for Add Styles */
 			SimpleList<String> resources = new SimpleList<String>();
-			for (String item : GRAPHRESOURCES) {
+			for (String item : GRAPH_RESOURCES) {
 				resources.add(item);
 			}
 			for (int i = 0; i < this.header.sizeChildren(); i++) {
@@ -682,5 +682,9 @@ public class HTMLEntity implements BaseItem {
 			}
 		}
 		return this;
+	}
+
+	public XMLEntity createChild(String tag, String...values) {
+		return this.createBodyTag(tag, values);
 	}
 }

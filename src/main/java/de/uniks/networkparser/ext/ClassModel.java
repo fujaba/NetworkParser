@@ -192,6 +192,9 @@ public class ClassModel extends GraphModel {
 						ClazzSet newList = new ClazzSet();
 						SimpleKeyValueList<Clazz, Clazz> mapping = new SimpleKeyValueList<Clazz, Clazz>(); 
 						for(Clazz clazz : clazzes) {
+							if(clazz.getName() == null) {
+								continue;
+							}
 							Clazz newClazz = newList.getClazz(clazz.getName());
 							if(newClazz == null) {
 								newClazz = new Clazz(clazz.getName());
@@ -208,7 +211,9 @@ public class ClassModel extends GraphModel {
 							Association other = assoc.getOther();
 							Clazz sourceNew = mapping.get(other.getClazz());
 							Clazz targetNew = mapping.get(assoc.getClazz());
-							sourceNew.createBidirectional(targetNew, assoc.getName(), assoc.getCardinality(), other.getName(), other.getCardinality());
+							if(sourceNew != null && targetNew != null) {
+								sourceNew.createBidirectional(targetNew, assoc.getName(), assoc.getCardinality(), other.getName(), other.getCardinality());
+							}
 						}
 
 						return true;

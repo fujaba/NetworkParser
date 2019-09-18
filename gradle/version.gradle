@@ -113,7 +113,6 @@ def gitversion() {
 		gitVersion.buildTime = buildTime()
 		gitVersion.branch = json.get("branchname")
 		gitVersion.error = false
-		println json
 	} catch(Exception e) {
 		println "ERROR GIT"
 		gitVersion.minor = getGitTag()

@@ -37,6 +37,7 @@ import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.ext.generic.GenericCreator;
@@ -165,9 +166,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		}
 		GraphUtil.setGenPath(list, HTMLEntity.CLASSEDITOR);
 		FileBuffer resourceHandler = new FileBuffer();
-		entity.withScript(entity.getHeader(), resourceHandler.readResource("graph/diagram.js"));
-		entity.withScript(entity.getHeader(), resourceHandler.readResource("graph/dagre.min.js"));
-		entity.withStyle(resourceHandler.readResource("graph/diagramstyle.css"));
+		addGraphType(resourceHandler, entity);
 		String graph = list.toString(new GraphConverter());
 
 		StringBuilder sb = new StringBuilder();
@@ -187,6 +186,38 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		FileBuffer.writeFile("neu.html", entity.toString());
 		converting(editor, string, null, false, false);
 		return editor;
+	}
+	
+	public static void addGraphType(Buffer resourceHandler, HTMLEntity entity) {
+		if(entity == null) {
+			return;
+		}
+		if(resourceHandler == null) {
+			for(String item : HTMLEntity.GRAPH_RESOURCES) {
+				entity.withHeader(item);
+			}
+		}
+		for(String item : HTMLEntity.GRAPH_RESOURCES) {
+			if(item.endsWith(".css")) {
+				entity.withStyle(resourceHandler.readResource("graph/"+item));
+			}else {
+				entity.withScript(entity.getHeader(), resourceHandler.readResource("graph/"+item));
+			}
+		}
+	}
+	
+	public static void addGraphType(Buffer resourceHandler, HTMLEntity entity, String type, String allExtract) {
+		if(entity == null) {
+			return;
+		}
+		for(String item : HTMLEntity.GRAPH_RESOURCES) {
+			if(item.endsWith(type)) {
+				entity.withHeader(item);
+				FileBuffer.writeFile(allExtract+"/"+item, resourceHandler.readResource("graph/"+item));
+			}else if(allExtract != null) {
+				FileBuffer.writeFile(allExtract+"/"+item, resourceHandler.readResource("graph/"+item));
+			}
+		}
 	}
 
 	public static boolean convertToPNG(HTMLEntity entity, String file, int... dimension) {
@@ -300,7 +331,16 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 				if (success == false) {
 					System.exit(-1);
 				}
+				// GRADLE ININT SHOW IF TEST ADD
 				i++;
+				if (args.length > i && args[i] != null ) {
+					String test = args[i].toLowerCase();
+					if("jacoco".equals(test)) {
+						gradle.initTest();
+						i++;
+					}
+				}
+				
 				if (args.length > i && args[i] != null ) {
 					String remoteURL = args[i];
 					GitRevision revision = new GitRevision();
@@ -308,6 +348,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 					revision.init(remoteURL);
 					logger("GIT Init");
 				}
+				
 				return;
 			}
 			if (JarValidator.MAINTAG.equalsIgnoreCase(args[0])) {
@@ -442,9 +483,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			if (path.equals("/")) {
 				HTMLEntity html = new HTMLEntity();
 				html.createScript("classEditor = new ClassEditor(\"board\");", html.getBody());
-				html.withHeader("diagram.js");
-				html.withHeader("jspdf.min.js");
-				html.withHeader("diagramstyle.css");
+				addGraphType(null, html);
 				String response = html.toString(2);
 				writeHTTPResponse(msg, response, false);
 			} else if (path.equalsIgnoreCase("/diagram.js")) {

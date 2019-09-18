@@ -512,25 +512,11 @@ public abstract class AbstractArray<V> implements BaseItem {
 		}
 		int end = source.length - this.index;
 		if (size > end) {
-			int pos=0;
-			while(pos<=end) {
-				dest[pos] = source[this.index+pos];
-				pos++;
-			}
-			int len = size - end;
-			while(pos<=len) {
-				dest[pos] = source[end+pos];
-				pos++;
-			}
-//			System.arraycopy(source, this.index, dest, 0, end);
-//			System.arraycopy(source, 0, dest, end, len);
+			System.arraycopy(source, this.index, dest, 0, end);
+            int len = size - end;
+            System.arraycopy(source, 0, dest, end, len);
 		} else {
-			int pos=0;
-			while(pos<size) {
-				dest[pos] = source[this.index+pos];
-				pos++;
-			}
-//			System.arraycopy(source, this.index, dest, 0, size);
+			System.arraycopy(source, this.index, dest, 0, size);
 		}
 		return dest;
 	}

@@ -271,7 +271,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 			return false;
 		}
 		if (story != null) {
-			for (String item : HTMLEntity.CODEESOURCES) {
+			for (String item : HTMLEntity.CODE_RESOURCES) {
 				if (element.getHeader(item) == null) {
 					/* DEFAULT TO EXTRACT TO DOC-FOLDER */
 					Story.addScript(story.getPath(), item, element);

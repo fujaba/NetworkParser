@@ -56,7 +56,7 @@ public class StoryStepDiagram implements ObjectCondition {
 		Story story = (Story) evt.getSource();
 
 		if (this.model != null) {
-			for (String item : HTMLEntity.GRAPHRESOURCES) {
+			for (String item : HTMLEntity.GRAPH_RESOURCES) {
 				if (element.getHeader(item) == null) {
 					/* DEFAULT TO EXTRACT TO DOC-FOLDER */
 					Story.addScript(story.getPath(), item, element);

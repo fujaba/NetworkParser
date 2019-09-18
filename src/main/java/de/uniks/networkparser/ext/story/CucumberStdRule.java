@@ -471,6 +471,9 @@ public class CucumberStdRule implements ObjectCondition {
 						Clazz sourceClazz = getClazz(token[s], model);
 						clazzSet.add(sourceClazz);
 						do {
+							if(t>=token.length) {
+								break;
+							}
 							Clazz targetClazz = getClazz(token[t], model);
 							clazzSet.add(targetClazz);
 							sourceClazz.withUniDirectional(targetClazz, getLinkName(token[z]), target);
