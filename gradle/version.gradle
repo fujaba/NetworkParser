@@ -128,6 +128,12 @@ def gitversion() {
 		gitVersion.latest = getGitLastCommit() != null
 	}
 	if(gitVersion != null && gitVersion.revision>0) {
+		if(gitVersion.minor==0) {
+			def newMinor = getGitTag()
+			if(newMinor != 0) {
+				gitVersion.minor = newMinor
+			}
+		}
 		println "Revisionnumber: "	+ gitVersion.revision
 		println "Branchname: " 		+ gitVersion.branch
 		println "LastCommit: "		+ gitVersion.hash

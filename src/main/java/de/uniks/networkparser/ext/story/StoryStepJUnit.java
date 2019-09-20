@@ -180,6 +180,9 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 		try {
 			initColumn(true);
 			tester.test(packageName, logger);
+//			if("JUNITTEST".equals(evt.getType() == false) {
+			writeResult(this, new HTMLEntity());
+//			output.withEncoding(HTMLEntity.ENCODING););
 		} catch (Exception e) {
 			return false;
 		}
@@ -218,7 +221,6 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 				|| NetworkParserLog.DEBUG.equalsIgnoreCase(evt.getType())
 				|| NetworkParserLog.ERROR.equalsIgnoreCase(evt.getType())) {
 			/* Event from BlackBoxTester */
-			System.out.println("WRITE HTML: "+this.task+"::"+packageName +" EXEC");
 			return this.executeBlackBoxEvent(evt);
 		}
 
@@ -226,12 +228,20 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 			return false;
 		}
 		/* EXECUTE JUNIT AND JACOCO */
-
+		return writeResult(evt, evt.getNewValue());
+	}
+	public boolean writeResult(Object source, Object newElement) {
+		if(source == null) {
+			return false;
+		}
+		if(newElement instanceof HTMLEntity == false) {
+			return false;
+		}
 		/* PATH IS "doc/" */
 		String path = "doc/";
 		String label = "JUnit - Jacoco";
-		if (evt.getSource() instanceof Story) {
-			Story story = (Story) evt.getSource();
+		if (source instanceof Story) {
+			Story story = (Story) source;
 
 			path = story.getPath();
 			if (story.getLabel() != null) {
@@ -265,7 +275,7 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 				int end = indexFile.indexOf("<", pos);
 				if (end > 0) {
 					String name = indexFile.substring(pos, end);
-					HTMLEntity output = (HTMLEntity) evt.getNewValue();
+					HTMLEntity output = (HTMLEntity) newElement;
 					XMLEntity div = output.createTag("div", output.getBody());
 					XMLEntity p = output.createTag("p", div);
 					p.withCloseTag();
