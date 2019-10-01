@@ -1525,7 +1525,7 @@ var Palette = (function () {
                 button.innerHTML = icon.outerHTML;
                 button.onclick = function (e) {
                     var nextFreePosition = _this.graph.getNextFreePosition();
-                    var node = _this.graph.addElementWithValues(graph.nodeFactory[key], { x: nextFreePosition.x, y: nextFreePosition.y }, false);
+                    var node = _this.graph.addElementWithValues(key, { x: nextFreePosition.x, y: nextFreePosition.y }, false);
                     _this.graph.drawElement(node);
                 };
                 this_1.palette.appendChild(button);
@@ -3684,11 +3684,14 @@ var GraphModel = (function (_super) {
         if (sourceAsString) {
             source = this.getNodeById(sourceAsString);
             if (!source) {
-                var id_1 = edge.source;
-                if (typeof id_1 === 'object') {
-                    id_1 = id_1.id;
+                var nodeID = edge.source;
+                if (typeof nodeID === 'object') {
+                    nodeID = nodeID.id;
                 }
-                source = this.createElement('Class', this.getNewId('Class'), { name: id_1 });
+                if (!nodeID) {
+                    nodeID = this.getNewId('Class');
+                }
+                source = this.createElement('Class', nodeID, { name: nodeID });
                 source.init(this);
             }
         }
@@ -3697,11 +3700,14 @@ var GraphModel = (function (_super) {
         if (targetAsString) {
             target = this.getNodeById(targetAsString);
             if (!target) {
-                var id_2 = edge.target;
-                if (typeof id_2 === 'object') {
-                    id_2 = id_2.id;
+                var nodeID = edge.target;
+                if (typeof nodeID === 'object') {
+                    nodeID = nodeID.id;
                 }
-                target = this.createElement('Class', this.getNewId('Class'), { name: id_2 });
+                if (!nodeID) {
+                    nodeID = this.getNewId('Class');
+                }
+                target = this.createElement('Class', nodeID, { name: nodeID });
                 target.init(this);
             }
         }
@@ -3995,7 +4001,6 @@ var Association = (function (_super) {
             fill: 'none'
         };
         var pathLine = this.createShape(attr);
-        attr['style'] = 'stroke-width:20;opacity:0;width:20;height:20';
         var extendedPathLine = util_1.Util.createShape(attr);
         group.appendChild(extendedPathLine);
         group.appendChild(pathLine);
@@ -6390,7 +6395,7 @@ var Method = (function (_super) {
                 this.updateType('void');
             }
         }
-        if (util_1.Util.includes(this.$data.getValue('name'), '(') && !util_1.Util.includes(this.$data.getValue('name'), ')') === false) {
+        if (util_1.Util.includes(this.$data.getValue('name'), '(') && util_1.Util.includes(this.$data.getValue('name'), ')') === false) {
             this.$data.setValue('name', this.$data.getValue('name') + '()');
         }
     };
@@ -9078,13 +9083,14 @@ var Select = (function () {
                         }
                         clazz_1.reDraw();
                     }
+                    else if (inputValue.trim().split(' ').length === 1 && inputValue.trim().length > 0) {
+                        clazz_1.id = inputValue.trim();
+                        clazz_1.updateLabel(inputValue.trim());
+                    }
                 }
                 else if (util_1.Util.includes(inputValue, '(') && util_1.Util.includes(inputValue, ')')) {
                     clazz_1.addMethod(inputValue.trim());
                     clazz_1.reDraw();
-                }
-                else if (inputValue.trim().split(' ').length === 1 && inputValue.trim().length > 0) {
-                    clazz_1.updateLabel(inputValue.trim());
                 }
                 divInlineEdit_1.style.top = (clazz_1.getPos().y + clazz_1.getSize().y) + 52 + 'px';
                 divInlineEdit_1.style.left = clazz_1.getPos().x + 'px';
@@ -9780,6 +9786,9 @@ var Util = (function () {
         var xmlns = attrs.xmlns || 'http://www.w3.org/2000/svg';
         var shape = document.createElementNS(xmlns, attrs.tag);
         for (var attr in attrs) {
+            if (!attrs.hasOwnProperty(attr)) {
+                continue;
+            }
             if (attr !== 'tag') {
                 shape.setAttribute(attr, attrs[attr]);
             }
@@ -10131,6 +10140,9 @@ var Util = (function () {
                     if (!ref.getAttribute(i)) {
                         if (src[i] instanceof Array) {
                             for (var c in src[i]) {
+                                if (!src[i].hasOwnProperty(c)) {
+                                    continue;
+                                }
                                 name = src[i][c].constructor.name;
                                 var child = doc.createElement(name);
                                 ref.appendChild(child);
@@ -10273,6 +10285,9 @@ var Util = (function () {
             var idx = s.indexOf(searchS);
             return idx > -1;
         }
+        if (s === null) {
+            return false;
+        }
         return s.includes(searchS);
     };
     Util.isParentOfChild = function (parent, child) {
@@ -10281,7 +10296,6 @@ var Util = (function () {
         }
         if (Util.isIE()) {
             var children = parent.childNodes;
-            var found = false;
             for (var i = 0; i < children.length; i++) {
                 var childItem = children[i];
                 if (childItem === child) {
