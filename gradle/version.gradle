@@ -8,7 +8,9 @@ configurations {
 }
 dependencies {
 	gitVersion "org.eclipse.jgit:org.eclipse.jgit:[4,)"
-	gitVersion "org.slf4j:slf4j-simple:1.6.1"
+	gitVersion "org.slf4j:slf4j-simple:1.7.28"
+	gitVersion "org.slf4j:slf4j-nop:1.7.28"
+
 }
 def callGradle(type, Object... params) {
 	def gradle = getGradle(type)

@@ -52,7 +52,8 @@ public class HTMLEntity implements BaseItem {
 	public static final String KEY_SRC = "src";
 	public static final String GRAPH = "Graph";
 	public static final String CLASSEDITOR = "ClassEditor";
-	public static final String[] GRAPH_RESOURCES = new String[] {  "diagramstyle.css", "diagram.js", "dagre.min.js", "jspdf.min.js" };
+	//"diagramstyle.css", 
+	public static final String[] GRAPH_RESOURCES = new String[] {  "style.css", "diagram.js", "dagre.min.js", "jspdf.min.js" };
 	public static final String[] CODE_RESOURCES = new String[] { "highlight.pack.js", "highlightjs-line-numbers.min.js", };
 	public static final String[] PROJECT_RESOURCES = new String[] {"d3.min.js"};
 

@@ -80,7 +80,8 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 			titleHtml.createBodyTag("h1", words[words.length-1]);
 			titleHtml.createBodyTag("h2", "created "+words[words.length-2]);
 			if(licence.indexOf("Permission is hereby granted, free of charge,")>0) {
-				String logoImage="<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"166\" width=\"321\"><g stroke-width=\"35\" stroke=\"#A31F34\"><path d=\"m17.5,0v166m57-166v113m57-113v166m57-166v33m58,20v113\"/><path d=\"m188.5,53v113\" stroke=\"#8A8B8C\"/><path d=\"m229,16.5h92\" stroke-width=\"33\"/></g></svg>";
+				
+				String logoImage="<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M3,1V21M12,1V15M21,1V21M30,1v4m9,2V21\" stroke=\"#a31f34\" stroke-width=\"4\"/><path d=\"M30,7V21\" stroke=\"#8a8b8c\" stroke-width=\"4\"/><path d=\"M37,3H51\" stroke=\"#a31f34\" stroke-width=\"4\"/></svg>";
 				titleHtml.createBodyTag("div", logoImage);
 			}
 			

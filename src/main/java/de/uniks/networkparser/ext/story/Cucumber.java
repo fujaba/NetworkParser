@@ -457,6 +457,9 @@ public class Cucumber implements ObjectCondition {
 	}
 	
 	public Pattern getPattern() {
+		if(this.dirty) {
+			this.analyse();
+		}
 		return pattern;
 	}
 }
