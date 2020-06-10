@@ -10,8 +10,10 @@ import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.ClazzSet;
+import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.GraphMetric;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.MethodSet;
 import de.uniks.networkparser.graph.Modifier;
@@ -20,9 +22,11 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.logic.FeatureCondition;
 import de.uniks.networkparser.parser.ParserEntity;
 import de.uniks.networkparser.parser.SimpleReverseEngineering;
 import de.uniks.networkparser.parser.SymTabEntry;
+import de.uniks.networkparser.xml.HTMLEntity;
 
 /*String string = model.toString(new DotConverter().withShowAssocInfo(false).withShowSimpleNodeInfo(true));
   FileBuffer.writeFile("model2.data", string.getBytes()); */
@@ -32,12 +36,14 @@ public class FileClassModel extends ClassModel {
 	 * The suffix of a java file as constant for easer use
 	 */
 	private static final String JAVA_FILE_SUFFIX = ".java";
+	public static final String REKURSIVE = "rekursive";
 	private SimpleSet<ParserEntity> error = new SimpleSet<ParserEntity>();
 	private SimpleSet<ParserEntity> list = new SimpleSet<ParserEntity>();
 	private SimpleKeyValueList<String, SimpleList<ParserEntity>> packageList = new SimpleKeyValueList<String, SimpleList<ParserEntity>>();
 	private boolean parseFile = true;
 	private ObjectCondition reverseEngineering;
-
+	
+	
 	public FileClassModel(String packageName) {
 		with(packageName);
 	}
@@ -81,7 +87,9 @@ public class FileClassModel extends ClassModel {
 
 	public boolean finishReverseEngineering() {
 		SimpleEvent event = new SimpleEvent(this, "reverseengineering", null, this.list);
-		return getReverseEngineering().update(event);
+		boolean update = getReverseEngineering().update(event);
+		this.fixClassModel();
+		return update;
 	}
 
 	public SimpleList<String> analyseJavaDoc(boolean fullCheck) {
@@ -545,12 +553,26 @@ public class FileClassModel extends ClassModel {
 				return;
 			}
 			SimpleList<ParserEntity> packageEntity = new SimpleList<ParserEntity>();
+			ObjectCondition con = null;
+			boolean isRekusive = true;
+			if(condition instanceof FeatureCondition) {
+        Feature feature = ((FeatureCondition) condition).getFeature(null);
+        if(feature != null && REKURSIVE.equalsIgnoreCase(feature.getName())){
+          isRekusive = false;
+        }
+      }
+			if(isRekusive) {
+			  con = condition;
+			}
 			for (File file : items) {
 				if (file.getName().endsWith(JAVA_FILE_SUFFIX)) {
-					ParserEntity element = createParserEntity(file, condition);
+					ParserEntity element = createParserEntity(file, con);
 					list.add(element);
 					packageEntity.add(element);
 				} else if (file.getName().equalsIgnoreCase("test") == false && file.isDirectory()) {
+			    if(isRekusive == false){
+			      continue;
+			    }
 					getFiles(file, condition, parent + directory.getName() + ".");
 				}
 			}
@@ -755,4 +777,18 @@ public class FileClassModel extends ClassModel {
 		}
 		return super.getValue(attribute);
 	}
+	
+	@Override
+	public HTMLEntity dumpHTML(String diagramName, boolean... write) {
+	  finishReverseEngineering();
+	  return super.dumpHTML(diagramName, write);
+	}
+	
+	 public static final FeatureCondition createFeature(String key) {
+	    FeatureCondition condition=new FeatureCondition();
+	    Feature item= GraphUtil.createFeature(key);
+	    condition.withFeature(item);
+	    return condition;
+	  }
+
 }

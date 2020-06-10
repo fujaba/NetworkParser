@@ -92,8 +92,11 @@ public class ClassModel extends GraphModel {
 
 	public ModelGenerator getGenerator(String... params) {
 		if (params != null) {
-			if (params.length == 1 && params[0] != null) {
+			if (params.length >0 && params[0] != null) {
 				this.generator.withRootDir(params[0]);
+			}
+			if (params.length >1 && params[1] != null) {
+				this.generator.withFileType(params[1]);
 			}
 		}
 		return generator;
@@ -114,6 +117,7 @@ public class ClassModel extends GraphModel {
 		if (diagramName.length() < 1) {
 			return null;
 		}
+		
 		HTMLEntity entity = super.dumpHTML(diagramName, write);
 
 		if (diagramName.indexOf('/') < 0) {
@@ -162,11 +166,11 @@ public class ClassModel extends GraphModel {
 				GraphMember member = match.getMatch();
 				Clazz clazz = this.createClazz(member.getClazz().getName());
 				ModifyEntry modifier = ModifyEntry.createModifier(member);
-				GraphUtil.withChildren(clazz, modifier);
+				GraphUtil.setChildren(clazz, modifier);
 
 				Object newValue = match.getNewValue();
 				if (newValue instanceof Attribute) {
-					GraphUtil.withChildren(clazz, (GraphMember) newValue);
+					GraphUtil.setChildren(clazz, (GraphMember) newValue);
 				} else if (newValue instanceof DataType) {
 					if (member instanceof Attribute) {
 						clazz.createAttribute(member.getName(), (DataType) newValue);

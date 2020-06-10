@@ -41,13 +41,15 @@ public class DataType {
 	public static final DataType COLOR = new DataType("color");
 	public static final DataType CONSTRUCTOR = new DataType("");
 	public static final DataType DATE = DataType.create(Date.class).withExternal(true);
-
+	public static final String ARRAY="[]";
 	protected Clazz value;
 	protected static final String PROPERTY_NAME = "name";
 	protected static final String PROPERTY_OBJECTNAME = "objectname";
 	protected static final String PROPERTY_CATEGORIE = "cat";
 	protected static final String PROPERTY_CLAZZ = "clazz";
 	public static final String PROPERTY_CONTAINER = "container";
+	private boolean isArray;
+	
 
 	DataType(String value) {
 		this.value = new Clazz().with(value);
@@ -67,12 +69,23 @@ public class DataType {
 		}
 		String result = this.value.getName(shortName);
 		if (primitivAllow) {
+			if(isArray) {
+				return result+ARRAY;
+			}
 			return result;
 		}
 		if (shortName  == false || result == null || result.lastIndexOf(".") < 0) {
-			return EntityUtil.convertPrimitiveToObjectType(result);
+			result= EntityUtil.convertPrimitiveToObjectType(result);
+			if(isArray) {
+				return result+ARRAY;
+			}
+			return result;
 		}
-		return EntityUtil.convertPrimitiveToObjectType(result.substring(result.lastIndexOf(".") + 1));
+		result= EntityUtil.convertPrimitiveToObjectType(result.substring(result.lastIndexOf(".") + 1));
+		if(isArray) {
+			return result+ARRAY;
+		}
+		return result;
 	}
 
 	public Clazz getClazz() {
@@ -101,7 +114,16 @@ public class DataType {
 		}
 		return this;
 	}
-
+	
+	public DataType withArray(boolean value) {
+		if(value) {
+			DataType dataType = new DataType(this.getClazz());
+			dataType.isArray = value;
+			return dataType;
+		}
+		return this;
+	}
+	
 	public boolean equals(Object obj) {
 		if (obj instanceof String) {
 			return ((String) obj).equalsIgnoreCase(this.getName(false));

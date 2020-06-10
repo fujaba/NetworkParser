@@ -31,8 +31,12 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.converter.GraphConverter;
+import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.graph.GraphCustomItem;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.GraphSimpleSet;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
@@ -427,6 +431,14 @@ public class HTMLEntity implements BaseItem {
 		URL resource = GraphList.class.getResource("");
 		if (resource == null || value == null) {
 			return this;
+		}
+		GraphSimpleSet children = GraphUtil.getChildren(value);
+		for(GraphMember item : children) {
+		  if(item instanceof GraphCustomItem && ClassModel.PROPERTY_EXTERNAL.equals(item.getName())) {
+		    if(GraphUtil.isGenerate(item)) {
+		      return withGraph(value, null);
+		    }
+		  }
 		}
 		return withGraph(value, resource.toString());
 	}

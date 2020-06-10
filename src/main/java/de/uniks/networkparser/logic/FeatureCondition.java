@@ -77,11 +77,14 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 		return null;
 	}
 
-	private Feature getFeature(Object value) {
+	public Feature getFeature(Object value) {
 		if (value instanceof SendableEntityCreator) {
 			SendableEntityCreator creator = (SendableEntityCreator) value;
 			FeatureSet features = (FeatureSet) creator.getValue(creator, PROPERTY_FEATURE);
 			return features.getFeature(this.feature);
+		}
+		if(this.isExpression) {
+		  return this.feature;
 		}
 		return null;
 	}
@@ -101,6 +104,12 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 		}
 		return false;
 	}
+	
+	public FeatureCondition withFeature(Feature cond) {
+	  this.feature = cond;
+	  this.isExpression=true;
+	  return this; 
+	}
 
 	public boolean hasFeatureProperty(Feature property, Clazz... values) {
 		if (property != null) {
@@ -116,7 +125,7 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String toString() {
 		CharacterBuffer buffer = new CharacterBuffer();

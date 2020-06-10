@@ -245,23 +245,23 @@ public class Association extends GraphMember {
 		return parents;
 	}
 
-	public Association with(GraphLabel label) {
+	public Association with(GraphCustomItem label) {
 		super.withChildren(label);
 		return this;
 	}
 
-	public GraphLabel getInfo() {
+	public GraphCustomItem getInfo() {
 		if (children == null || this.other == null || this.other.getChildren() == null) {
 			return null;
 		}
 		for (GraphMember child : getChildren()) {
-			if (child instanceof GraphLabel) {
-				return (GraphLabel) child;
+			if (child instanceof GraphCustomItem) {
+				return (GraphCustomItem) child;
 			}
 		}
 		for (GraphMember child : this.other.getChildren()) {
-			if (child instanceof GraphLabel) {
-				return (GraphLabel) child;
+			if (child instanceof GraphCustomItem) {
+				return (GraphCustomItem) child;
 			}
 		}
 		return null;

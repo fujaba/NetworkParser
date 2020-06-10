@@ -24,30 +24,58 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public class GraphLabel extends GraphMember {
-	public static final GraphLabel CREATE = new GraphLabel().withStyle("create");
+public class GraphCustomItem extends GraphMember {
+	public static final GraphCustomItem CREATE = new GraphCustomItem().withStyle("create");
+	public static final String ACTOR = "actor";
+	private GraphNode parentNode;
+
 	private String style;
 
 	@Override
-	public GraphLabel with(String name) {
+	public GraphCustomItem with(String name) {
 		super.with(name);
 		return this;
 	}
-
-	public static GraphLabel create(String value) {
-		return new GraphLabel().with(value);
+	
+	public static GraphCustomItem create(String value) {
+		return new GraphCustomItem().with(value);
 	}
 
-	public static GraphLabel create(String value, String style) {
-		return new GraphLabel().with(value).withStyle(style);
+	public static GraphCustomItem create(String value, String style) {
+		return new GraphCustomItem().with(value).withStyle(style);
 	}
 
 	public String getStyle() {
 		return style;
 	}
 
-	public GraphLabel withStyle(String style) {
+	public GraphCustomItem withStyle(String style) {
 		this.style = style;
 		return this;
+	}
+
+
+	public GraphCustomItem withParent(GraphNode value) {
+		if (this.parentNode != value) {
+			GraphNode oldValue = this.parentNode;
+			if (this.parentNode != null) {
+				this.parentNode = null;
+				oldValue.remove(this);
+			}
+			this.parentNode = value;
+			if (value != null) {
+				value.withChildren(this);
+			}
+		}
+		return this;
+	}
+
+	@Override
+	public String toString() {
+		return "" + name;
+	}
+
+	public static GraphCustomItem createActorImage() {
+		return new GraphCustomItem().with(ACTOR);
 	}
 }

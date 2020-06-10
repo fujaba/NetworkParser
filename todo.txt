@@ -1,1 +1,2 @@
 - add Licence detector
+- add CharacterBuilder add all for toString()

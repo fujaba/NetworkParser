@@ -26,7 +26,7 @@ THE SOFTWARE.
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.converter.GraphConverter;
-import de.uniks.networkparser.graph.GraphImage;
+import de.uniks.networkparser.graph.GraphCustomItem;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphNode;
@@ -116,8 +116,8 @@ public class StoryStepDiagram implements ObjectCondition {
 		return model;
 	}
 
-	public GraphImage cretaeActor() {
-		GraphImage actor = GraphImage.createActor();
+	public GraphCustomItem cretaeActor() {
+	  GraphCustomItem actor = GraphCustomItem.createActorImage();
 		if (this.model != null) {
 			this.model.add(actor);
 		}

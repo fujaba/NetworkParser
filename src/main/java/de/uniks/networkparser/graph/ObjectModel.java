@@ -69,11 +69,11 @@ public class ObjectModel extends GraphModel {
 				GraphMember member = match.getMatch();
 				ObjectInstance clazz = this.createClazz(member.getClazz().getName());
 				ModifyEntry modifier = ModifyEntry.createModifier(member);
-				GraphUtil.withChildren(clazz, modifier);
+				GraphUtil.setChildren(clazz, modifier);
 
 				Object newValue = match.getNewValue();
 				if (newValue instanceof Attribute) {
-					GraphUtil.withChildren(clazz, (GraphMember) newValue);
+					GraphUtil.setChildren(clazz, (GraphMember) newValue);
 				} else if (newValue instanceof DataType) {
 					if (member instanceof Attribute) {
 						clazz.createAttribute(member.getName(), (DataType) newValue);

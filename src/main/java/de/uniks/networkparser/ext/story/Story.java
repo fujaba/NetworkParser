@@ -33,9 +33,14 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
+import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.graph.GraphCustomItem;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.GraphSimpleSet;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
@@ -69,16 +74,23 @@ public class Story extends StoryElement implements Comparable<Story> {
 		} else {
 			path = name.substring(0, name.lastIndexOf("/")) + "/";
 		}
+		boolean absolutePath = path.toLowerCase().startsWith("file:");
 		Class<?> listClass = GraphList.class;
 		for (String item : HTMLEntity.GRAPH_RESOURCES) {
 			String content = FileBuffer.readResource(listClass.getResourceAsStream(item)).toString();
-			entity.addResources(include, path + item, content);
 			if (include == false) {
+			  if(path.length()>0 && absolutePath) {
+			    entity.addResources(include, path + item, content);
+			  }else {
+			    entity.addResources(include, item, content);
+			  }
 				if (path.length() > 0) {
 					FileBuffer.writeFile(path + item, content);
 				} else {
 					FileBuffer.writeFile(item, content);
 				}
+			}else {
+			  entity.addResources(include, path + item, content);
 			}
 		}
 		return name;

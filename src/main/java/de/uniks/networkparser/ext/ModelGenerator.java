@@ -513,8 +513,11 @@ public class ModelGenerator extends SimpleGenerator {
 			}
 			return null;
 		}
-
-		CharacterBuffer buffer = FileBuffer.readFile(getFileName(this.defaultRootDir, name));
+		String fileName = getFileName(this.defaultRootDir, name);
+		if(this.fileType != null && fileName.endsWith("/")) {
+			fileName = fileName.substring(0, fileName.length()-1)+"."+this.fileType;
+		}
+		CharacterBuffer buffer = FileBuffer.readFile(fileName);
 		clazz = parseSourceCode(buffer);
 		if (clazz != null) {
 			return clazz;

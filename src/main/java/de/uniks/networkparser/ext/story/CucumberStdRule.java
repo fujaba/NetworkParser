@@ -296,7 +296,7 @@ public class CucumberStdRule implements ObjectCondition {
 					clazz = new Clazz(className);
 					attributeSet.add(clazz);
 				}
-				GraphUtil.withChildren(clazz, attr);
+				GraphUtil.setChildren(clazz, attr);
 				return true;
 			}
 			
@@ -548,7 +548,7 @@ public class CucumberStdRule implements ObjectCondition {
 			if(prototype  != null) {
 				AttributeSet attributes = prototype.getAttributes();
 				for(Attribute attr : attributes) {
-					GraphUtil.withChildren(clazz, new Attribute(attr.getName(), attr.getType()));
+					GraphUtil.setChildren(clazz, new Attribute(attr.getName(), attr.getType()));
 				}
 			}
 		}

@@ -36,9 +36,9 @@ THE SOFTWARE.
  *
  */
 public class AssociationTypes {
-	public static final AssociationTypes ASSOCIATION = new AssociationTypes("assoc");
+	public static final AssociationTypes ASSOCIATION = new AssociationTypes("Assoc");
 	public static final AssociationTypes EDGE = new AssociationTypes("edge");
-	public static final AssociationTypes GENERALISATION = new AssociationTypes("generalisation");
+	public static final AssociationTypes GENERALISATION = new AssociationTypes("Generalisation");
 	public static final AssociationTypes IMPLEMENTS = new AssociationTypes("implements");
 	public static final AssociationTypes UNDIRECTIONAL = new AssociationTypes("unidirectional");
 	public static final AssociationTypes AGGREGATION = new AssociationTypes("aggregation");

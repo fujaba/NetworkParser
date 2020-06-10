@@ -24,9 +24,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.ArrayList;
-
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationSet;
@@ -36,9 +36,8 @@ import de.uniks.networkparser.graph.AttributeSet;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.ClazzSet;
 import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.GraphCustomItem;
 import de.uniks.networkparser.graph.GraphEntity;
-import de.uniks.networkparser.graph.GraphImage;
-import de.uniks.networkparser.graph.GraphLabel;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
@@ -141,7 +140,7 @@ public class GraphConverter implements Converter {
 		}
 
 		if (node.has(HEAD)) {
-			GraphUtil.setGraphImage(graphNode, new GraphImage().with(node.getString(HEAD)));
+			GraphUtil.setChildren(graphNode, new GraphCustomItem().with(node.getString(HEAD)));
 		}
 
 		if (node.has(JsonTokener.PROPS)) {
@@ -467,12 +466,30 @@ public class GraphConverter implements Converter {
 		if (ids == null || edge == null || type == null || source == null || target == null) {
 			return child;
 		}
-		Association other = edge.getOther();
-		if (other != null) {
-			child.put(TYPE, other.getType());
+		
+    boolean cardinality = true; 
+    boolean property = true;
+		// try to turn arround
+		if(AssociationTypes.GENERALISATION.equals(edge.getType())) {
+		  // Turn Arround
+		  edge= edge.getOther();
+		  Clazz temp = source;
+		  source = target;
+		  target = temp;
+		  property=false;
+		  cardinality = false;
 		}
-		Entity sourceInfo = addInfo(edge, true);
-		Entity targetInfo = addInfo(other, true);
+		Association other = edge.getOther();
+		
+		if(AssociationTypes.EDGE.equals(other.getType()) && AssociationTypes.EDGE.equals(edge.getType()) == false) {
+		  return null;
+		}
+	  if (other != null) {
+	    child.put(TYPE, other.getType());
+	  }
+
+		Entity sourceInfo = addInfo(edge, cardinality, property);
+		Entity targetInfo = addInfo(other, cardinality, property);
 		if (type.equals(GraphTokener.OBJECTDIAGRAM)) {
 			sourceInfo.put(ID, source.getId() + " : " + source.getName(shortName));
 			targetInfo.put(ID, target.getId() + " : " + target.getName(shortName));
@@ -511,15 +528,15 @@ public class GraphConverter implements Converter {
 			return child;
 		}
 		child.put(TYPE, edge.getType());
-		Entity sourceInfo = addInfo(edge, false);
-		Entity targetInfo = addInfo(edge.getOther(), false);
+		Entity sourceInfo = addInfo(edge, false, true);
+		Entity targetInfo = addInfo(edge.getOther(), false, true);
 		sourceInfo.put(ID, source.getId());
 		targetInfo.put(ID, target.getId());
 
 		child.put(SOURCE, sourceInfo);
 		child.put(TARGET, targetInfo);
 
-		GraphLabel info = edge.getInfo();
+		GraphCustomItem info = edge.getInfo();
 		if (info != null) {
 			child.put(INFO, info.getName());
 			child.put(STYLE, info.getStyle());
@@ -527,12 +544,14 @@ public class GraphConverter implements Converter {
 		return child;
 	}
 
-	private Entity addInfo(Association edge, boolean cardinality) {
+	private Entity addInfo(Association edge, boolean cardinality, boolean property) {
 		Entity result = (Entity) factory.getNewList(true);
 		if (edge == null) {
 			return result;
 		}
-		result.put(PROPERTY, edge.getName());
+		if(property) {
+		  result.put(PROPERTY, edge.getName());
+		}
 		if (cardinality) {
 			result.put(CARDINALITY, edge.getCardinality());
 		}
@@ -618,7 +637,7 @@ public class GraphConverter implements Converter {
 
 	private void parseGraphEntity(GraphEntity entity, Entity item, String type, boolean shortName,
 			boolean removeParameterNames) {
-		GraphImage nodeHeader = getNodeHeader(entity);
+		GraphCustomItem nodeHeader = getNodeHeader(entity);
 		if (nodeHeader != null) {
 			Entity header = (Entity) factory.getNewList(true);
 			header.put(SRC, nodeHeader);
@@ -638,12 +657,12 @@ public class GraphConverter implements Converter {
 		}
 	}
 
-	public GraphImage getNodeHeader(GraphEntity entity) {
+	public GraphCustomItem getNodeHeader(GraphEntity entity) {
 		GraphSimpleSet children = GraphUtil.getChildren(entity);
 		if (children != null) {
 			for (GraphMember member : children) {
-				if (member instanceof GraphImage) {
-					return (GraphImage) member;
+				if (member instanceof GraphCustomItem) {
+					return (GraphCustomItem) member;
 				}
 			}
 		}
@@ -725,7 +744,16 @@ public class GraphConverter implements Converter {
 	@Override
 	public String encode(BaseItem entity) {
 		if (entity instanceof GraphModel) {
-			return this.convertToJson((GraphModel) entity, false, false).toString();
+			GraphModel model = (GraphModel) entity;
+			GraphSimpleSet children = GraphUtil.getChildren(model);
+			boolean shortName = false;
+			for(GraphMember item : children) {
+				if(item instanceof GraphCustomItem && ClassModel.PROPERTY_PACKAGENAME.equals(item.getName())) {
+					shortName= true;
+					break;
+				}
+			}
+			return this.convertToJson(model, shortName, false).toString();
 		}
 		return null;
 	}

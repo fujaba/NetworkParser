@@ -151,7 +151,7 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
-	protected Clazz with(GraphImage... values) {
+	protected Clazz with(GraphCustomItem... values) {
 		super.withChildren(values);
 		return this;
 	}

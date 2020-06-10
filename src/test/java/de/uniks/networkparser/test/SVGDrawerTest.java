@@ -17,7 +17,7 @@ import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
-import de.uniks.networkparser.graph.GraphLabel;
+import de.uniks.networkparser.graph.GraphCustomItem;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphPattern;
 import de.uniks.networkparser.graph.GraphUtil;
@@ -98,7 +98,7 @@ public class SVGDrawerTest {
 		GraphPattern modelHistory = map.with(new GraphPattern().with("Item").withBounds("create"));
 		map.with(new GraphPattern().with("ModelHistory").withBounds("nac"));
 
-		GraphUtil.setAssociation(map, Association.create(space, modelHistory).with(GraphLabel.CREATE) );
+		GraphUtil.setAssociation(map, Association.create(space, modelHistory).with(GraphCustomItem.CREATE) );
 
 		GraphList subGraph = new GraphList();
 		GraphPattern person = subGraph.with(new GraphPattern().with("Person"));

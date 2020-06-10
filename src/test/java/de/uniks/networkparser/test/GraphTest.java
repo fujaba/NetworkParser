@@ -1,17 +1,14 @@
 package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Date;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -33,7 +30,7 @@ import de.uniks.networkparser.graph.ClazzSet;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeMap;
 import de.uniks.networkparser.graph.DataTypeSet;
-import de.uniks.networkparser.graph.GraphImage;
+import de.uniks.networkparser.graph.GraphCustomItem;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphOptions;
 import de.uniks.networkparser.graph.GraphPatternMatch;
@@ -232,7 +229,7 @@ public class GraphTest {
 	public void testGraph() {
 		GraphList list = new GraphList();
 		Clazz node = new Clazz("Item");
-		GraphUtil.setGraphImage(node, new GraphImage().with("karli.png"));
+		GraphUtil.setChildren(node, new GraphCustomItem().with("karli.png"));
 		list.with(node);
 
 		GraphConverter converter = new GraphConverter();

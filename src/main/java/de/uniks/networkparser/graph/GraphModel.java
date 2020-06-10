@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.converter.YUMLConverter;
+import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.Converter;
@@ -172,6 +173,16 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 
 	public HTMLEntity dumpHTML(String diagramName, boolean... write) {
 		HTMLEntity html = new HTMLEntity();
+		
+		if(write != null && write.length>1 && write[1]) {
+			// two boolean is shortName
+			GraphCustomItem item = new GraphCustomItem().with(ClassModel.PROPERTY_PACKAGENAME);
+			GraphUtil.setGenerate(item, true);
+			GraphUtil.setChildren(this, item);
+		}
+		GraphCustomItem item = new GraphCustomItem().with(ClassModel.PROPERTY_EXTERNAL);
+    GraphUtil.setGenerate(item, true);
+    GraphUtil.setChildren(this, item);
 		html.withGraph(this);
 		return html;
 	}

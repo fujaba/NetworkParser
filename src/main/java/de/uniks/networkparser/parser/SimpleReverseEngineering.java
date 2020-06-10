@@ -14,7 +14,6 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class SimpleReverseEngineering implements ObjectCondition {
-
 	public boolean parsing(GraphModel model, SimpleSet<?> lists) {
 		if (lists == null) {
 			return true;
@@ -38,6 +37,7 @@ public class SimpleReverseEngineering implements ObjectCondition {
 		for (i = 0; i < entities.size(); i++) {
 			ParserEntity entity = entities.get(i);
 			Clazz clazz = entity.getClazz();
+			
 			SimpleList<SymTabEntry> symbolEntries;
 
 			symbolEntries = entity.getSymbolEntries(SymTabEntry.TYPE_EXTENDS);
@@ -98,20 +98,55 @@ public class SimpleReverseEngineering implements ObjectCondition {
 					}
 					continue;
 				}
+				if (simpleType.startsWith("list<")) {
+					/* MANY ASSOCATION OR ATTRIBUTE */
+					String clazzName = dataType.substring(5, dataType.length() - 1);
+					otherClazz = (Clazz) model.getChildByName(clazzName, Clazz.class);
+
+					/* Its is a Assoc */
+					if (otherClazz != null) {
+						Association assoc = new Association(otherClazz).with(Association.MANY).with(name);
+						assoc.with(AssociationTypes.UNDIRECTIONAL);
+
+						Association otherAssoc = new Association(clazz).with(AssociationTypes.EDGE);
+						assoc.with(otherAssoc);
+						assocList.add(assoc);
+					} else {
+						System.out.println(symbolEntry.getDataType() + ":" + symbolEntry.getName());
+					}
+					continue;
+				}
+				boolean isArray =simpleType.endsWith("[]"); 
+				if(isArray) {
+					simpleType = simpleType.substring(0, simpleType.length() -2);
+				}
+				
 				/* Parsing simple Attributes */
 				if (DataType.STRING.equals(simpleType)) {
 					/* Its a String */
-					clazz.createAttribute(name, DataType.STRING);
+					clazz.createAttribute(name, DataType.STRING.withArray(isArray));
+				} else if (DataType.BYTE.equals(simpleType)) {
+					/* Its a Byte */
+					clazz.createAttribute(name, DataType.BYTE.withArray(isArray));
 				} else if (DataType.INT.equals(simpleType)) {
-					/* Its a String */
-					clazz.createAttribute(name, DataType.INT);
+					/* Its a INT */
+					clazz.createAttribute(name, DataType.INT.withArray(isArray));
+				} else if (DataType.FLOAT.equals(simpleType)) {
+					/* Its a Float */
+					clazz.createAttribute(name, DataType.FLOAT.withArray(isArray));
 				} else if (DataType.DOUBLE.equals(simpleType)) {
-					/* Its a String */
-					clazz.createAttribute(name, DataType.DOUBLE);
+					/* Its a Double */
+					clazz.createAttribute(name, DataType.DOUBLE.withArray(isArray));
+				} else if (DataType.LONG.equals(simpleType)) {
+					/* Its a Long */
+					clazz.createAttribute(name, DataType.LONG.withArray(isArray));
+				} else if (DataType.BOOLEAN.equals(simpleType)) {
+					/* Its a Boolean */
+					clazz.createAttribute(name, DataType.BOOLEAN.withArray(isArray));
 				} else if (DataType.DATE.equals(simpleType)
 						|| DataType.DATE.getName(true).equalsIgnoreCase(simpleType)) {
-					/* Its a String */
-					clazz.createAttribute(name, DataType.DATE);
+					/* Its a Date */
+					clazz.createAttribute(name, DataType.DATE.withArray(isArray));
 				} else {
 					System.out.println(symbolEntry.getDataType() + ":" + symbolEntry.getName());
 				}
@@ -142,12 +177,12 @@ public class SimpleReverseEngineering implements ObjectCondition {
 			if (valueAssoc == null) {
 				continue;
 			}
-			GraphUtil.withChildren(valueAssoc.getClazz(), valueAssoc);
+			GraphUtil.setChildren(valueAssoc.getClazz(), valueAssoc);
 			Association otherAssoc = valueAssoc.getOther();
 			if (otherAssoc.getName() == null) {
 				System.out.println("UNDIRECTIONAL");
 			}
-			GraphUtil.withChildren(otherAssoc.getClazz(), otherAssoc);
+			GraphUtil.setChildren(otherAssoc.getClazz(), otherAssoc);
 		}
 
 		/* Add Generation */
@@ -156,9 +191,6 @@ public class SimpleReverseEngineering implements ObjectCondition {
 			Clazz otherClazz = generations.getValueByIndex(i);
 			clazz.withSuperClazz(otherClazz);
 		}
-		Clazz otherClazz = (Clazz) model.getChildByName("BillingUnit", Clazz.class);
-		System.out.println(otherClazz);
-
 		return true;
 	}
 

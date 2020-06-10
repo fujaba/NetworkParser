@@ -116,14 +116,6 @@ public class GraphUtil {
 		return null;
 	}
 
-	public static final boolean withChildren(GraphMember member, GraphMember child) {
-		if (member != null) {
-			member.withChildren(child);
-			return true;
-		}
-		return false;
-	}
-
 	public static double compareType(String sourceType, String otherType) {
 		if (sourceType == null || otherType == null) {
 			return 1;
@@ -207,14 +199,6 @@ public class GraphUtil {
 	public static final boolean setAssociation(GraphEntity entry, Association assoc) {
 		if (entry != null) {
 			entry.with(assoc);
-			return true;
-		}
-		return false;
-	}
-
-	public static final boolean setGraphImage(Clazz clazz, GraphImage... images) {
-		if (clazz != null) {
-			clazz.with(images);
 			return true;
 		}
 		return false;
@@ -601,6 +585,18 @@ public class GraphUtil {
 		type.value = value;
 		return type;
 	}
+	
+	public static final String setName(GraphMember entity, String name) {
+		if(entity.setName(name)) {
+			return name;
+		}
+		return null;
+	}
+	
+	public static final Feature createFeature(String key) {
+	  Feature item= new Feature((String) key);
+	  return item;
+	}
 
 	public static final int createCardinality(String value) {
 		if ("one".equalsIgnoreCase(value) || "1".equalsIgnoreCase(value)) {
@@ -654,10 +650,18 @@ public class GraphUtil {
 		return value;
 	}
 
-	public static boolean setChildren(GraphMember graphMember, GraphSimpleSet childrenSet) {
-		if (graphMember != null && graphMember.children != childrenSet) {
-			graphMember.children = childrenSet;
-			return true;
+	public static boolean setChildren(GraphMember graphMember, Object children) {
+		if (graphMember != null ) {
+			if(children instanceof GraphSimpleSet) {
+				GraphSimpleSet set = (GraphSimpleSet) children;
+				if(graphMember.children != set) {
+					graphMember.children = set;
+					return true;
+				}
+			}else if(children instanceof GraphMember) {
+				graphMember.withChildren((GraphMember)children);
+				return true;
+			}
 		}
 		return false;
 	}
