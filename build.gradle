@@ -18,12 +18,12 @@ plugins {
   id "org.sonarqube" version "2.6"
   id 'java'
   id 'maven'
-  id 'com.github.spotbugs'
+//  id "com.github.spotbugs" version "4.6.0"
   id 'eclipse'
   id 'idea'
+//  id 'checkstyle'
   id 'jacoco'
-  id 'checkstyle'
-  id 'com.github.kt3k.coveralls'
+  id 'com.github.kt3k.coveralls' version '2.8.4'
 }
 
 // MAJOR VERSION - Manually set
@@ -45,12 +45,6 @@ repositories {
 	}
 }
 
-
-
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
-  reports.html.enabled true
-	reports.xml.enabled false
-}
 
 test {
 	// enable TestNG support (default is JUnit)
@@ -212,6 +206,13 @@ jacocoTestReport {
 
 if (project.hasProperty('branch')) {
 	new ProcessBuilder("git", "checkout", findProperty('branch')).start()
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
 }
 
 test.finalizedBy jacocoTestReport

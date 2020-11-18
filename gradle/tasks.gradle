@@ -34,8 +34,9 @@ ext{
 
 gradle.projectsEvaluated {
 	if(args != "[buildLocalJar]") {
-		compileJava.dependsOn(compileJava16)
+		//compileJava.dependsOn(compileJava16)
 		compileJava.dependsOn(compileJava17)
+		//buildCoreJar17.dependsOn(buildCoreJar16)
 		test.dependsOn(FinishTest)
 	}
 }
@@ -70,7 +71,7 @@ task buildCoreJar16(type: Jar, dependsOn: jar) {
 	manifest = project.manifest {from sharedManifest}
 }
 
-task buildCoreJar17(type: Jar, dependsOn: buildCoreJar16) {
+task buildCoreJar17(type: Jar) {
 	description 'Build Jar with NetworkParser-Corefor Java 1.7'
 	group "Jar"; from fileTree(dir: 'build/classes/main17'); classifier = 'core17'
 	manifest = project.manifest {from sharedManifest}
