@@ -16,6 +16,14 @@ buildscript {
 }
 plugins {
   id "org.sonarqube" version "2.6"
+  id 'java'
+  id 'maven'
+  id 'com.github.spotbugs'
+  id 'eclipse'
+  id 'idea'
+  id 'jacoco'
+  id 'checkstyle'
+  id 'com.github.kt3k.coveralls'
 }
 
 // MAJOR VERSION - Manually set
@@ -26,18 +34,7 @@ ext{
 }
 //----------------------
 
-
-apply plugin: 'java'
-apply plugin: 'maven'
-
 apply from: 'gradle/tasks.gradle'
-apply plugin: 'jacoco'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-
-apply plugin: 'checkstyle'
-//apply plugin: "com.github.spotbugs"
-apply plugin: "com.github.kt3k.coveralls"
 apply from: 'gradle/mavencentral.gradle'
 //apply from: 'gradle/artifactory.gradle'
 repositories {
@@ -50,10 +47,10 @@ repositories {
 
 
 
-//tasks.withType(com.github.spotbugs.SpotBugsTask) {
-//  reports.html.enabled true
-//	reports.xml.enabled false
-//}
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+  reports.html.enabled true
+	reports.xml.enabled false
+}
 
 test {
 	// enable TestNG support (default is JUnit)
@@ -88,10 +85,10 @@ def execute(String... args) {
 			commandLine args
 			standardOutput = stdOutput
 		}
-		return stdOutput.toString()
+		stdOutput.toString()
 	}catch(Exception e) {
 	}
-	return "";
+		"";
 }
 
 
@@ -163,12 +160,10 @@ if(JavaVersion.current() != JavaVersion.VERSION_1_8){
 	println "JavaVersion: " + JavaVersion.current() + " (1.9)"
 	sourceCompatibility = 1.9
 	targetCompatibility = 1.9
-//	apply plugin: "com.github.spotbugs"
 } else {
 	println "JavaVersion: " + JavaVersion.current() + " (1.8)"
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
-//	apply plugin: 'findbugs'
 }
 
 idea {
@@ -183,14 +178,14 @@ artifacts {
 }
 
 wrapper {
-	gradleVersion = '5.4.1'
+	gradleVersion = '6.6.1'
 }
 jacoco.toolVersion = "0.8.+"
 
 jacocoTestReport {
 	group = "Reporting"
 	description = "Generate Jacoco coverage reports after running tests."
-	executionData = files("${buildDir}/jacoco/test.exec")
+	executionData(files("${buildDir}/jacoco/test.exec"))
 	reports {
 		xml {
 			enabled = true
@@ -209,7 +204,7 @@ jacocoTestReport {
 		}
 	}
 	afterEvaluate {
-		classDirectories = files(classDirectories.files.collect {
+		classDirectories.from = files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: ['**/javafx/**'])
 		})
 	}
@@ -233,19 +228,6 @@ tasks.withType(Checkstyle) {
 	}
 	showViolations = false
 	ignoreFailures = true
-}
-tasks.withType(FindBugs) {
-	reports {
-		xml.enabled = false
-		html.enabled = true
-		html.destination =  new File("build/FindBugs.html")
-	}
-	classes = fileTree(dir: 'build/classes/main18')
-	source = sourceSets.main.java
-	//classpath += fileTree(dir: 'build/classes/main18')
-	//+ sourceSets.main.compileClasspath)
-	sourceCompatibility = '1.8'
-	targetCompatibility = '1.8'
 }
 
 task npm(type:JavaExec) {

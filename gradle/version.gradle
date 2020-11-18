@@ -61,6 +61,7 @@ def getGradle(type) {
 // Define a method using a closure as the method body
 class GITVersion {
 	// MAJOR VERSION - Manually set
+	// git describe alternative
 	int major = 0
 	int minor = 0
 	int revision = 1

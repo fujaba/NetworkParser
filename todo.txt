@@ -1,2 +1,6 @@
 - add Licence detector
 - add CharacterBuilder add all for toString()
+
+
+
+- toArray() to default [0] because faster (native call)

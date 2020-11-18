@@ -36,7 +36,7 @@ public class FileClassModel extends ClassModel {
 	 * The suffix of a java file as constant for easer use
 	 */
 	private static final String JAVA_FILE_SUFFIX = ".java";
-	public static final String REKURSIVE = "rekursive";
+	public static final String RECURSIVE = "rekursive";
 	private SimpleSet<ParserEntity> error = new SimpleSet<ParserEntity>();
 	private SimpleSet<ParserEntity> list = new SimpleSet<ParserEntity>();
 	private SimpleKeyValueList<String, SimpleList<ParserEntity>> packageList = new SimpleKeyValueList<String, SimpleList<ParserEntity>>();
@@ -557,7 +557,7 @@ public class FileClassModel extends ClassModel {
 			boolean isRekusive = true;
 			if(condition instanceof FeatureCondition) {
         Feature feature = ((FeatureCondition) condition).getFeature(null);
-        if(feature != null && REKURSIVE.equalsIgnoreCase(feature.getName())){
+        if(feature != null && RECURSIVE.equalsIgnoreCase(feature.getName())){
           isRekusive = false;
         }
       }
