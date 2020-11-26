@@ -27,7 +27,7 @@ addons:
     branch_pattern: master
   #srcclr: true
   sonarcloud:
-    organization: "Fujaba"
+    organization: "fujaba"
     branches:
       - master
       - develop
