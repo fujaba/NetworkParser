@@ -28,8 +28,6 @@ addons:
   #srcclr: true
   sonarcloud:
     organization: "Fujaba"
-    token:
-      secure: 2921049ca4f9759b8fe14243f11849830fd23237
     branches:
       - master
       - develop
