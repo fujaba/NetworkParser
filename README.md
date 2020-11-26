@@ -51,6 +51,7 @@ The Framework have many other features like:
 
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/fujaba/networkparser.svg)](http://isitmaintained.com/project/fujaba/networkparser "Percentage of issues still open")
 
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=NetworkParser&metric=alert_status)](https://sonarcloud.io/dashboard?id=NetworkParser) 
 
 Project Managment
 

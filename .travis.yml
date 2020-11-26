@@ -32,6 +32,7 @@ addons:
       secure: 2921049ca4f9759b8fe14243f11849830fd23237
     branches:
       - master
+      - develop
 before_script:
   - sudo service postgresql stop || true
   - sudo service mysql stop || true
