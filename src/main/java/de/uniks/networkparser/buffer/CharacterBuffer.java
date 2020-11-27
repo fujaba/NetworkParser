@@ -258,7 +258,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
         if (deleted == 0) {
         } else if (deleted < 0) {
           buffer[pos + deleted] = buffer[pos];
-        } else {
+        } else if (inserts != null) {
           inserts.with(buffer[pos + i]);
         }
         pos++;
