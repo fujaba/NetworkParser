@@ -31,7 +31,7 @@ public class DTOGenerator implements SendableEntityCreator {
 
   @Override
   public String[] getProperties() {
-    if (enable == false && this.original != null) {
+    if (!enable && this.original != null) {
       return this.original.getProperties();
     }
     return this.values.keySet().toArray(new String[this.values.size()]);
@@ -56,7 +56,7 @@ public class DTOGenerator implements SendableEntityCreator {
 
   @Override
   public Object getValue(Object entity, String attribute) {
-    if (enable == false && this.original != null) {
+    if (!enable && this.original != null) {
       return this.original.getValue(entity, attribute);
     }
     String referenzValue = this.values.get(attribute);
@@ -79,7 +79,7 @@ public class DTOGenerator implements SendableEntityCreator {
 
   @Override
   public boolean setValue(Object entity, String attribute, Object value, String type) {
-    if (enable == false && this.original != null) {
+    if (!enable && this.original != null) {
       return this.original.setValue(entity, attribute, value, type);
     }
     String referenzValue = this.values.get(attribute);

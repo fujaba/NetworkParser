@@ -51,7 +51,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
   public static final int ONE_SECOND = 1000;
   public static final int ONE_MINUTE = 60 * ONE_SECOND;
   public static final int ONE_HOUR = 60 * ONE_MINUTE;
-  public static final long ONE_DAY = 24 * ONE_HOUR;
+  public static final long ONE_DAY = 24l * ONE_HOUR;
   public static final long ONE_WEEK = 7 * ONE_DAY;
   public static final long ONE_YEAR = ONE_DAY * 365;
   public static final long ONE_YEAR_LY = ONE_DAY * 366;
@@ -191,10 +191,8 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
         if ((7 - dayOfWeek) >= leftDays || (dayOfWeek == 7)) {
           return true;
         }
-      } else if (month == 10 && leftDays < 7 || (dayOfWeek == 7)) {
-        if ((7 - dayOfWeek) < leftDays) {
-          return true;
-        }
+      } else if ((month == 10 && leftDays < 7 || (dayOfWeek == 7)) && ((7 - dayOfWeek) < leftDays)) {
+        return true;
       }
     }
     this.fields.put(MILLISECOND_OF_DAY, daymillis);
@@ -378,6 +376,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
         this.withMonth(Integer.parseInt(date.substring(3, 4)));
         this.withDate(Integer.parseInt(date.substring(0, 1)));
       } catch (Exception e) {
+
       }
     }
     return this;

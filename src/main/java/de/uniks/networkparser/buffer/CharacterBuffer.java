@@ -255,10 +255,9 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
           }
         }
       } else {
-        if (deleted == 0) {
-        } else if (deleted < 0) {
+        if (deleted < 0) {
           buffer[pos + deleted] = buffer[pos];
-        } else if (inserts != null) {
+        } else if (deleted > 0 && inserts != null) {
           inserts.with(buffer[pos + i]);
         }
         pos++;
@@ -788,8 +787,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     if (position == start) {
       start++;
       return this.buffer[position];
-    } else if (position == length - 1) {
-    } else {
+    } else if (position != length - 1) {
       char[] copy = new char[this.buffer.length - 1];
       System.arraycopy(this.buffer, start, copy, 0, position);
       if (length - position - 1 > 0) {
@@ -1002,7 +1000,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
   private static char toLower(char item) {
     if (item >= 'A' && item <= 'Z') {
-      return item += 32;
+      item = (char) (item + 32);
     }
     return item;
   }
@@ -1067,7 +1065,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
       int newCapubility = 0;
       for (int i = 0; i < items.length; i++) {
         if (items[i] != null) {
-          if ((items[i] instanceof CharSequence) == false) {
+          if (!(items[i] instanceof CharSequence)) {
             items[i] = items[i].toString();
           }
           newCapubility += ((CharSequence) items[i]).length();
@@ -1241,7 +1239,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     } else {
       pos = position() - 1;
     }
-    while (isEnd() == false) {
+    while (!isEnd()) {
       current = getChar();
       if (current.compareTo(end) == 0) {
         count--;
