@@ -91,7 +91,7 @@ public class TarArchiveInputStream extends InputStream {
       if (pos > 0) {
         tarName = file.getName().substring(0, pos) + ".tar";
       }
-      File tarFile = new File(parentFile.getPath() + "/" + tarName);
+      File tarFile = new File(parentFile.getPath() + File.pathSeparator + tarName);
       gZIPInputStream = new GZIPInputStream(fis);
       FileOutputStream fos = new FileOutputStream(tarFile);
       if (FileBuffer.copy(gZIPInputStream, fos) > 0) {
@@ -549,11 +549,11 @@ public class TarArchiveInputStream extends InputStream {
 
           is.reset();
         } catch (Exception e) {
-          return false;
+          shouldReset = false;
         }
       }
     }
-    return true;
+    return shouldReset;
   }
 
   /**

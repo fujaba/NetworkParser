@@ -249,6 +249,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
           }
         }
       } catch (Exception e) {
+        return this;
       }
     }
     return this;
@@ -287,15 +288,15 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
    * @return the key
    */
   public String getKey(Object obj) {
-    String result = null;
     try {
       int pos = this.keyValue.indexOfValue(obj);
       if (pos >= 0) {
         return this.keyValue.getKeyByIndex(pos);
       }
     } catch (ConcurrentModificationException e) {
+      return null;
     }
-    return result;
+    return null;
   }
 
   /**
@@ -305,12 +306,11 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
    * @return the object
    */
   public Object getObject(String key) {
-    Object result = null;
     try {
-      result = this.keyValue.getValue(key);
+      return this.keyValue.getValue(key);
     } catch (ConcurrentModificationException e) {
+      return null;
     }
-    return result;
   }
 
   /**
@@ -346,8 +346,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
     if (timeStamp != 0) {
       key = "" + obj.getClass().getSimpleName().charAt(0) + (this.timeStamp++);
     } else {
-      long timeStamp = System.nanoTime();
-      key = "" + obj.getClass().getSimpleName().charAt(0) + timeStamp;
+      key = "" + obj.getClass().getSimpleName().charAt(0) + System.nanoTime();
     }
     put(key, obj, notification);
     return key;
@@ -479,12 +478,12 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
       String[] properties = creator.getProperties();
       map.with(reference, newObject);
 
-      Filter filter = map.getFilter();
-      boolean isFullClone = filter.isFullSerialization();
+      Filter f = map.getFilter();
+      boolean isFullClone = f.isFullSerialization();
 
       for (String property : properties) {
         Object value = creator.getValue(reference, property);
-        int convert = filter.convert(reference, property, value, this, map.getDeep());
+        int convert = f.convert(reference, property, value, this, map.getDeep());
         if (value instanceof Collection<?>) {
           if (isFullClone || convert >= 0) {
             Collection<?> list = (Collection<?>) value;
@@ -496,7 +495,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
               } else {
                 SendableEntityCreator childCreatorClass = getCreatorClass(item);
                 if (childCreatorClass != null) {
-                  if (filter.convert(reference, property, item, this, deep) < 1) {
+                  if (f.convert(reference, property, item, this, deep) < 1) {
                     creator.setValue(newObject, property, item, SendableEntityCreator.NEW);
                   } else {
                     Object clonedChild = getCloneByEntity(item, map);
@@ -520,7 +519,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
             SendableEntityCreator childCreatorClass = getCreatorClass(value);
             if (childCreatorClass != null) {
               int deep = map.addDeep();
-              convert = filter.convert(reference, property, value, this, deep);
+              convert = f.convert(reference, property, value, this, deep);
               if (convert == 0) {
                 creator.setValue(newObject, property, value, SendableEntityCreator.NEW);
               } else if (convert > 0) {
@@ -793,15 +792,15 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
    *
    * @param value the value for decoding
    * @param target the target
-   * @param filter the filter for decoding
+   * @param f the filter for decoding
    * @return the object
    */
-  public Object decode(Object value, Object target, Filter filter) {
+  public Object decode(Object value, Object target, Filter f) {
     if (value == null) {
       return null;
     }
-    if (filter == null) {
-      filter = this.filter;
+    if (f == null) {
+      f = this.filter;
     }
     if (value instanceof Tokener && target instanceof Buffer) {
       Buffer element = (Buffer) target;
@@ -811,15 +810,15 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
         return decode(tokener.parseToEntity(new JsonArray(), element));
       }
       if (firstChar == XMLEntity.START) {
-        MapEntity map = new MapEntity(filter, flag, this, tokener);
+        MapEntity map = new MapEntity(f, flag, this, tokener);
         if (tokener instanceof XMLTokener) {
-          XMLTokener xmlTokener = (XMLTokener) tokener;
-          xmlTokener.skipHeader(element);
-          return decodingXMLEntity(xmlTokener, element, map);
+          XMLTokener xml = (XMLTokener) tokener;
+          xml.skipHeader(element);
+          return decodingXMLEntity(xml, element, map);
         } else if (tokener instanceof EMFTokener) {
-          EMFTokener xmlTokener = (EMFTokener) tokener;
-          xmlTokener.withMap(this);
-          return xmlTokener.decode(map, element, null);
+          EMFTokener emf = (EMFTokener) tokener;
+          emf.withMap(this);
+          return emf.decode(map, element, null);
         }
         return null;
       }
@@ -846,11 +845,11 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
         valueItem = this.jsonTokener.newInstanceList().withValue(buffer);
       } else if (XMLEntity.START == firstChar) {
         XMLTokener tokener = this.xmlTokener;
-        MapEntity map = new MapEntity(filter, flag, this, tokener);
+        MapEntity map = new MapEntity(f, flag, this, tokener);
         tokener.skipHeader(buffer);
         return decodingXMLEntity(tokener, buffer, map);
       } else {
-        MapEntity map = new MapEntity(filter, flag, this, byteTokener);
+        MapEntity map = new MapEntity(f, flag, this, byteTokener);
         /* MUST BE BYTE */
         return byteTokener.decodeValue((byte) firstChar, buffer, map);
       }
@@ -860,10 +859,10 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
     if (valueItem == null) {
       return null;
     }
-    if (filter == null) {
-      filter = this.filter;
+    if (f == null) {
+      f = this.filter;
     }
-    MapEntity map = new MapEntity(filter, flag, this, null);
+    MapEntity map = new MapEntity(f, flag, this, null);
     map.withTarget(target);
     return decoding(valueItem, map);
   }
@@ -928,17 +927,16 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
     /* Add all Objects */
     if (map.isFlag(FLAG_SIMPLEFORMAT)) {
       list = new SimpleList<Object>();
-      result = list;
+      for (int i = 0; i <= len; i++) {
+        list.add(decodingJsonObject(jsonArray.getJSONObject(i), map));
+      }
+      return list;
     }
 
     for (int i = 0; i <= len; i++) {
       JsonObject kidObject = jsonArray.getJSONObject(i);
       Object tmp = decodingJsonObject(kidObject, map);
-      if (map.isFlag(FLAG_SIMPLEFORMAT)) {
-        list.add(tmp);
-      } else if (kidObject != null && kidObject.has(MAINITEM)) {
-        result = tmp;
-      } else if (i == 0) {
+      if ((kidObject != null && kidObject.has(MAINITEM)) || i == 0) {
         result = tmp;
       }
     }
@@ -1035,9 +1033,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
     if (entity == null) {
       return null;
     }
-    byte flag = (byte) ((this.flag | FLAG_ID) - FLAG_ID | FLAG_SIMPLEFORMAT);
+    byte value = (byte) ((this.flag | FLAG_ID) - FLAG_ID | FLAG_SIMPLEFORMAT);
 
-    MapEntity map = new MapEntity(filter, flag, this, xmlTokener);
+    MapEntity map = new MapEntity(filter, value, this, xmlTokener);
     map.withStack(new MapEntityStack());
     return (XMLEntity) this.encode(entity, map);
   }
@@ -1126,13 +1124,13 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
   }
 
   public GraphPatternMatch getDiff(Object source, Object target, boolean ordered) {
-    byte flag = GraphTokener.FLAG_UNORDERD;
+    byte value = GraphTokener.FLAG_UNORDERD;
     if (ordered) {
-      flag = GraphTokener.FLAG_ORDERD;
+      value = GraphTokener.FLAG_ORDERD;
     }
     GraphTokener tokener = new GraphTokener();
-    MapEntity map = new MapEntity(filter, flag, this, tokener);
-    map.withFlag(flag);
+    MapEntity map = new MapEntity(filter, value, this, tokener);
+    map.withFlag(value);
     return tokener.withMap(this).diffModel(source, target, map);
   }
 
@@ -1282,11 +1280,11 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
     if (map == null) {
       return null;
     }
-    Grammar grammar = map.getGrammar();
-    if (grammar == null) {
+    Grammar g = map.getGrammar();
+    if (g == null) {
       return null;
     }
-    SendableEntityCreator creator = grammar.getCreator(Grammar.WRITE, entity, map, className);
+    SendableEntityCreator creator = g.getCreator(Grammar.WRITE, entity, map, className);
     if (creator == null) {
       return null;
     }
@@ -1304,11 +1302,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
         Tokener tokener = map.getTokener();
         item = map.writeBasicValue(creator, tokener.newInstance(), parentNode, className, id);
         if (map.getDeep() > 0) {
-          ObjectCondition filter = map.getFilter().getPropertyRegard();
-          if (filter instanceof Deep) {
-            if (map.getDeep() <= ((Deep) filter).getDepth()) {
-              return item;
-            }
+          ObjectCondition f = map.getFilter().getPropertyRegard();
+          if (f instanceof Deep && map.getDeep() <= ((Deep) f).getDepth()) {
+            return item;
           }
         }
         for (int i = 0; i < targetList.size(); i++) {
@@ -1329,7 +1325,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
         item = list.get(id);
       }
     }
-    Filter filter = map.getFilter();
+    Filter f = map.getFilter();
     if (!isSimple || item == null) {
       if (entity instanceof SimpleObject) {
         String type = ((SimpleObject) entity).getClassName();
@@ -1346,23 +1342,21 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
         targetList.add(item);
       } else {
         id = getId(creator, map, entity, className);
-        if (id == null) {
-          if (filter.convert(item, null, entity, this, map.getDeep()) < 0) {
-            ObjectCondition propertyRegard = map.getFilter().getPropertyRegard();
-            if (propertyRegard instanceof MapFilter) {
-              MapFilter mf = (MapFilter) propertyRegard;
-              return mf.getValue(entity);
-            }
+        if (id == null && f.convert(item, null, entity, this, map.getDeep()) < 0) {
+          ObjectCondition propertyRegard = map.getFilter().getPropertyRegard();
+          if (propertyRegard instanceof MapFilter) {
+            MapFilter mf = (MapFilter) propertyRegard;
+            return mf.getValue(entity);
           }
         }
       }
     }
-    String[] properties = filter.getProperties(creator);
+    String[] properties = f.getProperties(creator);
     if (properties != null) {
       map.pushStack(className, entity, creator);
-      item.withAllowEmptyValue(filter.isFullSerialization());
+      item.withAllowEmptyValue(f.isFullSerialization());
       /* Find ReferenceObject in Cache */
-      boolean notNull = !filter.isNullCheck();
+      boolean notNull = !f.isNullCheck();
       Object referenceObject = null;
       if (notNull) {
         referenceObject = referenceList.get(creator);
@@ -1397,11 +1391,11 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
         }
 
         if (value != null) {
-          int convert = filter.convert(entity, property, value, this, map.getDeep());
+          int convert = f.convert(entity, property, value, this, map.getDeep());
           if (convert < 0) {
             continue;
           }
-          boolean encoding = filter.isFullSerialization();
+          boolean encoding = f.isFullSerialization();
           if (referenceObject instanceof Class<?>) {
             encoding = true;
           }
@@ -1416,10 +1410,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
           if (encoding) {
             prop.setNextString(property, pos);
             Entity parent = map.convertProperty(prop, item);
-            if (parent.has(property)) {
-              if (isError(this, "Encode", NetworkParserLog.ERROR_TYP_DUPPLICATE, entity, className)) {
-                throw new RuntimeException("Property duplicate:" + property + "(" + className + ")");
-              }
+            if (parent.has(property) && isError(this, "Encode", NetworkParserLog.ERROR_TYP_DUPPLICATE, entity, className)) {
+              throw new SimpleException("Property duplicate:" + property + "(" + className + ")");
             }
             if (value instanceof Entity) {
               if (parent instanceof EntityList) {
@@ -1432,10 +1424,10 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
             }
             className = value.getClass().getName();
             String fullProp = prop.toString();
-            SendableEntityCreator valueCreater = grammar.getCreator(Grammar.WRITE, value, map, className);
+            SendableEntityCreator valueCreater = g.getCreator(Grammar.WRITE, value, map, className);
 
             Object key = value;
-            if (filter.isId(value, className, this)) {
+            if (f.isId(value, className, this)) {
               key = tokener.getKey(value);
             }
             boolean contains = false;
@@ -1448,9 +1440,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
               }
               Entity child = tokener.createLink(item, fullProp, className, tokener.getId(value));
               if (child != null) {
-                SendableEntityCreator childCreater = grammar.getCreator(Grammar.WRITE, child, map,
+                SendableEntityCreator childCreater = g.getCreator(Grammar.WRITE, child, map,
                     null);
-                filter.convertProperty(entity, fullProp);
+                f.convertProperty(entity, fullProp);
                 parseValue(fullProp, child, null, childCreater, map, parent);
               }
             } else if (valueCreater != null && (contains || convert < 1)) {
@@ -1459,17 +1451,17 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
                 child = tokener.createLink(item, fullProp, className, tokener.getId(value));
               }
               if (child != null) {
-                SendableEntityCreator childCreater = grammar.getCreator(Grammar.WRITE, child, map,
+                SendableEntityCreator childCreater = g.getCreator(Grammar.WRITE, child, map,
                     null);
-                filter.convertProperty(entity, fullProp);
+                f.convertProperty(entity, fullProp);
                 parseValue(fullProp, child, null, childCreater, map, parent);
               }
             } else {
-              filter.convertProperty(entity, fullProp);
+              f.convertProperty(entity, fullProp);
               parseValue(fullProp, value, className, valueCreater, map, parent);
             }
           }
-        } else if (filter.isFullSerialization()) {
+        } else if (f.isFullSerialization()) {
           if (property.startsWith(".")) {
             pos--;
           }
@@ -1492,27 +1484,27 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
       return false;
     }
     Object writeValue = null;
-    Grammar grammar = map.getGrammar();
+    Grammar g = map.getGrammar();
     if (value instanceof Collection<?> && valueCreater == null) {
       /* Simple List or Assocs */
       EntityList subValues;
       boolean isArray = map.getTarget() != null;
       Tokener tokener = map.getTokener();
       subValues = tokener.newInstanceList();
-      Filter filter = map.getFilter();
+      Filter f = map.getFilter();
       for (Object child : ((Collection<?>) value)) {
         if (child != null) {
           String childClassName = child.getClass().getName();
-          SendableEntityCreator childCreater = grammar.getCreator(Grammar.WRITE, child, map, childClassName);
+          SendableEntityCreator childCreater = g.getCreator(Grammar.WRITE, child, map, childClassName);
           Object key = child;
-          if (filter.isId(child, className, this)) {
+          if (f.isId(child, className, this)) {
             key = tokener.getKey(child);
           }
           if (map.contains(key)) {
             child = tokener.createLink((Entity) parent, property, childClassName, tokener.getKey(child));
             childClassName = null;
           } else {
-            int convert = filter.convert(value, property, child, this, map.getDeep());
+            int convert = f.convert(value, property, child, this, map.getDeep());
 
             if (convert < 0) {
               continue;
@@ -1541,7 +1533,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
       String packageName = ObjectMapEntry.class.getName();
       for (Iterator<?> i = list.entrySet().iterator(); i.hasNext();) {
         Entry<?, ?> mapEntry = (Entry<?, ?>) i.next();
-        SendableEntityCreator childCreater = grammar.getCreator(Grammar.WRITE, mapEntry, map, packageName);
+        SendableEntityCreator childCreater = g.getCreator(Grammar.WRITE, mapEntry, map, packageName);
         parseValue(property, mapEntry, packageName, childCreater, map, subValues);
       }
       writeValue = subValues;
@@ -1551,7 +1543,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
       writeValue = value;
     }
     Tokener tokener = map.getTokener();
-    if (grammar.writeValue(parent, property, writeValue, map, tokener)) {
+    if (g.writeValue(parent, property, writeValue, map, tokener)) {
     } else if (parent instanceof EntityList && tokener.isChild(writeValue)) {
       ((EntityList) parent).add(writeValue);
     } else if (parent instanceof Entity) {
@@ -1639,13 +1631,13 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
             Object value = objects.getValueByIndex(z);
             this.put(id, value, true);
           }
-          Grammar grammar = oldIDMap.getGrammar();
-          if (grammar != null) {
-            this.withGrammar(grammar);
+          Grammar g = oldIDMap.getGrammar();
+          if (g != null) {
+            this.withGrammar(g);
           }
-          Filter filter = oldIDMap.getFilter();
-          if (filter != null) {
-            this.withFilter(filter);
+          Filter f = oldIDMap.getFilter();
+          if (f != null) {
+            this.withFilter(f);
           }
 
           ObjectCondition listener = oldIDMap.getUpdateListener();
@@ -1793,7 +1785,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
       Object value = creator.getValue(root, property);
       Object element;
       if (i18n.isAutoCreate()
-          && (value == null || (value instanceof Collection<?> && ((Collection<?>) value).size() < 1))) {
+          && (value == null || (value instanceof Collection<?> && ((Collection<?>) value).isEmpty()))) {
         /* Check for Creating */
         if (value instanceof SendableEntityCreator) {
           /* SIMPLE CASE */

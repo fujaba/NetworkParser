@@ -39,6 +39,7 @@ public class RSAKey {
   private BigInteger d;
   /* RSA-Modul */
   private BigInteger N;
+  private static Random rand = new Random();
 
   public RSAKey(BigInteger N) {
     this.N = N;
@@ -275,7 +276,6 @@ public class RSAKey {
     if (p == null || q == null) {
       return null;
     }
-    Random rand = new Random();
     if (p.longValue() < 1) {
       try {
         p = BigInteger.probablePrime(75 * max / 100, rand);
