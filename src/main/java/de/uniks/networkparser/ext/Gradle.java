@@ -99,13 +99,17 @@ public class Gradle implements ObjectCondition {
       new File(localPath).mkdirs();
     }
     projectPath = localPath;
-    try (JarFile jar = new JarFile(jarPath + jarFile)) {
+    JarFile jar = null;
+    FileOutputStream fos = null;
+    boolean result = true;
+    try {
+      jar = new JarFile(jarPath + jarFile);
       ZipEntry entry = jar.getEntry("version.gradle");
       if (entry != null) {
         InputStream zis = jar.getInputStream(entry);
         byte[] buffer = new byte[1024];
         File targetFile = new File(localPath + "version.gradle");
-        FileOutputStream fos = new FileOutputStream(targetFile);
+        fos = new FileOutputStream(targetFile);
         int len;
         while ((len = zis.read(buffer)) > 0) {
           fos.write(buffer, 0, len);
@@ -114,6 +118,21 @@ public class Gradle implements ObjectCondition {
       }
     } catch (IOException e) {
       throw new SimpleException(e);
+    } finally {
+
+      try {
+        if (jar != null) {
+          jar.close();
+        }
+        if (fos != null) {
+          fos.close();
+        }
+      } catch (IOException e) {
+        result = false;
+      }
+    }
+    if (!result) {
+      return result;
     }
     writeProjectPath(localPath, projectName);
     log("Project created");
@@ -387,8 +406,14 @@ public class Gradle implements ObjectCondition {
         .withKeyValue("gradlew", "").withKeyValue("gradlew.bat", "")
         .withKeyValue("gradle-wrapper.jar", "gradle/wrapper/")
         .withKeyValue(GRADLE_PROPERTIES, "gradle/wrapper/");
-    try (FileInputStream fis = new FileInputStream(file); ZipInputStream zis = new ZipInputStream(fis);) {
+
+    ZipInputStream zis = null;
+    boolean result = true;
+    try {
+      FileInputStream fis = new FileInputStream(file);
+      zis = new ZipInputStream(fis);
       ZipEntry ze = zis.getNextEntry();
+      FileOutputStream fos = null;
       byte[] buffer = new byte[1024];
       while (ze != null) {
         for (int i = 0; i < extractFiles.size(); i++) {
@@ -426,7 +451,7 @@ public class Gradle implements ObjectCondition {
               }
               FileBuffer.writeFile(path + extractFiles.getValueByIndex(i) + fileName, sb);
             } else {
-              FileOutputStream fos = new FileOutputStream(targetFile);
+              fos = new FileOutputStream(targetFile);
               while ((len = zis.read(buffer)) > 0) {
                 fos.write(buffer, 0, len);
               }
@@ -443,9 +468,15 @@ public class Gradle implements ObjectCondition {
         ze = zis.getNextEntry();
       }
     } catch (Exception e) {
-      return false;
+      try {
+        if (zis != null) {
+          zis.close();
+        }
+      } catch (Exception e2) {
+        result = false;
+      }
     }
-    return true;
+    return result;
   }
 
   public boolean loadNPM() {
@@ -491,7 +522,9 @@ public class Gradle implements ObjectCondition {
     if (file == null) {
       return false;
     }
-    try (TarArchiveInputStream tis = TarArchiveInputStream.create(file + ".tgz")) {
+    TarArchiveInputStream tis = null;
+    try {
+      tis = TarArchiveInputStream.create(file + ".tgz");
       TarArchiveEntry tarEntry = null;
       while ((tarEntry = tis.getNextTarEntry()) != null) {
         String outputName;
@@ -514,6 +547,10 @@ public class Gradle implements ObjectCondition {
       }
     } catch (Exception e) {
       return false;
+    } finally {
+      if (tis != null) {
+        tis.close();
+      }
     }
     return true;
   }

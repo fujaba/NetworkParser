@@ -325,7 +325,6 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     } else {
       file = new File(fullFileName + "output.txt");
     }
-    boolean result = true;
     try {
       if (!file.exists() && !file.createNewFile()) {
         return false;
@@ -333,10 +332,21 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     } catch (IOException e1) {
       return false;
     }
-    try (FileOutputStream stream = new FileOutputStream(file, true)) {
+    FileOutputStream stream = null;
+    boolean result = true;
+    try {
+      stream = new FileOutputStream(file, true);
       stream.write(output.getBytes());
     } catch (IOException e) {
       return false;
+    } finally {
+      if (stream != null) {
+        try {
+          stream.close();
+        } catch (IOException e) {
+          result = false;
+        }
+      }
     }
     return result;
   }
