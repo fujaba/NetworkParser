@@ -20,3 +20,4 @@ out/
 NetworkParser.iml
 .scannerwork/**
 target/**
+maven/**

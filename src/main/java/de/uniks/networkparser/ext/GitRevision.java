@@ -1,28 +1,25 @@
 package de.uniks.networkparser.ext;
 
 /*
-The MIT License
-
-Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
+ * The MIT License
+ * 
+ * Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -32,7 +29,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
@@ -41,466 +37,461 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class GitRevision {
-	public static final String MAINTAG = "GIT";
-	public static final String MAYOR = "mayor";
-	public static final String MINOR = "minor";
-	public static final String HASH = "hash";
-	public static final String TAG = "tag";
-	public static final String BRANCHNAME = "branchname";
-	public static final String LASTCOMMIT = "lastcommit";
-	public static final String REVISIONNUMBER = "revisionnumber";
-	public static final String COMMITS = "commits";
+  public static final String MAINTAG = "GIT";
+  public static final String MAYOR = "mayor";
+  public static final String MINOR = "minor";
+  public static final String HASH = "hash";
+  public static final String TAG = "tag";
+  public static final String BRANCHNAME = "branchname";
+  public static final String LASTCOMMIT = "lastcommit";
+  public static final String REVISIONNUMBER = "revisionnumber";
+  public static final String COMMITS = "commits";
 
-	private boolean full = false;
-	private int max = -1;
-	private String path;
-	private String username;
-	private String password;
+  private boolean full = false;
+  private int max = -1;
+  private String path;
+  private String username;
+  private String password;
 
-	public GitRevision withPath(String path) {
-		this.path = path;
-		return this;
-	}
+  public GitRevision withPath(String path) {
+    this.path = path;
+    return this;
+  }
 
-	public JsonObject execute() throws IOException {
-		JsonObject json = execute(max);
-		if(json != null) {
-			System.setProperty("Branchname", json.getString(BRANCHNAME));
-			System.setProperty("LastCommit", json.getString(LASTCOMMIT));
-			System.setProperty("Revisionnumber", json.getString(REVISIONNUMBER));
-		}
-		return json;
-	}
+  public JsonObject execute() throws IOException {
+    JsonObject json = execute(max);
+    if (json != null) {
+      System.setProperty("Branchname", json.getString(BRANCHNAME));
+      System.setProperty("LastCommit", json.getString(LASTCOMMIT));
+      System.setProperty("Revisionnumber", json.getString(REVISIONNUMBER));
+    }
+    return json;
+  }
 
-	private Object getRepository() {
-		if (ReflectionLoader.FILEREPOSITORYBUILDER == null) {
-			return null;
-		}
+  private Object getRepository() {
+    if (ReflectionLoader.FILEREPOSITORYBUILDER == null) {
+      return null;
+    }
 
-		File file = null;
-		String localPath = path;
-		if (localPath == null) {
-			localPath = "";
-		} else if ((localPath.endsWith("/") || localPath.endsWith("\\")) == false) {
-			localPath += "/";
-		}
-		File projectFile = null;
-		if (new File(localPath + ".git/config").exists()) {
-			file = new File(localPath + ".git");
-			projectFile = file;
-		} else if (new File(localPath + "config").exists()) {
-			file = new File(localPath);
-			projectFile = file;
-		}
-		if (file == null) {
-			return null;
-		}
-		Object repository = null;
-		try {
-			Object builder = ReflectionLoader.newInstance(ReflectionLoader.FILEREPOSITORYBUILDER);
-			ReflectionLoader.call(builder, "setWorkTree", File.class, file);
-			if (projectFile != null && "".equals(projectFile.getName()) == false) {
-				ReflectionLoader.call(builder, "setGitDir", File.class, projectFile);
-			}
-			repository = ReflectionLoader.callChain(builder, "readEnvironment", "findGitDir", "build");
-			/* scan environment GIT_* variables */
-			/* scan up the file system tree */
-		}catch(Exception e) {
-		}
-		return repository;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public JsonObject execute(int maxCommit) {
-		Object repository = getRepository();
-		if(repository == null) {
-			return null;
-		}
-		Map<String, ?> allRefs = null;
-		LinkedHashSet<String> branches = new LinkedHashSet<String>();
-		String id = null;
-		Object headID = null;
-		JsonArray map = new JsonArray();
-		JsonObject info = new JsonObject();
+    File file = null;
+    String localPath = path;
+    if (localPath == null) {
+      localPath = "";
+    } else if ((localPath.endsWith("/") || localPath.endsWith("\\")) == false) {
+      localPath += "/";
+    }
+    File projectFile = null;
+    if (new File(localPath + ".git/config").exists()) {
+      file = new File(localPath + ".git");
+      projectFile = file;
+    } else if (new File(localPath + "config").exists()) {
+      file = new File(localPath);
+      projectFile = file;
+    }
+    if (file == null) {
+      return null;
+    }
+    Object repository = null;
+    try {
+      Object builder = ReflectionLoader.newInstance(ReflectionLoader.FILEREPOSITORYBUILDER);
+      ReflectionLoader.call(builder, "setWorkTree", File.class, file);
+      if (projectFile != null && "".equals(projectFile.getName()) == false) {
+        ReflectionLoader.call(builder, "setGitDir", File.class, projectFile);
+      }
+      repository = ReflectionLoader.callChain(builder, "readEnvironment", "findGitDir", "build");
+      /* scan environment GIT_* variables */
+      /* scan up the file system tree */
+    } catch (Exception e) {
+    }
+    return repository;
+  }
 
-		int count = 0;
-		try {
-			calcGitTag(repository, info);
-			allRefs = (Map<String, ?>) ReflectionLoader.call(repository, "getAllRefs");
-			try {
-				headID = ReflectionLoader.call(repository, "resolve", String.class, "HEAD");
-			} catch (Exception e) {
-			}
-			if (headID != null) {
-				id = (String) ReflectionLoader.call(headID, "name");
-			}
-			commitInfo(map, repository, headID, null);
-			String branch = (String) ReflectionLoader.call(repository, "getBranch");
-			branches.add(branch);
+  @SuppressWarnings("unchecked")
+  public JsonObject execute(int maxCommit) {
+    Object repository = getRepository();
+    if (repository == null) {
+      return null;
+    }
+    Map<String, ?> allRefs = null;
+    LinkedHashSet<String> branches = new LinkedHashSet<String>();
+    String id = null;
+    Object headID = null;
+    JsonArray map = new JsonArray();
+    JsonObject info = new JsonObject();
 
-			while (headID != null) {
-				count++;
-				Object oldId = headID;
-				String name = (String) ReflectionLoader.call(headID, "getName");
-				headID = ReflectionLoader.call(repository, "resolve", String.class, name + "^1");
-				if (maxCommit < 0 || count < maxCommit) {
-					commitInfo(map, repository, headID, oldId);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			ReflectionLoader.call(repository, "close");
-		}
-		if (allRefs != null) {
-			if (id == null) {
-				id = "";
-			}
-			for (Iterator<?> i = allRefs.entrySet().iterator(); i.hasNext();) {
-				Entry<String, Object> item = (Entry<String, Object>) i.next();
-				Object value = item.getValue();
+    int count = 0;
+    try {
+      calcGitTag(repository, info);
+      allRefs = (Map<String, ?>) ReflectionLoader.call(repository, "getAllRefs");
+      try {
+        headID = ReflectionLoader.call(repository, "resolve", String.class, "HEAD");
+      } catch (Exception e) {
+      }
+      if (headID != null) {
+        id = (String) ReflectionLoader.call(headID, "name");
+      }
+      commitInfo(map, repository, headID, null);
+      String branch = (String) ReflectionLoader.call(repository, "getBranch");
+      branches.add(branch);
 
-				String newId = (String) ReflectionLoader.callChain(value, false, "getObjectId", "getName");
-				if (id.equals(newId)) {
-					if (branches.contains(item.getKey()) == false) {
-						branches.add(item.getKey());
-					}
-				}
-			}
-		}
-		Iterator<String> i = branches.iterator();
-		String branchesTag = "";
-		if (i != null && i.hasNext()) {
-			CharacterBuffer allBranches = new CharacterBuffer().with(i.next());
-			while (i.hasNext()) {
-				allBranches.with(' ').with(i.next());
-			}
-			branchesTag = allBranches.toString();
-		}
+      while (headID != null) {
+        count++;
+        Object oldId = headID;
+        String name = (String) ReflectionLoader.call(headID, "getName");
+        headID = ReflectionLoader.call(repository, "resolve", String.class, name + "^1");
+        if (maxCommit < 0 || count < maxCommit) {
+          commitInfo(map, repository, headID, oldId);
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      ReflectionLoader.call(repository, "close");
+    }
+    if (allRefs != null) {
+      if (id == null) {
+        id = "";
+      }
+      for (Iterator<?> i = allRefs.entrySet().iterator(); i.hasNext();) {
+        Entry<String, Object> item = (Entry<String, Object>) i.next();
+        Object value = item.getValue();
 
-		info.put(BRANCHNAME, branchesTag);
-		info.put(LASTCOMMIT, id);
-		if (count == 0) {
-			info.put(REVISIONNUMBER, 1);
-		} else {
-			info.put(REVISIONNUMBER, count);
-		}
-		info.put(COMMITS, map);
-		return info;
-	}
+        String newId = (String) ReflectionLoader.callChain(value, false, "getObjectId", "getName");
+        if (id.equals(newId)) {
+          if (branches.contains(item.getKey()) == false) {
+            branches.add(item.getKey());
+          }
+        }
+      }
+    }
+    Iterator<String> i = branches.iterator();
+    String branchesTag = "";
+    if (i != null && i.hasNext()) {
+      CharacterBuffer allBranches = new CharacterBuffer().with(i.next());
+      while (i.hasNext()) {
+        allBranches.with(' ').with(i.next());
+      }
+      branchesTag = allBranches.toString();
+    }
 
-	public GitRevision withMaxCommit(int value) {
-		this.max = value;
-		return this;
-	}
+    info.put(BRANCHNAME, branchesTag);
+    info.put(LASTCOMMIT, id);
+    if (count == 0) {
+      info.put(REVISIONNUMBER, 1);
+    } else {
+      info.put(REVISIONNUMBER, count);
+    }
+    info.put(COMMITS, map);
+    return info;
+  }
 
-	public boolean setFull(boolean full) {
-		if (full != this.full) {
-			this.full = full;
-			return true;
-		}
-		return false;
-	}
+  public GitRevision withMaxCommit(int value) {
+    this.max = value;
+    return this;
+  }
 
-	public boolean isFull() {
-		return full;
-	}
+  public boolean setFull(boolean full) {
+    if (full != this.full) {
+      this.full = full;
+      return true;
+    }
+    return false;
+  }
 
-	@SuppressWarnings("unchecked")
-	public int calcGitTag(Object repository, JsonObject info) {
-		if (ReflectionLoader.REPOSITORY == null || repository == null
-				|| ReflectionLoader.REPOSITORY.isAssignableFrom(repository.getClass()) == false) {
-			return -1;
-		}
-		int minor = -1;
-		int mayor = 0;
-		String tag = null;
-		String tagHash = "";
-		Map<String, Object> tags = (Map<String, Object>) ReflectionLoader.call(repository, "getTags");
-		SimpleKeyValueList<String, String> tagNames=new SimpleKeyValueList<String, String>();
-		for (Iterator<Entry<String, Object>> i = tags.entrySet().iterator(); i.hasNext();) {
-			Entry<String, Object> entry = i.next();
-			try {
-				tagNames.add(entry.getKey().trim(), (String) ReflectionLoader.call(entry.getValue(), "getName"));
-				
-			}catch (Exception e) {
-			}
-		}
-		if(tags == null || tags.size() == 0) {
-			Object refDatabase = ReflectionLoader.call(repository, "getRefDatabase");
-			List<?> refs = (List<?>) ReflectionLoader.call(refDatabase, "getRefsByPrefix", "refs/tags/");
-			if(refs.size() >0) {
-				for(int i=0;i<refs.size();i++) {
-					try {
-						String id = (String) ReflectionLoader.call(refs.get(i), "getTagName");
-						String hashValue = (String) ReflectionLoader.call(refs.get(i), "getObject", "name");
-						tagNames.add(ReflectionLoader.call(id, hashValue));
-					}catch (Exception e) {
-					}
-				}
-			}
-		}
-		int versionNumber = 1;
-		for(int i=0;i<tagNames.size();i++) {
-			try {
-				String id = tagNames.getKeyByIndex(i);
-				int start = id.indexOf(".");
-				int vNumber = 0;
-				int mayorNumber = 0;
-				if (start > 0) {
-					mayorNumber = Integer.valueOf(id.substring(0, start));
-					id = id.substring(start + 1);
-					start = id.indexOf(".");
-					if (start > 0) {
-						try {
-							vNumber = Integer.valueOf(id.substring(start + 1));
-						} catch (Exception e) {
-						}
-						id = id.substring(0, start);
-					}
-				}
-				Integer value = Integer.valueOf(id);
-				if (value > 0) {
-					if (mayorNumber > mayor || value > minor) {
-						tag = id;
-						mayor = mayorNumber;
-						tagHash = tagNames.getValueByIndex(i);
-						versionNumber = vNumber;
-						minor = value;
-					} else if (value == minor) {
-						if (versionNumber == 0) {
-							tagHash = tagNames.getValueByIndex(i);
-							versionNumber = vNumber;
-							tag = id;
-						} else if (vNumber > versionNumber) {
-							tag = id;
-							versionNumber = vNumber;
-							tagHash = tagNames.getValueByIndex(i);
-						}
-						minor = value;
-					}
-				}
-			} catch (Exception e) {
-				/* no problem as long as there's another tag with a number */
-			}
-		}
-		info.put(MAYOR, mayor);
-		if (minor < 0) {
-			info.put(MINOR, 0);
-		} else {
-			info.put(MINOR, minor);
-		}
-		info.put(HASH, tagHash);
-		info.put(TAG, tag);
-		return minor;
-	}
+  public boolean isFull() {
+    return full;
+  }
 
-	private JsonObject commitInfo(JsonArray map, Object repository, Object objectID, Object newerrId) throws Exception {
-		Object walk=null;
-		try {
-			JsonObject jsonObject = new JsonObject();
-			walk = ReflectionLoader.newInstance(ReflectionLoader.REVWALK, ReflectionLoader.REPOSITORY,
-					repository);
-			Object commit = null;
-			if (objectID != null) {
-				commit = ReflectionLoader.call(walk, "parseCommit", ReflectionLoader.ANYOBJECTID, objectID);
-			}
-			if (commit != null) {
-				jsonObject.put("ID", ReflectionLoader.call(objectID, "getName"));
-				jsonObject.put("TIME", "" + ReflectionLoader.call(commit, "getCommitTime"));
-				Object temp = ReflectionLoader.call(commit, "getCommitterIdent");
-				if (temp != null) {
-					jsonObject.put("COMMITER", ReflectionLoader.call(temp, "getName"));
-				}
-				String msg = (String) ReflectionLoader.call(commit, "getFullMessage");
-				if (msg != null) {
-					msg = msg.trim();
-					if (msg.endsWith("\\u000a")) {
-						msg = msg.substring(0, msg.length() - 6);
-					}
-					jsonObject.put("MESSAGE", msg);
-				}
+  @SuppressWarnings("unchecked")
+  public int calcGitTag(Object repository, JsonObject info) {
+    if (ReflectionLoader.REPOSITORY == null || repository == null
+        || ReflectionLoader.REPOSITORY.isAssignableFrom(repository.getClass()) == false) {
+      return -1;
+    }
+    int minor = -1;
+    int mayor = 0;
+    String tag = null;
+    String tagHash = "";
+    Map<String, Object> tags = (Map<String, Object>) ReflectionLoader.call(repository, "getTags");
+    SimpleKeyValueList<String, String> tagNames = new SimpleKeyValueList<String, String>();
+    for (Iterator<Entry<String, Object>> i = tags.entrySet().iterator(); i.hasNext();) {
+      Entry<String, Object> entry = i.next();
+      try {
+        tagNames.add(entry.getKey().trim(), (String) ReflectionLoader.call(entry.getValue(), "getName"));
 
-				if (newerrId != null && full) {
-					Object newerCommit = ReflectionLoader.call(walk, "parseCommit", newerrId);
-					Object reader = ReflectionLoader.call(repository, "newObjectReader");
-					Object newerTreeIter = ReflectionLoader.newInstance(ReflectionLoader.CANONICALTREEPARSER);
-					Collection<?> diffs = null;
-					Object tree = ReflectionLoader.call(newerCommit, "getTree");
-					if (tree != null) {
-						ReflectionLoader.call(newerTreeIter, "reset", tree);
-						Object newTreeIter = ReflectionLoader.newInstance(ReflectionLoader.CANONICALTREEPARSER);
-						Object newtree = ReflectionLoader.call(commit, "getTree");
-						if (newtree != null) {
-							ReflectionLoader.call(newTreeIter, "reset", reader, newtree);
-							Object git = ReflectionLoader.newInstance(ReflectionLoader.GIT, repository);
-							git = ReflectionLoader.call(git, "diff");
-							git = ReflectionLoader.call(git, "setNewTree", newerTreeIter);
-							git = ReflectionLoader.call(git, "setOldTree", newTreeIter);
-							diffs = (Collection<?>) ReflectionLoader.call(git, "call");
-						}
-					}
-					if (diffs != null) {
-						JsonArray files = new JsonArray();
-						Object refmode = ReflectionLoader.getField(ReflectionLoader.FILEMODE, "MISSING");
-						for (Object entry : diffs) {
-							Object mode = ReflectionLoader.call(entry, "getNewMode");
-							String value = (String) ReflectionLoader.call(entry, "getNewPath");
-							if (mode == refmode) {
-								files.add(new JsonObject().withValue("REM", value));
-							} else {
-								files.add(new JsonObject().withValue("CHANGE", value));
-							}
-						}
-						jsonObject.put("FILES", files);
-					}
-				}
-				map.add(jsonObject);
-			}
-			return jsonObject;
-		} catch (Exception e) {
-		} finally {
-			ReflectionLoader.call(walk, "close");
-		}
-		return null;
-	}
+      } catch (Exception e) {
+      }
+    }
+    if (tags == null || tags.size() == 0) {
+      Object refDatabase = ReflectionLoader.call(repository, "getRefDatabase");
+      List<?> refs = (List<?>) ReflectionLoader.call(refDatabase, "getRefsByPrefix", "refs/tags/");
+      if (refs.size() > 0) {
+        for (int i = 0; i < refs.size(); i++) {
+          try {
+            String id = (String) ReflectionLoader.call(refs.get(i), "getTagName");
+            String hashValue = (String) ReflectionLoader.call(refs.get(i), "getObject", "name");
+            tagNames.add(ReflectionLoader.call(id, hashValue));
+          } catch (Exception e) {
+          }
+        }
+      }
+    }
+    int versionNumber = 1;
+    for (int i = 0; i < tagNames.size(); i++) {
+      try {
+        String id = tagNames.getKeyByIndex(i);
+        int start = id.indexOf(".");
+        int vNumber = 0;
+        int mayorNumber = 0;
+        if (start > 0) {
+          mayorNumber = Integer.valueOf(id.substring(0, start));
+          id = id.substring(start + 1);
+          start = id.indexOf(".");
+          if (start > 0) {
+            try {
+              vNumber = Integer.valueOf(id.substring(start + 1));
+            } catch (Exception e) {
+            }
+            id = id.substring(0, start);
+          }
+        }
+        Integer value = Integer.valueOf(id);
+        if (value > 0) {
+          if (mayorNumber > mayor || value > minor) {
+            tag = id;
+            mayor = mayorNumber;
+            tagHash = tagNames.getValueByIndex(i);
+            versionNumber = vNumber;
+            minor = value;
+          } else if (value == minor) {
+            if (versionNumber == 0) {
+              tagHash = tagNames.getValueByIndex(i);
+              versionNumber = vNumber;
+              tag = id;
+            } else if (vNumber > versionNumber) {
+              tag = id;
+              versionNumber = vNumber;
+              tagHash = tagNames.getValueByIndex(i);
+            }
+            minor = value;
+          }
+        }
+      } catch (Exception e) {
+        /* no problem as long as there's another tag with a number */
+      }
+    }
+    info.put(MAYOR, mayor);
+    if (minor < 0) {
+      info.put(MINOR, 0);
+    } else {
+      info.put(MINOR, minor);
+    }
+    info.put(HASH, tagHash);
+    info.put(TAG, tag);
+    return minor;
+  }
 
-	protected SimpleKeyValueList<String, Integer> createdComment(String sourcePath, String licenceFile) {
-		SimpleKeyValueList<String, Integer> values = new SimpleKeyValueList<String, Integer>();
-		values.put("LOC", 0);
+  private JsonObject commitInfo(JsonArray map, Object repository, Object objectID, Object newerrId) throws Exception {
+    Object walk = null;
+    try {
+      JsonObject jsonObject = new JsonObject();
+      walk = ReflectionLoader.newInstance(ReflectionLoader.REVWALK, ReflectionLoader.REPOSITORY,
+          repository);
+      Object commit = null;
+      if (objectID != null) {
+        commit = ReflectionLoader.call(walk, "parseCommit", ReflectionLoader.ANYOBJECTID, objectID);
+      }
+      if (commit != null) {
+        jsonObject.put("ID", ReflectionLoader.call(objectID, "getName"));
+        jsonObject.put("TIME", "" + ReflectionLoader.call(commit, "getCommitTime"));
+        Object temp = ReflectionLoader.call(commit, "getCommitterIdent");
+        if (temp != null) {
+          jsonObject.put("COMMITER", ReflectionLoader.call(temp, "getName"));
+        }
+        String msg = (String) ReflectionLoader.call(commit, "getFullMessage");
+        if (msg != null) {
+          msg = msg.trim();
+          if (msg.endsWith("\\u000a")) {
+            msg = msg.substring(0, msg.length() - 6);
+          }
+          jsonObject.put("MESSAGE", msg);
+        }
 
-		CharacterBuffer licence = FileBuffer.readFile(licenceFile);
-		createdComment(sourcePath, licence, values);
-		return values;
-	}
+        if (newerrId != null && full) {
+          Object newerCommit = ReflectionLoader.call(walk, "parseCommit", newerrId);
+          Object reader = ReflectionLoader.call(repository, "newObjectReader");
+          Object newerTreeIter = ReflectionLoader.newInstance(ReflectionLoader.CANONICALTREEPARSER);
+          Collection<?> diffs = null;
+          Object tree = ReflectionLoader.call(newerCommit, "getTree");
+          if (tree != null) {
+            ReflectionLoader.call(newerTreeIter, "reset", tree);
+            Object newTreeIter = ReflectionLoader.newInstance(ReflectionLoader.CANONICALTREEPARSER);
+            Object newtree = ReflectionLoader.call(commit, "getTree");
+            if (newtree != null) {
+              ReflectionLoader.call(newTreeIter, "reset", reader, newtree);
+              Object git = ReflectionLoader.newInstance(ReflectionLoader.GIT, repository);
+              git = ReflectionLoader.call(git, "diff");
+              git = ReflectionLoader.call(git, "setNewTree", newerTreeIter);
+              git = ReflectionLoader.call(git, "setOldTree", newTreeIter);
+              diffs = (Collection<?>) ReflectionLoader.call(git, "call");
+            }
+          }
+          if (diffs != null) {
+            JsonArray files = new JsonArray();
+            Object refmode = ReflectionLoader.getField(ReflectionLoader.FILEMODE, "MISSING");
+            for (Object entry : diffs) {
+              Object mode = ReflectionLoader.call(entry, "getNewMode");
+              String value = (String) ReflectionLoader.call(entry, "getNewPath");
+              if (mode == refmode) {
+                files.add(new JsonObject().withValue("REM", value));
+              } else {
+                files.add(new JsonObject().withValue("CHANGE", value));
+              }
+            }
+            jsonObject.put("FILES", files);
+          }
+        }
+        map.add(jsonObject);
+      }
+      return jsonObject;
+    } catch (Exception e) {
+    } finally {
+      ReflectionLoader.call(walk, "close");
+    }
+    return null;
+  }
 
-	private void createdComment(String sourcePath, CharacterBuffer licence,
-			SimpleKeyValueList<String, Integer> values) {
-		if (sourcePath == null) {
-			return;
-		}
-		File path = new File(sourcePath);
+  protected SimpleKeyValueList<String, Integer> createdComment(String sourcePath, String licenceFile) {
+    SimpleKeyValueList<String, Integer> values = new SimpleKeyValueList<String, Integer>();
+    values.put("LOC", 0);
 
-		File[] listFiles = path.listFiles();
-		if (listFiles == null) {
-			return;
-		}
-		for (File child : listFiles) {
-			if (child == null) {
-				continue;
-			}
+    CharacterBuffer licence = FileBuffer.readFile(licenceFile);
+    createdComment(sourcePath, licence, values);
+    return values;
+  }
 
-			if (child.isDirectory()) {
-				createdComment(sourcePath + child.getName() + "/", licence, values);
-			} else {
-				if (child.getAbsolutePath().endsWith(".java") == false) {
-					continue;
-				}
-			}
-		}
-	}
+  private void createdComment(String sourcePath, CharacterBuffer licence,
+      SimpleKeyValueList<String, Integer> values) {
+    if (sourcePath == null) {
+      return;
+    }
+    File path = new File(sourcePath);
 
-	public boolean init(String remoteURL) {
-		if (ReflectionLoader.GIT == null) {
-			return false;
-		}
-		String localPath = path;
-		if (localPath == null) {
-			localPath = "";
-		} else if ((localPath.endsWith("/") || localPath.endsWith("\\")) == false) {
-			localPath += "/";
-		}
-		File dir = new File(localPath);
-		File gitDir = new File(localPath + ".git/");
-		gitDir.mkdirs();
-		Object git =null;
-		try {
+    File[] listFiles = path.listFiles();
+    if (listFiles == null) {
+      return;
+    }
+    for (File child : listFiles) {
+      if (child == null) {
+        continue;
+      }
 
-			Object initGIT = ReflectionLoader.call(ReflectionLoader.GIT, "init");
-			ReflectionLoader.call(initGIT, "setDirectory", dir);
-			ReflectionLoader.call(initGIT, "setGitDir", gitDir);
-			git = ReflectionLoader.call(initGIT, "call");
-			if (remoteURL != null) {
-				new URL(remoteURL);
-				Object config = ReflectionLoader.callChain(git, "getRepository", "getConfig");
-				ReflectionLoader.call(config, "setString", "remote", "origin", "url", remoteURL);
-				ReflectionLoader.call(config, "save");
-			}
-		} catch (Exception e) {
-			return false;
-		}finally {
-			if(git != null) {
-				ReflectionLoader.call(git, "close");
-			}
-		}
-		return true;
-	}
-	
-	public GitRevision withAuthentification(String username, String password) {
-		if(username == null || password == null) {
-			return this;
-		}
-		this.username = username;
-		this.password = password;
-		
-		if(username == null || username.length()<1) {
-			this.username  = System.getProperty("user.name");
-		}
-		if(password == null || password.length()<1) {
-			this.password = System.getProperty("git");
-		}
-		return this;
-	}
-	
-	public boolean pull(String... commitId) {
-		Object repository = getRepository();
-		if(repository == null) {
-			return false;
-		}
-		// org.eclipse.jgit.lib.Repository
-		String updateId = null;
-		try {
-			if(commitId != null && commitId.length>0) {
-				updateId = commitId[0];
-			}
-			if(updateId == null) {
-				// CHECKOUT FIRST
-				//FIRST FETCH
-				//SECOND CHECKOUT
-				updateId = "master";
-			}
-			Class<?> ref = ReflectionLoader.getClass("org.eclipse.jgit.lib.Repository");
-			Object fetch = ReflectionLoader.newInstance("org.eclipse.jgit.api.FetchCommand", ref, repository);
-			
-			Object storedConfig = ReflectionLoader.call(repository, "getConfig");
-			String url = (String) ReflectionLoader.call(storedConfig, "getString", String.class, "remote", String.class, "origin", String.class, "url");
-//			if (url == null) {
-//			  Set<String> remoteNames = repository2.getRemoteNames();
-//			  url = storedConfig.getString("remote", remoteNames.iterator().next(), "url");
-//			}
-			if(url != null) {
-				ReflectionLoader.call(fetch, "setRemote", String.class, url);
-//				fetch.setRemote(url);
-			}
-			String[] refs = new String[] {"+refs/heads/*:refs/remotes/origin/*","+refs/tags/*:refs/tags/*", "+refs/notes/*:refs/notes/*"};
-			ReflectionLoader.call(fetch,"setRefSpecs", String[].class,refs);  
-			if(this.username != null &&  this.password != null) {
-				Object credentials = ReflectionLoader.newInstance("org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider", String.class, username, String.class, password);
-				Object credition = ReflectionLoader.getClass("org.eclipse.jgit.transport.CredentialsProvider");
-				ReflectionLoader.call(fetch, "setCredentialsProvider", credition, credentials);
-			}
-			ReflectionLoader.call(fetch, "call");
-			Object checkout = ReflectionLoader.newInstance("org.eclipse.jgit.api.CheckoutCommand", ref, repository);
-			ReflectionLoader.call(checkout, "setStartPoint", "origin/"+updateId);
-			ReflectionLoader.call(checkout, "setCreateBranch", boolean.class, true);
-			ReflectionLoader.call(checkout, "setName", updateId);
-			ReflectionLoader.call(checkout, "call");
-		}catch (Throwable e) {
+      if (child.isDirectory()) {
+        createdComment(sourcePath + child.getName() + "/", licence, values);
+      } else {
+        if (child.getAbsolutePath().endsWith(".java") == false) {
+          continue;
+        }
+      }
+    }
+  }
 
-			e.printStackTrace();
-		} finally {
-			ReflectionLoader.call(repository, "close");
-		}
-		return false;
-	}
+  public boolean init(String remoteURL) {
+    if (ReflectionLoader.GIT == null) {
+      return false;
+    }
+    String localPath = path;
+    if (localPath == null) {
+      localPath = "";
+    } else if ((localPath.endsWith("/") || localPath.endsWith("\\")) == false) {
+      localPath += "/";
+    }
+    File dir = new File(localPath);
+    File gitDir = new File(localPath + ".git/");
+    gitDir.mkdirs();
+    Object git = null;
+    try {
+
+      Object initGIT = ReflectionLoader.call(ReflectionLoader.GIT, "init");
+      ReflectionLoader.call(initGIT, "setDirectory", dir);
+      ReflectionLoader.call(initGIT, "setGitDir", gitDir);
+      git = ReflectionLoader.call(initGIT, "call");
+      if (remoteURL != null) {
+        new URL(remoteURL);
+        Object config = ReflectionLoader.callChain(git, "getRepository", "getConfig");
+        ReflectionLoader.call(config, "setString", "remote", "origin", "url", remoteURL);
+        ReflectionLoader.call(config, "save");
+      }
+    } catch (Exception e) {
+      return false;
+    } finally {
+      if (git != null) {
+        ReflectionLoader.call(git, "close");
+      }
+    }
+    return true;
+  }
+
+  public GitRevision withAuthentification(String username, String password) {
+    if (username == null || password == null) {
+      return this;
+    }
+    this.username = username;
+    this.password = password;
+
+    if (username.length() < 1) {
+      this.username = System.getProperty("user.name");
+    }
+    if (password.length() < 1) {
+      this.password = System.getProperty("git");
+    }
+    return this;
+  }
+
+  public boolean pull(String... commitId) {
+    Object repository = getRepository();
+    if (repository == null) {
+      return false;
+    }
+    // org.eclipse.jgit.lib.Repository
+    String updateId = null;
+    try {
+      if (commitId != null && commitId.length > 0) {
+        updateId = commitId[0];
+      }
+      if (updateId == null) {
+        // CHECKOUT FIRST
+        // FIRST FETCH
+        // SECOND CHECKOUT
+        updateId = "master";
+      }
+      Class<?> ref = ReflectionLoader.getClass("org.eclipse.jgit.lib.Repository");
+      Object fetch = ReflectionLoader.newInstance("org.eclipse.jgit.api.FetchCommand", ref, repository);
+
+      Object storedConfig = ReflectionLoader.call(repository, "getConfig");
+      String url = (String) ReflectionLoader.call(storedConfig, "getString", String.class, "remote", String.class, "origin", String.class, "url");
+      if (url != null) {
+        ReflectionLoader.call(fetch, "setRemote", String.class, url);
+      }
+      String[] refs = new String[] {"+refs/heads/*:refs/remotes/origin/*", "+refs/tags/*:refs/tags/*", "+refs/notes/*:refs/notes/*"};
+      ReflectionLoader.call(fetch, "setRefSpecs", String[].class, refs);
+      if (this.username != null && this.password != null) {
+        Object credentials = ReflectionLoader.newInstance("org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider", String.class, username, String.class, password);
+        Object credition = ReflectionLoader.getClass("org.eclipse.jgit.transport.CredentialsProvider");
+        ReflectionLoader.call(fetch, "setCredentialsProvider", credition, credentials);
+      }
+      ReflectionLoader.call(fetch, "call");
+      Object checkout = ReflectionLoader.newInstance("org.eclipse.jgit.api.CheckoutCommand", ref, repository);
+      ReflectionLoader.call(checkout, "setStartPoint", "origin/" + updateId);
+      ReflectionLoader.call(checkout, "setCreateBranch", boolean.class, true);
+      ReflectionLoader.call(checkout, "setName", updateId);
+      ReflectionLoader.call(checkout, "call");
+    } catch (Throwable e) {
+
+      e.printStackTrace();
+    } finally {
+      ReflectionLoader.call(repository, "close");
+    }
+    return false;
+  }
 }

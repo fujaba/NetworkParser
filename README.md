@@ -56,9 +56,6 @@ The Framework have many other features like:
 Project Managment
 
 [![Join the chat at https://gitter.im/NetworkParser/Lobby](https://badges.gitter.im/NetworkParser/Lobby.svg)](https://gitter.im/NetworkParser/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-[![Stories in Ready](https://badge.waffle.io/fujaba/NetworkParser.svg?label=ready)](https://waffle.io/fujaba/NetworkParser)
-
 [![Download latest Release](https://img.shields.io/github/downloads/fujaba/NetworkParser/total.svg)](../../releases)
 
 
