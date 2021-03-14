@@ -421,9 +421,9 @@ public class UpdateListener implements MapListener, ObjectCondition {
     return null;
   }
 
-  /*
-   * "add", TYPE_OP_REMOVE = "remove" TYPE_OP_REPLACE = "replace"; TYPE_OP_COPY = "copy"; TYPE_OP_MOVE
-   * = "move"; TYPE_OP_TEST = "test";
+  /**
+   * TYPE_OP_ADD= "add" TYPE_OP_REMOVE = "remove" TYPE_OP_REPLACE = "replace" TYPE_OP_COPY = "copy"
+   * TYPE_OP_MOVE = "move" TYPE_OP_TEST = "test"
    */
   /**
    * Check value.

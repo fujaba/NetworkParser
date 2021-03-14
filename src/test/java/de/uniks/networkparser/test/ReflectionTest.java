@@ -33,7 +33,7 @@ public class ReflectionTest {
   }
 
   @Test
-  public void testReflectionVersion() throws Exception {
+  public void testReflectionVersion() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
     ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
     NetworkParserLog logger = new NetworkParserLog();
 

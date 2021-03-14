@@ -179,8 +179,8 @@ public class UpdateCondition implements ObjectCondition {
       }
       Object source = event.getSource();
       if (source instanceof IdMap) {
-        IdMap map = (IdMap) source;
-        return map.getKey(event.getModelValue()) == null && map.getKey(event.getNewValue()) == null;
+        IdMap m = (IdMap) source;
+        return m.getKey(event.getModelValue()) == null && m.getKey(event.getNewValue()) == null;
       }
       return false;
     }
@@ -199,13 +199,13 @@ public class UpdateCondition implements ObjectCondition {
           return true;
         }
       } else if (owner != null && creator != null) {
-        SendableEntityCreator creator = map.getCreatorClass(source);
-        if (creator != null && creator == this.creator) {
+        SendableEntityCreator c = map.getCreatorClass(source);
+        if (c != null && c == this.creator) {
           this.changes = new SimpleSet<SimpleEvent>();
           return true;
         }
-        creator = map.getCreatorClass(event.getNewValue());
-        if (creator != null && creator == this.creator) {
+        c = map.getCreatorClass(event.getNewValue());
+        if (c != null && c == this.creator) {
           this.changes = new SimpleSet<SimpleEvent>();
           return true;
         }
@@ -228,8 +228,8 @@ public class UpdateCondition implements ObjectCondition {
               return true;
             }
           } else if (endClass != null && endCreator != null) {
-            SendableEntityCreator creator = map.getCreatorClass(source);
-            if (creator != null && creator == endCreator) {
+            SendableEntityCreator c = map.getCreatorClass(source);
+            if (c != null && c == endCreator) {
               if (this.condition != null) {
                 return this.condition.update(this.changes);
               }
@@ -237,8 +237,8 @@ public class UpdateCondition implements ObjectCondition {
               return true;
             }
           } else if (creator != null && owner != null) {
-            SendableEntityCreator creator = map.getCreatorClass(event.getModelValue());
-            if (creator != null && this.creator == creator) {
+            SendableEntityCreator c = map.getCreatorClass(event.getModelValue());
+            if (c != null && this.creator == c) {
               if (this.condition != null) {
 
                 SimpleEvent eventTransaction = new SimpleEvent(this, "transaction", null,
@@ -265,7 +265,7 @@ public class UpdateCondition implements ObjectCondition {
     Entity mergeUpdate = null;
 
     for (Object change : this.changes) {
-      if (change instanceof SimpleEvent == false) {
+      if (!(change instanceof SimpleEvent)) {
         continue;
       }
       SimpleEvent evt = (SimpleEvent) change;

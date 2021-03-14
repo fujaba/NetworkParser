@@ -1,12 +1,14 @@
 - add Licence detector
 - add CharacterBuilder add all for toString()
-
-
-
-- toArray() to default [0] because faster (native call)
+- toArray(Len) to default [0] because faster (native call)
 
 - Check ReflectionTest for Output and Error
 - git status
 - Push Sonar
-- add tree View for Network
+- add tree View for Network (Verteiltes System)
 History Changes+Rlastcommit as hash and tree
+
+- Autoparsing for HTTP Parameter
+
+- GraphQL implementiere
+- add TreeView mit Lizenz
