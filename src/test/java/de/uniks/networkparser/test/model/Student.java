@@ -85,7 +85,8 @@ public class Student extends Person implements SendableEntity{
 		return this.in;
 	}
 
-	public void removeYou() {
+	@Override
+   public void removeYou() {
 		/**
 		 * <pre>
 		 *		   0..n	 in	 0..1
@@ -97,7 +98,8 @@ public class Student extends Person implements SendableEntity{
 		this.setIn(null);
 	}
 
-	public Student withName(String newValue) {
+	@Override
+   public Student withName(String newValue) {
 		this.setName(newValue);
 		return this;
 	}
@@ -121,7 +123,8 @@ public class Student extends Person implements SendableEntity{
 
 	private String name;
 
-	public void setName(String value) {
+	@Override
+   public void setName(String value) {
 		if (value != null && value.equalsIgnoreCase(this.name) == false) {
 			String oldValue = this.name;
 			this.name = value;
@@ -129,7 +132,8 @@ public class Student extends Person implements SendableEntity{
 		}
 	}
 
-	public String getName() {
+	@Override
+   public String getName() {
 		return this.name;
 	}
 
@@ -254,10 +258,7 @@ public class Student extends Person implements SendableEntity{
 
       return this.friends;
    }
-   /**
-    *
-    * @see <a href='../../../../../../../../../src/test/java/org/sdmlib/test/examples/studyrightWithAssignments/StudyRightWithAssignmentsStoryboards.java'>StudyRightWithAssignmentsStoryboards.java</a>
- */
+
    public Student withFriends(Student... value)
    {
       if(value==null){
@@ -299,7 +300,7 @@ public class Student extends Person implements SendableEntity{
       }
       return this;
    }
-   
+
    private SimpleKeyValueList<String, Object> dynamicValues=new SimpleKeyValueList<String, Object>();
    public Object getDynamicValue(String key) {
       return this.dynamicValues.getValue(key);

@@ -74,6 +74,7 @@ public final class GenericGFPoly {
   }
 
   /**
+   * @param degree degree
    * @return coefficient of x^degree term in this polynomial
    */
   int getCoefficient(int degree) {
@@ -84,6 +85,7 @@ public final class GenericGFPoly {
   }
 
   /**
+   * @param a polynomial
    * @return evaluation of this polynomial at a given point
    */
   int evaluateAt(int a) {

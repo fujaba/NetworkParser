@@ -1,7 +1,5 @@
 package de.uniks.networkparser.test.generator;
 
-import org.junit.Test;
-
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.graph.Association;
@@ -10,13 +8,9 @@ import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Literal;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Parameter;
+import org.junit.Test;
 
 public class TestModelCreation {
-
-	/**
-	 *
-	 * @see <a href='../../../../../../doc/CreateEntireModel.html'>CreateEntireModel.html</a>
-	*/
 	@Test
 	public void testCreateEntireModel() {
 		if(Os.isGenerator() == false) {
@@ -32,7 +26,7 @@ public class TestModelCreation {
 		Clazz pupil = model.createClazz("Pupil");
 		Clazz teacher = model.createClazz("Teacher");
 		Clazz room = model.createClazz("Room");
-//		Clazz enumStudent = 
+//		Clazz enumStudent =
 				model.createClazz("StudentEnum").enableEnumeration(new Literal("STUDENT").withValue(42));
 		Clazz roomInterface = model.createClazz("roomInterface").enableInterface();
 

@@ -1,7 +1,6 @@
 package de.uniks.ludo.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import de.uniks.ludo.model.Ludo;
 
 
 public class Dice {

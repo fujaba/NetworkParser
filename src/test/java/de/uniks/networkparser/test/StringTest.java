@@ -1,10 +1,9 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 import de.uniks.ludo.model.Ludo;
 import de.uniks.ludo.model.Player;
@@ -19,9 +18,11 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.logic.Or;
 import de.uniks.networkparser.logic.StringCondition;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class StringTest {
-	
+
 	@Test
 	public void testgetString() {
 		CharacterBuffer test=new CharacterBuffer();
@@ -46,7 +47,7 @@ public class StringTest {
 		logger.info(EntityUtil.getObjectType("Integer"));
 		logger.info(EntityUtil.getObjectType("Room"));
 	}
-	
+
 	@Test
 	public void testUmlaute() {
 		String uml = "\u00fcbung";
@@ -196,7 +197,7 @@ public class StringTest {
 		String test=new String(new byte[]{-61,-68});
 		byte[] bytes = test.getBytes();
 		Assert.assertEquals(2, bytes.length);
-		Assert.assertNotNull((Character)test.charAt(0));
+		Assert.assertNotNull(test.charAt(0));
 		Assert.assertNotNull(bytes[0]);
 //		JsonTokener jsonTokener = (JsonTokener) new JsonTokener();
 		CharacterBuffer buffer = new CharacterBuffer().with(test);
@@ -259,29 +260,29 @@ public class StringTest {
 	public void testLeventaion() {
 
 		Assert.assertEquals("NULL", 0, new CharacterBuffer().equalsLevenshtein(null), 0.001);
-		
+
 		 Assert.assertEquals("EMPTY", 0, new CharacterBuffer().equalsLevenshtein(new CharacterBuffer().with("")), 0.001);
-		
+
 		 Assert.assertEquals("a", 1, new CharacterBuffer().equalsLevenshtein(new CharacterBuffer().with("a")), 0.001);
 
 		 Assert.assertEquals("aaapppp", 7, new CharacterBuffer().with("aaapppp").equalsLevenshtein(new CharacterBuffer().with("")), 0.001);
 
 		 Assert.assertEquals("fog", 1, new CharacterBuffer().with("frog").equalsLevenshtein(new CharacterBuffer().with("fog")), 0.001);
-		
+
 		 Assert.assertEquals("fly", 3, new CharacterBuffer().with("fly").equalsLevenshtein(new CharacterBuffer().with("ant")), 0.001);
-		
+
 		 Assert.assertEquals("elephant", 7, new CharacterBuffer().with("elephant").equalsLevenshtein(new CharacterBuffer().with("hippo")), 0.001);
-		
+
 		 Assert.assertEquals("hippo", 7, new CharacterBuffer().with("hippo").equalsLevenshtein(new CharacterBuffer().with("elephant")), 0.001);
-		
+
 		 Assert.assertEquals("hippo", 8, new CharacterBuffer().with("hippo").equalsLevenshtein(new CharacterBuffer().with("zzzzzzzz")), 0.001);
-		
+
 		 Assert.assertEquals("hello", 1, new CharacterBuffer().with("hello").equalsLevenshtein(new CharacterBuffer().with("hallo")), 0.001);
 
 		 Assert.assertEquals("hello", 0.01, new CharacterBuffer().with("hello").equalsLevenshtein(new CharacterBuffer().with("Hello")), 0.001);
-		
+
 		 Assert.assertEquals("hippofant", 4, new CharacterBuffer().with("hippo").equalsLevenshtein(new CharacterBuffer().with("hippofant")), 0.001);
-		
+
 		 Assert.assertEquals("hippofant", -7, new CharacterBuffer().with("hippofant").equalsLevenshtein(new CharacterBuffer().with("po")), 0.001);
 	}
 
@@ -303,18 +304,21 @@ public class StringTest {
 		NetworkParserLog logger=new NetworkParserLog();
 
 		String text = "01 Maier Rothunde Montag 09:00";
+		assertNotNull(text);
 		String search = "Rothunde -Dienstag";
 
 		ObjectCondition condition = StringCondition.createSearchLogic(CharacterBuffer.create(search));
 		logger.info(condition.toString());
-				
-				
+
+
 		Ludo ludo = new Ludo();
 		Player alice = ludo.createPlayers().withName("Alice");
 		Player bob = ludo.createPlayers().withName("Bob");
+		assertNotNull(alice);
+		assertNotNull(bob);
 		alice.createMeeple();
-		
-		
+
+
 //		SimpleList<String> stringList = stringTokener.getStringList();
 //		ArrayList<String> searchList = new ArrayList<String>();
 //		for (int i = 0; i < stringList.size(); i++) {

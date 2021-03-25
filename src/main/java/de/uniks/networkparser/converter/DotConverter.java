@@ -49,14 +49,13 @@ import de.uniks.networkparser.interfaces.Converter;
  * node_id [ attr_list ] node_id : ID [ port ] port : ':' ID [ ':' compass_pt ]
  * | ':' compass_pt subgraph : [ subgraph [ ID ] ] '{' stmt_list '}' compass_pt
  * : (n | ne | e | se | s | sw | w | nw | c | _)
- * 
+ *
  * @author Stefan Lindel
  */
 public class DotConverter implements Converter {
 	private boolean removePackage;
 	private boolean showAssocInfo = true;
 	private boolean showNodeInfo = true;
-	private boolean showSimpleNodeInfo = false;
 
 	public DotConverter withRemovePackage(boolean value) {
 		this.removePackage = value;
@@ -65,11 +64,6 @@ public class DotConverter implements Converter {
 
 	public DotConverter withShowAssocInfo(boolean value) {
 		this.showAssocInfo = value;
-		return this;
-	}
-
-	public DotConverter withShowSimpleNodeInfo(boolean value) {
-		this.showSimpleNodeInfo = value;
 		return this;
 	}
 
@@ -288,10 +282,6 @@ public class DotConverter implements Converter {
 		if (showNodeInfo) {
 			for (GraphEntity node : GraphUtil.getNodes(root)) {
 				sb.append(node.getName(false));
-				if (showSimpleNodeInfo) {
-					sb.append(BaseItem.CRLF);
-					continue;
-				}
 				sb.append("[label=<<table border='0' cellborder='1' cellspacing='0'><tr><td><b>");
 				if (isObjectdiagram) {
 					sb.append("<u>");
@@ -362,4 +352,25 @@ public class DotConverter implements Converter {
 		sb.append("}");
 		return graphType + sb.toString();
 	}
+
+   public void replaceInvalidChars(GraphList entity, char... chars)
+   {
+      if (entity instanceof GraphModel == false || chars == null || chars.length%2==1) {
+         return;
+      }
+      GraphModel root = entity;
+      for (GraphEntity node : GraphUtil.getNodes(root)) {
+         String value = node.getName();
+         for(int i=0;i<chars.length;i+=2) {
+            if(chars[i]>0) {
+               if(chars[i+1]>0) {
+                  value = value.replace(chars[i], chars[i+1]);
+               } else if(chars[i+1]==0) {
+                  value = value.replace(""+chars[i], "");
+               }
+            }
+         }
+         node.with(value);
+      }
+   }
 }

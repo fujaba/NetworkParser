@@ -1,22 +1,22 @@
 /*
    Copyright (c) 2018 Stefan
-   
-   Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
-   and associated documentation files (the "Software"), to deal in the Software without restriction, 
-   including without limitation the rights to use, copy, modify, merge, publish, distribute, 
-   sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is 
-   furnished to do so, subject to the following conditions: 
-   
-   The above copyright notice and this permission notice shall be included in all copies or 
-   substantial portions of the Software. 
-   
-   The Software shall be used for Good, not Evil. 
-   
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
-   BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
-   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+
+   Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+   and associated documentation files (the "Software"), to deal in the Software without restriction,
+   including without limitation the rights to use, copy, modify, merge, publish, distribute,
+   sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+
+   The above copyright notice and this permission notice shall be included in all copies or
+   substantial portions of the Software.
+
+   The Software shall be used for Good, not Evil.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+   BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 package de.uniks.networkparser.test.model.ludo.util;
@@ -30,7 +30,8 @@ import de.uniks.networkparser.test.model.ludo.Field;
 import de.uniks.networkparser.test.model.ludo.Label;
 
 public class LabelSet extends SimpleSet<Label> {
-	public Class<?> getTypClass() {
+	@Override
+   public Class<?> getTypClass() {
 		return Label.class;
 	}
 
@@ -80,7 +81,7 @@ public class LabelSet extends SimpleSet<Label> {
 	/**
 	 * Loop through the current set of Label objects and collect a list of the name
 	 * attribute values.
-	 * 
+	 *
 	 * @return List of String objects reachable via name attribute
 	 */
 	public ObjectSet getName() {
@@ -96,9 +97,9 @@ public class LabelSet extends SimpleSet<Label> {
 	/**
 	 * Loop through the current set of Label objects and collect those Label objects
 	 * where the name attribute matches the parameter value.
-	 * 
+	 *
 	 * @param value Search value
-	 * 
+	 *
 	 * @return Subset of Label objects that match the parameter
 	 */
 	public LabelSet createNameCondition(String value) {
@@ -116,10 +117,10 @@ public class LabelSet extends SimpleSet<Label> {
 	/**
 	 * Loop through the current set of Label objects and collect those Label objects
 	 * where the name attribute is between lower and upper.
-	 * 
+	 *
 	 * @param lower Lower bound
 	 * @param upper Upper bound
-	 * 
+	 *
 	 * @return Subset of Label objects that match the parameter
 	 */
 	public LabelSet createNameCondition(String lower, String upper) {
@@ -137,9 +138,9 @@ public class LabelSet extends SimpleSet<Label> {
 	/**
 	 * Loop through the current set of Label objects and assign value to the name
 	 * attribute of each of it.
-	 * 
+	 *
 	 * @param value New attribute value
-	 * 
+	 *
 	 * @return Current set of Label objects now with new attribute values.
 	 */
 	public LabelSet withName(String value) {
@@ -153,7 +154,7 @@ public class LabelSet extends SimpleSet<Label> {
 	/**
 	 * Loop through the current set of Label objects and collect a set of the Field
 	 * objects reached via field.
-	 * 
+	 *
 	 * @return Set of Field objects reachable via field
 	 */
 	public SimpleSet<Field> getField() {
@@ -169,9 +170,9 @@ public class LabelSet extends SimpleSet<Label> {
 	/**
 	 * Loop through the current set of Label objects and collect all contained
 	 * objects with reference field pointing to the object passed as parameter.
-	 * 
+	 *
 	 * @param value The object required as field neighbor of the collected results.
-	 * 
+	 *
 	 * @return Set of Field objects referring to value via field
 	 */
 	public LabelSet filterField(Object value) {
@@ -197,7 +198,8 @@ public class LabelSet extends SimpleSet<Label> {
 	/**
 	 * Loop through current set of ModelType objects and attach the Label object
 	 * passed as parameter to the Field attribute of each of it.
-	 * 
+	 * @param value Field
+	 *
 	 * @return The original set of ModelType objects now with the new neighbor
 	 *         attached to their Field attributes.
 	 */
@@ -212,7 +214,8 @@ public class LabelSet extends SimpleSet<Label> {
 	/**
 	 * Loop through current set of ModelType objects and remove the Label object
 	 * passed as parameter from the Field attribute of each of it.
-	 * 
+	 * @param value Field
+	 *
 	 * @return The original set of ModelType objects now without the old neighbor.
 	 */
 	public LabelSet withoutField(Field value) {

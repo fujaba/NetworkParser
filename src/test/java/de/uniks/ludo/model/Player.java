@@ -1,12 +1,10 @@
 package de.uniks.ludo.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import de.uniks.ludo.model.util.HomeSet;
 import java.util.Collection;
-import de.uniks.ludo.model.Ludo;
+
+import de.uniks.ludo.model.util.HomeSet;
 import de.uniks.ludo.model.util.MeepleSet;
-import de.uniks.ludo.model.Player;
-import de.uniks.ludo.model.Start;
 import de.uniks.ludo.model.util.TargetSet;
 
 

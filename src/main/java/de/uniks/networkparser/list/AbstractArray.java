@@ -3,16 +3,16 @@ package de.uniks.networkparser.list;
 /*
  * NetworkParser The MIT License Copyright (c) 2010-2016 Stefan Lindel
  * https://www.github.com/fujaba/NetworkParser/
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
  * including without limitation the rights to use, copy, modify, merge, publish, distribute,
  * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all copies or
  * substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
  * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
@@ -22,6 +22,7 @@ package de.uniks.networkparser.list;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -64,7 +65,7 @@ public abstract class AbstractArray<V> implements BaseItem {
   int index;
   /**
    * The Flag of List. It contains the options EntitySize 1,2,3
-   * 
+   *
    * @see ALLOWDUPLICATE
    * @see ALLOWEMPTYVALUE
    * @see VISIBLE
@@ -165,7 +166,8 @@ public abstract class AbstractArray<V> implements BaseItem {
     return flag;
   }
 
-  public int size() {
+  @Override
+public int size() {
     return size;
   }
 
@@ -701,7 +703,8 @@ public abstract class AbstractArray<V> implements BaseItem {
     return pos;
   }
 
-  public String toString() {
+  @Override
+public String toString() {
     StringBuilder sb = new StringBuilder();
     if ((flag & BIDI) > 0) {
       sb.append("BIDI-Map ");
@@ -1055,8 +1058,6 @@ public abstract class AbstractArray<V> implements BaseItem {
   }
 
   /**
-   * {@inheritDoc}
-   *
    * <p>
    * This implementation iterates over this collection, checking each element returned by the iterator
    * in turn to see if it's contained in the specified collection. If it's so contained, it's removed
@@ -1422,8 +1423,6 @@ public abstract class AbstractArray<V> implements BaseItem {
     }
     return null;
   }
-
-  public abstract BaseItem getNewList(boolean keyValue);
 
   /**
    * Returns a view of the portion of this list between the specified <code>fromIndex</code>,

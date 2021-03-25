@@ -1,10 +1,9 @@
 package de.uniks.ludo.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import de.uniks.ludo.model.Dice;
-import de.uniks.ludo.model.util.FieldSet;
 import java.util.Collection;
-import de.uniks.ludo.model.Player;
+
+import de.uniks.ludo.model.util.FieldSet;
 import de.uniks.ludo.model.util.PlayerSet;
 
 
@@ -296,7 +295,7 @@ public class Ludo {
 		return value;
 	}
    public void init(Player... p1)    {
-      
+
     }
 
 

@@ -27,6 +27,7 @@ THE SOFTWARE.
  * Simple Generic Condition
  *
  * @author Stefan Lindel Condition.
+ * @param <T> Value for Update @see SimpleEvent
  */
 @FunctionalInterface
 public interface Condition<T> {

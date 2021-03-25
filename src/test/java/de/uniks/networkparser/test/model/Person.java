@@ -44,7 +44,7 @@ public class Person  implements SendableEntity, Comparable<Object> {
 
 	//==========================================================================
 	protected PropertyChangeSupport listeners = null;
-	
+
 	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
 		if (listeners != null) {
 			listeners.firePropertyChange(propertyName, oldValue, newValue);
@@ -53,7 +53,8 @@ public class Person  implements SendableEntity, Comparable<Object> {
 		return false;
 	}
 
-	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
+	@Override
+   public boolean addPropertyChangeListener(PropertyChangeListener listener) {
 		if (listeners == null) {
 			listeners = new PropertyChangeSupport(this);
 		}
@@ -61,7 +62,8 @@ public class Person  implements SendableEntity, Comparable<Object> {
 		return true;
 	}
 
-	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+	@Override
+   public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		if (listeners == null) {
 			listeners = new PropertyChangeSupport(this);
 		}
@@ -69,14 +71,16 @@ public class Person  implements SendableEntity, Comparable<Object> {
 		return true;
 	}
 
-	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
+	@Override
+   public boolean removePropertyChangeListener(PropertyChangeListener listener) {
 		if (listeners != null) {
 			listeners.removePropertyChangeListener(listener);
 		}
 		return true;
 	}
 
-	public boolean removePropertyChangeListener(String property,
+	@Override
+   public boolean removePropertyChangeListener(String property,
 			PropertyChangeListener listener) {
 		if (listeners != null) {
 			listeners.removePropertyChangeListener(property, listener);
@@ -143,6 +147,7 @@ public class Person  implements SendableEntity, Comparable<Object> {
 	* Person ----------------------------------- GroupAccount
 	*			  persons				   parent
 	* </pre>
+	* @return GroupAccount
 	*/
 
 	public GroupAccount getParent() {
@@ -199,6 +204,7 @@ public class Person  implements SendableEntity, Comparable<Object> {
 	* Person ----------------------------------- Item
 	*			  buyer				   item
 	* </pre>
+   * @return ItemSet
 	*/
 
    public ItemSet getItem()

@@ -7,8 +7,9 @@ import java.util.NoSuchElementException;
 
 /**
  * An optimized version of AbstractList.ListItr
- * 
+ *
  * @author Stefan Lindel
+ * @param <E> ElementType
  */
 public class SimpleIterator<E> implements ListIterator<E> {
 	/** index of next element to return */
@@ -54,19 +55,23 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		return this;
 	}
 
-	public boolean hasPrevious() {
+	@Override
+   public boolean hasPrevious() {
 		return cursor != 0;
 	}
 
-	public int nextIndex() {
+	@Override
+   public int nextIndex() {
 		return cursor;
 	}
 
-	public int previousIndex() {
+	@Override
+   public int previousIndex() {
 		return cursor - 1;
 	}
 
-	public E previous() {
+	@Override
+   public E previous() {
 		int i = cursor - 1;
 		if (i < 0)
 			throw new NoSuchElementException();
@@ -75,7 +80,8 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		return list.get(lastRet = i);
 	}
 
-	public void set(E e) {
+	@Override
+   public void set(E e) {
 		if (lastRet < 0)
 			throw new IllegalStateException();
 		try {
@@ -85,7 +91,8 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		}
 	}
 
-	public void add(E e) {
+	@Override
+   public void add(E e) {
 		if (list == null) {
 			return;
 		}
@@ -131,7 +138,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 			}
 			return (E) elements[lastRet];
 		}
-		return (E) list.get(lastRet);
+		return list.get(lastRet);
 	}
 
 	@Override
@@ -173,7 +180,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 
 	public E current() {
 		if (lastRet >= 0) {
-			return (E) list.get(lastRet);
+			return list.get(lastRet);
 		}
 		return null;
 	}

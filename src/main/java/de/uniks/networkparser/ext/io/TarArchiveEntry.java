@@ -51,7 +51,7 @@ import de.uniks.networkparser.SimpleException;
  *
  * <p>
  * The C structure for a Tar Entry is header is:
- * 
+ *
  * <pre>
  * struct header {
  * char name[100];     TarConstants.NAMELEN    - offset   0
@@ -85,7 +85,7 @@ import de.uniks.networkparser.SimpleException;
  *
  * <p>
  * The C structure for a old GNU Tar Entry is header is:
- * 
+ *
  * <pre>
  * struct oldgnu_header {
  * char unused_pad1[345]; TarConstants.PAD1LEN_GNU       - offset 0
@@ -100,9 +100,9 @@ import de.uniks.networkparser.SimpleException;
  * char unused_pad[17];   TarConstants.PAD3LEN_GNU       - offset 495
  * };
  * </pre>
- * 
+ *
  * Whereas, "struct sparse" is:
- * 
+ *
  * <pre>
  * struct sparse {
  * char offset[12];   offset 0
@@ -112,7 +112,7 @@ import de.uniks.networkparser.SimpleException;
  *
  * <p>
  * The C structure for a xstar (Joerg Schilling star) Tar Entry is header is:
- * 
+ *
  * <pre>
  * struct star_header {
  *  char name[100];		offset   0
@@ -225,6 +225,7 @@ public class TarArchiveEntry {
 
 	/**
 	 * Construct an empty entry and prepares the header values.
+	 * @param preserveAbsolutePath Switch for AbsolutePath
 	 */
 	private TarArchiveEntry(boolean preserveAbsolutePath) {
 		String user = System.getProperty("user.name", "");
@@ -861,7 +862,7 @@ public class TarArchiveEntry {
 	 * Check if this is a Pax header.
 	 *
 	 * @return if this is a Pax header.
-	 * 
+	 *
 	 */
 	public boolean isPaxHeader() {
 		return linkFlag == TarUtils.LF_PAX_EXTENDED_HEADER_LC || linkFlag == TarUtils.LF_PAX_EXTENDED_HEADER_UC;
@@ -971,7 +972,7 @@ public class TarArchiveEntry {
 
 	/**
 	 * get extra PAX Headers
-	 * 
+	 *
 	 * @return read-only map containing any extra PAX Headers
 	 * @since 1.15
 	 */
@@ -981,7 +982,7 @@ public class TarArchiveEntry {
 
 	/**
 	 * clear all extra PAX headers.
-	 * 
+	 *
 	 * @since 1.15
 	 */
 	public void clearExtraPaxHeaders() {
@@ -992,7 +993,7 @@ public class TarArchiveEntry {
 	 * add a PAX header to this entry. If the header corresponds to an existing
 	 * field in the entry, that field will be set; otherwise the header will be
 	 * added to the extraPaxHeaders Map
-	 * 
+	 *
 	 * @param name  The full name of the header to set.
 	 * @param value value of header.
 	 * @since 1.15
@@ -1003,7 +1004,7 @@ public class TarArchiveEntry {
 
 	/**
 	 * get named extra PAX header
-	 * 
+	 *
 	 * @param name The full name of an extended PAX header to retrieve
 	 * @return The value of the header, if any.
 	 * @since 1.15
@@ -1014,7 +1015,7 @@ public class TarArchiveEntry {
 
 	/**
 	 * Update the entry using a map of pax headers.
-	 * 
+	 *
 	 * @param headers
 	 * @since 1.15
 	 */
@@ -1032,7 +1033,7 @@ public class TarArchiveEntry {
 	/**
 	 * process one pax header, using the entries extraPaxHeaders map as source for
 	 * extra headers used when handling entries for sparse files.
-	 * 
+	 *
 	 * @param key The Header key
 	 * @param val The Header value
 	 */
@@ -1328,7 +1329,7 @@ public class TarArchiveEntry {
 	/**
 	 * Strips Windows drive letter as well as any leading slashes, turns path
 	 * separators into forward slahes.
-	 * 
+	 *
 	 * @param fileName             FileName
 	 * @param preserveAbsolutePath if absolutePath
 	 * @return the new FileName

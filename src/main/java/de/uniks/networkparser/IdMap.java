@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -440,7 +441,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
    *
    * @return the int
    */
-  public int size() {
+  @Override
+public int size() {
     return this.keyValue.size();
   }
 
@@ -894,6 +896,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
    * Decoding the XMLTokener with XMLGrammar.
    *
    * @param tokener The XMLTokener
+   * @param buffer new Buffer
+   * @param map Map
    * @return the Model-Instance
    */
 
@@ -1734,7 +1738,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 
   /**
    * Check for Creating Rekursiv
-   * 
+   *
    * @param element the new Element
    * @return success for autocreate
    */

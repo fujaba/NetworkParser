@@ -170,7 +170,7 @@ public class RabbitMessage {
 					if (subgroup == ByteTokener.LEN_LITTLE) {
 						accumulator.insert((byte) bytes.length, true);
 					} else {
-						accumulator.insert((Integer) bytes.length, true);
+						accumulator.insert(bytes.length, true);
 					}
 				}
 				accumulator.insert(bytes, true);
@@ -178,7 +178,7 @@ public class RabbitMessage {
 		}
 		if (value instanceof String) {
 			byte[] bytes = ((String) value).getBytes();
-			accumulator.insert((Integer) bytes.length, true);
+			accumulator.insert(bytes.length, true);
 			accumulator.insert(bytes, true);
 			return true;
 		}
@@ -190,7 +190,7 @@ public class RabbitMessage {
 
 		if (value instanceof Date) {
 			Date date = (Date) value;
-			accumulator.insert((long) date.getTime() / 1000, true);
+			accumulator.insert(date.getTime() / 1000, true);
 			return true;
 		}
 
@@ -200,13 +200,13 @@ public class RabbitMessage {
 		}
 		if (value instanceof byte[]) {
 			byte[] array = (byte[]) value;
-			accumulator.insert((Integer) array.length, true);
+			accumulator.insert(array.length, true);
 			accumulator.insert(array, true);
 			return true;
 		}
 		if (value instanceof List<?> || value instanceof Object[]) {
 			int newPos, pos = accumulator.position();
-			accumulator.insert((Integer) 1, true);
+			accumulator.insert(1, true);
 			if (value instanceof List<?>) {
 				List<?> list = (List<?>) value;
 				/* Now Write Value */
@@ -252,7 +252,7 @@ public class RabbitMessage {
 		if (value instanceof Date) {
 			accumulator.insert('T', true);
 			Date date = (Date) value;
-			accumulator.insert((long) date.getTime() / 1000, true);
+			accumulator.insert(date.getTime() / 1000, true);
 			return true;
 		}
 
@@ -294,14 +294,14 @@ public class RabbitMessage {
 		if (value instanceof byte[]) {
 			accumulator.insert('x', true);
 			byte[] array = (byte[]) value;
-			accumulator.insert((Integer) array.length, true);
+			accumulator.insert(array.length, true);
 			accumulator.insert(array, true);
 			return true;
 		}
 		if (value instanceof List<?> || value instanceof Object[]) {
 			accumulator.insert('A', true);
 			int newPos, pos = accumulator.position();
-			accumulator.insert((Integer) 1, true);
+			accumulator.insert(1, true);
 			if (value instanceof List<?>) {
 				List<?> list = (List<?>) value;
 				/* Now Write Value */
@@ -410,7 +410,7 @@ public class RabbitMessage {
 	/**
 	 * Protected API - Factory method to instantiate a Frame by reading an
 	 * AMQP-wire-protocol frame from the given input stream.
-	 * 
+	 *
 	 * @param is     DataInputStrem for reading
 	 * @param logger The Logger for ErrorHandling
 	 *
@@ -456,7 +456,7 @@ public class RabbitMessage {
 
 	/**
 	 * Init Valaue
-	 * 
+	 *
 	 * @param broker NetworkBroker 1=Bit, 2, Byte, 3=Short, 4=Int, 5=ShortString,
 	 *               6=String, 7 = Version, 8 = Table
 	 */
@@ -630,6 +630,8 @@ public class RabbitMessage {
 
 	/**
 	 * Reads a table argument from a given stream.
+	 * @param in InputStream for Message
+	 * @return Map of Parsing Message
 	 */
 	private static Map<String, Object> readTable(ByteBuffer in) {
 		Map<String, Object> table = new SimpleKeyValueList<String, Object>();
@@ -710,7 +712,7 @@ public class RabbitMessage {
 
 	/**
 	 * Read a field-array
-	 * 
+	 *
 	 * @param in Buffer for reading
 	 * @return The new ArrayList
 	 */
@@ -730,7 +732,7 @@ public class RabbitMessage {
 	/**
 	 * Convenience method - reads a 32-bit-length-prefix byte vector from a
 	 * DataInputStream.
-	 * 
+	 *
 	 * @param in Buffer for reading
 	 * @return the readed bytes
 	 */
@@ -831,7 +833,7 @@ public class RabbitMessage {
 
 	/**
 	 * Declare a queue
-	 * 
+	 *
 	 * @param channel    Tthe Channelname
 	 * @param queue      the name of the queue
 	 * @param durable    true if we are declaring a durable queue (the queue will

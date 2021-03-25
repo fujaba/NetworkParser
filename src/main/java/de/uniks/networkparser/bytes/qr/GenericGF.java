@@ -77,6 +77,8 @@ public final class GenericGF {
 	}
 
 	/**
+	 * @param degree degree
+	 * @param coefficient coefficient
 	 * @return the monomial representing coefficient * x^degree
 	 */
 	GenericGFPoly buildMonomial(int degree, int coefficient) {
@@ -93,7 +95,7 @@ public final class GenericGF {
 
 	/**
 	 * Implements both addition and subtraction -- they are the same in GF(size).
-	 * 
+	 *
 	 * @param a integer
 	 * @param b integer
 	 * @return sum/difference of a and b
@@ -103,6 +105,7 @@ public final class GenericGF {
 	}
 
 	/**
+	 * @param a base
 	 * @return 2 to the power of a in GF(size)
 	 */
 	int exp(int a) {
@@ -113,16 +116,18 @@ public final class GenericGF {
 	}
 
 	/**
-	 * @return base 2 log of a in GF(size)
+	 * @param number Number for Log
+	 * @return base 2 log of number in GF(size)
 	 */
-	int log(int a) {
-		if (a <= 0 || logTable == null || a >= logTable.length) {
+	int log(int number) {
+		if (number <= 0 || logTable == null || number >= logTable.length) {
 			return Integer.MIN_VALUE;
 		}
-		return logTable[a];
+		return logTable[number];
 	}
 
 	/**
+	 * @param a factor
 	 * @return multiplicative inverse of a
 	 */
 	int inverse(int a) {
@@ -133,6 +138,8 @@ public final class GenericGF {
 	}
 
 	/**
+	 * @param a factor
+	 * @param b factor
 	 * @return product of a and b in GF(size)
 	 */
 	int multiply(int a, int b) {

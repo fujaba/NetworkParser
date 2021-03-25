@@ -22,7 +22,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 
 	/**
 	 * get All GraphClazz
-	 * 
+	 *
 	 * @param filters Can Filter the List of Clazzes
 	 * @return all GraphClazz of a GraphModel
 	 *
@@ -138,6 +138,21 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return clazz;
 	}
 
+	public Association createAssociation(String fromClazzName, String targetClazzName) {
+	   Clazz fromClazz = createClazz(fromClazzName);
+	   Clazz targetClazz = createClazz(targetClazzName);
+
+	   AssociationSet associations = fromClazz.getAssociations();
+
+	   for (Association assoc : associations)
+      {
+	      if(assoc.getClazz() == targetClazz) {
+	         return assoc;
+         }
+      }
+	   return fromClazz.createBidirectional(targetClazz, targetClazzName, 1, fromClazzName, 1);
+	}
+
 	protected Clazz createInstance(String name) {
 		return new Clazz(name);
 	}
@@ -154,7 +169,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 
 	/**
 	 * Set the Default Author
-	 * 
+	 *
 	 * @param value The Authorname
 	 * @return State for change the Autorname
 	 */
@@ -173,7 +188,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 
 	public HTMLEntity dumpHTML(String diagramName, boolean... write) {
 		HTMLEntity html = new HTMLEntity();
-		
+
 		if(write != null && write.length>1 && write[1]) {
 			// two boolean is shortName
 			GraphCustomItem item = new GraphCustomItem().with(ClassModel.PROPERTY_PACKAGENAME);
@@ -346,14 +361,16 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return toString(new YUMLConverter());
 	}
 
-	public String toString(Converter converter) {
+	@Override
+   public String toString(Converter converter) {
 		if (converter == null) {
 			return null;
 		}
 		return converter.encode(this);
 	}
 
-	public int size() {
+	@Override
+   public int size() {
 		if (this.children == null) {
 			return 0;
 		}

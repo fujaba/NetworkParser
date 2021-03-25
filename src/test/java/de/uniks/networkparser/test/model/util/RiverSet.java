@@ -1,22 +1,22 @@
 /*
-   Copyright (c) 2014 zuendorf 
-   
-   Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
-   and associated documentation files (the "Software"), to deal in the Software without restriction, 
-   including without limitation the rights to use, copy, modify, merge, publish, distribute, 
-   sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is 
-   furnished to do so, subject to the following conditions: 
-   
-   The above copyright notice and this permission notice shall be included in all copies or 
-   substantial portions of the Software. 
-   
-   The Software shall be used for Good, not Evil. 
-   
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
-   BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
-   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+   Copyright (c) 2014 zuendorf
+
+   Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+   and associated documentation files (the "Software"), to deal in the Software without restriction,
+   including without limitation the rights to use, copy, modify, merge, publish, distribute,
+   sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+
+   The above copyright notice and this permission notice shall be included in all copies or
+   substantial portions of the Software.
+
+   The Software shall be used for Good, not Evil.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+   BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 package de.uniks.networkparser.test.model.util;
@@ -29,18 +29,8 @@ import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.test.model.ferryman.Bank;
 import de.uniks.networkparser.test.model.ferryman.Boat;
 import de.uniks.networkparser.test.model.ferryman.River;
-import de.uniks.networkparser.test.model.util.BankSet;
-import de.uniks.networkparser.test.model.util.BoatSet;
 
-/**
- * 
- * @see <a href=
- *      '../../../../../../../../../../src/test/java/org/sdmlib/test/examples/reachabilitygraphs/ReachabilityGraphFerrymansProblemExample.java'>ReachabilityGraphFerrymansProblemExample.java</a>
- * @see <a href=
- *      '../../../../../../../../../../src/test/java/org/sdmlib/test/examples/reachabilitygraphs/ReachabilityGraphFerrymansProblemExample.java'>ReachabilityGraphFerrymansProblemExample.java</a>
- */
 public class RiverSet extends SimpleSet<River> {
-
 	@SuppressWarnings("unchecked")
 	public RiverSet with(Object value) {
 		if (value instanceof java.util.Collection) {
@@ -95,13 +85,6 @@ public class RiverSet extends SimpleSet<River> {
 		return this;
 	}
 
-	/**
-	 * 
-	 * @see <a href=
-	 *      '../../../../../../../../../../src/test/java/org/sdmlib/test/examples/reachabilitygraphs/ReachabilityGraphFerrymansProblemExample.java'>ReachabilityGraphFerrymansProblemExample.java</a>
-	 * @see <a href=
-	 *      '../../../../../../../../../../src/test/java/org/sdmlib/test/examples/reachabilitygraphs/ReachabilityGraphFerrymansProblemExample.java'>ReachabilityGraphFerrymansProblemExample.java</a>
-	 */
 	public BankSet getBanks() {
 		BankSet result = new BankSet();
 
@@ -154,31 +137,16 @@ public class RiverSet extends SimpleSet<River> {
 		return "org.sdmlib.test.examples.reachabilitygraphs.ferrymansproblem.River";
 	}
 
-	/**
-	 * 
-	 * @see <a href=
-	 *      '../../../../../../../../../../src/test/java/org/sdmlib/test/examples/reachabilitygraphs/ReachabilityGraphFerrymansProblemExample.java'>ReachabilityGraphFerrymansProblemExample.java</a>
-	 */
 	public RiverSet() {
 		// empty
 	}
 
-	/**
-	 * 
-	 * @see <a href=
-	 *      '../../../../../../../../../../src/test/java/org/sdmlib/test/examples/reachabilitygraphs/ReachabilityGraphFerrymansProblemExample.java'>ReachabilityGraphFerrymansProblemExample.java</a>
-	 */
 	public RiverSet(River... objects) {
 		for (River obj : objects) {
 			this.add(obj);
 		}
 	}
 
-	/**
-	 * 
-	 * @see <a href=
-	 *      '../../../../../../../../../../src/test/java/org/sdmlib/test/examples/reachabilitygraphs/ReachabilityGraphFerrymansProblemExample.java'>ReachabilityGraphFerrymansProblemExample.java</a>
-	 */
 	public RiverSet(Collection<River> objects) {
 		this.addAll(objects);
 	}

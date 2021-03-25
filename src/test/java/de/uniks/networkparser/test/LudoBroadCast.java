@@ -13,9 +13,9 @@ public class LudoBroadCast {
 		proxy.withPort(4242);
 		spaceA.with(proxy);
 
-		
-		
-		Space spaceB = new Space();
-		NodeProxyTCP search = spaceB.search(4242);
+
+
+//		Space spaceB = new Space();
+//		NodeProxyTCP search = spaceB.search(4242);
 	}
 }

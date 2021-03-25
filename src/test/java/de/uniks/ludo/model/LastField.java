@@ -1,6 +1,4 @@
 package de.uniks.ludo.model;
-import de.uniks.ludo.model.Target;
-
 
 public class LastField extends Field {
 

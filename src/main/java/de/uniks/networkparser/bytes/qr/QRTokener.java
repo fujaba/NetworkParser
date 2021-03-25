@@ -196,7 +196,7 @@ public class QRTokener {
 
 	/**
 	 * ENCODER
-	 * 
+	 *
 	 * @param matrix Matrix to Encode
 	 * @return Number The mask penalty calculation is complicated. See Table 21 of
 	 *         JISX0510:2004 (p.45) for details. Basically it applies four rules and
@@ -212,7 +212,7 @@ public class QRTokener {
 
 	/**
 	 * encoding Content to QRCode
-	 * 
+	 *
 	 * @param content text to encode
 	 * @param ecLevel error correction level to use
 	 * @return representing the encoded QR code {@link QRCode}
@@ -309,7 +309,6 @@ public class QRTokener {
 	 * @return the code point of the table used in alphanumeric mode or -1 if there
 	 *         is no corresponding code in the table.
 	 * @param code AlphanumericCode
-	 * @return getAlphanumericCode or -1
 	 */
 	static int getAlphanumericCode(int code) {
 		if (code >= 0 && code < ALPHANUMERIC_TABLE.length) {
@@ -322,7 +321,7 @@ public class QRTokener {
 	 * Choose the best mode by examining the content. Note that 'encoding' is used
 	 * as a hint; if it is Shift_JIS, and the input is only double-byte Kanji, then
 	 * we return {@link Mode#KANJI}.
-	 * 
+	 *
 	 * @param content  Contentstring
 	 * @param encoding switch for Shift_JIS
 	 * @return Mode
@@ -419,7 +418,7 @@ public class QRTokener {
 
 	/**
 	 * Terminate bits as described in 8.4.8 and 8.4.9 of JISX0510:2004 (p.24).
-	 * 
+	 *
 	 * @param numDataBytes count of Data Bytes
 	 * @param bits         result Bits
 	 * @return success
@@ -457,7 +456,7 @@ public class QRTokener {
 	 * Get number of data bytes and number of error correction bytes for block id
 	 * "blockID". Store the result in "numDataBytesInBlock", and
 	 * "numECBytesInBlock". See table 12 in 8.5.1 of JISX0510:2004 (p.30)
-	 * 
+	 *
 	 * @param numTotalBytes       count of all Bytes
 	 * @param numDataBytes        count of Data Bytes
 	 * @param numRSBlocks         count of Block
@@ -515,7 +514,7 @@ public class QRTokener {
 	 * Interleave "bits" with corresponding error correction bytes. On success,
 	 * store the result in "result". The interleave rule is complicated. See 8.6 of
 	 * JISX0510:2004 (p.37) for details.
-	 * 
+	 *
 	 * @param bits          result Bits
 	 * @param numTotalBytes count of all Bytes
 	 * @param numDataBytes  count of Data Bytes
@@ -612,7 +611,7 @@ public class QRTokener {
 
 	/**
 	 * Append mode info. On success, store the result in "bits".
-	 * 
+	 *
 	 * @param mode Mode of encoding
 	 * @param bits target Bits
 	 * @return success
@@ -626,7 +625,7 @@ public class QRTokener {
 
 	/**
 	 * Append length info. On success, store the result in "bits".
-	 * 
+	 *
 	 * @param numLetters Number of Letter
 	 * @param version    Version of QRCode
 	 * @param mode       Mode of encoding
@@ -787,7 +786,7 @@ public class QRTokener {
 	/**
 	 * Helper function for applyMaskPenaltyRule1. We need this for doing this
 	 * calculation in both vertical and horizontal orders respectively.
-	 * 
+	 *
 	 * @param matrix       encoding Matrix
 	 * @param isHorizontal switch for Limit
 	 * @return penalty
@@ -827,7 +826,7 @@ public class QRTokener {
 	 * same color and give penalty to them. This is actually equivalent to the
 	 * spec's rule, which is to find MxN blocks and give a penalty proportional to
 	 * (M-1)x(N-1), because this is the number of 2x2 blocks inside such a block.
-	 * 
+	 *
 	 * @param matrix ByteMatrix
 	 * @return penalty
 	 */
@@ -855,7 +854,7 @@ public class QRTokener {
 	 * 1:1:3:1:1:4 starting with black, or 4:1:1:3:1:1 starting with white, and give
 	 * penalty to them. If we find patterns like 000010111010000, we give penalty
 	 * once.
-	 * 
+	 *
 	 * @param matrix ByteMatrix
 	 * @return penalty
 	 */
@@ -917,7 +916,7 @@ public class QRTokener {
 	 * Apply mask penalty rule 4 and return the penalty. Calculate the ratio of dark
 	 * cells and give penalty if the ratio is far from 50%. It gives 10 penalty for
 	 * 5% distance.
-	 * 
+	 *
 	 * @param matrix ByteMatrix
 	 * @return penalty
 	 */
@@ -1016,7 +1015,7 @@ public class QRTokener {
 	/**
 	 * Build 2D matrix of QR Code from "dataBits" with "ecLevel", "version" and
 	 * "getMaskPattern". On success, store the result in "matrix" and return true.
-	 * 
+	 *
 	 * @param dataBits    BitArray
 	 * @param ecLevel     ErrorCorrectionLevel
 	 * @param version     Version
@@ -1045,7 +1044,7 @@ public class QRTokener {
 	 * Embed basic patterns. On success, modify the matrix and return true. The
 	 * basic patterns are: - Position detection patterns - Timing patterns - Dark
 	 * dot at the left bottom corner - Position adjustment patterns, if need be
-	 * 
+	 *
 	 * @param version Version
 	 * @param matrix  ByteMatrix
 	 */
@@ -1085,7 +1084,7 @@ public class QRTokener {
 
 	/**
 	 * Embed the lonely dark dot at left bottom corner. JISX0510:2004 (p.46)
-	 * 
+	 *
 	 * @param matrix Matrix to Check
 	 * @return success
 	 */
@@ -1102,7 +1101,7 @@ public class QRTokener {
 
 	/**
 	 * Embed position adjustment patterns if need be.
-	 * 
+	 *
 	 * @param version The Verison
 	 * @param matrix  ByteMatrix
 	 */
@@ -1139,7 +1138,7 @@ public class QRTokener {
 	 * Note that we cannot unify the function with embedPositionDetectionPattern()
 	 * despite they are almost identical, since we cannot write a function that
 	 * takes 2D arrays in different sizes in C/C++. We should live with the fact.
-	 * 
+	 *
 	 * @param xStart x Pos Start
 	 * @param yStart y Pos Start
 	 * @param matrix ByteMatrix
@@ -1159,7 +1158,7 @@ public class QRTokener {
 
 	/**
 	 * Embed type information. On success, modify the matrix.
-	 * 
+	 *
 	 * @param ecLevel     Level
 	 * @param maskPattern Mask
 	 * @param matrix      ByteMatrix
@@ -1198,7 +1197,7 @@ public class QRTokener {
 	 * Make bit vector of type information. On success, store the result in "bits"
 	 * and return true. Encode error correction level and mask pattern. See 8.9 of
 	 * JISX0510:2004 (p.45) for details.
-	 * 
+	 *
 	 * @param ecLevel     Level
 	 * @param maskPattern Mask
 	 * @param bits        BitArray
@@ -1233,14 +1232,14 @@ public class QRTokener {
 	 * x^14 + x^13 + x^12 + x^11 + x^10 + x^7 + x^4 + x^2
 	 * -------------------------------------------------- x^11 + x^10 + x^7 + x^4 +
 	 * x^2
-	 * 
+	 *
 	 * The remainder is x^11 + x^10 + x^7 + x^4 + x^2 Encode it in binary:
 	 * 110010010100 The return value is 0xc94 (1100 1001 0100)
-	 * 
+	 *
 	 * Since all coefficients in the polynomials are 1 or 0, we can do the
 	 * calculation by bit operations. We don't care if cofficients are positive or
 	 * negative.
-	 * 
+	 *
 	 * @param value Value
 	 * @param poly  poly
 	 * @return calculated Value
@@ -1281,7 +1280,7 @@ public class QRTokener {
 	 * Embed version information if need be. On success, modify the matrix and
 	 * return true. See 8.10 of JISX0510:2004 (p.47) for how to embed version
 	 * information.
-	 * 
+	 *
 	 * @param version Version
 	 * @param matrix  ByteMatrix
 	 */
@@ -1310,7 +1309,7 @@ public class QRTokener {
 	/**
 	 * Make bit vector of version information. On success, store the result in
 	 * "bits" and return true. See 8.10 of JISX0510:2004 (p.45) for details.
-	 * 
+	 *
 	 * @param version Version
 	 * @param bits    BitArray
 	 * @return success
@@ -1331,7 +1330,7 @@ public class QRTokener {
 	 * return true. For debugging purposes, it skips masking process if
 	 * "getMaskPattern" is -1. See 8.7 of JISX0510:2004 (p.38) for how to embed data
 	 * bits.
-	 * 
+	 *
 	 * @param dataBits    DataBits
 	 * @param maskPattern Mask
 	 * @param matrix      ByteMatrix
@@ -1389,7 +1388,7 @@ public class QRTokener {
 	/**
 	 * Return the mask bit for "getMaskPattern" at "x" and "y". See 8.8 of
 	 * JISX0510:2004 for mask pattern conditions.
-	 * 
+	 *
 	 * @param maskPattern Mask 0-7
 	 * @param x           x Position
 	 * @param y           y Position
@@ -1458,7 +1457,7 @@ public class QRTokener {
 	/**
 	 * Embed position detection patterns and surrounding vertical/horizontal
 	 * separators.
-	 * 
+	 *
 	 * @param matrix ByteMatrix
 	 */
 	private static void embedPositionDetectionPatternsAndSeparators(ByteMatrix matrix) {

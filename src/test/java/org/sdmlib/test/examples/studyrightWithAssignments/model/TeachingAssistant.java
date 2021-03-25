@@ -1,6 +1,4 @@
 package org.sdmlib.test.examples.studyrightWithAssignments.model;
-import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
-
 
 public class TeachingAssistant extends Student {
 

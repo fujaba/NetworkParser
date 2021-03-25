@@ -26,6 +26,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
+
 import de.uniks.networkparser.NetworkParserLog;
 
 public class TarArchiveInputStream extends InputStream {
@@ -69,10 +70,11 @@ public class TarArchiveInputStream extends InputStream {
 
   /**
    * Method to decompress a gzip file
-   * 
+   *
    * @param gZippedFile mFileName
    * @return a TarArchiveInputStream
    */
+  @SuppressWarnings("resource")
   public static TarArchiveInputStream create(String gZippedFile) {
     if (gZippedFile == null) {
       return null;
@@ -117,7 +119,7 @@ public class TarArchiveInputStream extends InputStream {
 
   /**
    * Constructor for TarInputStream.
-   * 
+   *
    * @param is the input stream to use
    */
   public TarArchiveInputStream(final InputStream is) {
@@ -126,7 +128,7 @@ public class TarArchiveInputStream extends InputStream {
 
   /**
    * Constructor for TarInputStream.
-   * 
+   *
    * @param is the input stream to use
    * @param blockSize the block size to use
    * @param recordSize the record size to use
@@ -137,7 +139,7 @@ public class TarArchiveInputStream extends InputStream {
 
   /**
    * Constructor for TarInputStream.
-   * 
+   *
    * @param is the input stream to use
    * @param blockSize the block size to use
    * @param recordSize the record size to use
@@ -442,11 +444,13 @@ public class TarArchiveInputStream extends InputStream {
   /**
    * NOTE, using a Map here makes it impossible to ever support GNU sparse files using the PAX Format
    * 0.0
-   * 
-   * @see https://www.gnu.org/software/tar/manual/html_section/tar_92.html#SEC188
+   * @param is InputStream
+   * @return Map of Key-Value
+   *
+   * @see  <a href="https://www.gnu.org/software/tar/manual/html_section/tar_92.html#SEC188">GNU</a>
    */
-  Map<String, String> parsePaxHeaders(final InputStream i) {
-    if (i == null) {
+  Map<String, String> parsePaxHeaders(final InputStream is) {
+    if (is == null) {
       return null;
     }
     final Map<String, String> headers = new HashMap<String, String>(globalPaxHeaders);
@@ -456,14 +460,14 @@ public class TarArchiveInputStream extends InputStream {
       int len = 0;
       int read = 0;
       try {
-        while ((ch = i.read()) != -1) {
+        while ((ch = is.read()) != -1) {
           read++;
           if (ch == '\n') { /* blank line in header */
             break;
           } else if (ch == ' ') { /* End of length string */
             /* Get keyword */
             final ByteArrayOutputStream coll = new ByteArrayOutputStream();
-            while ((ch = i.read()) != -1) {
+            while ((ch = is.read()) != -1) {
               read++;
               if (ch == '=') { /* end of keyword */
                 final String keyword = coll.toString("UTF_8");
@@ -473,7 +477,7 @@ public class TarArchiveInputStream extends InputStream {
                   headers.remove(keyword);
                 } else {
                   final byte[] rest = new byte[restLen];
-                  final int got = FileBuffer.readFully(i, rest);
+                  final int got = FileBuffer.readFully(is, rest);
                   if (got != restLen) {
                     return null;
                   }
@@ -527,7 +531,7 @@ public class TarArchiveInputStream extends InputStream {
    * when two are expected. Actually this won't help since a non-conforming implementation likely
    * won't fill full blocks consisting of - by default - ten records either so we probably have
    * already read beyond the archive anyway.
-   * 
+   *
    * @return Success
    *         </p>
    */
@@ -606,7 +610,7 @@ public class TarArchiveInputStream extends InputStream {
    */
   public boolean canReadEntryData(TarArchiveEntry ae) {
     if (ae instanceof TarArchiveEntry) {
-      final TarArchiveEntry te = (TarArchiveEntry) ae;
+      final TarArchiveEntry te = ae;
       return !te.isSparse();
     }
     return false;
@@ -713,7 +717,7 @@ public class TarArchiveInputStream extends InputStream {
 
   /**
    * Returns the current number of bytes read from this stream.
-   * 
+   *
    * @return the number of read bytes
    * @since 1.1
    */

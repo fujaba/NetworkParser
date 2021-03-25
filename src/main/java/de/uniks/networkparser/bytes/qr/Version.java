@@ -129,7 +129,7 @@ public final class Version {
 		if (VERSIONS == null) {
 			/**
 			 * See ISO 18004:2006 6.5.1 Table 9
-			 * 
+			 *
 			 * @return Version-Array with Build Polynom
 			 */
 			VERSIONS = new Version[] { new Version(1, new int[] {}, "{7:[1,19], 10:[1,16], 13:[1,13], 17:[1,9]}"),
@@ -241,6 +241,7 @@ public final class Version {
 
 	/**
 	 * See ISO 18004:2006 Annex E
+	 * @return Return the BitMatrix
 	 */
 	BitMatrix buildFunctionPattern() {
 		if (alignmentPatternCenters == null) {
@@ -284,7 +285,8 @@ public final class Version {
 		return bitMatrix;
 	}
 
-	public String toString() {
+	@Override
+   public String toString() {
 		return String.valueOf(versionNumber);
 	}
 

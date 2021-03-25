@@ -21,8 +21,6 @@
 
 package de.uniks.networkparser.test.studyrightWithAssigments;
 
-import org.junit.Test;
-
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.story.Story;
@@ -32,12 +30,9 @@ import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Parameter;
+import org.junit.Test;
 
 public class GenModel {
-	/**
-	 * @see <a href=
-	 *      '../../../../../../../../doc/StudyRightWithAssignmentsClassGeneration.html'>StudyRightWithAssignmentsClassGeneration.html</a>
-	 */
 	@Test
 	public void testStudyRightWithAssignmentsClassGeneration() {
 		if(Os.isGenerator()== false) {

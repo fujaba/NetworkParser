@@ -1,8 +1,6 @@
 package de.uniks.ludo.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import de.uniks.ludo.model.Field;
-import de.uniks.ludo.model.Player;
 
 
 public class Meeple {

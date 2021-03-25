@@ -33,14 +33,9 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
-import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.io.FileBuffer;
-import de.uniks.networkparser.graph.GraphCustomItem;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
-import de.uniks.networkparser.graph.GraphSimpleSet;
-import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
@@ -58,11 +53,11 @@ public class Story extends StoryElement implements Comparable<Story> {
 	private IdMap map;
 	private String path = "doc/";
 	private HTMLEntity elements;
-	
+
 	public Story() {
 		this.add(new StoryStepTitle());
 	}
-	
+
 	public static String addResource(HTMLEntity entity, String name, boolean include) {
 		name = name.replace('\\', '/');
 		if (name.toLowerCase().endsWith(".html") == false) {
@@ -112,7 +107,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 		}
 		return this;
 	}
-	
+
 	public StoryStepTitle getTitle() {
 		for(ObjectCondition element : steps) {
 			if (element instanceof StoryStepTitle) {
@@ -122,7 +117,8 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return null;
 	}
 
-	public String getLabel() {
+	@Override
+   public String getLabel() {
 		StoryStepTitle title = getTitle();
 		String label = null;
 		if(title != null) {
@@ -146,7 +142,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 		}
 		return label;
 	}
-	
+
 
 	public Story withTitle(String text) {
 		StoryStepTitle title = getTitle();
@@ -162,8 +158,8 @@ public class Story extends StoryElement implements Comparable<Story> {
 	 * Add JavaCode to Story board
 	 *
 	 * @param className ClassName of SourceCOde
-	 * @param position  Position of Code StartPosition, Endposition 
-	 *                  if positon == null Full Method 
+	 * @param position  Position of Code StartPosition, Endposition
+	 *                  if positon == null Full Method
 	 *                  StartPosition == -1   Start at Method
 	 *                  EndPosition == -1 End of Method
 	 *                  EndPosition == 0 End of File
@@ -190,7 +186,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 	 * Add JavaCode to Story board
 	 *
 	 * @param position Position of Code StartPosition, Endposition
-	 *                 if positon == null Full Method 
+	 *                 if positon == null Full Method
 	 *                 StartPosition == -1  Start at Method
 	 *                 EndPosition == -1 End of Method
 	 *                 EndPosition == 0 End of File
@@ -265,9 +261,10 @@ public class Story extends StoryElement implements Comparable<Story> {
 		add(new StoryStepImage().withFile(imageFile));
 	}
 
-	public boolean writeToFile(String... fileName) {
+	@Override
+   public boolean writeToFile(String... fileName) {
 		String file = null;
-		if(fileName == null) { 
+		if(fileName == null) {
 			file = this.outputFile;
 		}else if(fileName.length>0) {
 			file = fileName[0];
@@ -277,7 +274,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 				file = EntityUtil.getValidChars(title.getTitle().trim(), 50);
 			}
 		}
-		
+
 		if (file == null || file.length() < 1) {
 			if (steps.size() < 1) {
 				return false;
@@ -497,7 +494,8 @@ public class Story extends StoryElement implements Comparable<Story> {
 		this.addCondition(step);
 	}
 
-	public String getOutputFile(boolean calculate) {
+	@Override
+   public String getOutputFile(boolean calculate) {
 		if(calculate == false || outputFile != null) {
 			return outputFile;
 		}
@@ -584,7 +582,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 		btn.withValueItem("&#8635;");
 		return this;
 	}
-	
+
 	public SimpleList<ObjectCondition> getSteps() {
 		return steps;
 	}
