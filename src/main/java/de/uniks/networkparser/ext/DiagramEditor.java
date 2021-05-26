@@ -39,7 +39,6 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.ext.generic.JarValidator;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
@@ -56,6 +55,7 @@ import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.GraphConverter;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphUtil;
@@ -135,7 +135,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		}
 
 		HTMLEntity entity = new HTMLEntity();
-		GraphList list = editor.map.toObjectDiagram(items[0]); /* TRY IT */
+		GraphList list = editor.map.toObjectDiagram(items[0]);
 		if (all == false) {
 			SimpleList<String> ids = new SimpleList<String>();
 			for (Object item : items) {

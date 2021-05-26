@@ -1,5 +1,6 @@
 package de.uniks.networkparser.xml;
 
+import de.uniks.networkparser.EntityStringConverter;
 /*
 NetworkParser
 The MIT License
@@ -24,7 +25,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;

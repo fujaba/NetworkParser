@@ -9,7 +9,6 @@ import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.AbstractList;
-import de.uniks.networkparser.xml.MapEntityStack;
 import de.uniks.networkparser.xml.XMLEntity;
 
 /*

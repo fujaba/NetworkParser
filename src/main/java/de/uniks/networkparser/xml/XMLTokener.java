@@ -21,15 +21,16 @@ package de.uniks.networkparser.xml;
  */
 import java.util.ArrayList;
 import de.uniks.networkparser.EntityCreator;
+import de.uniks.networkparser.EntityStringConverter;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
+import de.uniks.networkparser.MapEntityStack;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.Entity;

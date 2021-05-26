@@ -1,4 +1,4 @@
-package de.uniks.networkparser.xml;
+package de.uniks.networkparser.ext;
 
 import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.buffer.CharacterBuffer;

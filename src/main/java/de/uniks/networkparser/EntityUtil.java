@@ -30,8 +30,8 @@ import java.util.Random;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.bytes.ByteConverterHex;
 import de.uniks.networkparser.bytes.ByteTokener;
-import de.uniks.networkparser.converter.ByteConverterHex;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;

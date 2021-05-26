@@ -25,11 +25,11 @@ THE SOFTWARE.
 */
 import java.util.Iterator;
 
+import de.uniks.networkparser.EntityStringConverter;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SortedList;

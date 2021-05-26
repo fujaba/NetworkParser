@@ -1,4 +1,4 @@
-package de.uniks.networkparser.converter;
+package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.gui.controls.Button;

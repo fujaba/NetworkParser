@@ -5,6 +5,9 @@ import static org.junit.Assert.assertNotNull;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import de.uniks.ludo.model.Ludo;
 import de.uniks.ludo.model.Player;
 import de.uniks.networkparser.DateTimeEntity;
@@ -13,13 +16,11 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.CharacterReader;
-import de.uniks.networkparser.converter.ByteConverterHex;
+import de.uniks.networkparser.bytes.ByteConverterHex;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.logic.Or;
 import de.uniks.networkparser.logic.StringCondition;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class StringTest {
 

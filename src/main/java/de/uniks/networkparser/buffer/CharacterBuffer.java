@@ -24,11 +24,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;
 
-/**
- * Buffer of String for alternative for StringBuffer.
- *
- */
-
+/** Buffer of String for alternative for StringBuffer. */
 public class CharacterBuffer extends BufferedBuffer implements CharSequence, BaseItem {
   /** The value is used for character storage. */
   char[] buffer;
@@ -36,13 +32,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   /**
    * Returns the {@code char} value in this sequence at the specified index. The first {@code char}
    * value is at index {@code 0}, the next at index {@code 1}, and so on, as in array indexing.
-   * <p>
-   * The index argument must be greater than or equal to {@code 0}, and less than the length of this
-   * sequence.
-   *
-   * <p>
-   * If the {@code char} value specified by the index is a
-   * <a href="Character.html#unicode">surrogate</a>, the surrogate value is returned.
    *
    * @param index the index of the desired {@code char} value.
    * @return the {@code char} value at the specified index.
@@ -67,24 +56,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
   /**
    * Returns a new character sequence that is a subsequence of this sequence.
-   *
-   * <p>
-   * An invocation of this method of the form
-   *
-   * <pre>
-   * {@code
-   * sb.subSequence(begin,&nbsp;end)}
-   * </pre>
-   *
-   * behaves in exactly the same way as the invocation
-   *
-   * <pre>
-   * {@code
-   * sb.substring(begin,&nbsp;end)}
-   * </pre>
-   *
-   * This method is provided so that this class can implement the {@link CharSequence} interface.
-   *
    * @param start the start index, inclusive.
    * @param end the end index, exclusive.
    * @return the specified subsequence.
@@ -110,7 +81,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
   /**
    * Set the currentVlaue to Buffer
-   *
    * @param value String of Value
    * @return the CharacterBuffer
    */
@@ -282,7 +252,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
   /**
    * Get the next character in the source string.
-   *
    * @return The next character, or 0 if past the end of the source string.
    */
   @Override
@@ -302,7 +271,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
   /**
    * Init the new CharacterBuffer
-   * 
    * @param values the reference CharArray
    * @return the new CharacterBuffer
    */
@@ -350,7 +318,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
   /**
    * Set the Current Startposition
-   * 
    * @param pos The new Startposition
    * @return This Component
    */
@@ -370,7 +337,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
   /**
    * Init the new CharList
-   * 
    * @param values the reference CharArray
    * @param start the Startposition for the new CharacterBuffer
    * @param end the Endposition for the new CharacterBuffer
@@ -399,7 +365,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
   /**
    * Init the new CharList
-   * 
    * @param values the reference CharArray
    * @param start the Startposition for the new CharacterBuffer
    * @param length the Endposition for the new CharacterBuffer
@@ -430,7 +395,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
   /**
    * Init the new CharList
-   * 
    * @param values the reference CharArray
    * @param start the Startposition for the new CharacterBuffer
    * @param length the Endposition for the new CharacterBuffer
@@ -494,7 +458,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
   /**
    * Init the new CharacterBuffer
-   * 
    * @param values the reference CharSequence
    * @param start the Startposition for the new CharacterBuffer
    * @param end the Endposition for the new CharacterBuffer
@@ -540,7 +503,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
   /**
    * Init the new CharacterBuffer
-   * 
    * @param items the reference CharSequence
    * @return the new CharacterBuffer
    */
@@ -619,7 +581,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
   /**
    * Append a new Character to CharacterBuffer
-   * 
    * @param item a new StartItem
    * @return CharacterBuffer Instance
    */
@@ -647,7 +608,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
   /**
    * Append a new Character to CharacterBuffer
-   * 
    * @param item a new StartItem
    * @param newLine add newLine to Buffer at the end
    * @return CharacterBuffer Instance
@@ -696,7 +656,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
   /**
    * Init the new CharList
-   * 
    * @param value the reference CharSequence
    * @return the new CharList
    */
@@ -719,7 +678,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
   /**
    * Init the new CharacterBuffer
-   * 
    * @param value the reference CharSequence
    * @return the new CharacterBuffer
    */
@@ -769,8 +727,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
   /**
    * Returns the number of elements between the current position and the limit.
-   *
-   * @return The number of elements remaining in this buffer
+   * @return The filter number
    */
   public final int remaining() {
     if (buffer == null) {

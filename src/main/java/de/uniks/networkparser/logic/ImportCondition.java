@@ -6,7 +6,6 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
-import de.uniks.networkparser.list.ConditionSet;
 import de.uniks.networkparser.list.SimpleList;
 
 /**

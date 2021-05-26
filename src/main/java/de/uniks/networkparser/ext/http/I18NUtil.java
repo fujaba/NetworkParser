@@ -1,7 +1,7 @@
 package de.uniks.networkparser.ext.http;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.converter.ByteConverter64;
+import de.uniks.networkparser.bytes.ByteConverter64;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.BaseItem;

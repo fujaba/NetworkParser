@@ -1,4 +1,4 @@
-package de.uniks.networkparser.converter;
+package de.uniks.networkparser.bytes;
 
 /*
 NetworkParser
@@ -28,7 +28,6 @@ import java.nio.charset.Charset;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.bytes.ByteTokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 
 public class ByteConverterHTTP extends ByteConverter {

@@ -25,7 +25,7 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.converter.GraphConverter;
+import de.uniks.networkparser.graph.GraphConverter;
 import de.uniks.networkparser.graph.GraphCustomItem;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphModel;

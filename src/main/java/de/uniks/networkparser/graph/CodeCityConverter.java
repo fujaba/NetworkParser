@@ -1,18 +1,8 @@
-package de.uniks.networkparser.converter;
+package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.FileClassModel;
-import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.AttributeSet;
-import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.GraphMember;
-import de.uniks.networkparser.graph.GraphMetric;
-import de.uniks.networkparser.graph.GraphSimpleSet;
-import de.uniks.networkparser.graph.GraphUtil;
-import de.uniks.networkparser.graph.Method;
-import de.uniks.networkparser.graph.MethodSet;
-import de.uniks.networkparser.graph.SourceCode;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.TemplateItem;

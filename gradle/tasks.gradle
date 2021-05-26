@@ -91,7 +91,7 @@ task buildCoreJar19(type: Jar, dependsOn: buildCoreJar18) {
 task buildMinCoreJar(type: Jar) {
 	description 'Build Minimum-Jar with NetworkParser-Core without dependency of JavaFX and Reflection'
 	group "Jar";from sourceSets.main.output; classifier = 'min';
-	excludes = ['**/ext/**', '**/calculator/**', '**/parser/**', '**/logic/**', '**/**.css', '**/**.js', '**/gui/**','**/test/**']
+	excludes = ['**/ext/**', '**/calculator/**', '**/parser/**', '**/logic/**', '**/**.css', '**/**.js', '**/gui/**','**/graph/**', '**/test/**', '**/EMFTokener*', '**/HTMLEntity*', '**/JDLTokener*', 'LicenceQR.txt']
 	manifest = project.manifest {from sharedManifest}
 }
 task buildSourceJar18(type: Jar, dependsOn: buildCoreJar19) {

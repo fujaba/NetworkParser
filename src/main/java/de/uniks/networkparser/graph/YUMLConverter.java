@@ -1,4 +1,4 @@
-package de.uniks.networkparser.converter;
+package de.uniks.networkparser.graph;
 
 /*
 NetworkParser
@@ -25,16 +25,6 @@ THE SOFTWARE.
 */
 import java.util.Iterator;
 
-import de.uniks.networkparser.graph.Association;
-import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.GraphEntity;
-import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.GraphMember;
-import de.uniks.networkparser.graph.GraphModel;
-import de.uniks.networkparser.graph.GraphSimpleSet;
-import de.uniks.networkparser.graph.GraphTokener;
-import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;

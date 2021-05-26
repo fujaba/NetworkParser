@@ -22,13 +22,6 @@ package de.uniks.networkparser.test.studyrightWithAssigments;
 
 import java.io.IOException;
 
-import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.ext.Os;
-import de.uniks.networkparser.ext.story.Story;
-import de.uniks.networkparser.ext.story.StoryStepSourceCode;
-import de.uniks.networkparser.json.JsonArray;
-import de.uniks.networkparser.test.model.util.UniversityCreator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Assignment;
@@ -37,6 +30,14 @@ import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Student;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.TeachingAssistant;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.University;
+
+import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.ext.Os;
+import de.uniks.networkparser.ext.story.Story;
+import de.uniks.networkparser.ext.story.StoryStepSourceCode;
+import de.uniks.networkparser.json.JsonArray;
+import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class Storyboards {
 	/**

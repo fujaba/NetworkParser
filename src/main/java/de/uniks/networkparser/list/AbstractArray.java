@@ -23,8 +23,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 
+import de.uniks.networkparser.EntityStringConverter;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;

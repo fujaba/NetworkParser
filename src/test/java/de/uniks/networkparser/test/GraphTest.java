@@ -1,22 +1,22 @@
 package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Date;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleObject;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.converter.DotConverter;
-import de.uniks.networkparser.converter.GraphConverter;
-import de.uniks.networkparser.converter.YUMLConverter;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.AnnotationSet;
@@ -30,6 +30,8 @@ import de.uniks.networkparser.graph.ClazzSet;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeMap;
 import de.uniks.networkparser.graph.DataTypeSet;
+import de.uniks.networkparser.graph.DotConverter;
+import de.uniks.networkparser.graph.GraphConverter;
 import de.uniks.networkparser.graph.GraphCustomItem;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphOptions;
@@ -44,6 +46,7 @@ import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.graph.ModifierSet;
 import de.uniks.networkparser.graph.Parameter;
 import de.uniks.networkparser.graph.Throws;
+import de.uniks.networkparser.graph.YUMLConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.Entity;

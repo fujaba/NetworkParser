@@ -1,4 +1,4 @@
-package de.uniks.networkparser.converter;
+package de.uniks.networkparser.graph;
 
 /*
 NetworkParser
@@ -28,33 +28,6 @@ import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.story.Story;
-import de.uniks.networkparser.graph.Association;
-import de.uniks.networkparser.graph.AssociationSet;
-import de.uniks.networkparser.graph.AssociationTypes;
-import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.AttributeSet;
-import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.ClazzSet;
-import de.uniks.networkparser.graph.DataType;
-import de.uniks.networkparser.graph.GraphCustomItem;
-import de.uniks.networkparser.graph.GraphEntity;
-import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.GraphMember;
-import de.uniks.networkparser.graph.GraphModel;
-import de.uniks.networkparser.graph.GraphNode;
-import de.uniks.networkparser.graph.GraphOptions;
-import de.uniks.networkparser.graph.GraphPattern;
-import de.uniks.networkparser.graph.GraphSimpleSet;
-import de.uniks.networkparser.graph.GraphTokener;
-import de.uniks.networkparser.graph.GraphUtil;
-import de.uniks.networkparser.graph.Match;
-import de.uniks.networkparser.graph.Method;
-import de.uniks.networkparser.graph.MethodSet;
-import de.uniks.networkparser.graph.Modifier;
-import de.uniks.networkparser.graph.ModifierSet;
-import de.uniks.networkparser.graph.ObjectModel;
-import de.uniks.networkparser.graph.Parameter;
-import de.uniks.networkparser.graph.ParameterSet;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;

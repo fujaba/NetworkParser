@@ -44,7 +44,7 @@ import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.converter.ByteConverter64;
+import de.uniks.networkparser.bytes.ByteConverter64;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;

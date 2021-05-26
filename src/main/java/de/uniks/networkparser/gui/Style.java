@@ -1,4 +1,4 @@
-package de.uniks.networkparser;
+package de.uniks.networkparser.gui;
 
 /*
 NetworkParser

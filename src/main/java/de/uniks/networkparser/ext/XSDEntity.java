@@ -1,4 +1,4 @@
-package de.uniks.networkparser.xml;
+package de.uniks.networkparser.ext;
 
 /*
 NetworkParser
@@ -26,7 +26,6 @@ THE SOFTWARE.
 import java.util.ArrayList;
 
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
@@ -38,6 +37,7 @@ import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.xml.XMLEntity;
 
 /**
  * @author Stefan The XSD Entity

@@ -1,8 +1,8 @@
-package de.uniks.networkparser.list;
+package de.uniks.networkparser.bytes;
 
 /*
+NetworkParser
 The MIT License
-
 Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,35 +23,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.interfaces.LocalisationInterface;
-import de.uniks.networkparser.interfaces.ObjectCondition;
-import de.uniks.networkparser.logic.ChainCondition;
-import de.uniks.networkparser.logic.VariableCondition;
+import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.buffer.BufferedBuffer;
 
-public class ConditionSet extends SimpleSet<ObjectCondition> {
+public class ByteConverterSimple extends ByteConverter {
 	@Override
-	public boolean add(ObjectCondition newValue) {
-		if (newValue instanceof ChainCondition) {
-			ChainCondition cc = (ChainCondition) newValue;
-			return super.addAll(cc.getList());
+	public String toString(BufferedBuffer values) {
+		if (values == null || values.length() < 1) {
+			return "EMTPY";
 		}
-		return super.add(newValue);
+		return EntityUtil.getStringType(values.byteAt(0)) + " Laenge: " + values.length();
 	}
 
-	public CharacterBuffer getAllValue(LocalisationInterface variables) {
-		CharacterBuffer buffer = new CharacterBuffer();
-		for (ObjectCondition item : this) {
-			if (item instanceof VariableCondition) {
-				VariableCondition vc = (VariableCondition) item;
-				Object result = vc.getValue(variables);
-				if (result != null) {
-					buffer.with(result.toString());
-				}
-			} else {
-				buffer.with(item.toString());
-			}
-		}
-		return buffer;
+	@Override
+	public byte[] decode(CharSequence value) {
+		return null;
 	}
 }

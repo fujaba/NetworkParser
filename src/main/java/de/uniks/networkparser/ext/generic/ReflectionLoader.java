@@ -548,6 +548,15 @@ public class ReflectionLoader {
 		return java.lang.reflect.Proxy.newProxyInstance(ReflectionLoader.class.getClassLoader(), proxys,
 				new ReflectionInterfaceProxy(proxy));
 	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T createSimpleProxy(Object element, Class<T> proxy) {
+		if (proxy == null ) {
+			return null;
+		}
+		return (T) java.lang.reflect.Proxy.newProxyInstance(ReflectionLoader.class.getClassLoader(), new Class[] {proxy},
+				new ReflectionInterfaceProxy(element));
+	}
 
 	public static Object callChain(Object item, String... methodNames) {
 		return callChain(item, true, methodNames);

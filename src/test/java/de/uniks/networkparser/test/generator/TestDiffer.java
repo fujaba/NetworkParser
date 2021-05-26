@@ -4,10 +4,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.GraphConverter;
 import de.uniks.networkparser.graph.GraphSimpleSet;
 import de.uniks.networkparser.parser.GraphMatcher;
 import de.uniks.networkparser.parser.TemplateResultFragment;

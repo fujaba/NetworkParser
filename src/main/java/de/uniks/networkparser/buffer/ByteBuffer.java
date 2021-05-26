@@ -2,9 +2,9 @@ package de.uniks.networkparser.buffer;
 
 import java.nio.charset.Charset;
 
-import de.uniks.networkparser.converter.ByteConverter;
-import de.uniks.networkparser.converter.ByteConverterHTTP;
-import de.uniks.networkparser.converter.ByteConverterString;
+import de.uniks.networkparser.bytes.ByteConverter;
+import de.uniks.networkparser.bytes.ByteConverterHTTP;
+import de.uniks.networkparser.bytes.ByteConverterString;
 import de.uniks.networkparser.interfaces.Converter;
 
 public class ByteBuffer extends BufferedBuffer {

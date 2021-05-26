@@ -27,12 +27,12 @@ THE SOFTWARE.
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import de.uniks.networkparser.EntityStringConverter;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphModel;
@@ -306,7 +306,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 		}
 		EntityStringConverter converter = new EntityStringConverter(2);
 		converter.withPath(path);
-		if(file.indexOf(".")<1) {
+		if(file.indexOf(".")<0) {
 			file = file + ".html";
 		}
 		if(output.getBody() == null || output.getBody().sizeChildren()<1) {

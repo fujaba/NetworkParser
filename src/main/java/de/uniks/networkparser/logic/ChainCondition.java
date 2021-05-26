@@ -30,7 +30,6 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.TemplateParser;
-import de.uniks.networkparser.list.ConditionSet;
 
 public class ChainCondition extends ListCondition {
 	public ChainCondition enableHook() {

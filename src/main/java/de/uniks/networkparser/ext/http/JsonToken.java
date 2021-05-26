@@ -1,8 +1,8 @@
 package de.uniks.networkparser.ext.http;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.bytes.ByteConverter64;
 import de.uniks.networkparser.bytes.HMAC;
-import de.uniks.networkparser.converter.ByteConverter64;
 import de.uniks.networkparser.json.JsonObject;
 
 public class JsonToken {

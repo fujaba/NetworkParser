@@ -4,8 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.converter.GUIConverter;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.graph.GUIConverter;
 import de.uniks.networkparser.gui.controls.Control;
 
 public class FXMLConverter {

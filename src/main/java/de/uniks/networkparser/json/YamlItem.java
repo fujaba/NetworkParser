@@ -1,8 +1,8 @@
-package de.uniks.networkparser.converter;
+package de.uniks.networkparser.json;
 
 /*
-NetworkParser
 The MIT License
+
 Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,45 +23,58 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-import de.uniks.networkparser.buffer.BufferedBuffer;
+import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Converter;
 
-public class ByteConverterString extends ByteConverter {
-	/**
-	 * To simple string.
-	 *
-	 * @param values the bytes
-	 * @return the string
-	 */
-	@Override
-	public String toString(BufferedBuffer values) {
-		if (values == null) {
-			return null;
-		}
-		StringBuilder returnValue = new StringBuilder(values.length());
-		for (int i = 0; i < values.length(); i++) {
-			returnValue.append(values.charAt(i));
-		}
-		return returnValue.toString();
+public class YamlItem implements BaseItem {
+	private Object key;
+	private Object value;
+	private String comment;
+
+	public String getComment() {
+		return comment;
 	}
 
-	/**
-	 * To byte string.
-	 *
-	 * @param value the hex string
-	 * @return the byte[]
-	 */
-	@Override
-	public byte[] decode(CharSequence value) {
-		if (value == null) {
-			return null;
-		}
-		byte[] out = new byte[value.length()];
-		int n = value.length();
-
-		for (int i = 0; i < n; i++) {
-			out[i] = (byte) value.charAt(i);
-		}
-		return out;
+	public YamlItem withComment(String comment) {
+		this.comment = comment;
+		return this;
 	}
 
+	public Object getValue() {
+		return value;
+	}
+
+	public YamlItem withValue(Object value) {
+		this.value = value;
+		return this;
+	}
+
+	public Object getKey() {
+		return key;
+	}
+
+	public YamlItem withKey(Object key) {
+		this.key = key;
+		return this;
+	}
+
+	@Override
+	public String toString(Converter converter) {
+		return null;
+	}
+
+	@Override
+	public boolean add(Object... values) {
+		return false;
+	}
+
+	@Override
+	public BaseItem getNewList(boolean keyValue) {
+		return new YamlEntity();
+	}
+
+	@Override
+	public int size() {
+		return 1;
+	}
 }

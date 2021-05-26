@@ -1,4 +1,4 @@
-package de.uniks.networkparser.converter;
+package de.uniks.networkparser.graph;
 
 /*
 NetworkParser
@@ -24,17 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.graph.Association;
-import de.uniks.networkparser.graph.AssociationTypes;
-import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.DataType;
-import de.uniks.networkparser.graph.GraphEntity;
-import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.GraphModel;
-import de.uniks.networkparser.graph.GraphTokener;
-import de.uniks.networkparser.graph.GraphUtil;
-import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.Converter;

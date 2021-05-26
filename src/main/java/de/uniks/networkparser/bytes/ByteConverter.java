@@ -1,4 +1,4 @@
-package de.uniks.networkparser.converter;
+package de.uniks.networkparser.bytes;
 
 import java.nio.charset.Charset;
 

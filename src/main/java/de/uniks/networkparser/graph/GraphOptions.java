@@ -1,6 +1,7 @@
 package de.uniks.networkparser.graph;
 
 import java.util.ArrayList;
+
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 

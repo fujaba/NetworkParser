@@ -1,4 +1,4 @@
-package de.uniks.networkparser.yaml;
+package de.uniks.networkparser.logic;
 
 /*
 The MIT License
@@ -23,35 +23,34 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-import de.uniks.networkparser.buffer.Buffer;
-import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.EntityList;
-import de.uniks.networkparser.list.SortedList;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.LocalisationInterface;
+import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.list.SimpleSet;
 
-public class YamlEntity extends SortedList<Object> implements EntityList {
-	/**
-	 * Default Constructor
-	 */
-	public YamlEntity() {
-		super(false);
-	}
-
+public class ConditionSet extends SimpleSet<ObjectCondition> {
 	@Override
-	public int sizeChildren() {
-		return super.size();
-	}
-
-	@Override
-	public YamlEntity withValue(Buffer values) {
-		new YAMLTokener().parseToEntity(this, values);
-		return this;
-	}
-
-	@Override
-	public BaseItem getNewList(boolean keyValue) {
-		if (keyValue) {
-			return new YamlEntity();
+	public boolean add(ObjectCondition newValue) {
+		if (newValue instanceof ChainCondition) {
+			ChainCondition cc = (ChainCondition) newValue;
+			return super.addAll(cc.getList());
 		}
-		return new YamlItem();
+		return super.add(newValue);
+	}
+
+	public CharacterBuffer getAllValue(LocalisationInterface variables) {
+		CharacterBuffer buffer = new CharacterBuffer();
+		for (ObjectCondition item : this) {
+			if (item instanceof VariableCondition) {
+				VariableCondition vc = (VariableCondition) item;
+				Object result = vc.getValue(variables);
+				if (result != null) {
+					buffer.with(result.toString());
+				}
+			} else {
+				buffer.with(item.toString());
+			}
+		}
+		return buffer;
 	}
 }

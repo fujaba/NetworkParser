@@ -22,13 +22,13 @@ import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.DERBuffer;
 import de.uniks.networkparser.bytes.AES;
+import de.uniks.networkparser.bytes.ByteConverter64;
+import de.uniks.networkparser.bytes.ByteConverterHex;
 import de.uniks.networkparser.bytes.CRC;
 import de.uniks.networkparser.bytes.FCS16;
 import de.uniks.networkparser.bytes.RSAKey;
 import de.uniks.networkparser.bytes.SHA1;
 import de.uniks.networkparser.bytes.Sum;
-import de.uniks.networkparser.converter.ByteConverter64;
-import de.uniks.networkparser.converter.ByteConverterHex;
 
 public class CheckSumTest {
 //	@Test

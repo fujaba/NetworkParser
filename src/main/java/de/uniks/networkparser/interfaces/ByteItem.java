@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.ByteBuffer;
-import de.uniks.networkparser.converter.ByteConverter;
+import de.uniks.networkparser.bytes.ByteConverter;
 
 public interface ByteItem extends BaseItem {
 	public static final byte BIT_STRING = 0x53; /* S = String; */

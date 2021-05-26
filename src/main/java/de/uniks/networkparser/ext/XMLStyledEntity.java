@@ -1,9 +1,11 @@
-package de.uniks.networkparser.xml;
+package de.uniks.networkparser.ext;
 
-import de.uniks.networkparser.Style;
+
+import de.uniks.networkparser.EntityStringConverter;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.converter.EntityStringConverter;
+import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.xml.XMLEntity;
 
 /**
  * Style Element of XML.

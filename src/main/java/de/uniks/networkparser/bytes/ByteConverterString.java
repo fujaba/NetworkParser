@@ -1,8 +1,8 @@
-package de.uniks.networkparser.logic;
+package de.uniks.networkparser.bytes;
 
 /*
+NetworkParser
 The MIT License
-
 Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,30 +23,45 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.interfaces.Entity;
-import de.uniks.networkparser.interfaces.ObjectCondition;
-import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.buffer.BufferedBuffer;
 
-public class MapFilter implements ObjectCondition {
-	private SimpleKeyValueList<Object, Entity> map = new SimpleKeyValueList<Object, Entity>();
-
+public class ByteConverterString extends ByteConverter {
+	/**
+	 * To simple string.
+	 *
+	 * @param values the bytes
+	 * @return the string
+	 */
 	@Override
-	public boolean update(Object value) {
-		if (value instanceof SimpleEvent == false) {
-			return false;
+	public String toString(BufferedBuffer values) {
+		if (values == null) {
+			return null;
 		}
-		SimpleEvent event = (SimpleEvent) value;
-		Object item = event.getModelValue();
-		if (map.containsKey(item)) {
-			return false;
+		StringBuilder returnValue = new StringBuilder(values.length());
+		for (int i = 0; i < values.length(); i++) {
+			returnValue.append(values.charAt(i));
 		}
-		map.put(item, event.getEntity());
-		return true;
+		return returnValue.toString();
 	}
 
-	public Entity getValue(Object item) {
-		return map.get(item);
+	/**
+	 * To byte string.
+	 *
+	 * @param value the hex string
+	 * @return the byte[]
+	 */
+	@Override
+	public byte[] decode(CharSequence value) {
+		if (value == null) {
+			return null;
+		}
+		byte[] out = new byte[value.length()];
+		int n = value.length();
+
+		for (int i = 0; i < n; i++) {
+			out[i] = (byte) value.charAt(i);
+		}
+		return out;
 	}
 
 }

@@ -11,9 +11,9 @@ import java.util.Map.Entry;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.bytes.ByteConverter;
 import de.uniks.networkparser.bytes.ByteEntity;
 import de.uniks.networkparser.bytes.ByteTokener;
-import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphPatternMatch;
 import de.uniks.networkparser.graph.GraphTokener;
@@ -39,9 +39,7 @@ import de.uniks.networkparser.list.SimpleIterator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
-import de.uniks.networkparser.logic.MapFilter;
 import de.uniks.networkparser.xml.EMFTokener;
-import de.uniks.networkparser.xml.MapEntityStack;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLTokener;
 
@@ -1119,7 +1117,7 @@ public int size() {
     MapEntity map = new MapEntity(filter, flag, this, tokener);
     return tokener.withMap(this).encode(object, map);
   }
-
+//
   public GraphList toClassDiagram(Object object) {
     GraphTokener tokener = new GraphTokener();
     MapEntity map = new MapEntity(filter, flag, this, tokener);

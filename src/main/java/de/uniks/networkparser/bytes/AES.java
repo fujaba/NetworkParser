@@ -3,7 +3,6 @@ package de.uniks.networkparser.bytes;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.converter.ByteConverterString;
 
 public class AES {
 	/** AES constants and variables. */

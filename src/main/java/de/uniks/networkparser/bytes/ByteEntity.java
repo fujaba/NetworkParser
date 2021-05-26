@@ -21,11 +21,9 @@ package de.uniks.networkparser.bytes;
  */
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.ByteBuffer;
-import de.uniks.networkparser.converter.ByteConverter;
-import de.uniks.networkparser.converter.ByteConverterHTTP;
-import de.uniks.networkparser.converter.ByteConverterHex;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.Converter;

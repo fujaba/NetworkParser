@@ -1,8 +1,8 @@
-package de.uniks.networkparser.yaml;
+package de.uniks.networkparser.bytes;
 
 /*
+NetworkParser
 The MIT License
-
 Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,58 +23,40 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.Converter;
+import de.uniks.networkparser.buffer.BufferedBuffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 
-public class YamlItem implements BaseItem {
-	private Object key;
-	private Object value;
-	private String comment;
+public class ByteConverterAES extends ByteConverter {
+	private AES aes;
 
-	public String getComment() {
-		return comment;
-	}
-
-	public YamlItem withComment(String comment) {
-		this.comment = comment;
+	public ByteConverterAES withKey(String value) {
+		if (this.aes == null) {
+			this.aes = new AES();
+		}
+		this.aes.withKey(value);
 		return this;
 	}
 
-	public Object getValue() {
-		return value;
-	}
-
-	public YamlItem withValue(Object value) {
-		this.value = value;
-		return this;
-	}
-
-	public Object getKey() {
-		return key;
-	}
-
-	public YamlItem withKey(Object key) {
-		this.key = key;
-		return this;
-	}
-
-	@Override
-	public String toString(Converter converter) {
+	public CharacterBuffer toString(String values) {
+		if (this.aes != null) {
+			return aes.encode(values);
+		}
 		return null;
 	}
 
 	@Override
-	public boolean add(Object... values) {
-		return false;
+	public String toString(BufferedBuffer values) {
+		if (this.aes != null) {
+			return aes.encode(values).toString();
+		}
+		return null;
 	}
 
 	@Override
-	public BaseItem getNewList(boolean keyValue) {
-		return new YamlEntity();
-	}
-
-	@Override
-	public int size() {
-		return 1;
+	public byte[] decode(CharSequence value) {
+		if (this.aes != null) {
+			return aes.decodeString(value);
+		}
+		return null;
 	}
 }

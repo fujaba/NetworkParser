@@ -21,7 +21,7 @@ public class AnnotationTest {
 		annotation = Annotation.create("@Retention(RetentionPolicy.RUNTIME)");
 		Assert.assertEquals("@Retention(RetentionPolicy.RUNTIME)", annotation.toString());
 
-		annotation = Annotation.create("@RetryOnFailure(attempts = 3, delay = 1000, escalate = { UnknownHostException.class })");
+		annotation = Annotation.create("@-RetryOnFailure(attempts = 3, delay = 1000, escalate = { UnknownHostException.class })");
 		Assert.assertEquals("@RetryOnFailure(attempts=3,delay=1000,escalate=UnknownHostException.class)", annotation.toString());
 
 		annotation = Annotation.create("@Target({ElementType.METHOD,ElementType.CONSTRUCTOR,ElementType.TYPE,ElementType.FIELD}");

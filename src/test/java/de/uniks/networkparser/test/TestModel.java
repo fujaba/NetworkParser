@@ -3,9 +3,9 @@ package de.uniks.networkparser.test;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.GraphConverter;
 import de.uniks.networkparser.graph.ObjectInstance;
 import de.uniks.networkparser.graph.ObjectModel;
 import de.uniks.networkparser.parser.TemplateResultFragment;

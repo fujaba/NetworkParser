@@ -21,9 +21,6 @@ package de.uniks.networkparser.bytes;
  */
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.ByteBuffer;
-import de.uniks.networkparser.converter.ByteConverter;
-import de.uniks.networkparser.converter.ByteConverterHTTP;
-import de.uniks.networkparser.converter.ByteConverterString;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.Converter;

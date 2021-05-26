@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.Style;
+import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.gui.controls.GUILine;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.GUIPosition;

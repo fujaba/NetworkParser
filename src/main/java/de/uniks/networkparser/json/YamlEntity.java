@@ -1,8 +1,8 @@
-package de.uniks.networkparser.converter;
+package de.uniks.networkparser.json;
 
 /*
-NetworkParser
 The MIT License
+
 Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,41 +23,35 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-import de.uniks.networkparser.buffer.BufferedBuffer;
-import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.bytes.AES;
+import de.uniks.networkparser.buffer.Buffer;
+import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.list.SortedList;
 
-public class ByteConverterAES extends ByteConverter {
-	private AES aes;
+public class YamlEntity extends SortedList<Object> implements EntityList {
+	/**
+	 * Default Constructor
+	 */
+	public YamlEntity() {
+		super(false);
+	}
 
-	public ByteConverterAES withKey(String value) {
-		if (this.aes == null) {
-			this.aes = new AES();
-		}
-		this.aes.withKey(value);
+	@Override
+	public int sizeChildren() {
+		return super.size();
+	}
+
+	@Override
+	public YamlEntity withValue(Buffer values) {
+		new YAMLTokener().parseToEntity(this, values);
 		return this;
 	}
 
-	public CharacterBuffer toString(String values) {
-		if (this.aes != null) {
-			return aes.encode(values);
-		}
-		return null;
-	}
-
 	@Override
-	public String toString(BufferedBuffer values) {
-		if (this.aes != null) {
-			return aes.encode(values).toString();
+	public BaseItem getNewList(boolean keyValue) {
+		if (keyValue) {
+			return new YamlEntity();
 		}
-		return null;
-	}
-
-	@Override
-	public byte[] decode(CharSequence value) {
-		if (this.aes != null) {
-			return aes.decodeString(value);
-		}
-		return null;
+		return new YamlItem();
 	}
 }

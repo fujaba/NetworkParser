@@ -25,7 +25,7 @@ THE SOFTWARE.
 */
 import java.util.Comparator;
 
-import de.uniks.networkparser.converter.EntityStringConverter;
+import de.uniks.networkparser.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 
 public class SortedList<V> extends SimpleList<V> {
