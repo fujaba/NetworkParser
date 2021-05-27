@@ -3,7 +3,7 @@ package de.uniks.networkparser.logic;
 import java.beans.PropertyChangeEvent;
 import java.util.Set;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -101,8 +101,8 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 			}
 
 			if (this.position != 0) {
-				if (leftValue instanceof Number || EntityUtil.isNumeric("" + leftValue)) {
-					if (rightValue instanceof Number || EntityUtil.isNumeric("" + rightValue)) {
+				if (leftValue instanceof Number || StringUtil.isNumeric("" + leftValue)) {
+					if (rightValue instanceof Number || StringUtil.isNumeric("" + rightValue)) {
 						Double leftNumber = Double.valueOf("" + leftValue);
 						Double rightNumber = Double.valueOf("" + rightValue);
 						if (position > 0) {

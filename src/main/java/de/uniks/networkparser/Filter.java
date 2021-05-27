@@ -66,7 +66,7 @@ public class Filter {
 	 * @param map       The IdMap
 	 * @return boolean if encoding ID
 	 */
-	public boolean isId(Object entity, String className, IdMap map) {
+	public boolean isId(Object entity, String className, SimpleMap map) {
 		if (idFilter != null) {
 			return idFilter.update(new SimpleEvent(SendableEntityCreator.NEW, null, map, className, null, entity));
 		} else if (map != null) {
@@ -78,7 +78,7 @@ public class Filter {
 		return true;
 	}
 
-	public boolean isSimpleFormat(Object entity, SendableEntityCreator creator, String className, IdMap map) {
+	public boolean isSimpleFormat(Object entity, SendableEntityCreator creator, String className, SimpleMap map) {
 		if (this.isSimpleFormat()) {
 			return true;
 		}
@@ -141,7 +141,7 @@ public class Filter {
 	 * @return Number for Convert 1 for Convert 0 for Reference -1 for not Convert
 	 *
 	 */
-	public int convert(Object entity, String property, Object value, IdMap map, int deep) {
+	public int convert(Object entity, String property, Object value, SimpleMap map, int deep) {
 		if (this.convertable == null && this.property == null) {
 			return 1;
 		}

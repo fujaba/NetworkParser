@@ -23,7 +23,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
@@ -41,7 +41,7 @@ public class SimpleObjectFilter implements ObjectCondition {
 			return false;
 		}
 		String type = event.getNewValue().getClass().getSimpleName();
-		return EntityUtil.isPrimitiveType(type);
+		return StringUtil.isPrimitiveType(type);
 	}
 
 }

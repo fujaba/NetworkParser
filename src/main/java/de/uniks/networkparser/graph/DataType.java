@@ -25,7 +25,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 
 public class DataType {
 	public static final DataType VOID = new DataType("void");
@@ -75,13 +75,13 @@ public class DataType {
 			return result;
 		}
 		if (shortName  == false || result == null || result.lastIndexOf(".") < 0) {
-			result= EntityUtil.convertPrimitiveToObjectType(result);
+			result= StringUtil.convertPrimitiveToObjectType(result);
 			if(isArray) {
 				return result+ARRAY;
 			}
 			return result;
 		}
-		result= EntityUtil.convertPrimitiveToObjectType(result.substring(result.lastIndexOf(".") + 1));
+		result= StringUtil.convertPrimitiveToObjectType(result.substring(result.lastIndexOf(".") + 1));
 		if(isArray) {
 			return result+ARRAY;
 		}
@@ -148,7 +148,7 @@ public class DataType {
 
 	public String toString(boolean ref) {
 		String internName = this.getInternName(false, true);
-		if(EntityUtil.isPrimitiveType(internName)) {
+		if(StringUtil.isPrimitiveType(internName)) {
 			if (ref) {
 				return DataType.class.getSimpleName() + "." + internName.toUpperCase();
 			}
@@ -185,14 +185,14 @@ public class DataType {
 			return getClazz().getName(true);
 		}
 		if (PROPERTY_CATEGORIE.equals(value)) {
-			if (EntityUtil.isPrimitiveType(getInternName(false, true))) {
+			if (StringUtil.isPrimitiveType(getInternName(false, true))) {
 				return "PRIMITIVE";
 			}
 			return "OBJECT";
 		}
 		if (PROPERTY_OBJECTNAME.equals(value)) {
 			String name = getClazz().getName(true);
-			return EntityUtil.getObjectType(name);
+			return StringUtil.getObjectType(name);
 		}
 		return null;
 	}

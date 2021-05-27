@@ -26,7 +26,7 @@ THE SOFTWARE.
 import java.util.Comparator;
 
 import de.uniks.networkparser.EntityValueFactory;
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /**
@@ -51,7 +51,7 @@ public class EntityComparator<V> implements Comparator<V> {
 	/** Variable of Column. */
 	private String column = IDMAP;
 	/** Variable of IdMap. */
-	private IdMap map;
+	private SimpleMap map;
 	/** Variable of Factory. */
 	private EntityValueFactory cellCreator = new EntityValueFactory();
 	/** Variable of TableList. */
@@ -254,7 +254,7 @@ public class EntityComparator<V> implements Comparator<V> {
 	 * @param value The IdMap
 	 * @return EntityComparator Instance
 	 */
-	public EntityComparator<V> withMap(IdMap value) {
+	public EntityComparator<V> withMap(SimpleMap value) {
 		this.map = value;
 		return this;
 	}
@@ -262,7 +262,7 @@ public class EntityComparator<V> implements Comparator<V> {
 	/**
 	 * @return The Current IdMap.
 	 */
-	public IdMap getMap() {
+	public SimpleMap getMap() {
 		return map;
 	}
 

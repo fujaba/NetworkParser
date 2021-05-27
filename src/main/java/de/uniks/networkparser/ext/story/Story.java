@@ -28,7 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import de.uniks.networkparser.EntityStringConverter;
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleException;
@@ -271,7 +271,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 		}else if(this.getTitle() != null) {
 			StoryStepTitle title = this.getTitle();
 			if(title.getTitle() != null) {
-				file = EntityUtil.getValidChars(title.getTitle().trim(), 50);
+				file = StringUtil.getValidChars(title.getTitle().trim(), 50);
 			}
 		}
 
@@ -501,7 +501,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 		}
 		StoryStepTitle title = this.getTitle();
 		if(title != null && title.getTitle() != null) {
-			return EntityUtil.getValidChars(title.getTitle().trim(), 50);
+			return StringUtil.getValidChars(title.getTitle().trim(), 50);
 		}
 		return null;
 	}

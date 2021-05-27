@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
@@ -237,7 +237,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			boolean gradle = false;
 
 			if (new File(javacExecutor).exists()) {
-				String path = EntityUtil.getPath(javacExecutor, "/");
+				String path = StringUtil.getPath(javacExecutor, "/");
 				items.add("\"" + path + "\"");
 			} else if ((Os.isMac() || Os.isUnix()) && new File("gradlew").exists()) {
 				items.add("./gradlew");

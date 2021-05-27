@@ -3,7 +3,6 @@ package de.uniks.networkparser.buffer;
 import java.nio.charset.Charset;
 
 import de.uniks.networkparser.bytes.ByteConverter;
-import de.uniks.networkparser.bytes.ByteConverterHTTP;
 import de.uniks.networkparser.bytes.ByteConverterString;
 import de.uniks.networkparser.interfaces.Converter;
 
@@ -462,7 +461,7 @@ public class ByteBuffer extends BufferedBuffer {
 
 	public String toString(Converter converter) {
 		if (converter == null) {
-			converter = new ByteConverterHTTP();
+			converter = new ByteConverterString();
 		}
 		if (converter instanceof ByteConverter) {
 			return ((ByteConverter) converter).toString(this.toBytes());

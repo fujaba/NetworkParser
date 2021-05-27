@@ -24,7 +24,7 @@ package de.uniks.networkparser.test.model.ludo;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -94,7 +94,7 @@ public class Label implements SendableEntity {
 	}
 
 	public void setName(String value) {
-		if (!EntityUtil.stringEquals(this.name, value)) {
+		if (!StringUtil.stringEquals(this.name, value)) {
 
 			String oldValue = this.name;
 			this.name = value;

@@ -30,6 +30,7 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleMap;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.EntityComparator;
@@ -171,7 +172,7 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 		if (comparator == null) {
 			return null;
 		}
-		IdMap map = comparator.getMap();
+		SimpleMap map = comparator.getMap();
 		Iterator<Object> iterator = iterator();
 		SendableEntityCreator creator = null;
 		if (iterator.hasNext()) {

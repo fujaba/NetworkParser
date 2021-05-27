@@ -1,6 +1,6 @@
 package de.uniks.networkparser.graph;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.TemplateItem;
@@ -120,10 +120,10 @@ public class GraphUtil {
 		if (sourceType == null || otherType == null) {
 			return 1;
 		}
-		if (EntityUtil.isNumericType(sourceType) && EntityUtil.isNumericType(otherType)) {
+		if (StringUtil.isNumericType(sourceType) && StringUtil.isNumericType(otherType)) {
 			return 0;
 		}
-		if (EntityUtil.isPrimitiveType(sourceType) && EntityUtil.isPrimitiveType(otherType)) {
+		if (StringUtil.isPrimitiveType(sourceType) && StringUtil.isPrimitiveType(otherType)) {
 			return 0;
 		}
 		if (sourceType.equals(otherType)) {

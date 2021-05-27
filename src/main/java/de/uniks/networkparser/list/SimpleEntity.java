@@ -40,9 +40,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
  * @param <K> Key-Element
  * @param <V> Value Element
  */
-public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
-
-		SendableEntityCreator, SendableEntityCreatorNoIndex {
+public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntityCreator, SendableEntityCreatorNoIndex {
 	/** Constant for KEY. */
 	public static final String PROPERTY_KEY = "key";
 	/** Constant for VALUE. */

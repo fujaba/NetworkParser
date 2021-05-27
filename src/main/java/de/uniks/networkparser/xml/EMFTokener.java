@@ -29,6 +29,7 @@ import java.util.Collection;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -159,7 +160,7 @@ public class EMFTokener extends Tokener {
 		root.withKeyValue("xmlns:ecore", "http://www.eclipse.org/emf/2002/Ecore");
 		String id, name = "model";
 		if (entity.getName() != null) {
-			id = EntityUtil.shortClassName(entity.getName());
+			id = StringUtil.shortClassName(entity.getName());
 			name = entity.getName();
 		} else {
 			id = name;
@@ -174,10 +175,10 @@ public class EMFTokener extends Tokener {
 			ecoreClass.withKeyValue(NAME, child.getName());
 			for (Attribute attribute : child.getAttributes()) {
 				DataType type = attribute.getType();
-				if (EntityUtil.isPrimitiveType(type.getName(false))) {
+				if (StringUtil.isPrimitiveType(type.getName(false))) {
 					XMLEntity ecoreAttribute = ecoreClass.createChild(EAttribute);
 					ecoreAttribute.withKeyValue(NAME, attribute.getName());
-					ecoreAttribute.withKeyValue(ETYPE, EDATATYPE + "E" + EntityUtil.upFirstChar(type.getName(true)));
+					ecoreAttribute.withKeyValue(ETYPE, EDATATYPE + "E" + StringUtil.upFirstChar(type.getName(true)));
 				}
 			}
 
@@ -205,7 +206,7 @@ public class EMFTokener extends Tokener {
 		String rootPath = path.get(entity);
 		for (String propertyName : creatorClass.getProperties()) {
 			Object propertyValue = creatorClass.getValue(entity, propertyName);
-			if (EntityUtil.isPrimitiveType(EntityUtil.shortClassName(propertyValue.getClass().getName()))) {
+			if (StringUtil.isPrimitiveType(StringUtil.shortClassName(propertyValue.getClass().getName()))) {
 				parent.put(propertyName, propertyValue);
 				continue;
 			}
@@ -630,14 +631,14 @@ public class EMFTokener extends Tokener {
 					Entity childItem = (Entity) child;
 					String typ = childItem.getString(XSI_TYPE);
 					if (typ.equals(TYPE_EAttribute)) {
-						String etyp = EntityUtil.getId(childItem.getString(ETYPE));
+						String etyp = StringUtil.getId(childItem.getString(ETYPE));
 						if (EntityUtil.isEMFType(etyp)) {
 							etyp = etyp.substring(1);
 						}
-						if (EntityUtil.isPrimitiveType(etyp.toLowerCase())) {
+						if (StringUtil.isPrimitiveType(etyp.toLowerCase())) {
 							etyp = etyp.toLowerCase();
 						}
-						clazz.withAttribute(EntityUtil.toValidJavaId(childItem.getString(EMFTokener.NAME)),
+						clazz.withAttribute(StringUtil.toValidJavaId(childItem.getString(EMFTokener.NAME)),
 								DataType.create(etyp));
 					} else if (typ.equals(TYPE_EReferences)) {
 						parentList.add(childItem, eClassifier);
@@ -669,7 +670,7 @@ public class EMFTokener extends Tokener {
 		}
 		/* inheritance */
 		for (Entity eClass : superClazzes) {
-			String id = EntityUtil.getId(eClass.getString(TYPE_ESUPERTYPE));
+			String id = StringUtil.getId(eClass.getString(TYPE_ESUPERTYPE));
 			Clazz kidClazz = model.getNode(eClass.getString(EMFTokener.NAME));
 			if (kidClazz != null) {
 				Clazz superClazz = model.getNode(id);
@@ -701,7 +702,7 @@ public class EMFTokener extends Tokener {
 			XMLEntity parent = (XMLEntity) parentList.getValueByIndex(i);
 			String srcClassName = parent.getString(EMFTokener.NAME);
 			if (eref.has(EOpposite)) {
-				srcRoleName = EntityUtil.getId(eref.getString(EOpposite));
+				srcRoleName = StringUtil.getId(eref.getString(EOpposite));
 		/*	 else 			srcRoleName = tgtRoleName+"_back"; */
 			}
 			Association srcAssoc = getOrCreate(items, model, srcClassName, srcRoleName);
@@ -729,7 +730,7 @@ public class EMFTokener extends Tokener {
 			}
 		}
 		if (roleName != null) {
-			roleName = EntityUtil.toValidJavaId(roleName);
+			roleName = StringUtil.toValidJavaId(roleName);
 		}
 		String assocName = className + ":" + roleName;
 		Association edge = (Association) items.getValue(assocName);
@@ -863,7 +864,7 @@ public class EMFTokener extends Tokener {
 		root.withKeyValue(XMI_ID, value.getName());
 		root.withKeyValue(NAME, value.getName());
 		root.withKeyValue("visibility", value.getModifier());
-		if (EntityUtil.isPrimitiveType(value.getType().getName(false))) {
+		if (StringUtil.isPrimitiveType(value.getType().getName(false))) {
 			XMLEntity child = root.createChild("type");
 			child.withKeyValue(XMI_TYPE, "uml:PrimitiveType");
 			child.withKeyValue("href",
@@ -902,7 +903,7 @@ public class EMFTokener extends Tokener {
 			XMLEntity returnChild = root.createChild("ownedParameter");
 			returnChild.withKeyValue(XMI_ID, method.getReturnType().toString());
 			returnChild.withKeyValue("direction", "return");
-			if (EntityUtil.isPrimitiveType(returnType.toString())) {
+			if (StringUtil.isPrimitiveType(returnType.toString())) {
 				XMLEntity child = root.createChild("type");
 				child.withKeyValue(XMI_TYPE, "uml:PrimitiveType");
 				child.withKeyValue("href",

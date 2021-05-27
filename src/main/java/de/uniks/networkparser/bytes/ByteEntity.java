@@ -23,6 +23,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
@@ -72,7 +73,7 @@ public class ByteEntity implements ByteItem {
   public byte[] getValue() {
     if (values == null)
       return null;
-    return EntityUtil.clone(this.values);
+    return StringUtil.clone(this.values);
   }
 
   /**
@@ -85,7 +86,7 @@ public class ByteEntity implements ByteItem {
   public ByteEntity withValue(byte type, byte[] value) {
     this.type = type;
     if (value != null) {
-      this.values = EntityUtil.clone(value);
+      this.values = StringUtil.clone(value);
     }
     return this;
   }

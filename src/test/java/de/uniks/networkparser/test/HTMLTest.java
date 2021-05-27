@@ -3,7 +3,7 @@ package de.uniks.networkparser.test;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.gui.controls.GUILine;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -37,10 +37,10 @@ public class HTMLTest {
 	@Test
 	public void testHTML(){
 		String txt = "Stefan <Test>";
-		String encode = EntityUtil.encode(txt);
+		String encode = StringUtil.encode(txt);
 		Assert.assertEquals("Stefan &lt;Test&gt;", encode);
 
-		Assert.assertEquals(txt, EntityUtil.decode(encode));
+		Assert.assertEquals(txt, StringUtil.decode(encode));
 	}
 	@Test
 	public void testSimpleHTMLFile(){
@@ -68,7 +68,7 @@ public class HTMLTest {
 		sb.append("</ul>");
 		sb.append("</div>");
 		HTMLEntity entity = new HTMLEntity().with(sb.toString());
-		XMLEntity list = entity.getElementsBy(EntityUtil.CLASS, "#mp-itn b a");
+		XMLEntity list = entity.getElementsBy(StringUtil.CLASS, "#mp-itn b a");
 		Assert.assertEquals(2, list.sizeChildren());
 		for(int i=0;i<list.sizeChildren();i++) {
 			BaseItem child = list.getChild(i);

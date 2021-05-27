@@ -25,9 +25,9 @@ THE SOFTWARE.
 */
 import java.util.Comparator;
 
-import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
@@ -173,7 +173,7 @@ public class TextEntity implements EntityList {
 	}
 
 	@Override
-	public BaseItem withValue(Buffer values) {
+	public BaseItem withValue(BufferItem values) {
 		return null;
 	}
 }

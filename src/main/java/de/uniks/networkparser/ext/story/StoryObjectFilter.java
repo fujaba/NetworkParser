@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleMap;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
@@ -39,7 +39,7 @@ public class StoryObjectFilter extends Filter {
 	}
 
 	@Override
-	public int convert(Object entity, String property, Object value, IdMap map, int deep) {
+	public int convert(Object entity, String property, Object value, SimpleMap map, int deep) {
 		if (elements.contains(value)) {
 			return 1;
 		}

@@ -29,7 +29,7 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Array;
 import java.util.List;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.generic.GenericCreator;
@@ -99,7 +99,7 @@ public class DiceController extends SendableItem
 	}
 
 	public void throwDice() {
-		showAnimation(EntityUtil.randInt(1, this.max));
+		showAnimation(StringUtil.randInt(1, this.max));
 	}
 
 	public DiceController withValue(int number) {
@@ -370,7 +370,7 @@ public class DiceController extends SendableItem
 		if (mouseEventClass.isAssignableFrom(value.getClass())) {
 			String status = "" + ReflectionLoader.call(this.getTimeLine(), "getStatus");
 			if (STOPPED.equals(status)) {
-				int point = EntityUtil.randInt(1, 6);
+				int point = StringUtil.randInt(1, 6);
 				showAnimation(point);
 			}
 			firePropertyChange(PROPERTY_CLICK, null, number);

@@ -29,7 +29,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.LinkedHashSet;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleSet;
@@ -290,7 +290,7 @@ public class GenericCreator implements SendableEntityCreator {
 			String methodName = method.getName();
 			if (genericCreator.getValidMethod(methodName) != null) {
 				Class<?> child = method.getReturnType();
-				if (EntityUtil.isPrimitiveType(child.getName()) == false) {
+				if (StringUtil.isPrimitiveType(child.getName()) == false) {
 					try {
 						Type types = child.getGenericSuperclass();
 						if (types != null && types instanceof ParameterizedType) {
@@ -315,7 +315,7 @@ public class GenericCreator implements SendableEntityCreator {
 		Field[] fields = instance.getDeclaredFields();
 		for (Field field : fields) {
 			Class<?> child = field.getType();
-			if (EntityUtil.isPrimitiveType(child.getName()) == false
+			if (StringUtil.isPrimitiveType(child.getName()) == false
 					&& field.getName().equals("dynamicValues") == false) {
 				Type types = field.getGenericType();
 				if (types != null && types instanceof ParameterizedType) {

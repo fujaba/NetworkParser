@@ -26,11 +26,11 @@ THE SOFTWARE.
 import java.util.Iterator;
 
 import de.uniks.networkparser.EntityStringConverter;
-import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.buffer.Buffer;
+import de.uniks.networkparser.SimpleMap;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SortedList;
 
@@ -201,12 +201,12 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 		converter.add();
 		StringBuilder sb = new StringBuilder().append(START).append(converter.getPrefix());
 		Object element = iterator.next();
-		sb.append(EntityUtil.valueToString(element, false, this, converter));
+		sb.append(StringUtil.valueToString(element, false, this, converter));
 		while (iterator.hasNext()) {
 			element = iterator.next();
 			sb.append(",");
 			sb.append(converter.getPrefix());
-			sb.append(EntityUtil.valueToString(element, false, this, converter));
+			sb.append(StringUtil.valueToString(element, false, this, converter));
 		}
 		converter.minus();
 		sb.append(converter.getPrefix());
@@ -236,7 +236,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	 * @param values a simple String of Value or pairs of key-values
 	 * @return Itself
 	 */
-	public JsonArray withValue(Buffer values) {
+	public JsonArray withValue(BufferItem values) {
 		new JsonTokener().parseToEntity(this, values);
 		return this;
 	}
@@ -252,7 +252,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 			return this;
 		}
 		for (int i = 0; i < values.length; i++) {
-			add(EntityUtil.wrap(values[i], this));
+			add(StringUtil.wrap(values[i], this));
 		}
 		return this;
 	}
@@ -261,7 +261,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 		for (Object item : this) {
 			if (item instanceof JsonObject) {
 				JsonObject json = (JsonObject) item;
-				if (json.has(IdMap.ID) && json.getString(IdMap.ID).equals(id)) {
+				if (json.has(SimpleMap.ID) && json.getString(SimpleMap.ID).equals(id)) {
 					return json;
 				}
 			}

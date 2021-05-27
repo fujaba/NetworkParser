@@ -23,8 +23,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
+import de.uniks.networkparser.SimpleMap;
 import de.uniks.networkparser.Tokener;
 
 public interface Grammar {
@@ -49,7 +49,7 @@ public interface Grammar {
 	 */
 	public SendableEntityCreator getCreator(String type, Object item, MapEntity map, String className);
 
-	public String getId(Object obj, IdMap map);
+	public String getId(Object obj, SimpleMap map);
 
 	/**
 	 * Get a Value from the Item
@@ -74,7 +74,7 @@ public interface Grammar {
 	 */
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype);
 
-	public Entity writeBasicValue(Entity entity, String className, String id, String type, IdMap map);
+	public Entity writeBasicValue(Entity entity, String className, String id, String type, SimpleMap map);
 
 	public BaseItem encode(Object entity, MapEntity map);
 

@@ -479,12 +479,12 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
     do {
       sub = tokener.nextString(dateFormat, new CharacterBuffer(), false, false, '"').toString();
       if (sub.length() > 0 && !isString) {
-        sub = sub.replace("HZ", EntityUtil.strZero(get(HOUR_OF_DAY) - getTimezone(), 2));
-        sub = sub.replace("HH", EntityUtil.strZero(get(HOUR_OF_DAY), 2));
+        sub = sub.replace("HZ", StringUtil.strZero(get(HOUR_OF_DAY) - getTimezone(), 2));
+        sub = sub.replace("HH", StringUtil.strZero(get(HOUR_OF_DAY), 2));
         sub = sub.replace("H", String.valueOf(get(HOUR_OF_DAY)));
-        sub = sub.replace("MM", EntityUtil.strZero(get(MINUTE_OF_HOUR), 2));
+        sub = sub.replace("MM", StringUtil.strZero(get(MINUTE_OF_HOUR), 2));
         sub = sub.replace("M", String.valueOf(get(MINUTE_OF_HOUR)));
-        sub = sub.replace("SS", EntityUtil.strZero(get(SECOND_OF_MINUTE), 2));
+        sub = sub.replace("SS", StringUtil.strZero(get(SECOND_OF_MINUTE), 2));
         sub = sub.replace("S", String.valueOf(get(SECOND_OF_MINUTE)));
         /* Date */
         int dayOfWeek = (int) get(DAY_OF_WEEK);
@@ -497,20 +497,20 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
         }
         sub = sub.replace("dddd", this.weekDays[dayOfWeek]);
         sub = sub.replace("ddd", this.weekDays[dayOfWeek].substring(0, 3));
-        sub = sub.replace("dd", EntityUtil.strZero(get(DAY_OF_MONTH), 2));
+        sub = sub.replace("dd", StringUtil.strZero(get(DAY_OF_MONTH), 2));
         sub = sub.replace("d", String.valueOf(get(DAY_OF_MONTH)));
         sub = sub.replace("mmmm", this.monthOfYear[month - 1]);
         sub = sub.replace("mmm", this.monthOfYear[month - 1].substring(0, 3));
-        sub = sub.replace("mm", EntityUtil.strZero(month, 2));
+        sub = sub.replace("mm", StringUtil.strZero(month, 2));
         sub = sub.replace("m", String.valueOf(month));
         sub = sub.replace("yyyy", String.valueOf(get(YEAR)));
         sub = sub.replace("yyy", String.valueOf(get(YEAR)));
-        sub = sub.replace("yy", EntityUtil.strZero(get(YEAR), 2, 2));
-        sub = sub.replace("y", EntityUtil.strZero(get(YEAR), 1, 2));
+        sub = sub.replace("yy", StringUtil.strZero(get(YEAR), 2, 2));
+        sub = sub.replace("y", StringUtil.strZero(get(YEAR), 1, 2));
         if (this.timeZone > 0) {
-          sub = sub.replace("Z", "+" + EntityUtil.strZero(this.timeZone, 2, 2) + "00");
+          sub = sub.replace("Z", "+" + StringUtil.strZero(this.timeZone, 2, 2) + "00");
         } else if (this.timeZone < 0) {
-          sub = sub.replace("Z", "-" + EntityUtil.strZero(this.timeZone, 2, 2) + "00");
+          sub = sub.replace("Z", "-" + StringUtil.strZero(this.timeZone, 2, 2) + "00");
         } else {
           sub = sub.replace("Z", "0000");
         }

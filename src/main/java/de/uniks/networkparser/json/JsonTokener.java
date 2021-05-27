@@ -28,13 +28,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.uniks.networkparser.EntityCreator;
-import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleException;
+import de.uniks.networkparser.SimpleMap;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -284,10 +284,10 @@ public class JsonTokener extends Tokener {
 				return parsingSimpleEntityXML(parent, xmlEntity);
 			}
 
-			parent.put(IdMap.CLASS, xmlEntity.getTag());
+			parent.put(SimpleMap.CLASS, xmlEntity.getTag());
 			JsonObject props = new JsonObject();
 			if (xmlEntity.getValue() != null && xmlEntity.getValue().length() > 0) {
-				parent.put(IdMap.VALUE, xmlEntity.getValue());
+				parent.put(SimpleMap.VALUE, xmlEntity.getValue());
 			}
 
 			int i;
@@ -320,7 +320,7 @@ public class JsonTokener extends Tokener {
 		switch (stopChar) {
 		case BufferItem.QUOTES:
 			buffer.skip();
-			return EntityUtil.unQuote(nextString(buffer, new CharacterBuffer(), true, true, stopChar));
+			return StringUtil.unQuote(nextString(buffer, new CharacterBuffer(), true, true, stopChar));
 		case '\\':
 			/* Must be unquote */
 			buffer.skip();
@@ -347,10 +347,10 @@ public class JsonTokener extends Tokener {
 	public JsonObject parseEntity(JsonObject parent, SimpleKeyValueList<?, ?> newValue) {
 		if (newValue instanceof XMLEntity) {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
-			parent.put(IdMap.CLASS, xmlEntity.getTag());
+			parent.put(SimpleMap.CLASS, xmlEntity.getTag());
 			JsonObject props = new JsonObject();
 			if (xmlEntity.getValue() != null && xmlEntity.getValue().length() > 0) {
-				parent.put(IdMap.VALUE, xmlEntity.getValue());
+				parent.put(SimpleMap.VALUE, xmlEntity.getValue());
 			}
 
 			int i;
@@ -410,7 +410,7 @@ public class JsonTokener extends Tokener {
 				if (subCreator != null) {
 					Object subTarget = subCreator.getSendableInstance(false);
 					if (decodingSimple((JsonObject) value, subTarget, subCreator) != null) {
-						creator.setValue(target, property, subTarget, IdMap.NEW);
+						creator.setValue(target, property, subTarget, SimpleMap.NEW);
 					}
 				}
 			} else if (value instanceof JsonArray) {
@@ -422,14 +422,14 @@ public class JsonTokener extends Tokener {
 						if (item instanceof JsonObject) {
 							Object subTarget = subCreator.getSendableInstance(false);
 							if (decodingSimple((JsonObject) item, subTarget, subCreator) != null) {
-								creator.setValue(target, property, subTarget, IdMap.NEW);
+								creator.setValue(target, property, subTarget, SimpleMap.NEW);
 							}
 						}
 					}
 				}
 			} else if (value != null) {
 				/* Simple Value */
-				creator.setValue(target, property, value, IdMap.NEW);
+				creator.setValue(target, property, value, SimpleMap.NEW);
 			}
 		}
 		return target;
@@ -455,18 +455,18 @@ public class JsonTokener extends Tokener {
 		if (typeInfo != null) {
 			Object result = null;
 			if (kid == false) {
-				map.withStrategy(jsonObject.getString(IdMap.TYPE));
+				map.withStrategy(jsonObject.getString(SimpleMap.TYPE));
 				result = map.getTarget();
 			}
-			if (grammar.hasValue(jsonObject, IdMap.ID) && result == null) {
-				String jsonId = grammar.getValue(jsonObject, IdMap.ID);
+			if (grammar.hasValue(jsonObject, SimpleMap.ID) && result == null) {
+				String jsonId = grammar.getValue(jsonObject, SimpleMap.ID);
 				if (jsonId != null) {
 					result = this.map.getObject(jsonId);
 				}
 			}
 			SimpleEvent event = null;
 			if (result == null) {
-				result = grammar.getNewEntity(typeInfo, grammar.getValue(jsonObject, IdMap.CLASS), false);
+				result = grammar.getNewEntity(typeInfo, grammar.getValue(jsonObject, SimpleMap.CLASS), false);
 				event = new SimpleEvent(SendableEntityCreator.NEW, jsonObject, this.map, null, null, result);
 			} else {
 				event = new SimpleEvent(SendableEntityCreator.UPDATE, jsonObject, this.map, null, null, result);
@@ -496,8 +496,8 @@ public class JsonTokener extends Tokener {
 			}
 			map.getFilter().isConvertable(event);
 			return result;
-		} else if (jsonObject.get(IdMap.ID) != null) {
-			return this.map.getObject((String) jsonObject.get(IdMap.ID));
+		} else if (jsonObject.get(SimpleMap.ID) != null) {
+			return this.map.getObject((String) jsonObject.get(SimpleMap.ID));
 		}
 		return null;
 	}
@@ -518,7 +518,7 @@ public class JsonTokener extends Tokener {
 		Grammar grammar = map.getGrammar();
 		boolean isId = map.isId(target);
 		if (isId) {
-			String jsonId = grammar.getValue(jsonObject, IdMap.ID);
+			String jsonId = grammar.getValue(jsonObject, SimpleMap.ID);
 			if (jsonId == null) {
 				return target;
 			}
@@ -641,7 +641,7 @@ public class JsonTokener extends Tokener {
 	}
 
 	@Override
-	public JsonTokener withMap(IdMap map) {
+	public JsonTokener withMap(SimpleMap map) {
 		super.withMap(map);
 		return this;
 	}
@@ -658,8 +658,8 @@ public class JsonTokener extends Tokener {
 
 	public Entity createLink(Entity parent, String property, String className, String id) {
 		Entity child = newInstance();
-		child.put(IdMap.CLASS, className);
-		child.put(IdMap.ID, id);
+		child.put(SimpleMap.CLASS, className);
+		child.put(SimpleMap.ID, id);
 		return child;
 	}
 

@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.ArrayList;
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.story.Story;
@@ -212,16 +212,16 @@ public class GraphConverter implements Converter {
 			for (Attribute attribute : clazz.getAttributes()) {
 				if (createModel) {
 					if (attribute.getType().equals(DataType.STRING)) {
-						code.withLine(clazz.getId() + ".set" + EntityUtil.upFirstChar(attribute.getName()) + "(\""
+						code.withLine(clazz.getId() + ".set" + StringUtil.upFirstChar(attribute.getName()) + "(\""
 								+ attribute.getValue() + "\");");
 					} else {
-						code.withLine(clazz.getId() + ".set" + EntityUtil.upFirstChar(attribute.getName()) + "("
+						code.withLine(clazz.getId() + ".set" + StringUtil.upFirstChar(attribute.getName()) + "("
 								+ attribute.getValue() + ");");
 					}
 				}
 				code.withLine("story.assertEquals(\"Attribute " + attribute.getName() + " wrong value\", "
 						+ attribute.getValue() + ", " + clazz.getId() + ".get"
-						+ EntityUtil.upFirstChar(attribute.getName()) + "());");
+						+ StringUtil.upFirstChar(attribute.getName()) + "());");
 			}
 		}
 		return code;

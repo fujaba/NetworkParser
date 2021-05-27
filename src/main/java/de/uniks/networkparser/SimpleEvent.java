@@ -64,7 +64,7 @@ public class SimpleEvent extends PropertyChangeEvent {
 	 * @param source source PropertyChange
 	 * @param map    IdMap
 	 */
-	public SimpleEvent(String type, Entity entity, PropertyChangeEvent source, IdMap map) {
+	public SimpleEvent(String type, Entity entity, PropertyChangeEvent source, SimpleMap map) {
 		super(map, source.getPropertyName(), source.getOldValue(), source.getNewValue());
 		this.value = source.getSource();
 		this.type = type;

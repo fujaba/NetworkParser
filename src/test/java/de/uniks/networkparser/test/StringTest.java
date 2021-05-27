@@ -11,7 +11,7 @@ import org.junit.Test;
 import de.uniks.ludo.model.Ludo;
 import de.uniks.ludo.model.Player;
 import de.uniks.networkparser.DateTimeEntity;
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -43,10 +43,10 @@ public class StringTest {
 	@Test
 	public void testObjectType() {
 		NetworkParserLog logger=new NetworkParserLog();
-		logger.info(EntityUtil.getObjectType("byte"));
-		logger.info(EntityUtil.getObjectType("int"));
-		logger.info(EntityUtil.getObjectType("Integer"));
-		logger.info(EntityUtil.getObjectType("Room"));
+		logger.info(StringUtil.getObjectType("byte"));
+		logger.info(StringUtil.getObjectType("int"));
+		logger.info(StringUtil.getObjectType("Integer"));
+		logger.info(StringUtil.getObjectType("Room"));
 	}
 
 	@Test
@@ -91,11 +91,11 @@ public class StringTest {
 		String ref="Hallo Welt";
 		String temp = ref;
 		for(int i=0;i<6;i++) {
-			temp = EntityUtil.quote(temp);
+			temp = StringUtil.quote(temp);
 		}
 
 		for(int i=0;i<6;i++) {
-			temp = EntityUtil.unQuote(temp);
+			temp = StringUtil.unQuote(temp);
 		}
 		Assert.assertEquals(ref, temp);
 	}
@@ -110,15 +110,15 @@ public class StringTest {
 	public void testEscapeSimple(){
 		String g = "\"\\\"Hallo Welt\\\"\"";
 		String t = "\"\\\"\\\\\\\"Hallo Welt\\\\\\\"\\\"\"";
-		Assert.assertEquals(g, EntityUtil.unQuote(t));
+		Assert.assertEquals(g, StringUtil.unQuote(t));
 	}
 
 	@Test
 	public void testEscapeSimpleHTML(){
 		char[] txt = new char[]{'H','a', 'l', 'l', 228};
 		String example = new String(txt);
-		String encode = EntityUtil.encode(example);
-		Assert.assertEquals(example, EntityUtil.decode(encode));
+		String encode = StringUtil.encode(example);
+		Assert.assertEquals(example, StringUtil.decode(encode));
 	}
 
 	@Test
@@ -289,16 +289,16 @@ public class StringTest {
 
 	@Test
 	public void testModelType() {
-		Assert.assertTrue(EntityUtil.isNumericTypeContainer("long", "Long"));
-		Assert.assertTrue(EntityUtil.isNumericTypeContainer("boolean", "Boolean"));
-		Assert.assertTrue(EntityUtil.isNumericTypeContainer("int", "Integer"));
-		Assert.assertTrue(EntityUtil.isNumericTypeContainer("double", "Double"));
-		Assert.assertTrue(EntityUtil.isNumericTypeContainer("Boolean", "boolean"));
-		Assert.assertTrue(EntityUtil.isNumericTypeContainer("Integer", "int"));
-		Assert.assertTrue(EntityUtil.isNumericTypeContainer("Double", "double"));
-		Assert.assertFalse(EntityUtil.isNumericTypeContainer("int", "Short"));
-		Assert.assertFalse(EntityUtil.isNumericTypeContainer("int", "byte"));
-		Assert.assertFalse(EntityUtil.isNumericTypeContainer("int", "Byte"));
+		Assert.assertTrue(StringUtil.isNumericTypeContainer("long", "Long"));
+		Assert.assertTrue(StringUtil.isNumericTypeContainer("boolean", "Boolean"));
+		Assert.assertTrue(StringUtil.isNumericTypeContainer("int", "Integer"));
+		Assert.assertTrue(StringUtil.isNumericTypeContainer("double", "Double"));
+		Assert.assertTrue(StringUtil.isNumericTypeContainer("Boolean", "boolean"));
+		Assert.assertTrue(StringUtil.isNumericTypeContainer("Integer", "int"));
+		Assert.assertTrue(StringUtil.isNumericTypeContainer("Double", "double"));
+		Assert.assertFalse(StringUtil.isNumericTypeContainer("int", "Short"));
+		Assert.assertFalse(StringUtil.isNumericTypeContainer("int", "byte"));
+		Assert.assertFalse(StringUtil.isNumericTypeContainer("int", "Byte"));
 	}
 	@Test
 	public void testStringCompare() {

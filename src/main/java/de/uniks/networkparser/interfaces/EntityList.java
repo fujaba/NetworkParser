@@ -25,8 +25,6 @@ THE SOFTWARE.
 */
 import java.util.Comparator;
 
-import de.uniks.networkparser.buffer.Buffer;
-
 public interface EntityList extends BaseItem {
 	/**
 	 * Return a Element from list
@@ -53,7 +51,7 @@ public interface EntityList extends BaseItem {
 
 	public Comparator<Object> comparator();
 
-	public BaseItem withValue(Buffer values);
+	public BaseItem withValue(BufferItem values);
 
 	public int sizeChildren();
 }

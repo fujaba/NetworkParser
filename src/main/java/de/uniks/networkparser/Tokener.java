@@ -37,8 +37,11 @@ public class Tokener {
 	public static final String PROPS = "prop";
 	public static final char ENTER = '=';
 	public static final char COLON = ':';
+	
+	/** The SPLITTER. */
+	public static final char SPLITTER = ' ';
 
-	protected IdMap map;
+	protected SimpleMap map;
 
 	/* Methods for Map */
 	public SendableEntityCreator getCreatorClass(Object reference) {
@@ -84,12 +87,12 @@ public class Tokener {
 		return this.map.notify(evt);
 	}
 
-	public Tokener withMap(IdMap map) {
+	public Tokener withMap(SimpleMap map) {
 		this.map = map;
 		return this;
 	}
 
-	public IdMap getMap() {
+	public SimpleMap getMap() {
 		return map;
 	}
 
@@ -105,7 +108,7 @@ public class Tokener {
 	}
 
 	public BaseItem encode(Object entity, MapEntity map) {
-		IdMap idMap = this.map;
+		SimpleMap idMap = this.map;
 		if (this.map == null) {
 			if (map == null) {
 				return null;

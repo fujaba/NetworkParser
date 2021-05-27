@@ -25,7 +25,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.LinkedHashSet;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.interfaces.SendableEntity;
 
 public  class Assignment implements SendableEntity
@@ -103,7 +103,7 @@ public  class Assignment implements SendableEntity
 
    public void setContent(String value)
    {
-      if ( ! EntityUtil.stringEquals(this.content, value)) {
+      if ( ! StringUtil.stringEquals(this.content, value)) {
 
          String oldValue = this.content;
          this.content = value;

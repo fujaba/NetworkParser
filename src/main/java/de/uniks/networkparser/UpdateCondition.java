@@ -19,7 +19,7 @@ public class UpdateCondition implements ObjectCondition {
   /** FOR ACCUMULATE */
   private Tokener tokener;
   private Entity change;
-  private IdMap map;
+  private SimpleMap map;
   /** Target */
   private Object defaultItem;
 
@@ -61,7 +61,7 @@ public class UpdateCondition implements ObjectCondition {
     return condition;
   }
 
-  public static UpdateCondition createAcumulateCondition(IdMap map) {
+  public static UpdateCondition createAcumulateCondition(SimpleMap map) {
     UpdateCondition condition = new UpdateCondition();
     if (map != null) {
       condition.tokener = map.getMapListener().getTokener();
@@ -80,7 +80,7 @@ public class UpdateCondition implements ObjectCondition {
     return condition;
   }
 
-  public static UpdateCondition createTransaction(IdMap map) {
+  public static UpdateCondition createTransaction(SimpleMap map) {
     UpdateCondition condition = new UpdateCondition();
     condition.map = map;
     return condition;
@@ -178,8 +178,8 @@ public class UpdateCondition implements ObjectCondition {
         return false;
       }
       Object source = event.getSource();
-      if (source instanceof IdMap) {
-        IdMap m = (IdMap) source;
+      if (source instanceof SimpleMap) {
+    	  SimpleMap m = (SimpleMap) source;
         return m.getKey(event.getModelValue()) == null && m.getKey(event.getNewValue()) == null;
       }
       return false;
@@ -319,7 +319,7 @@ public class UpdateCondition implements ObjectCondition {
     if (oldValue != creator.getValue(defaultItem, property)) {
       if (change == null) {
         change = tokener.newInstance();
-        change.put(IdMap.ID, map.getId(source, true));
+        change.put(SimpleMap.ID, map.getId(source, true));
       }
       Entity child;
 
@@ -335,7 +335,7 @@ public class UpdateCondition implements ObjectCondition {
         String oldId = map.getId(oldValue, true);
         if (oldId != null) {
           Entity item = tokener.newInstance();
-          item.put(IdMap.ID, oldId);
+          item.put(SimpleMap.ID, oldId);
           child.put(property, item);
         }
       } else {
@@ -355,7 +355,7 @@ public class UpdateCondition implements ObjectCondition {
         String newId = map.getId(newValue, true);
         if (newId != null) {
           Entity item = tokener.newInstance();
-          item.put(IdMap.ID, newId);
+          item.put(SimpleMap.ID, newId);
           child.put(property, item);
         }
       } else {
@@ -433,7 +433,7 @@ public class UpdateCondition implements ObjectCondition {
     if (oldValue != creator.getValue(defaultItem, property)) {
       if (change == null) {
         change = tokener.newInstance();
-        change.put(IdMap.ID, map.getId(target, true));
+        change.put(SimpleMap.ID, map.getId(target, true));
       }
       Entity child;
 
@@ -450,7 +450,7 @@ public class UpdateCondition implements ObjectCondition {
         String oldId = map.getId(oldValue, true);
         if (oldId != null) {
           Entity childItem = tokener.newInstance();
-          childItem.put(IdMap.ID, oldId);
+          childItem.put(SimpleMap.ID, oldId);
           child.put(property, childItem);
         }
       } else {
@@ -471,7 +471,7 @@ public class UpdateCondition implements ObjectCondition {
         String newId = map.getId(newValue, true);
         if (newId != null) {
           Entity childItem = tokener.newInstance();
-          childItem.put(IdMap.ID, newId);
+          childItem.put(SimpleMap.ID, newId);
           child.put(property, childItem);
         }
       } else {

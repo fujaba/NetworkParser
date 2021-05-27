@@ -25,7 +25,7 @@ THE SOFTWARE.
 */
 import java.util.List;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphMember;
@@ -418,8 +418,8 @@ public class TemplateResultFragment
 						continue;
 					}
 					String itemType = (String) item;
-					if (EntityUtil.isPrimitiveType(itemType)) {
-						if (EntityUtil.isDate(itemType) == false) {
+					if (StringUtil.isPrimitiveType(itemType)) {
+						if (StringUtil.isDate(itemType) == false) {
 							continue;
 						}
 					}
@@ -559,11 +559,11 @@ public class TemplateResultFragment
 		if (useImport) {
 			for (int a = importClass.length - 1; a >= 0; a--) {
 				if (importClass[a] != null) {
-					value = value.replaceAll("#IMPORT" + (char) (65 + a), EntityUtil.shortClassName(importClass[a]));
+					value = value.replaceAll("#IMPORT" + (char) (65 + a), StringUtil.shortClassName(importClass[a]));
 					this.addHeader("import " + importClass[a] + ";");
 				}
 			}
-			return value.replaceAll("#IMPORT", EntityUtil.shortClassName(importClass[0]));
+			return value.replaceAll("#IMPORT", StringUtil.shortClassName(importClass[0]));
 		}
 		for (int a = importClass.length - 1; a >= 0; a--) {
 			if (importClass[a] != null) {

@@ -25,7 +25,7 @@ THE SOFTWARE.
 */
 import java.util.ArrayList;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
@@ -303,7 +303,7 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 			return value.toLowerCase();
 		}
 		if (no < 'a' || no > 'z') {
-			return EntityUtil.downFirstChar(value);
+			return StringUtil.downFirstChar(value);
 		}
 		return value;
 

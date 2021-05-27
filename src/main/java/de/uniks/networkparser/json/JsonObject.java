@@ -1,11 +1,11 @@
 package de.uniks.networkparser.json;
 
 import de.uniks.networkparser.EntityStringConverter;
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -164,15 +164,15 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		if (length > 1) {
 			sb.append(converter.getPrefix());
 		}
-		sb.append(EntityUtil.quote(get(0)));
+		sb.append(StringUtil.quote(get(0)));
 		sb.append(":");
-		sb.append(EntityUtil.valueToString(getValueByIndex(0), false, this, converter));
+		sb.append(StringUtil.valueToString(getValueByIndex(0), false, this, converter));
 		for (int i = 1; i < length; i++) {
 			sb.append(",");
 			sb.append(converter.getPrefix());
-			sb.append(EntityUtil.quote(get(i)));
+			sb.append(StringUtil.quote(get(i)));
 			sb.append(":");
-			sb.append(EntityUtil.valueToString(getValueByIndex(i), false, this, converter));
+			sb.append(StringUtil.valueToString(getValueByIndex(i), false, this, converter));
 		}
 		converter.minus();
 		if (length > 1) {
@@ -216,7 +216,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	 * @param values a simple String of Value or pairs of key-values
 	 * @return Itself
 	 */
-	public JsonObject withValue(Buffer values) {
+	public JsonObject withValue(BufferItem values) {
 		new JsonTokener().parseToEntity(this, values);
 		return this;
 	}

@@ -94,6 +94,79 @@ task buildMinCoreJar(type: Jar) {
 	excludes = ['**/ext/**', '**/calculator/**', '**/parser/**', '**/logic/**', '**/**.css', '**/**.js', '**/gui/**','**/graph/**', '**/test/**', '**/EMFTokener*', '**/HTMLEntity*', '**/JDLTokener*', 'LicenceQR.txt']
 	manifest = project.manifest {from sharedManifest}
 }
+
+task buildMinJsonJar(type: Jar) {
+	description 'Build Minimum-Json-Jar with NetworkParser-Core'
+	group "Jar";from sourceSets.main.output; classifier = 'json';
+	manifest = project.manifest {from sharedManifest}
+	includes = ['**/Licence.txt',
+'de/uniks/networkparser.gwt.xml',
+'de/uniks/networkparser/Deep.class',
+'de/uniks/networkparser/EntityCreator.class',
+'de/uniks/networkparser/EntityStringConverter.class',
+'de/uniks/networkparser/EntityValueFactory.class',
+'de/uniks/networkparser/Filter.class',
+'de/uniks/networkparser/MapEntity.class',
+'de/uniks/networkparser/MapEntityStack.class',
+'de/uniks/networkparser/MapFilter.class',
+'de/uniks/networkparser/NetworkParserLog.class',
+'de/uniks/networkparser/SimpleEvent.class',
+'de/uniks/networkparser/SimpleException.class',
+'de/uniks/networkparser/SimpleMap.class',
+'de/uniks/networkparser/SimpleObject.class',
+'de/uniks/networkparser/SimpleGrammar.class',
+'de/uniks/networkparser/StringUtil.class',
+'de/uniks/networkparser/Tokener.class',
+'de/uniks/networkparser/UpdateCondition.class',
+'de/uniks/networkparser/UpdateListener.class',
+'de/uniks/networkparser/buffer/Buffer.class',
+'de/uniks/networkparser/buffer/BufferedBuffer.class',
+'de/uniks/networkparser/buffer/ByteBuffer.class',
+'de/uniks/networkparser/buffer/CharacterBuffer.class',
+'de/uniks/networkparser/bytes/ByteConverter.class',
+'de/uniks/networkparser/bytes/ByteConverterHex.class',
+'de/uniks/networkparser/bytes/ByteConverterString.class',
+'de/uniks/networkparser/interfaces/BaseItem.class',
+'de/uniks/networkparser/interfaces/BufferItem.class',
+'de/uniks/networkparser/interfaces/ByteItem.class',
+'de/uniks/networkparser/interfaces/Condition.class',
+'de/uniks/networkparser/interfaces/Converter.class',
+'de/uniks/networkparser/interfaces/Entity.class',
+'de/uniks/networkparser/interfaces/EntityList.class',
+'de/uniks/networkparser/interfaces/Grammar.class',
+'de/uniks/networkparser/interfaces/ObjectCondition.class',
+'de/uniks/networkparser/interfaces/SendableEntity.class',
+'de/uniks/networkparser/interfaces/SendableEntityCreator.class',
+'de/uniks/networkparser/interfaces/SendableEntityCreatorIndexId.class',
+'de/uniks/networkparser/interfaces/SendableEntityCreatorNoIndex.class',
+'de/uniks/networkparser/interfaces/SendableEntityCreatorTag.class',
+'de/uniks/networkparser/interfaces/SendableEntityCreatorWrapper.class',
+'de/uniks/networkparser/json/JsonArray.class',
+'de/uniks/networkparser/json/JsonObject.class',
+'de/uniks/networkparser/json/JsonTokener.class',
+'de/uniks/networkparser/json/YamlEntity.class',
+'de/uniks/networkparser/json/YamlItem.class',
+'de/uniks/networkparser/json/YAMLTokener.class',
+'de/uniks/networkparser/list/AbstractArray.class',
+'de/uniks/networkparser/list/AbstractList.class',
+'de/uniks/networkparser/list/EntityComparator.class',
+'de/uniks/networkparser/list/MapEntry.class',
+'de/uniks/networkparser/list/ObjectMapEntry.class',
+'de/uniks/networkparser/list/SimpleEntity.class',
+'de/uniks/networkparser/list/SimpleEntrySet.class',
+'de/uniks/networkparser/list/SimpleIterator.class',
+'de/uniks/networkparser/list/SimpleIteratorSet.class',
+'de/uniks/networkparser/list/SimpleKeyValueList.class',
+'de/uniks/networkparser/list/SimpleList.class',
+'de/uniks/networkparser/list/SimpleMapEntry.class',
+'de/uniks/networkparser/list/SimpleSet.class',
+'de/uniks/networkparser/list/SortedList.class',
+'de/uniks/networkparser/list/SortingDirection.class',
+'de/uniks/networkparser/xml/XMLEntity.class',
+'de/uniks/networkparser/xml/XMLTokener.class']
+}
+
+
 task buildSourceJar18(type: Jar, dependsOn: buildCoreJar19) {
 	description 'Build Jar with class-Files and Source-Files for 1.8'
 	group "Jar"; from {( fileTree(dir: 'build/classes/main18') + fileTree(dir: 'src/main/resources') + sourceSets.main.allJava)}; classifier = 'sources18'

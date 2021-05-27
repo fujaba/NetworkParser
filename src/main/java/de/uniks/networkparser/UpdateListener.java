@@ -32,7 +32,7 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class UpdateListener implements MapListener, ObjectCondition {
   /** The map. */
-  private IdMap map;
+  private SimpleMap map;
   private Tokener factory;
   /** The suspend id list. */
   private SimpleList<UpdateCondition> suspendIdList;
@@ -57,7 +57,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
    * @param map the map
    * @param factory Factory to create new Items
    */
-  public UpdateListener(IdMap map, Tokener factory) {
+  public UpdateListener(SimpleMap map, Tokener factory) {
     this.map = map;
     this.factory = factory;
   }
@@ -192,7 +192,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
       creatorClass = this.map.getCreatorClass(oldValue);
       if (grammar.isFlatFormat()) {
         /* NEW VERSION */
-        key = IdMap.ENTITYSPLITTER + SendableEntityCreator.REMOVE + IdMap.ENTITYSPLITTER + property;
+        key = SimpleMap.ENTITYSPLITTER + SendableEntityCreator.REMOVE + SimpleMap.ENTITYSPLITTER + property;
         entity = change;
       } else {
         child = change.getValue(SendableEntityCreator.REMOVE);
@@ -208,7 +208,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
         String oldId = this.map.getId(oldValue, true);
         if (oldId != null) {
           Entity childItem = factory.newInstance();
-          childItem.put(IdMap.ID, oldId);
+          childItem.put(SimpleMap.ID, oldId);
           entity.put(key, childItem);
         }
       } else {
@@ -221,7 +221,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
       creatorClass = this.map.getCreatorClass(newValue);
       if (grammar.isFlatFormat()) {
         /* NEW VERSION */
-        key = IdMap.ENTITYSPLITTER + SendableEntityCreator.UPDATE + IdMap.ENTITYSPLITTER + property;
+        key = SimpleMap.ENTITYSPLITTER + SendableEntityCreator.UPDATE + SimpleMap.ENTITYSPLITTER + property;
         entity = change;
       } else {
         child = change.getValue(SendableEntityCreator.UPDATE);
@@ -237,8 +237,8 @@ public class UpdateListener implements MapListener, ObjectCondition {
         String keys = this.map.getKey(newValue);
         if (keys != null) {
           Entity item = factory.newInstance();
-          item.put(IdMap.CLASS, newValue.getClass().getName());
-          item.put(IdMap.ID, keys);
+          item.put(SimpleMap.CLASS, newValue.getClass().getName());
+          item.put(SimpleMap.ID, keys);
           entity.put(key, item);
         } else {
           Entity item = (Entity) this.map.encode(newValue, this.factory, this.updateFilter);
@@ -263,7 +263,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
     if (this.map == null || !updateMessage.has(SendableEntityCreator.UPDATE) && !updateMessage.has(SendableEntityCreator.REMOVE)) {
       return null;
     }
-    String id = updateMessage.getString(IdMap.ID);
+    String id = updateMessage.getString(SimpleMap.ID);
     /* Check for JSONPatch */
     String op = updateMessage.getString("OP");
     String path = updateMessage.getString("PATH");
@@ -276,7 +276,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
     /* Object prio = updateMessage.getValue(Filter.PRIO); */
     Object masterObj = this.map.getObject(id);
     if (masterObj == null) {
-      String masterObjClassName = (String) updateMessage.getValue(IdMap.CLASS);
+      String masterObjClassName = (String) updateMessage.getValue(SimpleMap.CLASS);
       if (masterObjClassName != null) {
         /* cool, lets make it */
         SendableEntityCreator creator = this.map.getCreator(masterObjClassName, true, true, null);
@@ -441,7 +441,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
     if (value != null) {
       if (oldValue instanceof Entity) {
         /* JUST THE TRUTH */
-        String oldId = (String) ((Entity) oldValue).getValue(IdMap.ID);
+        String oldId = (String) ((Entity) oldValue).getValue(SimpleMap.ID);
         return oldId.equals(this.map.getId(value, true));
       }
       return value.equals(oldValue);

@@ -28,6 +28,7 @@ import java.util.Iterator;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.SimpleGrammar;
+import de.uniks.networkparser.SimpleMap;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
@@ -80,7 +81,7 @@ public class EMFJsonGrammar extends SimpleGrammar {
 			}
 		}
 		if (clazz != null && entity != null) {
-			IdMap map = entity.getMap();
+			SimpleMap map = entity.getMap();
 			for (Iterator<SendableEntityCreator> i = map.iterator(); i.hasNext();) {
 				SendableEntityCreator creator = i.next();
 				Object sendableInstance = creator.getSendableInstance(true);
@@ -94,7 +95,7 @@ public class EMFJsonGrammar extends SimpleGrammar {
 	}
 
 	@Override
-	public String getId(Object obj, IdMap map) {
+	public String getId(Object obj, SimpleMap map) {
 		if (obj == null) {
 			return null;
 		}
@@ -129,7 +130,7 @@ public class EMFJsonGrammar extends SimpleGrammar {
 	}
 
 	@Override
-	public Entity writeBasicValue(Entity entity, String className, String id, String type, IdMap map) {
+	public Entity writeBasicValue(Entity entity, String className, String id, String type, SimpleMap map) {
 		if (id != null && entity != null) {
 			entity.put(SRC, id);
 		}

@@ -38,7 +38,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.BufferedBuffer;
@@ -163,7 +163,7 @@ public class MessageSession {
 	}
 
 	public boolean setSender(String sender) {
-		if (EntityUtil.stringEquals(this.sender, sender) == false) {
+		if (StringUtil.stringEquals(this.sender, sender) == false) {
 			this.sender = sender;
 			return true;
 		}
@@ -867,7 +867,7 @@ public class MessageSession {
 		return "mailer@localhost"; /* worst-case default */
 	}
 
-	private static String prefix = EntityUtil.randomString(5) + "-";
+	private static String prefix = StringUtil.randomString(5) + "-";
 
 	/**
 	 * Keeps track of the current increment, which is appended to the prefix to

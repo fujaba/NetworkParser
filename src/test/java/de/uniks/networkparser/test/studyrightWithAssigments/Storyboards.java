@@ -31,7 +31,7 @@ import org.sdmlib.test.examples.studyrightWithAssignments.model.Student;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.TeachingAssistant;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.University;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.story.Story;
@@ -972,7 +972,7 @@ public class Storyboards {
 
 		story.addText("Results in:", false);
 
-		String text = EntityUtil.replaceAll(
+		String text = StringUtil.replaceAll(
 				"      Sum of assignment points: 42. \n"
 						+ "      Sum of points of assignments that have been done by at least one students: 84.",
 				"42", assignmentPoints, "84", donePoints).toString();

@@ -25,7 +25,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.LinkedHashSet;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.test.model.ludo.util.LabelSet;
 
@@ -697,7 +697,7 @@ public class Field {
 	}
 
 	public void setName(String value) {
-		if (!EntityUtil.stringEquals(this.name, value)) {
+		if (!StringUtil.stringEquals(this.name, value)) {
 
 			String oldValue = this.name;
 			this.name = value;

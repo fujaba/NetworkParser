@@ -4,9 +4,9 @@ import java.nio.charset.Charset;
 import java.util.Comparator;
 
 import de.uniks.networkparser.Pos;
-import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
@@ -273,7 +273,7 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList {
 	}
 
 	@Override
-	public BaseItem withValue(Buffer values) {
+	public BaseItem withValue(BufferItem values) {
 		return this;
 	}
 }

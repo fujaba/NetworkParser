@@ -1,6 +1,6 @@
 package de.uniks.networkparser.parser;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 /*
 The MIT License
 
@@ -274,7 +274,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 						}
 					}
 					if (part != null) {
-						String methodName = EntityUtil.upFirstChar(entry.getName());
+						String methodName = StringUtil.upFirstChar(entry.getName());
 						SymTabEntry startValue = code.getSymbolEntry("ATTRIBUTE",
 								"PROPERTY_" + entry.getName().toUpperCase());
 						SymTabEntry oldValue = code.getSymbolEntry("METHOD", "with" + methodName);

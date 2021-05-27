@@ -68,7 +68,7 @@ public class MapEntityStack {
 		tags.add(tag);
 		String[] properties = creator.getProperties();
 		for (String property : properties) {
-			int lastPos = property.lastIndexOf(IdMap.ENTITYSPLITTER);
+			int lastPos = property.lastIndexOf(SimpleMap.ENTITYSPLITTER);
 			if (lastPos >= 0) {
 				String prop;
 				if (lastPos == property.length() - 1) {
@@ -117,10 +117,10 @@ public class MapEntityStack {
 		if (entity == null) {
 			return -1;
 		}
-		int start = entity.lastIndexOf(IdMap.ENTITYSPLITTER);
+		int start = entity.lastIndexOf(SimpleMap.ENTITYSPLITTER);
 		int pos = this.tags.size() - 1;
 		for (int end = start - 1; end >= 0; end--) {
-			if (entity.charAt(end) == IdMap.ENTITYSPLITTER) {
+			if (entity.charAt(end) == SimpleMap.ENTITYSPLITTER) {
 				String item = entity.substring(end + 1, start);
 				String tag = tags.get(pos);
 				if (tag == null || tag.equals(item) == false) {

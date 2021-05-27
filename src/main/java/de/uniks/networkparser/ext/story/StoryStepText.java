@@ -1,6 +1,6 @@
 package de.uniks.networkparser.ext.story;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 /*
 The MIT License
 
@@ -40,7 +40,7 @@ public class StoryStepText implements ObjectCondition {
 	}
 
 	public StoryStepText withHTMLCode(String text) {
-		this.value = EntityUtil.encode(text);
+		this.value = StringUtil.encode(text);
 		this.tag = "pre";
 		return this;
 	}

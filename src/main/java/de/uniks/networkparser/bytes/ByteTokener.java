@@ -27,9 +27,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
+import de.uniks.networkparser.SimpleMap;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
@@ -512,7 +513,7 @@ public class ByteTokener extends Tokener {
   }
 
   @Override
-  public ByteTokener withMap(IdMap map) {
+  public ByteTokener withMap(SimpleMap map) {
     super.withMap(map);
     return this;
   }

@@ -1,6 +1,6 @@
 package de.uniks.networkparser.graph;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 /*
 The MIT License
 
@@ -460,7 +460,7 @@ public class Clazz extends GraphEntity {
 					} else {
 						char no = name2.charAt(0);
 						if (no < 'a' || no > 'z') {
-							assoc.setName(EntityUtil.downFirstChar(name2));
+							assoc.setName(StringUtil.downFirstChar(name2));
 						}
 					}
 				}

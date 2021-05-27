@@ -53,7 +53,7 @@ public class EntityStringConverter implements Converter {
 	public String getStep() {
 		char[] buf = new char[indentFactor];
 		for (int i = 0; i < indentFactor; i++) {
-			buf[i] = IdMap.SPACE;
+			buf[i] = SimpleMap.SPACE;
 		}
 		return new String(buf);
 	}
@@ -66,7 +66,7 @@ public class EntityStringConverter implements Converter {
 		buf[0] = '\r';
 		buf[1] = '\n';
 		for (int i = 0; i < indent; i++) {
-			buf[i + 2] = IdMap.SPACE;
+			buf[i + 2] = SimpleMap.SPACE;
 		}
 		return new String(buf);
 	}
@@ -79,7 +79,7 @@ public class EntityStringConverter implements Converter {
 		buf[0] = '\r';
 		buf[1] = '\n';
 		for (int i = 0; i < indent; i++) {
-			buf[i + 2] = IdMap.SPACE;
+			buf[i + 2] = SimpleMap.SPACE;
 		}
 		return new String(buf);
 	}

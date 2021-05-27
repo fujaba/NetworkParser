@@ -17,6 +17,7 @@ import org.junit.Test;
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.EntityStringConverter;
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
@@ -112,7 +113,7 @@ public class JsonTest {
 		LinkedHashSet<Student> list  = new LinkedHashSet<Student>();
 		list.add(new Student());
 		
-		EntityUtil.valueToString(list, false, new JsonObject(), new EntityStringConverter(2));
+		StringUtil.valueToString(list, false, new JsonObject(), new EntityStringConverter(2));
 	}
 	
 	

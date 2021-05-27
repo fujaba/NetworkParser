@@ -20,14 +20,15 @@ package de.uniks.networkparser.xml;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 import java.util.ArrayList;
+
 import de.uniks.networkparser.EntityCreator;
 import de.uniks.networkparser.EntityStringConverter;
-import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.MapEntityStack;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleException;
+import de.uniks.networkparser.SimpleMap;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -79,7 +80,7 @@ public class XMLTokener extends Tokener {
       case '\'':
         buffer.skip();
         CharacterBuffer v = nextString(buffer, new CharacterBuffer(), allowQuote, true, c);
-        String g = EntityUtil.unQuote(v);
+        String g = StringUtil.unQuote(v);
         return g;
       case XMLEntity.START:
         BaseItem element = creator.getNewList(false);
@@ -293,16 +294,16 @@ public class XMLTokener extends Tokener {
       CharacterBuffer token = new CharacterBuffer();
       char myChar;
       do {
-        if (buffer.getCurrentChar() == IdMap.SPACE) {
+        if (buffer.getCurrentChar() == SimpleMap.SPACE) {
           buffer.getChar();
         }
-        tokener.nextString(buffer, token, true, false, IdMap.SPACE, IdMap.EQUALS, XMLEntity.END, ENDTAG);
+        tokener.nextString(buffer, token, true, false, SimpleMap.SPACE, SimpleMap.EQUALS, XMLEntity.END, ENDTAG);
         myChar = buffer.getCurrentChar();
         if (myChar == ENTER) {
           String key = token.toString();
           token.clear();
           buffer.skip(2);
-          tokener.nextString(buffer, token, true, false, IdMap.DOUBLEQUOTIONMARK);
+          tokener.nextString(buffer, token, true, false, SimpleMap.DOUBLEQUOTIONMARK);
           String value = token.toString();
           token.clear();
           buffer.skip();
@@ -371,7 +372,7 @@ public class XMLTokener extends Tokener {
         if (entity != null) {
           creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(), SendableEntityCreator.NEW);
         }
-        stack.setValue("" + IdMap.ENTITYSPLITTER, valueItem.toString());
+        stack.setValue("" + SimpleMap.ENTITYSPLITTER, valueItem.toString());
         stack.popStack();
         tokener.skipEntity(buffer);
         return entity;
@@ -396,7 +397,7 @@ public class XMLTokener extends Tokener {
           if (!valueItem.isEmpty()) {
             creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(),
                 SendableEntityCreator.NEW);
-            stack.setValue("" + IdMap.ENTITYSPLITTER, valueItem.toString());
+            stack.setValue("" + SimpleMap.ENTITYSPLITTER, valueItem.toString());
             stack.popStack();
             tokener.skipEntity(buffer);
             return entity;
@@ -457,7 +458,7 @@ public class XMLTokener extends Tokener {
     if (tag.isEmpty() && isEmpty) {
       valueItem.clear();
     }
-    IdMap idMap = getMap();
+    SimpleMap idMap = getMap();
     SendableEntityCreator item = null;
     if (idMap != null) {
       item = idMap.getCreator(tag.toString(), false, true, null);
@@ -467,8 +468,8 @@ public class XMLTokener extends Tokener {
       return valueItem;
     }
     String startTag;
-    if (tag.lastIndexOf(IdMap.ENTITYSPLITTER) >= 0) {
-      startTag = tag.substring(0, tag.lastIndexOf(IdMap.ENTITYSPLITTER));
+    if (tag.lastIndexOf(SimpleMap.ENTITYSPLITTER) >= 0) {
+      startTag = tag.substring(0, tag.lastIndexOf(SimpleMap.ENTITYSPLITTER));
     } else {
       startTag = tag.toString();
     }
@@ -518,7 +519,7 @@ public class XMLTokener extends Tokener {
         } else {
           creator = (SendableEntityCreatorTag) defaultCreator;
         }
-        sTag.append(IdMap.ENTITYSPLITTER).append(tag.toString());
+        sTag.append(SimpleMap.ENTITYSPLITTER).append(tag.toString());
         for (int i = filter.size() - 1; i >= 0; i--) {
           String key = filter.getKeyByIndex(i);
           if (key.equals(sTag.toString())) {
@@ -560,7 +561,7 @@ public class XMLTokener extends Tokener {
 
   @Override
   public Object transformValue(Object value, BaseItem reference) {
-    return EntityUtil.valueToString(value, true, reference, SIMPLECONVERTER);
+    return StringUtil.valueToString(value, true, reference, SIMPLECONVERTER);
   }
 
   /**
@@ -593,7 +594,7 @@ public class XMLTokener extends Tokener {
   }
 
   @Override
-  public XMLTokener withMap(IdMap map) {
+  public XMLTokener withMap(SimpleMap map) {
     super.withMap(map);
     return this;
   }

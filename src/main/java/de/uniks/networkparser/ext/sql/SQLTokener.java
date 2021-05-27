@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.graph.Association;
@@ -69,7 +69,7 @@ public class SQLTokener extends Tokener {
 	private void parseAttributes(Clazz clazz, SQLStatement sqlClass) {
 		for (Attribute attribute : clazz.getAttributes()) {
 			sqlClass.with(attribute.getName(),
-					EntityUtil.convertPrimitiveToObjectType(attribute.getType().getName(true)).toUpperCase());
+					StringUtil.convertPrimitiveToObjectType(attribute.getType().getName(true)).toUpperCase());
 		}
 	}
 
@@ -259,7 +259,7 @@ public class SQLTokener extends Tokener {
 								}
 							}
 						}
-						dataStatement.with(properties[i], EntityUtil.convertPrimitiveToObjectType(type).toUpperCase());
+						dataStatement.with(properties[i], StringUtil.convertPrimitiveToObjectType(type).toUpperCase());
 					}
 				}
 				statements.add(dataStatement);
@@ -280,7 +280,7 @@ public class SQLTokener extends Tokener {
 		if (creator == null) {
 			return item.toString();
 		}
-		String tableName = EntityUtil.shortClassName(className);
+		String tableName = StringUtil.shortClassName(className);
 		/* Add TableCreate */
 		addTableCreate(tableName, item, creator, statements, map);
 

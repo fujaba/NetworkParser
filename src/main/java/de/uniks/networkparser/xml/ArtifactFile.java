@@ -24,7 +24,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
@@ -167,14 +167,14 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		try {
 			part = this.version.substring(start, start + this.pomNumber[i + 3]);
 			start += this.pomNumber[i + 3] + 1;
-			temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
+			temp += StringUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
 			i++;
 
 			if (start + this.pomNumber[i + 3] < this.version.length()) {
 				part = this.version.substring(start, start + this.pomNumber[i + 3]);
 				start += this.pomNumber[i + 3] + 1;
 				try {
-					temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
+					temp += StringUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
 				} catch (Exception e) {
 				}
 				i++;
@@ -185,7 +185,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 				} catch (Exception e) {
 				}
 				try {
-					temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
+					temp += StringUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
 				} catch (Exception e) {
 				}
 				this.pomNumber[6] = Integer.valueOf(temp);
@@ -283,9 +283,9 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		String spacesChild = "";
 		String spaces = "";
 		if (indentFactor > 0) {
-			spacesChild = "\r\n" + EntityUtil.repeat(' ', indent + indentFactor);
+			spacesChild = "\r\n" + StringUtil.repeat(' ', indent + indentFactor);
 		}
-		spaces = EntityUtil.repeat(' ', indent);
+		spaces = StringUtil.repeat(' ', indent);
 		StringBuilder sb = new StringBuilder(spaces);
 		if (tag == TAG) {
 			sb.append("<" + tag

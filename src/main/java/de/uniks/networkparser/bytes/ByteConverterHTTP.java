@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.nio.charset.Charset;
 
+import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -39,8 +40,8 @@ public class ByteConverterHTTP extends ByteConverter {
 			for (int i = 0; i < values.length(); i++) {
 				int value = values.byteAt(i);
 				if (value <= 32 || value == 127) {
-					returnValue.with(ByteTokener.SPLITTER);
-					returnValue.with((char) (value + ByteTokener.SPLITTER + 1));
+					returnValue.with(Tokener.SPLITTER);
+					returnValue.with((char) (value + Tokener.SPLITTER + 1));
 				} else {
 					returnValue.with((char) value);
 				}
@@ -71,9 +72,9 @@ public class ByteConverterHTTP extends ByteConverter {
 		ByteBuffer buffer = ByteBuffer.allocate(len);
 		for (int i = 0; i < len; i++) {
 			int value = values[i];
-			if (value == ByteTokener.SPLITTER) {
+			if (value == Tokener.SPLITTER) {
 				value = values[++i];
-				buffer.put((byte) (value - ByteTokener.SPLITTER - 1));
+				buffer.put((byte) (value - Tokener.SPLITTER - 1));
 			} else {
 				buffer.put((byte) value);
 			}

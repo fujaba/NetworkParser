@@ -25,7 +25,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.DataType;
@@ -204,7 +204,7 @@ public class VariableCondition implements ParserCondition {
 			return value.toUpperCase();
 		}
 		if (firstUpper || "firstUpper".equalsIgnoreCase(format)) {
-			return EntityUtil.upFirstChar(value);
+			return StringUtil.upFirstChar(value);
 		}
 		if (format == null) {
 			return value;

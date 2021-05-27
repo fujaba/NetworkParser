@@ -35,8 +35,7 @@ import de.uniks.networkparser.list.SimpleList;
 public class SimpleGrammar implements Grammar {
 	private boolean flatFormat = false;
 	private ObjectCondition condition;
-	private SimpleList<String> basicProperties = new SimpleList<String>().with(IdMap.ID, IdMap.CLASS, IdMap.SESSION,
-			IdMap.TIMESTAMP);
+	private SimpleList<String> basicProperties = new SimpleList<String>().with(SimpleMap.ID, SimpleMap.CLASS, SimpleMap.SESSION, SimpleMap.TIMESTAMP);
 
 	public SimpleGrammar withFlatFormat(boolean value) {
 		this.flatFormat = value;
@@ -60,7 +59,7 @@ public class SimpleGrammar implements Grammar {
 		}
 		JsonObject props = new JsonObject();
 		for (int i = 0; i < item.size(); i++) {
-			if (IdMap.CLASS.equalsIgnoreCase(item.getKeyByIndex(i)) == false) {
+			if (SimpleMap.CLASS.equalsIgnoreCase(item.getKeyByIndex(i)) == false) {
 				props.put(item.getKeyByIndex(i), item.getValueByIndex(i));
 			}
 
@@ -69,7 +68,7 @@ public class SimpleGrammar implements Grammar {
 	}
 
 	@Override
-	public String getId(Object obj, IdMap map) {
+	public String getId(Object obj, SimpleMap map) {
 		if (condition != null) {
 			/* Please set Type for new Id */
 			SimpleEvent evt = new SimpleEvent(map, "id", null, obj);
@@ -81,35 +80,35 @@ public class SimpleGrammar implements Grammar {
 	}
 
 	@Override
-	public Entity writeBasicValue(Entity entity, String className, String id, String type, IdMap map) {
+	public Entity writeBasicValue(Entity entity, String className, String id, String type, SimpleMap map) {
 		if (entity == null || map == null) {
 			return null;
 		}
 		if (this.flatFormat) {
 			if (type != null && SendableEntityCreator.UPDATE.equalsIgnoreCase(type) == false) {
-				entity.put("." + IdMap.TYPE, type);
+				entity.put("." + SimpleMap.TYPE, type);
 			}
-			if (basicProperties.contains(IdMap.SESSION)) {
+			if (basicProperties.contains(SimpleMap.SESSION)) {
 				String session = map.getSession();
 				if (session != null) {
-					entity.put("." + IdMap.SESSION, session);
+					entity.put("." + SimpleMap.SESSION, session);
 				}
 			}
-			if (basicProperties.contains(IdMap.CLASS)) {
-				entity.put("." + IdMap.CLASS, className);
+			if (basicProperties.contains(SimpleMap.CLASS)) {
+				entity.put("." + SimpleMap.CLASS, className);
 			}
 			if (id != null) {
-				if (basicProperties.contains(IdMap.ID)) {
-					entity.put("." + IdMap.ID, id);
+				if (basicProperties.contains(SimpleMap.ID)) {
+					entity.put("." + SimpleMap.ID, id);
 				}
-				if (basicProperties.contains(IdMap.TIMESTAMP)) {
+				if (basicProperties.contains(SimpleMap.TIMESTAMP)) {
 					if (map.getTimeStamp() == 0) {
 						String ts = null;
 						if (id.length() > 0) {
 							ts = id.substring(1);
 						}
-						if (EntityUtil.isNumeric(ts)) {
-							entity.put("." + IdMap.TIMESTAMP, ts);
+						if (StringUtil.isNumeric(ts)) {
+							entity.put("." + SimpleMap.TIMESTAMP, ts);
 						}
 					}
 				}
@@ -117,30 +116,30 @@ public class SimpleGrammar implements Grammar {
 			return entity;
 		}
 		if (type != null && SendableEntityCreator.UPDATE.equalsIgnoreCase(type) == false) {
-			entity.put(IdMap.TYPE, type);
+			entity.put(SimpleMap.TYPE, type);
 		}
-		if (basicProperties.contains(IdMap.SESSION)) {
+		if (basicProperties.contains(SimpleMap.SESSION)) {
 			String session = map.getSession();
 			if (session != null) {
-				entity.put(IdMap.SESSION, session);
+				entity.put(SimpleMap.SESSION, session);
 			}
 		}
-		if (basicProperties.contains(IdMap.CLASS)) {
+		if (basicProperties.contains(SimpleMap.CLASS)) {
 			entity.withType(className);
 		}
 
 		if (id != null) {
-			if (basicProperties.contains(IdMap.ID)) {
-				entity.put(IdMap.ID, id);
+			if (basicProperties.contains(SimpleMap.ID)) {
+				entity.put(SimpleMap.ID, id);
 			}
-			if (basicProperties.contains(IdMap.TIMESTAMP)) {
+			if (basicProperties.contains(SimpleMap.TIMESTAMP)) {
 				if (map.getTimeStamp() == 0) {
 					String ts = null;
 					if (id.length() > 0) {
 						ts = id.substring(1);
 					}
-					if (EntityUtil.isNumeric(ts)) {
-						entity.put(IdMap.TIMESTAMP, ts);
+					if (StringUtil.isNumeric(ts)) {
+						entity.put(SimpleMap.TIMESTAMP, ts);
 					}
 				}
 			}
@@ -153,7 +152,7 @@ public class SimpleGrammar implements Grammar {
 		if (item == null) {
 			return null;
 		}
-		IdMap map = entity.getMap();
+		SimpleMap map = entity.getMap();
 		if (map == null) {
 			return null;
 		}
@@ -172,7 +171,7 @@ public class SimpleGrammar implements Grammar {
 			return getSuperCreator(map, entity.isSearchForSuperClass(), item);
 		}
 		if (className == null && item instanceof Entity) {
-			Object name = ((Entity) item).getValue(IdMap.CLASS);
+			Object name = ((Entity) item).getValue(SimpleMap.CLASS);
 			if (name == null) {
 				return null;
 			}
@@ -186,7 +185,7 @@ public class SimpleGrammar implements Grammar {
 		return getSuperCreator(map, entity.isSearchForSuperClass(), clazzName);
 	}
 
-	public SendableEntityCreator getSuperCreator(IdMap map, boolean searchForSuperCreator, Object modelItem) {
+	public SendableEntityCreator getSuperCreator(SimpleMap map, boolean searchForSuperCreator, Object modelItem) {
 		return null;
 	}
 

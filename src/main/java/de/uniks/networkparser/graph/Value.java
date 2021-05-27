@@ -1,6 +1,6 @@
 package de.uniks.networkparser.graph;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 
 /*
 NetworkParser
@@ -81,9 +81,9 @@ public abstract class Value extends GraphMember {
 		}
 		if (PROPERTY_NAMEGETTER.equalsIgnoreCase(attribute)) {
 			if ("boolean".equals(this.type.getName(true))) {
-				return "is" + EntityUtil.upFirstChar(this.name);
+				return "is" + StringUtil.upFirstChar(this.name);
 			}
-			return "get" + EntityUtil.upFirstChar(this.name);
+			return "get" + StringUtil.upFirstChar(this.name);
 		}
 		if (PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
 			return this.value;

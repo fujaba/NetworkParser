@@ -83,9 +83,9 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 	}
 
 	public Object getValue(String key) {
-		if (IdMap.ID.equals(key)) {
+		if (SimpleMap.ID.equals(key)) {
 			return this.getId();
-		} else if (IdMap.CLASS.equals(key)) {
+		} else if (SimpleMap.CLASS.equals(key)) {
 			return this.getClassName();
 		}
 		return values.get(key);
@@ -106,11 +106,11 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		boolean checked = false;
 		Object oldValue = null;
 		if (value instanceof String) {
-			if (IdMap.ID.equals(key)) {
+			if (SimpleMap.ID.equals(key)) {
 				checked = true;
 				oldValue = this.getId();
 				this.setId((String) value);
-			} else if (IdMap.CLASS.equals(key)) {
+			} else if (SimpleMap.CLASS.equals(key)) {
 				oldValue = this.getClassName();
 				checked = true;
 				this.setClassName((String) value);
@@ -189,8 +189,8 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 			return result;
 		}
 
-		result.setId(json.getString(IdMap.ID));
-		Object className = json.get(IdMap.CLASS);
+		result.setId(json.getString(SimpleMap.ID));
+		Object className = json.get(SimpleMap.CLASS);
 		if (className != null) {
 			result.setClassName("" + className);
 		}

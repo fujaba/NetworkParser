@@ -25,7 +25,7 @@ THE SOFTWARE.
 */
 import java.util.Set;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleException;
@@ -568,7 +568,7 @@ public class ParserEntity {
 	private String parseModifiers() {
 		/* names != class */
 		StringBuilder result = new StringBuilder();
-		while (EntityUtil.isModifier(" " + currentWord() + " ")) {
+		while (StringUtil.isModifier(" " + currentWord() + " ")) {
 			if (result.length() > 0) {
 				result.append(" ");
 			}
@@ -1312,7 +1312,7 @@ public class ParserEntity {
 		}
 
 		String attrName = symTabEntry.getName();
-		if (EntityUtil.isPrimitiveType(type)) {
+		if (StringUtil.isPrimitiveType(type)) {
 			if (classContainsAttribut(attrName, symTabEntry.getType()) == false) {
 				this.getClazz().withAttribute(attrName, DataType.create(symTabEntry.getDataType()));
 			}
@@ -1363,7 +1363,7 @@ public class ParserEntity {
 			setterPrefix = "with";
 		}
 
-		String name = EntityUtil.upFirstChar(memberName);
+		String name = StringUtil.upFirstChar(memberName);
 
 		/*
 		 * SymTabEntry addToSymTabEntry = symbolTab .get(SymTabEntry.TYPE_METHOD + ":" +
@@ -1527,7 +1527,7 @@ public class ParserEntity {
 			/* it might be a ModelSet. Look if it starts with a clazz name */
 			String prefix = partnerTypeName.substring(0, partnerTypeName.length() - 3);
 			for (Clazz clazz : model.getClazzes()) {
-				if (prefix.equals(EntityUtil.shortClassName(clazz.getName()))) {
+				if (prefix.equals(StringUtil.shortClassName(clazz.getName()))) {
 					partnerCard = Association.MANY;
 					break;
 				}

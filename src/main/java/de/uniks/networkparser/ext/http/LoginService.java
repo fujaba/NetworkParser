@@ -1,6 +1,6 @@
 package de.uniks.networkparser.ext.http;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -42,7 +42,7 @@ public class LoginService implements Condition<SimpleEvent> {
 			user = validateUser(userName, password);
 		}
 		if (user != null) {
-			String refreshToken = EntityUtil.randomString(64);
+			String refreshToken = StringUtil.randomString(64);
 			JsonToken generator = tokener.create();
 			generator.withSubject(userName);
 			String token = HTTPRequest.BEARER + " " + generator.getToken();

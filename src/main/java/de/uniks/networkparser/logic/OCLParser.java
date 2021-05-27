@@ -1,6 +1,6 @@
 package de.uniks.networkparser.logic;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -92,7 +92,7 @@ public class OCLParser implements ObjectCondition {
 
 	public OCLParser withCreator(String className) {
 		if (this.map != null && className != null) {
-			className = EntityUtil.upFirstChar(className);
+			className = StringUtil.upFirstChar(className);
 			this.creator = this.map.getCreator(className, false);
 		}
 		return this;

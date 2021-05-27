@@ -25,7 +25,7 @@ THE SOFTWARE.
 */
 import java.util.List;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
@@ -50,7 +50,7 @@ public class EMFParser {
 					String name = getName(item);
 					EMFParser eClassifier = new EMFParser(ReflectionLoader.call(item, "getEType"));
 					sdmClass.withAttribute(name,
-							DataType.create(EntityUtil.shortClassName(getInstanceClassName(eClassifier))));
+							DataType.create(StringUtil.shortClassName(getInstanceClassName(eClassifier))));
 				}
 			}
 		}

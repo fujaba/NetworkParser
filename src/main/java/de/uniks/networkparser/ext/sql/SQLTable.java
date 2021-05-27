@@ -27,7 +27,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.SimpleIterator;
@@ -55,9 +55,9 @@ public class SQLTable extends SimpleList<Object> {
 		String tableName;
 		Object prototype = creator.getSendableInstance(true);
 		if (prototype instanceof Class<?>) {
-			tableName = EntityUtil.shortClassName(((Class<?>) prototype).getName());
+			tableName = StringUtil.shortClassName(((Class<?>) prototype).getName());
 		} else {
-			tableName = EntityUtil.shortClassName(prototype.getClass().getName());
+			tableName = StringUtil.shortClassName(prototype.getClass().getName());
 		}
 		return create(executeQuery, creator.getProperties(), tableName, false);
 	}

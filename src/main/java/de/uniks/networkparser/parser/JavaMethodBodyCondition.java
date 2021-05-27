@@ -23,7 +23,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ParserCondition;
@@ -50,7 +50,7 @@ public class JavaMethodBodyCondition extends CustomCondition<Method> {
 			return result;
 		}
 		if (method.getBody() == null) {
-			String defaultValue = EntityUtil.getDefaultValue(method.getReturnType().getName(false));
+			String defaultValue = StringUtil.getDefaultValue(method.getReturnType().getName(false));
 			if (defaultValue.equals("void") == false) {
 				result = "return " + defaultValue + ";";
 			}

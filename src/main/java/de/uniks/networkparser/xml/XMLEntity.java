@@ -1,6 +1,7 @@
 package de.uniks.networkparser.xml;
 
 import de.uniks.networkparser.EntityStringConverter;
+import de.uniks.networkparser.StringUtil;
 /*
 NetworkParser
 The MIT License
@@ -24,11 +25,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.MapEntry;
@@ -261,7 +262,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		for (int i = 0; i < size; i++) {
 			Object value = getValueByIndex(i);
 			if (value != null) {
-				sb.with(" ", "" + get(i), "=", EntityUtil.quote(value.toString()));
+				sb.with(" ", "" + get(i), "=", StringUtil.quote(value.toString()));
 			}
 		}
 
@@ -359,7 +360,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	}
 
 	@Override
-	public XMLEntity withValue(Buffer values) {
+	public XMLEntity withValue(BufferItem values) {
 		Tokener tokener = new XMLTokener();
 		return withValue(tokener, values);
 	}
@@ -443,7 +444,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			if (value.equalsIgnoreCase(this.getValue())) {
 				children.add(this);
 			}
-		} else if (EntityUtil.CLASS.equals(key)) {
+		} else if (StringUtil.CLASS.equals(key)) {
 			int z = 0;
 			while (z < value.length() && value.charAt(z) == ' ') {
 				z++;
@@ -461,7 +462,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 					value = " " + value.substring(pos);
 				}
 			} else if (first.charAt(0) == '.') {
-				if (first.substring(1).equals(this.getValue(EntityUtil.CLASS))) {
+				if (first.substring(1).equals(this.getValue(StringUtil.CLASS))) {
 					value = " " + value.substring(pos);
 				}
 			} else {

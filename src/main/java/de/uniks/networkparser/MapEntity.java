@@ -46,12 +46,12 @@ public class MapEntity extends AbstractList<Object> {
 	protected MapEntityStack stack;
 	/** The show line. */
 	protected byte tokenerFlag;
-	private IdMap map;
+	private SimpleMap map;
 	public byte mapFlag;
 	private Grammar grammar;
 	private Tokener tokener;
 
-	public MapEntity(Filter filter, byte flag, IdMap map, Tokener tokener) {
+	public MapEntity(Filter filter, byte flag, SimpleMap map, Tokener tokener) {
 		if (filter != null) {
 			this.filter = filter;
 		}
@@ -63,7 +63,7 @@ public class MapEntity extends AbstractList<Object> {
 		this.tokener = tokener;
 	}
 
-	public MapEntity(IdMap map) {
+	public MapEntity(SimpleMap map) {
 		if (map != null) {
 			this.filter = map.getFilter();
 			this.mapFlag = map.getFlag();
@@ -97,11 +97,11 @@ public class MapEntity extends AbstractList<Object> {
 	}
 
 	public boolean isSearchForSuperClass() {
-		return (mapFlag & IdMap.FLAG_SEARCHFORSUPERCLASS) != 0;
+		return (mapFlag & SimpleMap.FLAG_SEARCHFORSUPERCLASS) != 0;
 	}
 
 	public boolean isSimpleFormat() {
-		boolean result = (mapFlag & IdMap.FLAG_SIMPLEFORMAT) != 0;
+		boolean result = (mapFlag & SimpleMap.FLAG_SIMPLEFORMAT) != 0;
 		if (result) {
 			return result;
 		}
@@ -201,7 +201,7 @@ public class MapEntity extends AbstractList<Object> {
 		if (isComplex) {
 			return result;
 		}
-		result.with(IdMap.ENTITYSPLITTER).with(Tokener.PROPS).with(IdMap.ENTITYSPLITTER);
+		result.with(SimpleMap.ENTITYSPLITTER).with(Tokener.PROPS).with(SimpleMap.ENTITYSPLITTER);
 		return result;
 	}
 
@@ -227,7 +227,7 @@ public class MapEntity extends AbstractList<Object> {
 
 	public Entity writeBasicValue(SendableEntityCreator creator, Entity entity, BaseItem parent, String className,
 			String id) {
-		if ((mapFlag & IdMap.FLAG_ID) == 0) {
+		if ((mapFlag & SimpleMap.FLAG_ID) == 0) {
 			if (creator instanceof SendableEntityCreatorTag) {
 				className = ((SendableEntityCreatorTag) creator).getTag();
 			}
@@ -245,7 +245,7 @@ public class MapEntity extends AbstractList<Object> {
 	 * @return the addOwnerLink
 	 */
 	public boolean isAddOwnerLink(Object value) {
-		if ((mapFlag & IdMap.FLAG_ID) != 0) {
+		if ((mapFlag & SimpleMap.FLAG_ID) != 0) {
 			return true;
 		}
 		if (stack != null) {
@@ -312,12 +312,12 @@ public class MapEntity extends AbstractList<Object> {
 		if (property == null) {
 			return null;
 		}
-		while (property.charAt(0) == IdMap.ENTITYSPLITTER) {
+		while (property.charAt(0) == SimpleMap.ENTITYSPLITTER) {
 			if (property.length() == 1) {
 				break;
 			}
 			/* Its ChildValue */
-			int pos = property.indexOf(IdMap.ENTITYSPLITTER, 1);
+			int pos = property.indexOf(SimpleMap.ENTITYSPLITTER, 1);
 			if (pos < 0) {
 				property.trimStart(1);
 				break;
@@ -369,7 +369,7 @@ public class MapEntity extends AbstractList<Object> {
 		return (this.tokenerFlag & flag) != 0;
 	}
 
-	public IdMap getMap() {
+	public SimpleMap getMap() {
 		return map;
 	}
 
@@ -380,7 +380,7 @@ public class MapEntity extends AbstractList<Object> {
 
 	public Tokener getTokener() {
 		if (tokener == null && map != null) {
-			tokener = map.jsonTokener;
+			tokener = map.getJsonTokener();
 		}
 		return this.tokener;
 	}

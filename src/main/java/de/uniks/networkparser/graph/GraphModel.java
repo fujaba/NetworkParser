@@ -2,7 +2,7 @@ package de.uniks.networkparser.graph;
 
 import java.util.Iterator;
 
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
@@ -219,7 +219,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 				if (renameAttributes) {
 					int no = className.charAt(0);
 					if (no < 'A' || no > 'Z') {
-						item.setName(EntityUtil.upFirstChar(className));
+						item.setName(StringUtil.upFirstChar(className));
 					}
 					/* Attributes */
 					AttributeSet attributes = item.getAttributes();
@@ -234,7 +234,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 							if (name.equals(name.toUpperCase())) {
 								attribute.setName(name.toLowerCase());
 							} else {
-								attribute.setName(EntityUtil.downFirstChar(name));
+								attribute.setName(StringUtil.downFirstChar(name));
 							}
 						}
 					}
@@ -291,7 +291,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 				if (values != null) {
 					for (Object value : values) {
 						if (value != null) {
-							String type = EntityUtil.shortClassName(value.getClass().getName());
+							String type = StringUtil.shortClassName(value.getClass().getName());
 							if (attributes.size() > no) {
 								Attribute attribute = attributes.get(no);
 								if (attribute.getType().getName(true).equals(type)) {
@@ -330,7 +330,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 			return;
 		}
 		Clazz clazz = dataType.getClazz();
-		if (clazz.isExternal() == false && EntityUtil.isPrimitiveType(clazz.getName()) == false) {
+		if (clazz.isExternal() == false && StringUtil.isPrimitiveType(clazz.getName()) == false) {
 			GraphMember byObject = this.getByObject(clazz.getName(), true);
 			if (byObject == null) {
 				this.add(clazz);

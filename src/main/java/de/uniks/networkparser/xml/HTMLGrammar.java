@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.SimpleGrammar;
+import de.uniks.networkparser.SimpleMap;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -79,7 +80,7 @@ public class HTMLGrammar extends SimpleGrammar {
 	}
 
 	@Override
-	public Entity writeBasicValue(Entity entity, String className, String id, String type, IdMap map) {
+	public Entity writeBasicValue(Entity entity, String className, String id, String type, SimpleMap map) {
 		CharacterBuffer value = new CharacterBuffer().with(className);
 		if (transformValue(value, 0, true) && entity != null) {
 			String prop = value.toString();
