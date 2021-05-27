@@ -229,6 +229,8 @@ public class StoryStepSourceCode implements ObjectCondition {
 			if (checkEnd(linePos, line, fileBuffer)) {
 				indexText.with(BaseItem.CRLF).with(line);
 				break;
+			} else if(fileBuffer.isEnd()) {
+				break;
 			}
 			indexText.with(BaseItem.CRLF);
 		}

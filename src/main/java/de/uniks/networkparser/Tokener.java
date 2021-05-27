@@ -43,7 +43,6 @@ public class Tokener {
 
 	protected SimpleMap map;
 
-	/* Methods for Map */
 	public SendableEntityCreator getCreatorClass(Object reference) {
 		if (map == null) {
 			return null;

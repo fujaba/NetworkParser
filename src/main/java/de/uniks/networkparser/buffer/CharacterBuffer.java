@@ -24,7 +24,9 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;
 
-/** Buffer of String for alternative for StringBuffer. */
+/** Buffer of String for alternative for StringBuffer.
+ *  @author Stefan Lindel
+ */
 public class CharacterBuffer extends BufferedBuffer implements CharSequence, BaseItem {
   /** The value is used for character storage. */
   char[] buffer;
