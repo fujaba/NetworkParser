@@ -276,4 +276,9 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList {
 	public BaseItem withValue(BufferItem values) {
 		return this;
 	}
+
+	@Override
+	public BaseItem firstChild() {
+		return getChild(0);
+	}
 }

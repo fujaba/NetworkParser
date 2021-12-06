@@ -31,9 +31,15 @@ import de.uniks.networkparser.interfaces.BaseItem;
 public class SortedList<V> extends SimpleList<V> {
 	protected Comparator<V> cpr;
 
-	public SortedList(boolean comparator) {
-		if (comparator) {
-			comparator();
+	public SortedList(Object... comparator) {
+		if(comparator != null && comparator.length>0) {
+			if(comparator[0] instanceof Boolean) { 
+				if((boolean) comparator[0]) {
+					comparator();			
+				}
+			} else if(comparator[0] instanceof String) {
+				this.withComparator((String)comparator[0]);
+			}
 		}
 	}
 
@@ -179,5 +185,9 @@ public class SortedList<V> extends SimpleList<V> {
 			return (BaseItem) item;
 		}
 		return null;
+	}
+
+	public BaseItem firstChild() {
+		return getChild(0);
 	}
 }

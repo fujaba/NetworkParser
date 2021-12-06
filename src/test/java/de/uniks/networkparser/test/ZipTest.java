@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.ext.io.StringInputStream;
+import de.uniks.networkparser.ext.io.BufferedByteInputStream;
 import de.uniks.networkparser.ext.io.StringOutputStream;
 import de.uniks.networkparser.ext.io.ZipContainer;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -33,7 +33,7 @@ public class ZipTest {
 		ZipContainer zip = new ZipContainer();
 		zip.encode(jsonObject, stream, true);
 
-		StringInputStream inputStream = StringInputStream.create(stream);
+		BufferedByteInputStream inputStream = BufferedByteInputStream.create(stream);
 		BaseItem readData = zip.decode(inputStream);
 
 		Assert.assertEquals(len, readData.toString().length());

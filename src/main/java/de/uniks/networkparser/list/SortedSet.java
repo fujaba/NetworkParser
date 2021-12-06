@@ -26,13 +26,25 @@ THE SOFTWARE.
 import java.util.Comparator;
 
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class SortedSet<V> extends SimpleSet<V> {
 	protected Comparator<V> cpr;
 
-	public SortedSet(boolean comparator) {
-		if (comparator) {
-			comparator();
+
+	public SortedSet(Object... comparator) {
+		if(comparator != null && comparator.length>0) {
+			if(comparator[0] instanceof Boolean) { 
+				if((boolean) comparator[0]) {
+					comparator();			
+				}
+			} else if(comparator[0] instanceof String) {
+				if (comparator.length>1 && comparator[1] instanceof SendableEntityCreator) {
+					this.withComparator((String)comparator[0], (SendableEntityCreator)comparator[1]);
+				}else {
+					this.withComparator((String)comparator[0]);
+				}
+			}
 		}
 	}
 
@@ -58,6 +70,11 @@ public class SortedSet<V> extends SimpleSet<V> {
 
 	public SortedSet<V> withComparator(String column) {
 		this.cpr = new EntityComparator<V>().withColumn(column).withDirection(SortingDirection.ASC);
+		return this;
+	}
+
+	public SortedSet<V> withComparator(String column, SendableEntityCreator creator) {
+		this.cpr = new EntityComparator<V>().withColumn(column, creator).withDirection(SortingDirection.ASC);
 		return this;
 	}
 

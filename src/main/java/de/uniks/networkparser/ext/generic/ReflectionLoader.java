@@ -48,7 +48,7 @@ import java.util.zip.ZipOutputStream;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.Os;
-import de.uniks.networkparser.ext.io.StringInputStream;
+import de.uniks.networkparser.ext.io.BufferedByteInputStream;
 import de.uniks.networkparser.ext.io.StringOutputStream;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -396,7 +396,7 @@ public class ReflectionLoader {
 			return new ZipOutputStream(new StringOutputStream());
 		}
 		if (instance == DataInputStream.class) {
-			return new DataInputStream(new StringInputStream());
+			return new DataInputStream(new BufferedByteInputStream());
 		}
 		if (constructors == null || constructors.length < 1) {
 			return ReflectionLoader.newInstance(instance);
@@ -502,6 +502,8 @@ public class ReflectionLoader {
 					pos++;
 				}
 			}
+			Constructor<?>[] constructors = instance.getConstructors();
+			Constructor<?>[] declaredConstructors = instance.getDeclaredConstructors();
 			Constructor<?> constructor = instance.getDeclaredConstructor(methodArguments);
 			if(Modifier.isProtected(constructor.getModifiers())) {
 				constructor.setAccessible(true);
@@ -639,6 +641,12 @@ public class ReflectionLoader {
 			itemObj = item;
 			className = item.getClass();
 		}
+		return getField(itemObj, className, fieldNames);
+	}
+	public static Object getField(Object itemObj, Class<?> className, String... fieldNames) {
+		if (className == null) {
+			return null;
+		}
 		Field field;
 		if (fieldNames == null) {
 			return null;
@@ -668,6 +676,10 @@ public class ReflectionLoader {
 				} catch (Exception e2) {
 					if (logger != null) {
 						e.printStackTrace(logger);
+					}
+					if(className.isMemberClass())
+					{
+						return ReflectionLoader.getField(itemObj, className.getSuperclass(), fieldNames);
 					}
 				}
 			}
@@ -803,6 +815,9 @@ public class ReflectionLoader {
 		try {
 			boolean staticCall = false;
 			if (item instanceof Type == false) {
+				if(item instanceof String) {
+					item = ReflectionLoader.getClass(""+item);
+				}
 				staticCall = item instanceof Class<?>;
 			}
 			Class<?> itemClass;

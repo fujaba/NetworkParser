@@ -315,6 +315,8 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	public abstract BufferedBuffer with(char[] buffer, int i, int readed);
 
 	public abstract BufferedBuffer with(CharSequence... items);
+	
+	public abstract BufferedBuffer with(byte... items);
 
 	public abstract BufferedBuffer getNewList(boolean list);
 }

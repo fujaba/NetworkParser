@@ -69,7 +69,7 @@ public class GitRevision {
     return json;
   }
 
-  private Object getRepository() {
+  public Object getRepository() {
     if (ReflectionLoader.FILEREPOSITORYBUILDER == null) {
       return null;
     }

@@ -176,4 +176,9 @@ public class TextEntity implements EntityList {
 	public BaseItem withValue(BufferItem values) {
 		return null;
 	}
+
+	@Override
+	public BaseItem firstChild() {
+		return getChild(0);
+	}
 }

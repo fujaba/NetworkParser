@@ -249,6 +249,17 @@ public class EntityComparator<V> implements Comparator<V> {
 	}
 
 	/**
+	 * @param value The new Column for checking
+	 * @param creator Creator
+	 * @return EntityComparator Instance
+	 */
+	public EntityComparator<V> withColumn(String value, SendableEntityCreator creator) {
+		this.column = value;
+		this.creator = creator;
+		return this;
+	}
+	
+	/**
 	 * Set a new IdMap for comunicate between GUI and Model.
 	 *
 	 * @param value The IdMap

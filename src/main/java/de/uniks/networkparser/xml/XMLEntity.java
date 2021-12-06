@@ -128,7 +128,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		}
 		return this.children.size();
 	}
-
+	
 	/**
 	 * Adds the child.
 	 *
@@ -555,5 +555,14 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		newComment.withValueItem(comment);
 		this.add(newComment);
 		return this;
+	}
+
+	@Override
+	public XMLEntity firstChild() {
+		BaseItem child = this.getChild(0);
+		if(child instanceof XMLEntity) {
+			return (XMLEntity) child;
+		}
+		return null;
 	}
 }

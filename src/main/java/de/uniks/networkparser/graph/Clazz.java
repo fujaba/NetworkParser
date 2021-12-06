@@ -1079,4 +1079,8 @@ public class Clazz extends GraphEntity {
 		}
 		return super.getValue(attribute);
 	}
+	
+	public DataType toDataType() {
+		return DataType.create(this);
+	}
 }

@@ -54,4 +54,8 @@ public interface EntityList extends BaseItem {
 	public BaseItem withValue(BufferItem values);
 
 	public int sizeChildren();
+	
+	public BaseItem firstChild();
+	
+	
 }

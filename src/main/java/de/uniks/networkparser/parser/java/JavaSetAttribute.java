@@ -55,7 +55,7 @@ public class JavaSetAttribute extends Template {
 				"	}",
 				"{{#endif}}",
 				"",
-				"{{#if {{type}}!=BOOLEAN {{typecat}}!=SET {{type(false)}}!=java.util.Date}}"
+				"{{#if {{type}}!=BOOLEAN {{typecat}}!=SET {{type(false)}}!=java.util.Date {{typeClazz.type}}!=enum}}"
 						+ "	public {{file.member.name}}Set filter{{Name}}({{type}} minValue, {{type}} maxValue) {",
 				"		{{file.member.name}}Set result = new {{file.member.name}}Set();",
 				"		for({{file.member.name}} obj : this) {",

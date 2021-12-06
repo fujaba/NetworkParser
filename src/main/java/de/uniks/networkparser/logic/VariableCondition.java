@@ -95,12 +95,18 @@ public class VariableCondition implements ParserCondition {
 			String param = null;
 			if (pos > 0) {
 				param = v.substring(pos + 1, v.length() - 1);
+				if(param.startsWith(")")) {
+					shortName = false;
+					param = v.substring(pos + 2, v.length());
+				}else {
+					shortName = Boolean.valueOf(param);
+				}
 				v = key.substring(0, pos);
-				shortName = Boolean.valueOf(param);
 			}
 			Object object = variables.getValue(variables, v);
 
 			if (object == null && (this.expression == false || defaultStringValue)) {
+				this.expression = false;
 				return key;
 			}
 			if (object instanceof DataType) {
@@ -122,6 +128,14 @@ public class VariableCondition implements ParserCondition {
 			}
 			if (object instanceof String) {
 				return replaceText(v, format, (String) object);
+			}
+			if(object instanceof Integer && param != null) {
+				Integer intValue = (Integer) object;
+				if(param.startsWith(">")) {
+					return intValue > Integer.valueOf(param.substring(1));
+				}else if(param.startsWith("<")) {
+					return intValue < Integer.valueOf(param.substring(1));
+				}
 			}
 			if (object instanceof Set<?> && format != null) {
 				/* Check for Contains */

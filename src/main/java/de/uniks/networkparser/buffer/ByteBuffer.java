@@ -42,7 +42,6 @@ public class ByteBuffer extends BufferedBuffer {
 	}
 
 	public ByteBuffer withBufferLength(int length) {
-		super.withLength(length);
 		if (length >= 0) {
 			this.buffer = new byte[length];
 		}
@@ -400,8 +399,7 @@ public class ByteBuffer extends BufferedBuffer {
 		if (len < 1) {
 			return null;
 		}
-		ByteBuffer bytesBuffer = new ByteBuffer();
-		bytesBuffer.withBufferLength(len);
+		ByteBuffer bytesBuffer = new ByteBuffer().withBufferLength(len);
 		return bytesBuffer;
 	}
 
