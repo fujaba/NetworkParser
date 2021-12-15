@@ -1,6 +1,7 @@
 package de.uniks.networkparser.test.list;
 
-import org.junit.jupiter.api.Test;
+
+import org.junit.Test;
 
 import de.uniks.networkparser.list.SortedSet;
 import de.uniks.networkparser.test.model.Wallet;

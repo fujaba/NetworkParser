@@ -6,6 +6,7 @@ import de.uniks.networkparser.bytes.ByteConverter;
 import de.uniks.networkparser.bytes.ByteConverterString;
 import de.uniks.networkparser.interfaces.Converter;
 
+/** ByteBuffer */
 public class ByteBuffer extends BufferedBuffer {
 	/** The buffer. */
 	protected byte[] buffer;

@@ -39,7 +39,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 			init(objects);
 		}
 	}
-
+	
 	@Override
 	public SimpleSet<V> getNewList(boolean keyValue) {
 		return new SimpleSet<V>();

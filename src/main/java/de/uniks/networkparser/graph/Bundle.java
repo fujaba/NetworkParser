@@ -15,7 +15,7 @@ public class Bundle extends GraphEntity {
 	
 	public Bundle withImplements(String... values) {
 		if(this.all_implements == null) {
-			this.all_implements = new SimpleSet<String>(values);
+			this.all_implements = new SimpleSet<String>((Object[])values);
 		}
 		return this;
 	}
