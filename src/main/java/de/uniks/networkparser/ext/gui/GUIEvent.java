@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.javafx;
+package de.uniks.networkparser.ext.gui;
 
 import de.uniks.networkparser.SimpleEvent;
 /*
@@ -33,6 +33,12 @@ public class GUIEvent extends Event {
 	public static final int ESCAPE = 27;
 	/* The jsObject for BackupPurposes */
 	private ObjectCondition listerner;
+	
+	
+	public GUIEvent setEvent(Object event) {
+		this.event = event;
+		return this;
+	}
 
 	public GUIEvent withListener(ObjectCondition value) {
 		this.listerner = value;
@@ -48,12 +54,6 @@ public class GUIEvent extends Event {
 	public void invalidated(Object event) {
 		if (this.listerner != null) {
 			this.listerner.update(event);
-		}
-	}
-
-	public void actionPerformed(Object e) {
-		if (this.listerner != null) {
-			this.listerner.update(e);
 		}
 	}
 
@@ -187,4 +187,54 @@ public class GUIEvent extends Event {
 		}
 		return (Integer) object;
 	}
+	
+
+    public void windowOpened(Object event) {
+    	if (this.listerner != null) {
+    		this.listerner.update(event);
+//    		this.listerner.update(new SimpleEvent(this.event, "windowOpened", event));
+    	}
+    }
+    
+    public void windowActivated(Object event) {
+    	if (this.listerner != null) {
+    		this.listerner.update(event);
+//    		this.listerner.update(new SimpleEvent(this.event, "windowActivated", event));
+    	}	
+    }
+
+    public void windowDeactivated(Object event) {
+    	if (this.listerner != null) {
+    		this.listerner.update(event);
+//    		this.listerner.update(new SimpleEvent(this.event, "windowDeactivated", event));
+    	}	
+    }
+    
+    public void windowClosed(Object event) {
+    	if (this.listerner != null) {
+    		this.listerner.update(event);
+//    		this.listerner.update(new SimpleEvent(this.event, "windowClosed", event));
+    	}
+    }
+
+    public void windowClosing(Object event)
+    {
+    	if (this.listerner != null) {
+    		this.listerner.update(event);
+//    		this.listerner.update(new SimpleEvent(this.event, "windowClosing", event));
+    	}
+    }
+    
+    public void actionPerformed(Object event)
+    {
+    	if (this.listerner != null) {
+    		this.listerner.update(event);
+//FIXME    		this.listerner.update(new SimpleEvent(this.event, "actionPerformed", event));
+    	}
+//    	public void actionPerformed(Object e) {
+//    		if (this.listerner != null) {
+//    			this.listerner.update(e);
+//    		}
+//    	}
+    }
 }

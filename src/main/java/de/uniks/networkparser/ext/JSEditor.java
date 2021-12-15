@@ -1,7 +1,7 @@
 package de.uniks.networkparser.ext;
 
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
-import de.uniks.networkparser.ext.javafx.JavaAdapter;
+import de.uniks.networkparser.ext.gui.JavaAdapter;
 
 public class JSEditor implements Runnable {
 	private String executeScript;

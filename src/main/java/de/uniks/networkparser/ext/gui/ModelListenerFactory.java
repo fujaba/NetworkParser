@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.javafx;
+package de.uniks.networkparser.ext.gui;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.generic.GenericCreator;

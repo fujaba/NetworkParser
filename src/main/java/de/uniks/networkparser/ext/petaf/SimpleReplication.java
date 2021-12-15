@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
-import de.uniks.networkparser.ext.javafx.GUIEvent;
+import de.uniks.networkparser.ext.gui.GUIEvent;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;

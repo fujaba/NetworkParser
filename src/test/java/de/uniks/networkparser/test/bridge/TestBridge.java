@@ -1,7 +1,7 @@
 package de.uniks.networkparser.test.bridge;
 
 import de.uniks.networkparser.ext.SimpleController;
-import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
+import de.uniks.networkparser.ext.gui.JavaBridgeFX;
 import de.uniks.networkparser.gui.controls.Button;
 
 public class TestBridge {

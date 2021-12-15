@@ -5,7 +5,7 @@ import org.junit.Assert;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleObject;
-import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
+import de.uniks.networkparser.ext.gui.JavaBridgeFX;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.gui.controls.Button;

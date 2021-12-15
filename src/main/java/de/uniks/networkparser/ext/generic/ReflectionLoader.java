@@ -133,6 +133,9 @@ public class ReflectionLoader {
 	public static final Class<?> MANAGEMENTFACTORY;
 	public static final Class<?> JFILECHOOSER;
 	public static final Class<?> JFRAME;
+	public static final Class<?> ACTIONEVENT;
+	public static final Class<?> AWTBUTTON;
+	public static final Class<?> AWTCOMPONENT;
 
 	/* EMF */
 	public static final Class<?> EATTRIBUTE;
@@ -270,6 +273,9 @@ public class ReflectionLoader {
 			DESKTOP = getClass("java.awt.Desktop");
 			JFILECHOOSER = getClass("javax.swing.JFileChooser");
 			JFRAME = getClass("javax.swing.JFrame");
+			ACTIONEVENT = getClass("java.awt.event.ActionEvent");
+			AWTBUTTON = getClass("java.awt.Button");
+			AWTCOMPONENT = getClass("java.awt.Component");
 		} else {
 			SYSTEMTRAY = null;
 			RECTANGLE = null;
@@ -286,6 +292,9 @@ public class ReflectionLoader {
 			DESKTOP = null;
 			JFILECHOOSER = null;
 			JFRAME = null;
+			ACTIONEVENT = null;
+			AWTBUTTON = null;
+			AWTCOMPONENT = null;
 		}
 	}
 
@@ -502,8 +511,6 @@ public class ReflectionLoader {
 					pos++;
 				}
 			}
-			Constructor<?>[] constructors = instance.getConstructors();
-			Constructor<?>[] declaredConstructors = instance.getDeclaredConstructors();
 			Constructor<?> constructor = instance.getDeclaredConstructor(methodArguments);
 			if(Modifier.isProtected(constructor.getModifiers())) {
 				constructor.setAccessible(true);

@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.javafx;
+package de.uniks.networkparser.ext.gui;
 
 import java.io.File;
 import java.util.concurrent.CountDownLatch;

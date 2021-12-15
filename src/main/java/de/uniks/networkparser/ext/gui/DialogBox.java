@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.javafx;
+package de.uniks.networkparser.ext.gui;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -30,19 +30,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JPanel;
+
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.gui.controls.Button;
 import de.uniks.networkparser.gui.controls.Control;
 import de.uniks.networkparser.gui.controls.Label;
+import de.uniks.networkparser.gui.controls.TextField;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class DialogBox implements ObjectCondition {
+	public static final String TOOLKIT_JAVAFX= "JAVAFX";
+	public static final String TOOLKIT_WEB= "WEB";
+	public static final String TOOLKIT_AWT= "AWT";
+	public static final String TimedWindowEvent = "sun.awt.TimedWindowEvent";
+
+	
 	protected static final int HEADER_HEIGHT = 28;
 	protected static final URL DIALOGS_CSS_URL = DialogBox.class.getResource("dialogs.css");
-	boolean alwaysOnTop;
+	private boolean alwaysOnTop;
 	boolean modal = true;
+	private String toolkit = TOOLKIT_JAVAFX;
 
 	private SimpleSet<Control> titleElements = new SimpleSet<Control>();
 	private SimpleSet<Control> actionElements = new SimpleSet<Control>();
@@ -201,8 +211,45 @@ public class DialogBox implements ObjectCondition {
 			new DialogStage(this, owner).run();
 			return action;
 		}
+		if(TOOLKIT_AWT.equals(this.toolkit)) {
+			return showExternAWT(owner);
+		}
 		JavaAdapter.execute(new DialogStage(this, owner));
 		return null;
+	}
+	
+	private Button showExternAWT(Object owner) {
+		java.awt.Dialog dialog = new java.awt.Dialog(null, java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+		JPanel contentPane = new JPanel(); 
+		root = dialog;
+		dialog.add(contentPane);
+
+		Object layout = ReflectionLoader.newInstance("java.awt.BorderLayout");
+		GUIEvent event = new GUIEvent();
+		event.withListener(this);
+		
+		ReflectionLoader.call(contentPane, "setLayout", ReflectionLoader.getSimpleClass("java.awt.LayoutManager"), layout);
+
+		dialog.setTitle(this.titleElement.getValue());
+		dialog.setSize(400, 100);
+		java.awt.TextField field = new java.awt.TextField();
+		
+		JPanel actionPane = new JPanel();
+		Class<?> actionListenerClazz = ReflectionLoader.getClass("java.awt.event.ActionListener");
+		Class<?> windowListenerClazz = ReflectionLoader.getClass("java.awt.event.WindowListener");
+		Object listener = ReflectionLoader.createProxy(event, actionListenerClazz, windowListenerClazz);
+
+		for(Control control : this.actionElements) {
+			Object btn = ReflectionLoader.newInstance(ReflectionLoader.AWTBUTTON, ""+control.getValue());
+			ReflectionLoader.call(btn, "addActionListener", actionListenerClazz, listener);
+			ReflectionLoader.call(actionPane, "add", String.class, java.awt.BorderLayout.EAST, ReflectionLoader.AWTCOMPONENT, btn);
+		}
+		contentPane.add(java.awt.BorderLayout.CENTER, field);
+		contentPane.add(java.awt.BorderLayout.SOUTH, actionPane);
+		ReflectionLoader.call(dialog, "addWindowListener", windowListenerClazz, listener);
+		
+		dialog.setVisible(true);
+		return action;
 	}
 
 	public DialogBox withInline(boolean value) {
@@ -417,31 +464,13 @@ public class DialogBox implements ObjectCondition {
 		if (event == null) {
 			return false;
 		}
-		if (event.getClass().getName().startsWith("javafx")) {
-			double x = (Double) ReflectionLoader.call(event, "getSceneX");
-			double y = (Double) ReflectionLoader.call(event, "getSceneY");
-			String name = (String) ReflectionLoader.call(event, "getEventType", "getName");
-			if (name == null || name.startsWith("MOUSE-DRAG") == false) {
-				mouseDragDeltaX = x;
-				mouseDragDeltaY = y;
-			} else {
-				double eventX = x - mouseDragDeltaX;
-				double eventY = y - mouseDragDeltaY;
-				if (isInline) {
-					double xNew = (Double) ReflectionLoader.call(root, "getLayoutX");
-					double yNew = (Double) ReflectionLoader.call(root, "getLayoutY");
-					ReflectionLoader.call(root, "setLayoutX", double.class, xNew + eventX);
-					ReflectionLoader.call(root, "setLayoutY", double.class, yNew + eventY);
-				} else {
-					ReflectionLoader.call(stage, "setX", double.class, eventX);
-					ReflectionLoader.call(stage, "setY", double.class, eventY);
-				}
-
-				return true;
-			}
-			return true;
+		String name = event.getClass().getName();
+		if (name.startsWith("javafx")) {
+			return updateJavaFX(event);
 		}
-
+		if (name.startsWith("java.awt") || name.equalsIgnoreCase(TimedWindowEvent)) {
+			return updateAWT(event);
+		}
 		if (event instanceof Boolean) {
 			boolean active = (Boolean) event;
 			ReflectionLoader.call(root, "pseudoClassStateChanged", ReflectionLoader.PSEUDOCLASS, ACTIVE_PSEUDO_CLASS,
@@ -465,15 +494,62 @@ public class DialogBox implements ObjectCondition {
 		return true;
 	}
 
+	private boolean updateJavaFX(Object event) {
+		double x = (Double) ReflectionLoader.call(event, "getSceneX");
+		double y = (Double) ReflectionLoader.call(event, "getSceneY");
+		String name = (String) ReflectionLoader.call(event, "getEventType", "getName");
+		if (name == null || name.startsWith("MOUSE-DRAG") == false) {
+			mouseDragDeltaX = x;
+			mouseDragDeltaY = y;
+		} else {
+			double eventX = x - mouseDragDeltaX;
+			double eventY = y - mouseDragDeltaY;
+			if (isInline) {
+				double xNew = (Double) ReflectionLoader.call(root, "getLayoutX");
+				double yNew = (Double) ReflectionLoader.call(root, "getLayoutY");
+				ReflectionLoader.call(root, "setLayoutX", double.class, xNew + eventX);
+				ReflectionLoader.call(root, "setLayoutY", double.class, yNew + eventY);
+			} else {
+				ReflectionLoader.call(stage, "setX", double.class, eventX);
+				ReflectionLoader.call(stage, "setY", double.class, eventY);
+			}
+
+			return true;
+		}
+		return true;
+	}
+	
+	private boolean updateAWT(Object event) {
+		if(event.getClass().getName().equalsIgnoreCase(TimedWindowEvent)) {
+			if(this.root != null) {
+				ReflectionLoader.call(root, "dispose");
+			}
+			return true;		
+		}
+		if(event.getClass().equals(ReflectionLoader.ACTIONEVENT)) {
+			String value = (String) ReflectionLoader.call(event, "getActionCommand");
+			for(Control control : this.actionElements) {
+				if(control instanceof Button && value.equals(control.getValue())) {
+					this.action = (Button) control;
+					if(this.root != null) {
+						ReflectionLoader.call(root, "dispose");
+					}
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	public double prefWidth(double value) {
-		if(root != null) {
+		if (root != null) {
 			return (Double) ReflectionLoader.call(root, "prefWidth", double.class, -1);
 		}
 		return -1;
 	}
 
 	public double prefHeight(double value) {
-		if(root != null) {
+		if (root != null) {
 			return (Double) ReflectionLoader.call(root, "prefHeight", double.class, -1);
 		}
 		return -1;
@@ -535,7 +611,7 @@ public class DialogBox implements ObjectCondition {
 			}
 		} else {
 			/* SWING??? */
-			if(ReflectionLoader.JFRAME == null) {
+			if (ReflectionLoader.JFRAME == null) {
 				return null;
 			}
 			ReflectionLoader.logger = new PrintStream(System.out);
@@ -556,7 +632,7 @@ public class DialogBox implements ObjectCondition {
 				ReflectionLoader.call(fileChooser, "setFileFilter", fileFilter, filter);
 			}
 			Class<?> componentClass = ReflectionLoader.getClass("java.awt.Component");
-			if(componentClass == null) {
+			if (componentClass == null) {
 				return null;
 			}
 			if ("save".equals(art)) {
@@ -572,5 +648,32 @@ public class DialogBox implements ObjectCondition {
 			}
 		}
 		return null;
+	}
+
+	public static String getInputString(String... param) {
+		String title = "Eingabe";
+		String info = null;
+		if(param != null) {
+			if(param.length>1) {
+				title = param[1];
+			}
+			if(param.length>0) {
+				info= param[0];	
+			}
+		}
+		
+		TextField textField = new TextField();
+		DialogBox dialogBox = new DialogBox().withTitle(title).withCenterInfo(info).withCenter(textField);
+		dialogBox.toolkit = TOOLKIT_AWT;
+		Button actionButton = dialogBox.withActionButton(new Button().withValue("OK").withActionType(Button.CLOSE, dialogBox),
+				new Button().withValue("Abbrechen").withActionType(Button.CLOSE, dialogBox)).show(null);
+		if (actionButton != null && actionButton.getValue().equalsIgnoreCase("OK")) {
+			return textField.getValue();
+		}
+		return null;
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(DialogBox.getInputString());
 	}
 }
