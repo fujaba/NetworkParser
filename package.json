@@ -15,7 +15,7 @@
   "main": "",
   "dependencies": {
     "dagre": "^0.8.2",
-    "diagramjs": "^0.0.7",
+    "diagramjs": "^0.0.8",
     "highlightjs-line-numbers.js": "^2.3.0",
     "jspdf": "^1.3.5"
   },
