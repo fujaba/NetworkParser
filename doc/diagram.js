@@ -1,102 +1,17 @@
-var DiagramJS =
-/******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/
-/******/ 	// create a fake namespace object
-/******/ 	// mode & 1: value is a module id, require it
-/******/ 	// mode & 2: merge all properties of value into the ns
-/******/ 	// mode & 4: return value when already ns object
-/******/ 	// mode & 8|1: behave like require
-/******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
-/******/ 		var ns = Object.create(null);
-/******/ 		__webpack_require__.r(ns);
-/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
-/******/ 		return ns;
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./main.ts");
-/******/ })
-/************************************************************************/
-/******/ ({
+var DiagramJS;
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
 
 /***/ "./Adapter.ts":
 /*!********************!*\
   !*** ./Adapter.ts ***!
   \********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Adapter = void 0;
 var Adapter = (function () {
     function Adapter() {
         this.id = null;
@@ -112,22 +27,26 @@ exports.Adapter = Adapter;
 /*!*******************!*\
   !*** ./Bridge.ts ***!
   \*******************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DelegateAdapter = exports.Bridge = void 0;
 var controls = __webpack_require__(/*! ./elements/nodes */ "./elements/nodes/index.ts");
 var adapters = __webpack_require__(/*! ./adapters */ "./adapters/index.ts");
 var Data_1 = __webpack_require__(/*! ./Data */ "./Data.ts");
@@ -519,12 +438,10 @@ exports.DelegateAdapter = DelegateAdapter;
 /*!**************************!*\
   !*** ./BridgeElement.ts ***!
   \**************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 var BridgeElement = (function () {
     function BridgeElement(model) {
         this.model = model;
@@ -534,7 +451,7 @@ var BridgeElement = (function () {
     BridgeElement.elementSet = [];
     return BridgeElement;
 }());
-exports.default = BridgeElement;
+exports["default"] = BridgeElement;
 
 
 /***/ }),
@@ -543,12 +460,11 @@ exports.default = BridgeElement;
 /*!****************!*\
   !*** ./CSS.ts ***!
   \****************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CSS = void 0;
 var util_1 = __webpack_require__(/*! ./util */ "./util.ts");
 var CSS = (function () {
     function CSS(name, item) {
@@ -787,12 +703,11 @@ exports.CSS = CSS;
 /*!********************!*\
   !*** ./Control.ts ***!
   \********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Control = void 0;
 var Data_1 = __webpack_require__(/*! ./Data */ "./Data.ts");
 var EventListener_1 = __webpack_require__(/*! ./EventListener */ "./EventListener.ts");
 var Control = (function () {
@@ -1102,7 +1017,7 @@ var Control = (function () {
             var arr = this.property.split('.');
             return arr[arr.length - 1];
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     return Control;
@@ -1116,12 +1031,10 @@ exports.Control = Control;
 /*!*****************!*\
   !*** ./Data.ts ***!
   \*****************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 var Data = (function () {
     function Data() {
         this.prop = {};
@@ -1270,7 +1183,7 @@ var Data = (function () {
     };
     return Data;
 }());
-exports.default = Data;
+exports["default"] = Data;
 
 
 /***/ }),
@@ -1279,12 +1192,11 @@ exports.default = Data;
 /*!*********************!*\
   !*** ./EventBus.ts ***!
   \*********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.EventBus = void 0;
 var EventBus = (function () {
     function EventBus() {
     }
@@ -1397,12 +1309,10 @@ exports.EventBus = EventBus;
 /*!**************************!*\
   !*** ./EventListener.ts ***!
   \**************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 var EventListener = (function () {
     function EventListener() {
     }
@@ -1413,7 +1323,7 @@ var EventListener = (function () {
         set: function (value) {
             this.$onUpdate = value;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     EventListener.prototype.update = function (event) {
@@ -1421,7 +1331,7 @@ var EventListener = (function () {
     };
     return EventListener;
 }());
-exports.default = EventListener;
+exports["default"] = EventListener;
 
 
 /***/ }),
@@ -1430,12 +1340,11 @@ exports.default = EventListener;
 /*!******************!*\
   !*** ./JSEPS.ts ***!
   \******************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.JSEPS = void 0;
 var JSEPS = (function () {
     function JSEPS(options) {
         this.max = 0;
@@ -1500,12 +1409,10 @@ exports.JSEPS = JSEPS;
 /*!********************!*\
   !*** ./Palette.ts ***!
   \********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 var Palette = (function () {
     function Palette(graph) {
         var _this = this;
@@ -1543,7 +1450,7 @@ var Palette = (function () {
     };
     return Palette;
 }());
-exports.default = Palette;
+exports["default"] = Palette;
 
 
 /***/ }),
@@ -1552,22 +1459,26 @@ exports.default = Palette;
 /*!****************************!*\
   !*** ./PropertiesPanel.ts ***!
   \****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PanelItem = exports.ClearPanel = exports.GeneratePanel = exports.Panel = exports.PanelGroup = void 0;
 var EventBus_1 = __webpack_require__(/*! ./EventBus */ "./EventBus.ts");
 var util_1 = __webpack_require__(/*! ./util */ "./util.ts");
 var PanelGroup = (function () {
@@ -1897,12 +1808,11 @@ exports.PanelItem = PanelItem;
 /*!***************************!*\
   !*** ./PropertyBinder.ts ***!
   \***************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PropertyBinder = void 0;
 var PropertyBinder = (function () {
     function PropertyBinder(data1, data2, propertyClass1, propertyClass2) {
         this.applyingChange = false;
@@ -1952,12 +1862,11 @@ exports.PropertyBinder = PropertyBinder;
 /*!*********************!*\
   !*** ./RGBColor.ts ***!
   \*********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RGBColor = void 0;
 var RGBColor = (function () {
     function RGBColor(value) {
         this.ok = false;
@@ -1994,12 +1903,11 @@ exports.RGBColor = RGBColor;
 /*!*************************!*\
   !*** ./SVGConverter.ts ***!
   \*************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SVGConverter = void 0;
 var RGBColor_1 = __webpack_require__(/*! ./RGBColor */ "./RGBColor.ts");
 var JSEPS_1 = __webpack_require__(/*! ./JSEPS */ "./JSEPS.ts");
 var epsSvgAttr = {
@@ -2168,22 +2076,26 @@ exports.SVGConverter = SVGConverter;
 /*!***********************!*\
   !*** ./ScrumBoard.ts ***!
   \***********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ScrumBoard = void 0;
 var Control_1 = __webpack_require__(/*! ./Control */ "./Control.ts");
 var ScrumBoard = (function (_super) {
     __extends(ScrumBoard, _super);
@@ -2252,12 +2164,11 @@ exports.ScrumBoard = ScrumBoard;
 /*!********************!*\
   !*** ./Toolbar.ts ***!
   \********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Toolbar = void 0;
 var Symbol_1 = __webpack_require__(/*! ./elements/nodes/Symbol */ "./elements/nodes/Symbol.ts");
 var EventBus_1 = __webpack_require__(/*! ./EventBus */ "./EventBus.ts");
 var Toolbar = (function () {
@@ -2291,22 +2202,26 @@ exports.Toolbar = Toolbar;
 /*!****************!*\
   !*** ./UML.ts ***!
   \****************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UML = void 0;
 var Data_1 = __webpack_require__(/*! ./Data */ "./Data.ts");
 var UML;
 (function (UML) {
@@ -2372,22 +2287,26 @@ window['UML'] = UML;
 /*!****************************!*\
   !*** ./VirtualKeyBoard.ts ***!
   \****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.VirtualKeyBoard = void 0;
 var Control_1 = __webpack_require__(/*! ./Control */ "./Control.ts");
 var VirtualKeyBoard = (function (_super) {
     __extends(VirtualKeyBoard, _super);
@@ -2452,16 +2371,16 @@ var VirtualKeyBoard = (function (_super) {
     VirtualKeyBoard.prototype.getDefault = function () {
         var format = {
             normal: [
-                ['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '?', '´', '{Bksp}'],
-                ['{Tab}', 'q', 'w', 'e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 'ü', '+'],
-                ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', '#', '{enter}'],
+                ['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '?', 'Â´', '{Bksp}'],
+                ['{Tab}', 'q', 'w', 'e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 'Ã¼', '+'],
+                ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'Ã¶', 'Ã¤', '#', '{enter}'],
                 ['{Shift}', '<', 'y', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '-', '{Shift}'],
                 ['{Accept}', '{Alt}', '{Space}', '{Cancel}']
             ],
             shift: [
-                ['°', '!', '"', '§', '$', '%', '&', '/', '(', ')', '=', '?', '`', '{Bksp}'],
-                ['{Tab}', 'Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ü', '*'],
-                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ö', 'Ä', '\'', '{enter}'],
+                ['Â°', '!', '"', 'Â§', '$', '%', '&', '/', '(', ')', '=', '?', '`', '{Bksp}'],
+                ['{Tab}', 'Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ãœ', '*'],
+                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ã–', 'Ã„', '\'', '{enter}'],
                 ['{Shift}', '>', 'Y', 'X', 'C', 'V', 'B', 'N', 'M', ';', ':', '_', '{Shift}'],
                 ['{Accept}', '{Alt}', '{Space}', '{Cancel}']
             ]
@@ -2533,22 +2452,26 @@ exports.VirtualKeyBoard = VirtualKeyBoard;
 /*!*********************************!*\
   !*** ./adapters/JavaAdapter.ts ***!
   \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.JavaAdapter = void 0;
 var Adapter_1 = __webpack_require__(/*! ../Adapter */ "./Adapter.ts");
 var JavaAdapter = (function (_super) {
     __extends(JavaAdapter, _super);
@@ -2578,16 +2501,21 @@ exports.JavaAdapter = JavaAdapter;
 /*!***************************!*\
   !*** ./adapters/index.ts ***!
   \***************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(/*! ./JavaAdapter */ "./adapters/JavaAdapter.ts"));
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(/*! ./JavaAdapter */ "./adapters/JavaAdapter.ts"), exports);
 
 
 /***/ }),
@@ -2596,22 +2524,26 @@ __export(__webpack_require__(/*! ./JavaAdapter */ "./adapters/JavaAdapter.ts"));
 /*!**********************************!*\
   !*** ./elements/BaseElements.ts ***!
   \**********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Line = exports.Point = exports.DiagramElement = void 0;
 var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
 var Control_1 = __webpack_require__(/*! ../Control */ "./Control.ts");
 var DiagramElement = (function (_super) {
@@ -2876,22 +2808,26 @@ exports.Line = Line;
 /*!*********************************!*\
   !*** ./elements/ClassEditor.ts ***!
   \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ClassEditor = void 0;
 var Graph_1 = __webpack_require__(/*! ./Graph */ "./elements/Graph.ts");
 var adapters_1 = __webpack_require__(/*! ../adapters */ "./adapters/index.ts");
 var ClassEditor = (function (_super) {
@@ -2941,22 +2877,26 @@ exports.ClassEditor = ClassEditor;
 /*!***************************!*\
   !*** ./elements/Graph.ts ***!
   \***************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Graph = void 0;
 var edges = __webpack_require__(/*! ./edges */ "./elements/edges/index.ts");
 var edges_1 = __webpack_require__(/*! ./edges */ "./elements/edges/index.ts");
 var nodes = __webpack_require__(/*! ./nodes */ "./elements/nodes/index.ts");
@@ -3448,7 +3388,7 @@ var Graph = (function (_super) {
                 EventBus_1.EventBus.subscribe(this.importFile, 'dragover', 'dragleave', 'drop');
             }
             if (features.zoom) {
-                var mousewheel = 'onwheel' in document.createElement('div') ? 'wheel' : document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
+                var mousewheel = 'onwheel' in document.createElement('div') ? 'wheel' : document['onmousewheel'] !== undefined ? 'mousewheel' : 'DOMMouseScroll';
                 EventBus_1.EventBus.subscribe(new handlers_1.Zoom(this), mousewheel);
             }
             if (features.drag) {
@@ -3484,22 +3424,26 @@ exports.Graph = Graph;
 /*!***************************!*\
   !*** ./elements/Model.ts ***!
   \***************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GraphModel = void 0;
 var BaseElements_1 = __webpack_require__(/*! ./BaseElements */ "./elements/BaseElements.ts");
 var edges_1 = __webpack_require__(/*! ./edges */ "./elements/edges/index.ts");
 var nodes_1 = __webpack_require__(/*! ./nodes */ "./elements/nodes/index.ts");
@@ -3615,7 +3559,7 @@ var GraphModel = (function (_super) {
     };
     GraphModel.prototype.getSVG = function () {
         var size = 10;
-        var path = "M" + -size + " 0 L" + +size + " 0 M0 " + -size + " L0 " + +size;
+        var path = "M".concat(-size, " 0 L").concat(+size, " 0 M0 ").concat(-size, " L0 ").concat(+size);
         var attr = {
             tag: 'path',
             id: 'origin',
@@ -3758,7 +3702,7 @@ var GraphModel = (function (_super) {
         });
         this.$view = graph.root;
         graph.$view.appendChild(graph.root);
-        var mousewheel = 'onwheel' in document.createElement('div') ? 'wheel' : document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
+        var mousewheel = 'onwheel' in document.createElement('div') ? 'wheel' : document['onmousewheel'] !== undefined ? 'mousewheel' : 'DOMMouseScroll';
         EventBus_1.EventBus.register(this, this.$view);
     };
     GraphModel.prototype.addNode = function (node) {
@@ -3778,22 +3722,26 @@ exports.GraphModel = GraphModel;
 /*!*************************************!*\
   !*** ./elements/edges/Aggregate.ts ***!
   \*************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Aggregate = void 0;
 var Association_1 = __webpack_require__(/*! ./Association */ "./elements/edges/Association.ts");
 var Aggregate = (function (_super) {
     __extends(Aggregate, _super);
@@ -3830,19 +3778,19 @@ var Aggregate = (function (_super) {
         var path;
         switch (direction) {
             case 0:
-                path = "M" + startX + " " + startY + " L" + (startX + 6) + " " + (startY + 10) + " L" + startX + " " + (startY + 20) + " L" + (startX - 6) + " " + (startY + 10) + " Z";
+                path = "M".concat(startX, " ").concat(startY, " L").concat(startX + 6, " ").concat(startY + 10, " L").concat(startX, " ").concat(startY + 20, " L").concat(startX - 6, " ").concat(startY + 10, " Z");
                 startPoint.y = startPoint.y + 20;
                 break;
             case 3:
-                path = "M" + startX + " " + startY + " L" + (startX - 10) + " " + (startY + 6) + " L" + (startX - 20) + " " + startY + " L" + (startX - 10) + " " + (startY - 6) + " Z";
+                path = "M".concat(startX, " ").concat(startY, " L").concat(startX - 10, " ").concat(startY + 6, " L").concat(startX - 20, " ").concat(startY, " L").concat(startX - 10, " ").concat(startY - 6, " Z");
                 startPoint.x = startPoint.x - 20;
                 break;
             case 2:
-                path = "M" + startX + " " + startY + " L" + (startX + 10) + " " + (startY - 6) + " L" + (startX + 20) + " " + startY + " L" + (startX + 10) + " " + (startY + 6) + " Z";
+                path = "M".concat(startX, " ").concat(startY, " L").concat(startX + 10, " ").concat(startY - 6, " L").concat(startX + 20, " ").concat(startY, " L").concat(startX + 10, " ").concat(startY + 6, " Z");
                 startPoint.x = startPoint.x + 20;
                 break;
             case 1:
-                path = "M" + startX + " " + startY + " L" + (startX - 6) + " " + (startY - 10) + " L" + startX + " " + (startY - 20) + " L" + (startX + 6) + " " + (startY - 10) + " Z";
+                path = "M".concat(startX, " ").concat(startY, " L").concat(startX - 6, " ").concat(startY - 10, " L").concat(startX, " ").concat(startY - 20, " L").concat(startX + 6, " ").concat(startY - 10, " Z");
                 startPoint.y = startPoint.y - 20;
                 break;
             default:
@@ -3861,22 +3809,26 @@ exports.Aggregate = Aggregate;
 /*!***************************************!*\
   !*** ./elements/edges/Aggregation.ts ***!
   \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Aggregation = void 0;
 var index_1 = __webpack_require__(/*! ./index */ "./elements/edges/index.ts");
 var Aggregation = (function (_super) {
     __extends(Aggregation, _super);
@@ -3899,22 +3851,26 @@ exports.Aggregation = Aggregation;
 /*!***************************************!*\
   !*** ./elements/edges/Association.ts ***!
   \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Association = exports.Direction = void 0;
 var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
 var InfoText_1 = __webpack_require__(/*! ../nodes/InfoText */ "./elements/nodes/InfoText.ts");
 var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
@@ -4320,22 +4276,26 @@ exports.Association = Association;
 /*!***************************************!*\
   !*** ./elements/edges/Composition.ts ***!
   \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Composition = void 0;
 var index_1 = __webpack_require__(/*! ./index */ "./elements/edges/index.ts");
 var Composition = (function (_super) {
     __extends(Composition, _super);
@@ -4358,22 +4318,26 @@ exports.Composition = Composition;
 /*!******************************************!*\
   !*** ./elements/edges/Generalisation.ts ***!
   \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Generalisation = void 0;
 var Association_1 = __webpack_require__(/*! ./Association */ "./elements/edges/Association.ts");
 var Generalisation = (function (_super) {
     __extends(Generalisation, _super);
@@ -4413,19 +4377,19 @@ var Generalisation = (function (_super) {
         var path;
         switch (direction) {
             case 0:
-                path = "M" + startX + " " + (startY + 3) + " L" + (startX + this.$TARGET_ELEMENT_HEIGHT) + " " + (startY + this.$TARGET_ELEMENT_HEIGHT) + " L" + (startX - this.$TARGET_ELEMENT_HEIGHT) + " " + (startY + this.$TARGET_ELEMENT_HEIGHT) + " Z";
+                path = "M".concat(startX, " ").concat(startY + 3, " L").concat(startX + this.$TARGET_ELEMENT_HEIGHT, " ").concat(startY + this.$TARGET_ELEMENT_HEIGHT, " L").concat(startX - this.$TARGET_ELEMENT_HEIGHT, " ").concat(startY + this.$TARGET_ELEMENT_HEIGHT, " Z");
                 startPoint.y = startPoint.y + 12;
                 break;
             case 3:
-                path = "M" + (startX - 3) + " " + startY + " L" + (startX - this.$TARGET_ELEMENT_HEIGHT) + " " + (startY + this.$TARGET_ELEMENT_HEIGHT) + " L" + (startX - this.$TARGET_ELEMENT_HEIGHT) + " " + (startY - this.$TARGET_ELEMENT_HEIGHT) + " Z";
+                path = "M".concat(startX - 3, " ").concat(startY, " L").concat(startX - this.$TARGET_ELEMENT_HEIGHT, " ").concat(startY + this.$TARGET_ELEMENT_HEIGHT, " L").concat(startX - this.$TARGET_ELEMENT_HEIGHT, " ").concat(startY - this.$TARGET_ELEMENT_HEIGHT, " Z");
                 startPoint.x = startPoint.x - 12;
                 break;
             case 2:
-                path = "M" + (startX + 3) + " " + startY + " L" + (startX + this.$TARGET_ELEMENT_HEIGHT) + " " + (startY - this.$TARGET_ELEMENT_HEIGHT) + " L" + (startX + this.$TARGET_ELEMENT_HEIGHT) + " " + (startY + this.$TARGET_ELEMENT_HEIGHT) + " Z";
+                path = "M".concat(startX + 3, " ").concat(startY, " L").concat(startX + this.$TARGET_ELEMENT_HEIGHT, " ").concat(startY - this.$TARGET_ELEMENT_HEIGHT, " L").concat(startX + this.$TARGET_ELEMENT_HEIGHT, " ").concat(startY + this.$TARGET_ELEMENT_HEIGHT, " Z");
                 startPoint.x = startPoint.x + 12;
                 break;
             case 1:
-                path = "M" + startX + " " + (startY - 3) + " L" + (startX + this.$TARGET_ELEMENT_HEIGHT) + " " + (startY - this.$TARGET_ELEMENT_HEIGHT) + " L" + (startX - this.$TARGET_ELEMENT_HEIGHT) + " " + (startY - this.$TARGET_ELEMENT_HEIGHT) + " Z";
+                path = "M".concat(startX, " ").concat(startY - 3, " L").concat(startX + this.$TARGET_ELEMENT_HEIGHT, " ").concat(startY - this.$TARGET_ELEMENT_HEIGHT, " L").concat(startX - this.$TARGET_ELEMENT_HEIGHT, " ").concat(startY - this.$TARGET_ELEMENT_HEIGHT, " Z");
                 startPoint.y = startPoint.y - 12;
                 break;
             default:
@@ -4444,22 +4408,26 @@ exports.Generalisation = Generalisation;
 /*!**************************************!*\
   !*** ./elements/edges/Implements.ts ***!
   \**************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Implements = void 0;
 var Generalisation_1 = __webpack_require__(/*! ./Generalisation */ "./elements/edges/Generalisation.ts");
 var Implements = (function (_super) {
     __extends(Implements, _super);
@@ -4482,21 +4450,26 @@ exports.Implements = Implements;
 /*!*********************************!*\
   !*** ./elements/edges/index.ts ***!
   \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(/*! ./Association */ "./elements/edges/Association.ts"));
-__export(__webpack_require__(/*! ./Aggregate */ "./elements/edges/Aggregate.ts"));
-__export(__webpack_require__(/*! ./Aggregation */ "./elements/edges/Aggregation.ts"));
-__export(__webpack_require__(/*! ./Composition */ "./elements/edges/Composition.ts"));
-__export(__webpack_require__(/*! ./Generalisation */ "./elements/edges/Generalisation.ts"));
-__export(__webpack_require__(/*! ./Implements */ "./elements/edges/Implements.ts"));
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(/*! ./Association */ "./elements/edges/Association.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Aggregate */ "./elements/edges/Aggregate.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Aggregation */ "./elements/edges/Aggregation.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Composition */ "./elements/edges/Composition.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Generalisation */ "./elements/edges/Generalisation.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Implements */ "./elements/edges/Implements.ts"), exports);
 
 
 /***/ }),
@@ -4505,20 +4478,25 @@ __export(__webpack_require__(/*! ./Implements */ "./elements/edges/Implements.ts
 /*!***************************!*\
   !*** ./elements/index.ts ***!
   \***************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(/*! ./edges */ "./elements/edges/index.ts"));
-__export(__webpack_require__(/*! ./nodes */ "./elements/nodes/index.ts"));
-__export(__webpack_require__(/*! ./BaseElements */ "./elements/BaseElements.ts"));
-__export(__webpack_require__(/*! ./Graph */ "./elements/Graph.ts"));
-__export(__webpack_require__(/*! ./Model */ "./elements/Model.ts"));
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(/*! ./edges */ "./elements/edges/index.ts"), exports);
+__exportStar(__webpack_require__(/*! ./nodes */ "./elements/nodes/index.ts"), exports);
+__exportStar(__webpack_require__(/*! ./BaseElements */ "./elements/BaseElements.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Graph */ "./elements/Graph.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Model */ "./elements/Model.ts"), exports);
 
 
 /***/ }),
@@ -4527,22 +4505,25 @@ __export(__webpack_require__(/*! ./Model */ "./elements/Model.ts"));
 /*!*************************************!*\
   !*** ./elements/nodes/Attribute.ts ***!
   \*************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 var ClazzProperty_1 = __webpack_require__(/*! ./ClazzProperty */ "./elements/nodes/ClazzProperty.ts");
 var Attribute = (function (_super) {
     __extends(Attribute, _super);
@@ -4551,7 +4532,7 @@ var Attribute = (function (_super) {
     }
     return Attribute;
 }(ClazzProperty_1.default));
-exports.default = Attribute;
+exports["default"] = Attribute;
 
 
 /***/ }),
@@ -4560,22 +4541,26 @@ exports.default = Attribute;
 /*!****************************************!*\
   !*** ./elements/nodes/AutoComplete.ts ***!
   \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AutoComplete = void 0;
 var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
 var AutoComplete = (function (_super) {
     __extends(AutoComplete, _super);
@@ -4697,22 +4682,26 @@ exports.AutoComplete = AutoComplete;
 /*!******************************!*\
   !*** ./elements/nodes/BR.ts ***!
   \******************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BR = void 0;
 var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
 var BR = (function (_super) {
     __extends(BR, _super);
@@ -4743,22 +4732,26 @@ exports.BR = BR;
 /*!**********************************!*\
   !*** ./elements/nodes/Button.ts ***!
   \**********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Button = void 0;
 var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
 var Button = (function (_super) {
     __extends(Button, _super);
@@ -4797,22 +4790,26 @@ exports.Button = Button;
 /*!*********************************!*\
   !*** ./elements/nodes/Class.ts ***!
   \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Class = void 0;
 var Node_1 = __webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts");
 var EventBus_1 = __webpack_require__(/*! ../../EventBus */ "./EventBus.ts");
 var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
@@ -5260,22 +5257,25 @@ exports.Class = Class;
 /*!*****************************************!*\
   !*** ./elements/nodes/ClazzProperty.ts ***!
   \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
 var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
 var Data_1 = __webpack_require__(/*! ../../Data */ "./Data.ts");
@@ -5408,7 +5408,7 @@ var ClazzProperty = (function (_super) {
     };
     return ClazzProperty;
 }(BaseElements_1.DiagramElement));
-exports.default = ClazzProperty;
+exports["default"] = ClazzProperty;
 
 
 /***/ }),
@@ -5417,22 +5417,26 @@ exports.default = ClazzProperty;
 /*!********************************!*\
   !*** ./elements/nodes/Dice.ts ***!
   \********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Dice = void 0;
 var Node_1 = __webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts");
 var Dice = (function (_super) {
     __extends(Dice, _super);
@@ -5612,22 +5616,26 @@ exports.Dice = Dice;
 /*!*******************************!*\
   !*** ./elements/nodes/Div.ts ***!
   \*******************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Div = void 0;
 var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
 var Div = (function (_super) {
     __extends(Div, _super);
@@ -5694,22 +5702,26 @@ exports.Div = Div;
 /*!********************************!*\
   !*** ./elements/nodes/Form.ts ***!
   \********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Form = void 0;
 var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
 var Form = (function (_super) {
     __extends(Form, _super);
@@ -5795,7 +5807,7 @@ var Form = (function (_super) {
         get: function () {
             return this.property.split('.')[0];
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Form.prototype.setValue = function (object, attribute, newValue, oldValue) {
@@ -5815,22 +5827,26 @@ exports.Form = Form;
 /*!********************************!*\
   !*** ./elements/nodes/HTML.ts ***!
   \********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.HTML = void 0;
 var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
 var HTML = (function (_super) {
     __extends(HTML, _super);
@@ -5919,22 +5935,26 @@ exports.HTML = HTML;
 /*!************************************!*\
   !*** ./elements/nodes/InfoText.ts ***!
   \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.InfoText = void 0;
 var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
 var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
 var Node_1 = __webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts");
@@ -6135,22 +6155,26 @@ exports.InfoText = InfoText;
 /*!*********************************!*\
   !*** ./elements/nodes/Input.ts ***!
   \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Input = void 0;
 var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
 var PropertyBinder_1 = __webpack_require__(/*! ../../PropertyBinder */ "./PropertyBinder.ts");
 var Input = (function (_super) {
@@ -6281,22 +6305,26 @@ exports.Input = Input;
 /*!*********************************!*\
   !*** ./elements/nodes/Label.ts ***!
   \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Label = void 0;
 var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
 var Label = (function (_super) {
     __extends(Label, _super);
@@ -6332,22 +6360,25 @@ exports.Label = Label;
 /*!**********************************!*\
   !*** ./elements/nodes/Method.ts ***!
   \**********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
 var ClazzProperty_1 = __webpack_require__(/*! ./ClazzProperty */ "./elements/nodes/ClazzProperty.ts");
 var Method = (function (_super) {
@@ -6401,7 +6432,7 @@ var Method = (function (_super) {
     };
     return Method;
 }(ClazzProperty_1.default));
-exports.default = Method;
+exports["default"] = Method;
 
 
 /***/ }),
@@ -6410,22 +6441,26 @@ exports.default = Method;
 /*!********************************!*\
   !*** ./elements/nodes/Node.ts ***!
   \********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Node = void 0;
 var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
 var Node = (function (_super) {
     __extends(Node, _super);
@@ -6522,22 +6557,26 @@ exports.Node = Node;
 /*!******************************!*\
   !*** ./elements/nodes/SO.ts ***!
   \******************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SO = void 0;
 var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
 var SO = (function (_super) {
     __extends(SO, _super);
@@ -6586,22 +6625,26 @@ exports.SO = SO;
 /*!**************************************!*\
   !*** ./elements/nodes/StereoType.ts ***!
   \**************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.StereoType = void 0;
 var Node_1 = __webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts");
 var StereoType = (function (_super) {
     __extends(StereoType, _super);
@@ -6646,22 +6689,26 @@ exports.StereoType = StereoType;
 /*!**********************************!*\
   !*** ./elements/nodes/Symbol.ts ***!
   \**********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SymbolLibary = exports.Symbol = void 0;
 var Node_1 = __webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts");
 var SO_1 = __webpack_require__(/*! ./SO */ "./elements/nodes/SO.ts");
 var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
@@ -7463,22 +7510,26 @@ exports.SymbolLibary = SymbolLibary;
 /*!*********************************!*\
   !*** ./elements/nodes/Table.ts ***!
   \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Table = void 0;
 var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
 var BridgeElement_1 = __webpack_require__(/*! ../../BridgeElement */ "./BridgeElement.ts");
 var Data_1 = __webpack_require__(/*! ../../Data */ "./Data.ts");
@@ -7502,7 +7553,7 @@ var Table = (function (_super) {
         get: function () {
             return this.property.split('.')[0];
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Table.indexOfChild = function (item) {
@@ -8233,36 +8284,41 @@ var Column = (function () {
 /*!*********************************!*\
   !*** ./elements/nodes/index.ts ***!
   \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 var AutoComplete_1 = __webpack_require__(/*! ./AutoComplete */ "./elements/nodes/AutoComplete.ts");
 var BR_1 = __webpack_require__(/*! ./BR */ "./elements/nodes/BR.ts");
 var Div_1 = __webpack_require__(/*! ./Div */ "./elements/nodes/Div.ts");
 var Label_1 = __webpack_require__(/*! ./Label */ "./elements/nodes/Label.ts");
-__export(__webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts"));
-__export(__webpack_require__(/*! ./Class */ "./elements/nodes/Class.ts"));
-__export(__webpack_require__(/*! ./SO */ "./elements/nodes/SO.ts"));
-__export(__webpack_require__(/*! ./Symbol */ "./elements/nodes/Symbol.ts"));
-__export(__webpack_require__(/*! ./BR */ "./elements/nodes/BR.ts"));
-__export(__webpack_require__(/*! ./Button */ "./elements/nodes/Button.ts"));
-__export(__webpack_require__(/*! ./Div */ "./elements/nodes/Div.ts"));
-__export(__webpack_require__(/*! ./Form */ "./elements/nodes/Form.ts"));
-__export(__webpack_require__(/*! ./Input */ "./elements/nodes/Input.ts"));
-__export(__webpack_require__(/*! ./Label */ "./elements/nodes/Label.ts"));
-__export(__webpack_require__(/*! ./Table */ "./elements/nodes/Table.ts"));
-__export(__webpack_require__(/*! ./HTML */ "./elements/nodes/HTML.ts"));
-__export(__webpack_require__(/*! ./Dice */ "./elements/nodes/Dice.ts"));
-__export(__webpack_require__(/*! ./AutoComplete */ "./elements/nodes/AutoComplete.ts"));
-__export(__webpack_require__(/*! ./Attribute */ "./elements/nodes/Attribute.ts"));
-__export(__webpack_require__(/*! ./Method */ "./elements/nodes/Method.ts"));
-__export(__webpack_require__(/*! ./ClazzProperty */ "./elements/nodes/ClazzProperty.ts"));
+__exportStar(__webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Class */ "./elements/nodes/Class.ts"), exports);
+__exportStar(__webpack_require__(/*! ./SO */ "./elements/nodes/SO.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Symbol */ "./elements/nodes/Symbol.ts"), exports);
+__exportStar(__webpack_require__(/*! ./BR */ "./elements/nodes/BR.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Button */ "./elements/nodes/Button.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Div */ "./elements/nodes/Div.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Form */ "./elements/nodes/Form.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Input */ "./elements/nodes/Input.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Label */ "./elements/nodes/Label.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Table */ "./elements/nodes/Table.ts"), exports);
+__exportStar(__webpack_require__(/*! ./HTML */ "./elements/nodes/HTML.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Dice */ "./elements/nodes/Dice.ts"), exports);
+__exportStar(__webpack_require__(/*! ./AutoComplete */ "./elements/nodes/AutoComplete.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Attribute */ "./elements/nodes/Attribute.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Method */ "./elements/nodes/Method.ts"), exports);
+__exportStar(__webpack_require__(/*! ./ClazzProperty */ "./elements/nodes/ClazzProperty.ts"), exports);
 new AutoComplete_1.AutoComplete();
 new BR_1.BR();
 new Div_1.Div();
@@ -8275,12 +8331,11 @@ new Label_1.Label();
 /*!*****************************!*\
   !*** ./handlers/AddNode.ts ***!
   \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AddNode = void 0;
 var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
 var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
 var AddNode = (function () {
@@ -8465,12 +8520,11 @@ exports.AddNode = AddNode;
 /*!**************************!*\
   !*** ./handlers/Drag.ts ***!
   \**************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Drag = void 0;
 var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
 var BaseElements_1 = __webpack_require__(/*! ../elements/BaseElements */ "./elements/BaseElements.ts");
 var nodes_1 = __webpack_require__(/*! ../elements/nodes */ "./elements/nodes/index.ts");
@@ -8592,12 +8646,11 @@ exports.Drag = Drag;
 /*!***********************************!*\
   !*** ./handlers/GraphListener.ts ***!
   \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GraphListener = void 0;
 var GraphListener = (function () {
     function GraphListener(owner) {
         this.$owner = owner;
@@ -8636,12 +8689,11 @@ exports.GraphListener = GraphListener;
 /*!********************************!*\
   !*** ./handlers/ImportFile.ts ***!
   \********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ImportFile = void 0;
 var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
 var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
 var ImportFile = (function () {
@@ -8715,7 +8767,7 @@ var ImportFile = (function () {
         var that = this;
         for (var i = 0, f = void 0; f = files[i]; i++) {
             reader.onload = function (event) {
-                htmlResult = event.target['result'];
+                htmlResult = '' + event.target['result'];
                 console.log('fileContent: ' + htmlResult);
                 if (that.graph) {
                     that.graph.import(htmlResult);
@@ -8789,12 +8841,11 @@ exports.ImportFile = ImportFile;
 /*!*****************************!*\
   !*** ./handlers/NewEdge.ts ***!
   \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.NewEdge = void 0;
 var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
 var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
 var index_1 = __webpack_require__(/*! ../elements/nodes/index */ "./elements/nodes/index.ts");
@@ -8845,7 +8896,7 @@ var NewEdge = (function () {
         }
         var lineToX = util_1.Util.getEventX(evt);
         var lineToy = util_1.Util.getEventY(evt);
-        var path = "M" + this.x + " " + this.y + " L" + lineToX + " " + lineToy;
+        var path = "M".concat(this.x, " ").concat(this.y, " L").concat(lineToX, " ").concat(lineToy);
         if (!this.svgLine) {
             var attr = {
                 tag: 'path',
@@ -8924,12 +8975,11 @@ exports.NewEdge = NewEdge;
 /*!****************************!*\
   !*** ./handlers/Select.ts ***!
   \****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Select = void 0;
 var nodes_1 = __webpack_require__(/*! ../elements/nodes */ "./elements/nodes/index.ts");
 var edges_1 = __webpack_require__(/*! ../elements/edges */ "./elements/edges/index.ts");
 var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
@@ -8977,16 +9027,16 @@ var Select = (function () {
             this.copyNodeShape.setAttributeNS(null, 'visibility', 'visible');
             var x_1 = (e.getPos().x + e.getSize().x) + 5;
             var y_1 = e.getPos().y;
-            this.deleteShape.setAttributeNS(null, 'transform', "translate(" + x_1 + " " + (y_1 + this.padding) + ")");
+            this.deleteShape.setAttributeNS(null, 'transform', "translate(".concat(x_1, " ").concat(y_1 + this.padding, ")"));
             this.deleteShape.onclick = function (e) { return _this.graph.$graphModel.removeElement(element.id); };
-            this.copyNodeShape.setAttributeNS(null, 'transform', "translate(" + x_1 + " " + (y_1 + 40 + this.padding) + ")");
+            this.copyNodeShape.setAttributeNS(null, 'transform', "translate(".concat(x_1, " ").concat(y_1 + 40 + this.padding, ")"));
             this.copyNodeShape.onclick = function (evt) {
                 var nextFreePosition = _this.graph.getNextFreePosition();
                 var copyClass = (element).copy();
                 copyClass.withPos(nextFreePosition.x, nextFreePosition.y);
                 _this.graph.drawElement(copyClass);
             };
-            this.addEdgeShape.setAttributeNS(null, 'transform', "translate(" + x_1 + " " + (y_1 + 80 + this.padding) + ")");
+            this.addEdgeShape.setAttributeNS(null, 'transform', "translate(".concat(x_1, " ").concat(y_1 + 80 + this.padding, ")"));
             this.addEdgeShape.onmousedown = function () {
                 EventBus_1.EventBus.setActiveHandler('NewEdge');
                 element.$view.dispatchEvent(util_1.Util.createCustomEvent('mousedown'));
@@ -9113,7 +9163,7 @@ var Select = (function () {
             this.deleteShape.setAttributeNS(null, 'visibility', 'visible');
             this.addEdgeShape.setAttributeNS(null, 'visibility', 'hidden');
             this.copyNodeShape.setAttributeNS(null, 'visibility', 'hidden');
-            this.deleteShape.setAttributeNS(null, 'transform', "translate(" + x + " " + y + ")");
+            this.deleteShape.setAttributeNS(null, 'transform', "translate(".concat(x, " ").concat(y, ")"));
             this.deleteShape.onclick = function (e) { return _this.graph.$graphModel.removeElement(element.id); };
             this.resetLastSelectedElements();
             var edge = element;
@@ -9171,12 +9221,11 @@ exports.Select = Select;
 /*!**************************!*\
   !*** ./handlers/Zoom.ts ***!
   \**************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Zoom = void 0;
 var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
 var Zoom = (function () {
     function Zoom(graph) {
@@ -9185,7 +9234,7 @@ var Zoom = (function () {
         var delta = e.deltaY || e.wheelDeltaY || -e.wheelDelta;
         var d = 1 + (delta / 1000);
         var values = this.graph.root.getAttribute('viewBox').split(' ');
-        var newViewBox = values[0] + " " + values[1] + " " + parseInt(values[2]) * d + " " + parseInt(values[3]) * d;
+        var newViewBox = "".concat(values[0], " ").concat(values[1], " ").concat(parseInt(values[2]) * d, " ").concat(parseInt(values[3]) * d);
         this.graph.root.setAttribute('viewBox', newViewBox);
         e.preventDefault();
         return true;
@@ -9212,21 +9261,26 @@ exports.Zoom = Zoom;
 /*!***************************!*\
   !*** ./handlers/index.ts ***!
   \***************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(/*! ./Drag */ "./handlers/Drag.ts"));
-__export(__webpack_require__(/*! ./Select */ "./handlers/Select.ts"));
-__export(__webpack_require__(/*! ./Zoom */ "./handlers/Zoom.ts"));
-__export(__webpack_require__(/*! ./NewEdge */ "./handlers/NewEdge.ts"));
-__export(__webpack_require__(/*! ./ImportFile */ "./handlers/ImportFile.ts"));
-__export(__webpack_require__(/*! ./AddNode */ "./handlers/AddNode.ts"));
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(/*! ./Drag */ "./handlers/Drag.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Select */ "./handlers/Select.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Zoom */ "./handlers/Zoom.ts"), exports);
+__exportStar(__webpack_require__(/*! ./NewEdge */ "./handlers/NewEdge.ts"), exports);
+__exportStar(__webpack_require__(/*! ./ImportFile */ "./handlers/ImportFile.ts"), exports);
+__exportStar(__webpack_require__(/*! ./AddNode */ "./handlers/AddNode.ts"), exports);
 
 
 /***/ }),
@@ -9235,12 +9289,11 @@ __export(__webpack_require__(/*! ./AddNode */ "./handlers/AddNode.ts"));
 /*!********************************!*\
   !*** ./layouts/DagreLayout.ts ***!
   \********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DagreLayout = void 0;
 var DagreLayout = (function () {
     function DagreLayout() {
     }
@@ -9295,12 +9348,11 @@ exports.DagreLayout = DagreLayout;
 /*!***********************************!*\
   !*** ./layouts/DagreLayoutMin.ts ***!
   \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DagreLayoutMin = exports.LayoutGraphEdge = exports.LayoutGraphNode = exports.LayoutGraphMin = void 0;
 var LayoutGraphMin = (function () {
     function LayoutGraphMin() {
         this.nodes = {};
@@ -9658,12 +9710,11 @@ exports.DagreLayoutMin = DagreLayoutMin;
 /*!***************************!*\
   !*** ./layouts/Random.ts ***!
   \***************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Random = void 0;
 var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
 var Random = (function () {
     function Random() {
@@ -9693,18 +9744,23 @@ exports.Random = Random;
 /*!**************************!*\
   !*** ./layouts/index.ts ***!
   \**************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(/*! ./DagreLayout */ "./layouts/DagreLayout.ts"));
-__export(__webpack_require__(/*! ./Random */ "./layouts/Random.ts"));
-__export(__webpack_require__(/*! ./DagreLayoutMin */ "./layouts/DagreLayoutMin.ts"));
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(/*! ./DagreLayout */ "./layouts/DagreLayout.ts"), exports);
+__exportStar(__webpack_require__(/*! ./Random */ "./layouts/Random.ts"), exports);
+__exportStar(__webpack_require__(/*! ./DagreLayoutMin */ "./layouts/DagreLayoutMin.ts"), exports);
 var DagreLayout_1 = __webpack_require__(/*! ./DagreLayout */ "./layouts/DagreLayout.ts");
 var DagreLayoutMin_1 = __webpack_require__(/*! ./DagreLayoutMin */ "./layouts/DagreLayoutMin.ts");
 var Random_1 = __webpack_require__(/*! ./Random */ "./layouts/Random.ts");
@@ -9719,27 +9775,33 @@ new Random_1.Random();
 /*!*****************!*\
   !*** ./main.ts ***!
   \*****************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Graph = exports.DelegateAdapter = exports.Bridge = exports.Point = void 0;
 var VirtualKeyBoard_1 = __webpack_require__(/*! ./VirtualKeyBoard */ "./VirtualKeyBoard.ts");
 var BaseElements_1 = __webpack_require__(/*! ./elements/BaseElements */ "./elements/BaseElements.ts");
-exports.Point = BaseElements_1.Point;
+Object.defineProperty(exports, "Point", ({ enumerable: true, get: function () { return BaseElements_1.Point; } }));
 var Bridge_1 = __webpack_require__(/*! ./Bridge */ "./Bridge.ts");
-exports.Bridge = Bridge_1.Bridge;
-exports.DelegateAdapter = Bridge_1.DelegateAdapter;
+Object.defineProperty(exports, "Bridge", ({ enumerable: true, get: function () { return Bridge_1.Bridge; } }));
+Object.defineProperty(exports, "DelegateAdapter", ({ enumerable: true, get: function () { return Bridge_1.DelegateAdapter; } }));
 var Graph_1 = __webpack_require__(/*! ./elements/Graph */ "./elements/Graph.ts");
-exports.Graph = Graph_1.Graph;
-__export(__webpack_require__(/*! ./elements/nodes */ "./elements/nodes/index.ts"));
-__export(__webpack_require__(/*! ./elements/edges */ "./elements/edges/index.ts"));
-__export(__webpack_require__(/*! ./adapters */ "./adapters/index.ts"));
-__export(__webpack_require__(/*! ./UML */ "./UML.ts"));
+Object.defineProperty(exports, "Graph", ({ enumerable: true, get: function () { return Graph_1.Graph; } }));
+__exportStar(__webpack_require__(/*! ./elements/nodes */ "./elements/nodes/index.ts"), exports);
+__exportStar(__webpack_require__(/*! ./elements/edges */ "./elements/edges/index.ts"), exports);
+__exportStar(__webpack_require__(/*! ./adapters */ "./adapters/index.ts"), exports);
+__exportStar(__webpack_require__(/*! ./UML */ "./UML.ts"), exports);
 var BaseElements_2 = __webpack_require__(/*! ./elements/BaseElements */ "./elements/BaseElements.ts");
 var Graph_2 = __webpack_require__(/*! ./elements/Graph */ "./elements/Graph.ts");
 var ClassEditor_1 = __webpack_require__(/*! ./elements/ClassEditor */ "./elements/ClassEditor.ts");
@@ -9768,12 +9830,11 @@ if (!window['Point']) {
 /*!*****************!*\
   !*** ./util.ts ***!
   \*****************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Util = void 0;
 var CSS_1 = __webpack_require__(/*! ./CSS */ "./CSS.ts");
 var BaseElements_1 = __webpack_require__(/*! ./elements/BaseElements */ "./elements/BaseElements.ts");
 var Util = (function () {
@@ -10356,5 +10417,40 @@ exports.Util = Util;
 
 /***/ })
 
-/******/ });
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __webpack_require__("./main.ts");
+/******/ 	DiagramJS = __webpack_exports__;
+/******/ 	
+/******/ })()
+;
 //# sourceMappingURL=diagram.js.map

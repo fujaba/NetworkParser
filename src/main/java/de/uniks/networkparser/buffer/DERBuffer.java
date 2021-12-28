@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.math.BigInteger;
 
+/** Byte buffer used for DER parsing. */
 public class DERBuffer extends ByteBuffer {
 	public static final byte ARRAY = 0x00;
 	/** Tag value indicating an ASN.1 "BOOLEAN" value. */

@@ -41,6 +41,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	public static final String PROPERTY_DEPENDENCIES = "dependencies";
 	public static final String PROPERTY_DEPENDENCY = "dependency";
 	public static final String PROPERTY_CLASSIFIER = "classifier";
+	public static final String PROPERTY_LICENCES = "licenses";
 
 	private static final String TAG = "project";
 	private String modelVersion;
@@ -50,21 +51,21 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	private String scope;
 	private String tag = TAG;
 	private String time;
-	private SimpleList<ArtifactFile> dependencies = new SimpleList<ArtifactFile>();
+	private SimpleList<Licence> licences = new SimpleList<>();
+	private SimpleList<ArtifactFile> dependencies;
 
-	public String hash = "";
-	public String coverage = "";
 	/* SCOPE public String branch = ""; */
 	public String prefix = "";
 	public boolean latest;
 
 	public static final String SNAPSHOT = "SNAPSHOT";
 	private boolean isSnapshot;
-	private SimpleList<String> classifier = new SimpleList<String>();
+	private SimpleList<String> classifier;
 	private String index;
 	private String fileName;
 	private int pomNumber[] = new int[] { 1, 1, 1, 1, 1, 1,
 			0 };/* First 3 Number are Max next 3 Number are Current Number of Six is Index */
+	private boolean simpleFormat;
 
 	public String toGITString() {
 		if (System.getenv().get("BUILD_NUMBER") != null) {
@@ -231,6 +232,9 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 			return this;
 		}
 		value.withTag("dependency");
+		if(this.dependencies == null) {
+			this.dependencies = new SimpleList<ArtifactFile>();
+		}
 		this.dependencies.add(value);
 		return this;
 	}
@@ -287,7 +291,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		}
 		spaces = StringUtil.repeat(' ', indent);
 		StringBuilder sb = new StringBuilder(spaces);
-		if (tag == TAG) {
+		if (tag == TAG && !simpleFormat) {
 			sb.append("<" + tag
 					+ " xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
 		} else {
@@ -295,7 +299,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		}
 		addChildren(sb, spacesChild);
 
-		if (dependencies.size() > 0) {
+		if (!simpleFormat && dependencies != null &&dependencies.size() > 0) {
 			sb.append(spacesChild + "<dependencies>");
 			for (ArtifactFile item : dependencies) {
 				sb.append("\r\n" + item.toString(indentFactor, indent + indentFactor + indentFactor));
@@ -327,7 +331,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	@Override
 	public String[] getProperties() {
 		return new String[] { PROPERTY_MODELVERSION, PROPERTY_GROUPID, PROPERTY_ARTIFACTID, PROPERTY_VERSION,
-				PROPERTY_SCOPE, PROPERTY_DEPENDENCIES };
+				PROPERTY_SCOPE, PROPERTY_LICENCES, PROPERTY_DEPENDENCIES};
 	}
 
 	@Override
@@ -416,17 +420,31 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		XMLEntity xmlEntity = new XMLEntity().withValue(value);
 		return withValue(xmlEntity);
 	}
+	
+	
+	public SimpleList<Licence> getLicences() {
+		return this.licences;
+	}
 
 	public ArtifactFile withValue(XMLEntity xmlEntity) {
 		for (String property : getProperties()) {
 			Object child = getChild(xmlEntity, property);
+			if (PROPERTY_LICENCES.equals(property) && child != null) {
+				XMLEntity children = (XMLEntity) child;
+				for (int i = 0; i < children.sizeChildren(); i++) {
+					BaseItem dependency = children.getChild(i);
+					Licence licence = new Licence().withValue((XMLEntity) dependency);
+					this.licences.add(licence);
+				}
+			}
 			if (PROPERTY_DEPENDENCIES.equals(property) && child != null) {
 				/* Parse Dependency */
 				XMLEntity children = (XMLEntity) child;
-				for (int i = 0; i < children.size(); i++) {
+				for (int i = 0; i < children.sizeChildren(); i++) {
 					BaseItem dependency = children.getChild(i);
 					ArtifactFile pomDependency = new ArtifactFile().withValue((XMLEntity) dependency);
-					this.dependencies.add(pomDependency);
+					pomDependency.withTag("dependency");
+					withDependency(pomDependency);
 				}
 			}
 		}
@@ -434,6 +452,9 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	}
 
 	public int size() {
+		if(this.dependencies == null) {
+			return 0;
+		}
 		return this.dependencies.size();
 	}
 
@@ -449,6 +470,24 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 			}
 		}
 		return valid;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof ArtifactFile)) {
+			return false;
+		}
+		String refA = getFullString(); 
+		String refB = ((ArtifactFile) obj).getFullString();
+		return refA.equals(refB);
+	}
+	
+	public String getGradleString() {
+		return ""+ this.groupId +":"+ this.artifactId + ":"+this.version;
+	}
+	
+	public String getFullString() {
+		return ""+ this.groupId +":"+ this.artifactId + ":"+this.version + (scope != null ? (":"+scope): "");
 	}
 
 	@Override
@@ -478,7 +517,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	}
 
 	public String getClassifier() {
-		if (this.classifier.size() < 0) {
+		if (this.classifier == null || this.classifier.size() < 0) {
 			return "";
 		}
 		return this.classifier.first();
@@ -655,5 +694,10 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 			}
 		}
 		return "";
+	}
+
+	public ArtifactFile withSimpleFormat(boolean simpleFormat) {
+		this.simpleFormat = simpleFormat;
+		return this;
 	}
 }

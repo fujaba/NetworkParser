@@ -42,6 +42,7 @@ import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
+/** RabbitMessage */
 public class RabbitMessage {
 	public static final byte NULL = 0;
 

@@ -36,6 +36,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
@@ -46,7 +47,9 @@ import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.ReceivingTimerTask;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.Server_UPD;
+import de.uniks.networkparser.ext.petaf.SimpleExecutor;
 import de.uniks.networkparser.ext.petaf.Space;
+import de.uniks.networkparser.ext.petaf.TaskExecutor;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -75,10 +78,9 @@ public class NodeProxyTCP extends NodeProxy {
 	public static final String LOCALHOST = "127.0.0.1";
 	protected Server server;
 	protected boolean allowAnswer = false;
-	
-	
 	private int receivePort = 9876;
-	private String serverType;
+	private String serverType = Server.TCP;
+    private TaskExecutor executor;
 
 	/**
 	 * Fallback Executor for Simple Using Serverclasses
@@ -799,5 +801,19 @@ public class NodeProxyTCP extends NodeProxy {
 	}
 	public int getReceivePort() {
 		return receivePort;
+	}
+
+	public NodeProxyTCP withExecutor(ExecutorService executor)
+	{
+		this.executor = new SimpleExecutor().withExecutorService(executor);
+		return this;
+	}
+	
+	@Override
+	public TaskExecutor getExecutor() {
+		if(this.executor != null) {
+			return executor;
+		}
+		return super.getExecutor();
 	}
 }

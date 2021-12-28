@@ -38,6 +38,7 @@ import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/** COntainer for ZIP */
 public class ZipContainer {
 	private static final String XML = "xml";
 	private static final String BINARY = "bin";

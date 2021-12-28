@@ -8,6 +8,7 @@ import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphMember;
 
+/** JAXBEntity */
 public class JAXBEntity extends XSDEntity {
 	private Clazz superClazz = new Clazz(SendableItem.class).withExternal(true);
 

@@ -2,6 +2,8 @@ package de.uniks.networkparser.interfaces;
 
 public interface Entity extends BaseItem {
 	public String getString(String key);
+	
+	public String getChild(String key);
 
 	public Object getValue(Object key);
 

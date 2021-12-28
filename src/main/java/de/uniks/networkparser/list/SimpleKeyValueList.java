@@ -32,6 +32,7 @@ import java.util.Set;
 
 import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, Iterable<Entry<K, V>> {
@@ -274,6 +275,26 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	public String getString(K key) {
 		Object object = get(key);
 		if (object == null) {
+			return "";
+		}
+		return object.toString();
+	}
+	/**
+	 * Get the string associated with an index.
+	 *
+	 * @param key The Value
+	 * @return A string value.
+	 */
+	public String getStringChild(String key) {
+		Object object = get(key);
+		if (object == null) {
+			int pos = key.indexOf(".");
+			if(pos>0) {
+				object = get(key.substring(0, pos));
+				if(object instanceof Entity) {
+					return ((Entity) object).getChild(key.substring(pos+1));
+				}
+			}
 			return "";
 		}
 		return object.toString();

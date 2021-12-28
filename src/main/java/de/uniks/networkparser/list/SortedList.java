@@ -27,6 +27,7 @@ import java.util.Comparator;
 
 import de.uniks.networkparser.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class SortedList<V> extends SimpleList<V> {
 	protected Comparator<V> cpr;
@@ -38,11 +39,14 @@ public class SortedList<V> extends SimpleList<V> {
 					comparator();			
 				}
 			} else if(comparator[0] instanceof String) {
-				this.withComparator((String)comparator[0]);
+				if (comparator.length>1 && comparator[1] instanceof SendableEntityCreator) {
+					this.withComparator((String)comparator[0], (SendableEntityCreator)comparator[1]);
+				}else {
+					this.withComparator((String)comparator[0]);
+				}
 			}
 		}
 	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public Comparator<Object> comparator() {
@@ -60,6 +64,11 @@ public class SortedList<V> extends SimpleList<V> {
 
 	public SortedList<V> withComparator(Comparator<V> comparator) {
 		this.cpr = comparator;
+		return this;
+	}
+	
+	public SortedList<V> withComparator(String column, SendableEntityCreator creator) {
+		this.cpr = new EntityComparator<V>().withColumn(column, creator).withDirection(SortingDirection.ASC);
 		return this;
 	}
 

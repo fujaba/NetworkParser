@@ -65,6 +65,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.Server;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -196,6 +197,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			for(String item : HTMLEntity.GRAPH_RESOURCES) {
 				entity.withHeader(item);
 			}
+			return;
 		}
 		for(String item : HTMLEntity.GRAPH_RESOURCES) {
 			if(item.endsWith(".css")) {
@@ -489,9 +491,15 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			} else if (path.equalsIgnoreCase("/diagram.js")) {
 				writeHTTPResponse(msg, new FileBuffer().readResource("graph/diagram.js").toString(), false);
 			} else if (path.equalsIgnoreCase("/diagramstyle.css")) {
-				writeHTTPResponse(msg, new FileBuffer().readResource("graph/diagramstyle.css").toString(), false);
+			} else if (path.equalsIgnoreCase("/style.css")) {
+				writeHTTPResponse(msg, new FileBuffer().readResource("graph/stlye.css").toString(), false);
 			} else if (path.equalsIgnoreCase("/jspdf.min.js")) {
 				writeHTTPResponse(msg, new FileBuffer().readResource("graph/jspdf.min.js").toString(), false);
+			} else if (path.equalsIgnoreCase("/dagre.min.js")) {
+				writeHTTPResponse(msg, new FileBuffer().readResource("graph/dagre.min.js").toString(), false);
+			} else if (path.equalsIgnoreCase("/favicon.ico")) {
+				writeHTTPResponse(msg, new FileBuffer().readResource("favicon.ico").toString(), false);
+				
 			} else {
 				writeHTTPResponse(msg, FILE404, true);
 			}

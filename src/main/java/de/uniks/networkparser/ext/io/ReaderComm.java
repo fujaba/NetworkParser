@@ -27,6 +27,7 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
+/** ReaderComm */
 public class ReaderComm implements Runnable {
 	private boolean running = false;
 	private String threadName;

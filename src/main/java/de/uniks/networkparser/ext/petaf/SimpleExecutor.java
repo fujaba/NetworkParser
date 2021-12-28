@@ -1,5 +1,7 @@
 package de.uniks.networkparser.ext.petaf;
 
+import java.util.concurrent.ExecutorService;
+
 /*
 The MIT License
 
@@ -28,6 +30,7 @@ import de.uniks.networkparser.DateTimeEntity;
 public class SimpleExecutor implements TaskExecutor {
 	private DateTimeEntity lastRun = new DateTimeEntity();
 	private Space space;
+	private ExecutorService executor;
 
 	@Override
 	public Object executeTask(Runnable task, int delay, int interval) {
@@ -49,6 +52,10 @@ public class SimpleExecutor implements TaskExecutor {
 		try {
 			this.lastRun.withValue(System.currentTimeMillis());
 			if (task != null) {
+				if(executor != null) {
+					executor.execute(task);
+					return null;
+				}
 				task.run();
 			}
 		} catch (Exception e) {
@@ -85,5 +92,10 @@ public class SimpleExecutor implements TaskExecutor {
 	@Override
 	public DateTimeEntity getLastRun() {
 		return lastRun;
+	}
+
+	public TaskExecutor withExecutorService(ExecutorService executor) {
+		this.executor = executor;
+		return this;
 	}
 }

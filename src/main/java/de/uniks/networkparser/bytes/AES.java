@@ -4,6 +4,7 @@ import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
+/** Advanced Encryption Standard (AES) */
 public class AES {
 	/** AES constants and variables. */
 	public static final int ROUNDS = 14; /* AES has 10-14 rounds */

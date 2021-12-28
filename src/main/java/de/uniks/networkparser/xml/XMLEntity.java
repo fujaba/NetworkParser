@@ -565,4 +565,14 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		}
 		return null;
 	}
+	
+	public SimpleList<BaseItem> getChildren() {
+		return children;
+	}
+
+	@Override
+	public String getChild(String key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

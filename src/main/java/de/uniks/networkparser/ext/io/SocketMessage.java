@@ -36,6 +36,7 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/** SocketMessage */
 public class SocketMessage implements BaseItem {
 	public static final String PROPERTY_FROM = "From: ";
 	public static final String PROPERTY_TO = "To";

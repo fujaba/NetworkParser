@@ -3,6 +3,7 @@ package de.uniks.networkparser.ext;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.gui.JavaAdapter;
 
+/** Javascript Editor */
 public class JSEditor implements Runnable {
 	private String executeScript;
 	private Object editor;

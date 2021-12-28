@@ -12,3 +12,10 @@ History Changes+Rlastcommit as hash and tree
 
 - GraphQL implementiere
 - add TreeView mit Lizenz
+
+
+- SimpleMock
+- Rest-API mit COnfig
+- Console Logoutput
+- Promise vereinfachen
+

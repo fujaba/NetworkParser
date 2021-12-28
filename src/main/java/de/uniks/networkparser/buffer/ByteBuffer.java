@@ -55,8 +55,7 @@ public class ByteBuffer extends BufferedBuffer {
 		if (no >= 0) {
 			return (char) no;
 		}
-		char result = (char) (no << 8 + (char) getByte());
-		return result;
+		return (char) (no << 8 + (char) getByte());
 	}
 
 	@Override
@@ -128,7 +127,7 @@ public class ByteBuffer extends BufferedBuffer {
 			return addBytes(item, 1, bufferAdEnd);
 		}
 		if (item instanceof Character) {
-			return addBytes((Character) item, 1, bufferAdEnd);
+			return addBytes(item, 1, bufferAdEnd);
 		}
 		if (item instanceof String) {
 			String str = (String) item;
@@ -139,7 +138,7 @@ public class ByteBuffer extends BufferedBuffer {
 			CharSequence str = (CharSequence) item;
 			resize(str.length(), bufferAdEnd);
 			for (int i = 0; i < str.length(); i++) {
-				addBytes((Character) str.charAt(i), 1, bufferAdEnd);
+				addBytes(str.charAt(i), 1, bufferAdEnd);
 			}
 			return true;
 		}

@@ -28,6 +28,7 @@ import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;
 
+/** BitEntity */
 public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	/* Can be a Type */
 	protected String property;

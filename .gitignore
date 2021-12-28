@@ -21,3 +21,4 @@ NetworkParser.iml
 .scannerwork/**
 target/**
 maven/**
+release/**

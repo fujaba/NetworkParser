@@ -877,7 +877,6 @@ public int size() {
    * @param map Map
    * @return the Model-Instance
    */
-
   private Object decodingXMLEntity(XMLTokener tokener, Buffer buffer, MapEntity map) {
     if (buffer == null || map == null) {
       return null;
