@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -30,7 +29,6 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.xml.ArtifactFile;
-import de.uniks.networkparser.xml.ArtifactList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
@@ -588,15 +586,17 @@ public class JarValidator
 	    	   String lName = entry.getName().toLowerCase();
 	           this.count++;
 	           if (lName.endsWith("pom.xml")) {
-	        	   ByteBuffer buffer = new ByteBuffer().with(inputStream.readAllBytes());
+	        	   ByteBuffer buffer = new ByteBuffer();
+	        	   buffer.addStream(inputStream);
 	        	   XMLEntity xml =new XMLEntity().withValue(buffer);
 	        	   ArtifactFile pomFile = new ArtifactFile().withSimpleFormat(simpleFormat).withValue(xml);
 	        	   result.add(pomFile);
 	           }else if (lName.endsWith(".jar")) {
-	        	   BufferedByteInputStream stream = new BufferedByteInputStream().with(inputStream.readAllBytes());
-	        	   ZipInputStream childSubStream = new ZipInputStream(stream);
-	        	   analysePom(childSubStream, result, simpleFormat);
-	        	   stream.close();
+	        	   try (BufferedByteInputStream stream = new BufferedByteInputStream()) {
+	        		stream.withStream(inputStream);
+					ZipInputStream childSubStream = new ZipInputStream(stream);
+					analysePom(childSubStream, result, simpleFormat);
+	        	   }
 	           }
 	       }
 	   }catch (Exception e) {

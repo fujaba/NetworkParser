@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.Socket;
 
+import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
@@ -23,6 +24,8 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	public static final String HTTP_AUTHENTIFICATION = "Authentification";
 	public static final String HTTP_REFRESH = "REFRESH";
 	public static final String HTTP_CONTENT_HTML = "text/html";
+	public static final String HTTP_CONTENT_CSS = "text/css";
+	public static final String HTTP_CONTENT_ICON = "image/x-icon";
 	public static final String HTTP_CHARSET = "charset=UTF-8";
 	public static final String HTTP_CONTENT_FORM = "application/x-www-form-urlencoded";
 	public static final String HTTP_LENGTH = "Content-Length:";
@@ -37,6 +40,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	private Socket socket;
 	private String path;
 	private SimpleList<String> headers = new SimpleList<String>();
+	private SimpleKeyValueList<String, String> contentValues;
 	private String content;
 
 	private String http_Type; /* GET OR POST */
@@ -48,7 +52,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	private SimpleList<String> partPath;
 	private SimpleList<String> fullPath;
 	private SimpleList<Character> pathType;
-	private CharacterBuffer bufferResponse;
+	private BaseItem bufferResponse;
 
 	private SimpleKeyValueList<String, String> matchVariables = new SimpleKeyValueList<String, String>();
 	private boolean matchValid = true;
@@ -114,10 +118,40 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		}
 		return outputStream;
 	}
-
+	
+	public HTTPRequest write(CharSequence value) {
+		getOutput().append(value);
+		return this;
+	}
+	
+	public boolean writeHTTPResponse(String response, String... param) {
+		PrintWriter writer = getOutput();
+		String contentType = HTTP_CONTENT_HTML;
+		if(param != null || param.length>0) {
+			contentType = param[0];
+		}
+		writer.println(HTTP_OK);
+		if(HTTP_CONTENT_HTML.equalsIgnoreCase(contentType)) {
+			writer.println(HTTP_CONTENT + " " + contentType + ";" + HTTP_CHARSET + ";");
+		}else {
+			writer.println(HTTP_CONTENT + " " + contentType);
+		}
+		writer.println(HTTP_LENGTH + response.length());
+		writer.write(BaseItem.CRLF);
+		writer.print(response);
+		writer.flush();
+		return false;
+	}
+	
+	
+	
 	public boolean close() {
 		if (this.writeBody == false && this.bufferResponse != null) {
-			writeBody(this.bufferResponse.toString());
+			if(this.bufferResponse instanceof HTMLEntity) {
+				this.write((HTMLEntity)this.bufferResponse);
+			}else {
+				writeBody(this.bufferResponse.toString());
+			}
 		}
 		if (outputStream != null) {
 			outputStream.close();
@@ -135,6 +169,13 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 
 	public static HTTPRequest create(Socket socket) {
 		return new HTTPRequest(socket);
+	}
+	
+	public HTMLEntity getHTMLEntity() {
+		if(bufferResponse instanceof HTMLEntity) {
+			return (HTMLEntity) bufferResponse;
+		}
+		return null;
 	}
 
 	public static HTTPRequest createRouting(String value) {
@@ -422,7 +463,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	}
 
 	public SimpleKeyValueList<String, String> parseForm() {
-		SimpleKeyValueList<String, String> value = new SimpleKeyValueList<String, String>();
+		contentValues = new SimpleKeyValueList<String, String>();
 		if (HTTP_CONTENT_FORM.equals(this.contentType) && this.content != null) {
 			CharacterBuffer buffer = new CharacterBuffer();
 			char c;
@@ -435,17 +476,21 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 					continue;
 				}
 				if (c == '&') {
-					value.add(key, buffer.toString());
+					contentValues.add(key, buffer.toString());
 					buffer.clear();
 					continue;
 				}
 				buffer.with(c);
 			}
 			if (buffer.length() > 0) {
-				value.add(key, buffer.toString());
+				contentValues.add(key, buffer.toString());
 			}
 		}
-		return value;
+		return contentValues;
+	}
+	
+	public String getContentValue(String key) {
+		return contentValues.get(key);
 	}
 
 	public HTTPRequest withHeader(String value) {
@@ -475,6 +520,12 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 
 	public String getContent() {
 		return content;
+	}
+	
+	public HTTPRequest parse() {
+		readHeader();
+		parseForm();
+		return this;
 	}
 
 	public HTTPRequest withExceptionListener(Condition<Exception> value) {
@@ -531,19 +582,26 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return 0;
 	}
 
-	public HTTPRequest withBufferRespone(String... values) {
+	public HTTPRequest withBufferResponse(String... values) {
 		if (bufferResponse == null) {
 			bufferResponse = new CharacterBuffer();
 		}
-		if (values != null) {
+		if (values != null && bufferResponse instanceof CharacterBuffer) {
+			CharacterBuffer sb = (CharacterBuffer) bufferResponse;
 			for (String item : values) {
 				if (item != null) {
-					bufferResponse.append(item);
+					sb.append(item);
 				}
 			}
 		}
 		return this;
 	}
+	
+	public HTTPRequest withBufferResponse(HTMLEntity entity) {
+		bufferResponse = entity;
+		return this;
+	}
+
 
 	public boolean match(HTTPRequest routing) {
 		this.matchOfRequestPath = 0;

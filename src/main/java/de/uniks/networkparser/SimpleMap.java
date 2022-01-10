@@ -1511,6 +1511,15 @@ public int size() {
     }
     return true;
   }
+  
+  public Object simpleDecoding(Entity element, SendableEntityCreator creator) {
+	  Object entry = creator.getSendableInstance(true);
+	  for(String prop : creator.getProperties()) {
+		creator.setValue(entry, prop, element.getChild(prop), null);
+	  }
+	  return this;
+  }
+
 
   public MapListener getMapListener() {
     return this.mapListener;

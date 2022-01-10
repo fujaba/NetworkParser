@@ -283,9 +283,9 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 * Get the string associated with an index.
 	 *
 	 * @param key The Value
-	 * @return A string value.
+	 * @return A value.
 	 */
-	public String getStringChild(String key) {
+	public Object getStringChild(String key) {
 		Object object = get(key);
 		if (object == null) {
 			int pos = key.indexOf(".");
@@ -297,7 +297,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			}
 			return "";
 		}
-		return object.toString();
+		return object;
 	}
 
 	/**

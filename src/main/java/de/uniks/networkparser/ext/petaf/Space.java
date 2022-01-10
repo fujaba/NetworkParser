@@ -804,6 +804,18 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		}
 		return this.myModel;
 	}
+	
+	/**
+	 * Returns the ModelRootof Proxies in the Space
+	 * @return the first NodeProxyModel Root
+	 */
+	public Object getModelRoot() {
+		getModel();
+		if(this.myModel != null) {
+			return myModel.getModel();
+		}
+		return null;
+	}
 
 	public Tokener getTokener() {
 		if (tokener == null) {

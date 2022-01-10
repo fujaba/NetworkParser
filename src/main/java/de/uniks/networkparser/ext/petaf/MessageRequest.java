@@ -25,39 +25,27 @@ THE SOFTWARE.
 */
 import java.net.Socket;
 
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.interfaces.Condition;
 
 public class MessageRequest implements Runnable {
 	public static final int BUFFER = 100 * 1024;
 	private final Socket requestSocket;
-	private final NodeProxyTCP proxy;
+	private Condition<Socket> handler;
 
 	public MessageRequest() {
 		this.requestSocket = null;
-		this.proxy = null;
 	}
 
-	public MessageRequest(NodeProxyTCP proxy, Socket requestSocket) {
+	public MessageRequest(Socket requestSocket, Condition<Socket> handler) {
 		this.requestSocket = requestSocket;
-		this.proxy = proxy;
+		this.handler = handler;
 	}
 
 	public void run() {
-		try {
-			proxy.executeInputStream(requestSocket);
-		} catch (Exception e) {
-			Space space = proxy.getSpace();
-			if (space != null) {
-				space.handleException(e);
-			}
-		}
+		handler.update(requestSocket);
 	}
 
-	public static void executeTask(NodeProxyTCP proxy, Socket requestSocket) {
-		MessageRequest task = new MessageRequest(proxy, requestSocket);
-		TaskExecutor executor = proxy.getExecutor();
-		if (executor != null) {
-			executor.executeTask(task, 0);
-		}
+	public MessageRequest createTask(Socket requestSocket, Condition<Socket> handler) {
+		return new MessageRequest(requestSocket, handler);
 	}
 }

@@ -40,6 +40,17 @@ public class SimpleEvent extends PropertyChangeEvent {
 		this.type = SendableEntityCreator.NEW;
 	}
 	
+	/**
+	 * Constructor for example Filter Regard or Convertable
+	 * 
+	 * @param source   List Container
+	 * @param property Property of Event
+	 * @param newValue new Element
+	 */
+	public SimpleEvent(Object source, String property) {
+		super(source, property, null, null);
+		this.type = SendableEntityCreator.NEW;
+	}
 	
 	/**
 	 * Constructor for example Filter Regard or Convertable

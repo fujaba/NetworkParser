@@ -1,12 +1,13 @@
 package de.uniks.networkparser.ext.io;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 
-/** Buffered InpoutStream for String or Byte */
+/** Buffered InputStream for String or Byte */
 public class BufferedByteInputStream extends InputStream {
 	BufferedBuffer mBuf = new CharacterBuffer();
 	private int pos;
@@ -38,7 +39,12 @@ public class BufferedByteInputStream extends InputStream {
 		this.mBuf = buffer;
 		return this;
 	}
-
+	
+	public BufferedByteInputStream withStream(InputStream stream) throws IOException
+	{
+		this.mBuf.addStream(stream);
+        return this;
+	}
 
 	public static BufferedByteInputStream create(StringOutputStream stream) {
 		BufferedByteInputStream result = new BufferedByteInputStream();

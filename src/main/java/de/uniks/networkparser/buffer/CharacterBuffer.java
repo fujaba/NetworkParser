@@ -1,5 +1,6 @@
 package de.uniks.networkparser.buffer;
 
+import java.io.InputStream;
 import java.util.List;
 /*
  * NetworkParser The MIT License Copyright (c) 2010-2016 Stefan Lindel
@@ -1407,4 +1408,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     buffer[pos] = character;
     return true;
   }
+	@Override
+	public boolean addStream(InputStream stream) {
+		return false;
+	}
 }

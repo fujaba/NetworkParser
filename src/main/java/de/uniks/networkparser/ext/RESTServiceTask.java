@@ -1,7 +1,6 @@
 package de.uniks.networkparser.ext;
 
-import java.io.IOException;
-import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -10,12 +9,17 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.http.ConfigService;
+import de.uniks.networkparser.ext.http.Configuration;
 import de.uniks.networkparser.ext.http.HTTPRequest;
 import de.uniks.networkparser.ext.http.LoginService;
+import de.uniks.networkparser.ext.petaf.Space;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyModel;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.Server;
+import de.uniks.networkparser.interfaces.SimpleEventCondition;
+import de.uniks.networkparser.interfaces.SimpleUpdateListener;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -23,134 +27,130 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedList;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class RESTServiceTask implements Runnable, Server {
-	private int port;
+public class RESTServiceTask implements Condition<Socket> {
 	public static final String PROPERTY_ERROR = "error";
 	public static final String PROPERTY_ALLOW = "allow";
-	private ServerSocket serverSocket;
-	private IdMap map;
-	private Object root;
 	private SendableEntityCreator creator;
-	private boolean routingExists;
-	private Filter filter = Filter.regard(Deep.create(1));
+	private Space space;
 
-	private Condition<Exception> errorListener;
-	private Condition<SimpleEvent> allowListener;
-	private Condition<SimpleEvent> loginController;
+	private Filter filter = Filter.regard(Deep.create(1));
+	private SimpleUpdateListener allowListener;
+	private SimpleUpdateListener loginController;
+	private SimpleUpdateListener executeController;
 	public static final String JSON = "/json";
 	public static final String XML = "/xml";
 	private SimpleList<HTTPRequest> routing;
-
-	public RESTServiceTask(int port, IdMap map, Object root) {
-		super();
-		this.port = port;
-		this.map = map;
-		this.root = root;
+	private NodeProxyTCP proxy;
+	private boolean routingExists;
+	private ConfigService configService;
+	
+	public RESTServiceTask createServer(Configuration config, IdMap map, Object root) {
+		this.proxy = NodeProxyTCP.createServer(config.getPort());
 		if (map != null) {
 			creator = map.getCreatorClass(root);
 		}
+		configService = new ConfigService().withConfiguration(config);
+		configService.withTask(this);
+		withRouting(configService.getRouting());
+		this.proxy.withRestService(this);
+		
+		space = new Space();
+		space.withMap(map);
+		space.with(new NodeProxyModel(root));
+		
+		return this;
 	}
-
-	public RESTServiceTask withErrorListener(Condition<Exception> listener) {
-		this.errorListener = listener;
+	
+	public void start() {
+		if(space != null) {
+			space.with(proxy);
+		}
+	}
+	
+	public RESTServiceTask withProxy(NodeProxyTCP proxy) {
+		this.proxy = proxy;
+		this.space = proxy.getSpace();
 		return this;
 	}
 
-	public RESTServiceTask withAllowListener(Condition<SimpleEvent> listener) {
+	public RESTServiceTask withAllowListener(SimpleUpdateListener listener) {
 		this.allowListener = listener;
 		return this;
 	}
-
-	@Override
-	public void run() {
-		try {
-			if (port == 0) {
-				return;
-			}
-			serverSocket = new ServerSocket(this.port);
-			while (serverSocket != null) {
-				HTTPRequest clientSocket = HTTPRequest.create(serverSocket.accept());
-				clientSocket.withExceptionListener(this.errorListener);
-
-				clientSocket.readType();
-				clientSocket.readPath();
-
-				System.out.println(clientSocket.getHttp_Type() + ": " + clientSocket.getPath());
-
-				HTTPRequest match = null;
-
-				if (routing != null && routing.size() > 0) {
-					/* Parsing Path */
-					HTTPRequest defaultMatch = null;
-					String path = clientSocket.getPath();
-
-					SortedList<HTTPRequest> matches = new SortedList<HTTPRequest>(true);
-					for (int i = 0; i < routing.size(); i++) {
-						HTTPRequest key = routing.get(i);
-						if ("*".equals(key.getPath())) {
-							defaultMatch = key;
-						}
-						if (clientSocket.match(key)) {
-							matches.add(key);
-						}
-					}
-					if (matches.size() > 0) {
-						HTTPRequest first = matches.first();
-						/* *  */
-						if ((routingExists && first.isValid()) || routingExists == false) {
-							match = first;
-						} else if (path.indexOf("/") < 1) {
-							match = defaultMatch;
-						}
-					}
-				}
-				/* SO NEW MATCHES */
-				SimpleEvent event = new SimpleEvent(clientSocket, clientSocket.getPath(), null, null);
-				if (allowListener != null) {
-					if (allowListener.update(event) == false) {
-						clientSocket.writeHeader(HTTPRequest.HTTP_PERMISSION_DENIED);
-						clientSocket.close();
-						continue;
-					}
-				} else if (loginController != null) {
-					if (loginController.update(event) == false) {
-						clientSocket.close();
-						continue;
-					}
-				}
-				/* So Valid and Execute Match or default 
-				   CHECK FOR NEXT VALID OR BEST */
-				if (match != null) {
-					match.update(clientSocket);
-					clientSocket.close();
-					continue;
-				}
-				String result = this.executeRequest(event);
-				clientSocket.writeBody(result);
-				clientSocket.close();
-			}
-		} catch (Exception e) {
-			if (errorListener != null) {
-				errorListener.update(e);
-			}
-		}
+	
+	public SimpleList<HTTPRequest> getRoutings() {
+		return routing;
 	}
-
-	@Override
-	public boolean close() {
-		if (serverSocket == null || serverSocket.isClosed()) {
-			return true;
+	
+	public boolean update(Socket socket) {
+		HTTPRequest clientSocket = HTTPRequest.create(socket);
+		clientSocket.readType();
+		clientSocket.readPath();
+		System.out.println(clientSocket.getHttp_Type() + ": " + clientSocket.getPath());
+		HTTPRequest match = null;
+		if (routing != null && routing.size() > 0) {
+			/* Parsing Path */
+			HTTPRequest defaultMatch = null;
+			String path = clientSocket.getPath();
+			SortedList<HTTPRequest> matches = new SortedList<HTTPRequest>(true);
+			for (int i = 0; i < routing.size(); i++) {
+				HTTPRequest key = routing.get(i);
+				if ("*".equals(key.getPath())) {
+					defaultMatch = key;
+				}
+				if (clientSocket.match(key)) {
+					matches.add(key);
+				}
+			}
+			if (!matches.isEmpty()) {
+				HTTPRequest first = matches.first();
+				if ((routingExists && first.isValid()) || !routingExists ) {
+					match = first;
+				} else if (path.indexOf("/") < 1) {
+					match = defaultMatch;
+				}
+			}
 		}
-		try {
-			serverSocket.close();
-		} catch (Exception e) {
+		/* SO NEW MATCHES */
+		SimpleEvent event = new SimpleEvent(clientSocket, clientSocket.getPath());
+		if (allowListener != null) {
+			if (!allowListener.update(event)) {
+				clientSocket.writeHeader(HTTPRequest.HTTP_PERMISSION_DENIED);
+				clientSocket.close();
+				return false;
+			}
+		} else if (loginController != null) {
+			if (!loginController.update(event)) {
+				clientSocket.close();
+				return false;
+			}
 		}
+		if(this.executeController != null) {
+			boolean success = executeController.update(event);
+			if(success) {
+				clientSocket.close();
+				return success;
+			}
+		}
+		
+		/* So Valid and Execute Match or default CHECK FOR NEXT VALID OR BEST */
+		if (match != null) {
+			boolean success = match.update(clientSocket);
+			clientSocket.close();
+			return success;
+		}
+		String result = this.executeRequest(event);
+		clientSocket.writeBody(result);
+		clientSocket.close();
 		return true;
 	}
 
-	@Override
+	public boolean close() {
+		return this.proxy.close();
+	}
+
 	public boolean isRun() {
-		return serverSocket != null && serverSocket.isClosed() == false;
+		return this.proxy.isRun();
 	}
 
 	public String executeRequest(String request) {
@@ -192,8 +192,9 @@ public class RESTServiceTask implements Runnable, Server {
 		} else if (request.startsWith(XML, 0, false)) {
 			pos = 5;
 		}
-		Object element = root;
-		Object last = root;
+		Object element = space.getModelRoot();
+		Object last = element;
+		IdMap map = space.getMap();
 		CharacterBuffer oldPath = new CharacterBuffer();
 		while (pos < request.length()) {
 			if (request.charAt(pos) == '[') {
@@ -284,7 +285,8 @@ public class RESTServiceTask implements Runnable, Server {
 		CharacterBuffer listID = new CharacterBuffer();
 		CharacterBuffer request = new CharacterBuffer().with(socketRequest.getPropertyName());
 		Object element = getElement(request, path, listID, false);
-		if (element == root) {
+		IdMap map = space.getMap();
+		if (element == space.getModelRoot()) {
 			if (path.length() > 0) {
 				element = null;
 			} else if (listID.length() > 0) {
@@ -326,7 +328,7 @@ public class RESTServiceTask implements Runnable, Server {
 		CharacterBuffer request = new CharacterBuffer().with(socketRequest.getPropertyName());
 		Object element = getElement(request, path, listID, false);
 		if (element != null) {
-			map.removeObj(element, true);
+			space.getMap().removeObj(element, true);
 			return HTTPRequest.HTTP_OK;
 		}
 		return HTTPRequest.HTTP__NOTFOUND;
@@ -356,6 +358,7 @@ public class RESTServiceTask implements Runnable, Server {
 
 		/* First item SWITCH */
 		String body = request.getContent();
+		IdMap map = space.getMap();
 		if (body.charAt(0) == JsonObject.START || body.charAt(0) == XMLEntity.START) {
 			/* JsonObject or XMLEntity */
 			Object child = map.decode(body);
@@ -404,32 +407,35 @@ public class RESTServiceTask implements Runnable, Server {
 	}
 
 	public void stop() {
-		if (serverSocket != null) {
-			try {
-				ServerSocket socket = serverSocket;
-				serverSocket = null;
-				socket.close();
-			} catch (IOException e) {
-				if (errorListener != null) {
-					errorListener.update(e);
-				}
-			}
-		}
+		proxy.stop();
 	}
 
 	public RESTServiceTask withLoginService(LoginService loginService) {
 		this.loginController = loginService;
 		return this;
 	}
-
-	public RESTServiceTask withRooting(String string, Condition<HTTPRequest> webContent) {
+	
+	public RESTServiceTask withRouting(HTTPRequest routing) {
 		if (this.routing == null) {
 			this.routing = new SimpleList<HTTPRequest>();
 		}
-
-		HTTPRequest routing = HTTPRequest.createRouting(string);
-		routing.withUpdateCondition(webContent);
 		this.routing.add(routing);
+		return this;
+	}
+
+	public RESTServiceTask withRooting(String string, Condition<HTTPRequest> webContent) {
+		HTTPRequest route = HTTPRequest.createRouting(string);
+		route.withUpdateCondition(webContent);
+		this.withRouting(route);
+		return this;
+	}
+
+	public ConfigService getConfigurationService() {
+		return this.configService;
+	}
+
+	public RESTServiceTask withExecuteListener(SimpleUpdateListener executeController) {
+		this.executeController = executeController;
 		return this;
 	}
 }

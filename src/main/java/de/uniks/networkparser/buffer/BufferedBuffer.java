@@ -1,5 +1,7 @@
 package de.uniks.networkparser.buffer;
 
+import java.io.InputStream;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 
 /*
@@ -320,4 +322,6 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	public abstract BufferedBuffer with(byte... items);
 
 	public abstract BufferedBuffer getNewList(boolean list);
+
+	public abstract boolean addStream(InputStream stream);
 }

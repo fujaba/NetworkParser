@@ -29,6 +29,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.Server;
 
 public class Server_TCP extends Thread implements Server {
@@ -36,6 +37,7 @@ public class Server_TCP extends Thread implements Server {
 	private boolean searchFreePort = true;
 	protected ServerSocket serverSocket;
 	private NodeProxyTCP proxy;
+	private Condition<Socket> handler;
 
 	/**
 	 * Fallback for simple Creating a Server without proxy
@@ -48,6 +50,9 @@ public class Server_TCP extends Thread implements Server {
 
 	public Server_TCP(NodeProxyTCP proxy) {
 		this.proxy = proxy;
+		if(handler == null) {
+			this.handler = proxy;
+		}
 		if (init()) {
 			start();
 		}
@@ -81,7 +86,11 @@ public class Server_TCP extends Thread implements Server {
 			Socket requestSocket = null;
 			try {
 				requestSocket = serverSocket.accept();
-				MessageRequest.executeTask(this.proxy, requestSocket);
+				MessageRequest task = new MessageRequest(requestSocket, handler);
+				TaskExecutor executor = proxy.getExecutor();
+				if (executor != null) {
+					executor.executeTask(task, 0);
+				}
 			} catch (IOException e) {
 			} finally {
 			}
@@ -124,6 +133,11 @@ public class Server_TCP extends Thread implements Server {
 	 */
 	public Server_TCP withSearchFreePort(boolean searchFreePort) {
 		this.searchFreePort = searchFreePort;
+		return this;
+	}
+
+	public Server withHandler(Condition<Socket> handler) {
+		this.handler = handler;
 		return this;
 	}
 }

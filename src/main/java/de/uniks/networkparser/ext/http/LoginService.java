@@ -1,21 +1,21 @@
 package de.uniks.networkparser.ext.http;
 
-import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.interfaces.Condition;
+import de.uniks.networkparser.StringUtil;
+import de.uniks.networkparser.interfaces.SimpleUpdateListener;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class LoginService implements Condition<SimpleEvent> {
+public class LoginService implements SimpleUpdateListener {
 	private SimpleList<User> users;
 	private JsonToken tokener;
 	private boolean writeCookie;
 
 	public HTMLEntity getLogin() {
 		HTMLEntity entity = new HTMLEntity();
-		entity.createTag("h1", "Login");
+		entity.createTag("h1", "Anmeldung");
 		XMLEntity formTag = entity.createTag("form").withKeyValue("action", "/auth").withKeyValue("method", "post")
 				.withKeyValue("enctype", "application/json");
 		formTag.createChild("input", "name", "username");
@@ -57,7 +57,7 @@ public class LoginService implements Condition<SimpleEvent> {
 				request.writeCookie(HTTPRequest.HTTP_AUTHENTIFICATION, token, expiration);
 				request.writeCookie(HTTPRequest.HTTP_REFRESH, refreshToken, expiration);
 			}
-			request.withBufferRespone("Login ok");
+			request.withBufferResponse("Login ok");
 			return true;
 		}
 		String authString = request.getHeader(HTTPRequest.HTTP_AUTHENTIFICATION);

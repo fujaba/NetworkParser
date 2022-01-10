@@ -1,10 +1,15 @@
 package de.uniks.networkparser.test;
 
+import java.net.URLEncoder;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.ext.RESTServiceTask;
+import de.uniks.networkparser.ext.http.ConfigService;
+import de.uniks.networkparser.ext.http.Configuration;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.Room;
@@ -13,9 +18,10 @@ import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.util.RoomCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
+import de.uniks.networkparser.xml.HTMLEntity;
+import de.uniks.networkparser.xml.XMLEntity;
 
 public class RestService {
-
 	@Test
 	public void RESTTest() {
 		IdMap map = new IdMap();
@@ -33,7 +39,7 @@ public class RestService {
 		Student albert = new Student().withName("Albert");
 		uni.withStudents(albert);
 
-		RESTServiceTask task = new RESTServiceTask(8080, map, uni) ;
+		RESTServiceTask task = new RESTServiceTask().createServer(new Configuration().withPort(8080), map, uni);
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"U1\",\"prop\":{\"name\":\"Uni Kassel\",\"students\":[{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S2\"},{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S3\"}]}}", task.executeRequest("/json/"));
 
 		Assert.assertEquals("[{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S2\",\"prop\":{\"name\":\"Stefan\",\"in\":{\"class\":\"de.uniks.networkparser.test.model.Room\",\"id\":\"R4\"},\"university\":{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"U1\"}}},{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S3\",\"prop\":{\"name\":\"Albert\",\"university\":{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"U1\"}}}]",task.executeRequest("/json/students/"));
@@ -60,9 +66,7 @@ public class RestService {
 
 
 		Student stefan = new Student().withName("Stefan");
-//		RESTServiceTask task = new RESTServiceTask(8080, map, uni);
-		Thread t2 = new Thread( new RESTServiceTask(8080, map, uni) );
-		t2.start();
+		new RESTServiceTask().createServer(new Configuration().withPort(8080), map, uni);
 
 		IdMap mapB = new IdMap();
 		mapB.withCreator(new StudentCreator());
@@ -76,8 +80,6 @@ public class RestService {
 		Student s = (Student) uni.getStudents().toArray()[0];
 		Assert.assertEquals(s.getName(), "Stefan");
 	}
-
-
 
 	public static void main(String[] args) {
 		IdMap map = new IdMap();
@@ -94,7 +96,26 @@ public class RestService {
 		Student albert = new Student().withName("Albert");
 		uni.withStudents(albert);
 
-		Thread t2 = new Thread( new RESTServiceTask(8080, map, uni) );
-		t2.start();
+		RESTServiceTask task = new RESTServiceTask();
+		task.createServer(new Configuration().withPort(8080), map, uni);
+	}
+	
+	@Test
+	public void getPOST() {
+		
+		System.out.println(StringUtil.encodeParameter("Ebereschenring 22, Hann. Münden"));
+		
+		System.out.println(URLEncoder.encode("Ebereschenring 22, Hann. Münden"));
+		
+		String url = "https://maps.googleapis.com/maps/api/geocode/json?address=Ebereschenring%2022,%20Hann.%20M%C3%BCnden&key=AIzaSyBASBVED3AnnBMUAuFl8y7z34bZ3r91wrU";
+//		String url = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+//		url += "Ebereschenring 22, Hann. Münden";
+//		url += "&key=AIzaSyBASBVED3AnnBMUAuFl8y7z34bZ3r91wrU";
+		
+		HTMLEntity answer = NodeProxyTCP.getHTTP(url);
+		
+		XMLEntity body = answer.getBody();
+		System.out.println(body);
+		
 	}
 }

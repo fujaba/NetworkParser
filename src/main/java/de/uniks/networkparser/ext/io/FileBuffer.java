@@ -285,12 +285,14 @@ public class FileBuffer extends Buffer {
 		}
 		return sb;
 	}
-
 	public static ByteBuffer readBinaryResource(String file) {
+		return readBinaryResource(file, IdMap.class);
+	}
+	public static ByteBuffer readBinaryResource(String file, Class<?> reference) {
 		if (file == null) {
 			return null;
 		}
-		InputStream is = IdMap.class.getResourceAsStream(file);
+		InputStream is = reference.getResourceAsStream(file);
 		ByteBuffer sb = new ByteBuffer();
 		if (is != null) {
 			final byte[] buffer = new byte[BUFFER];
@@ -310,6 +312,7 @@ public class FileBuffer extends Buffer {
 				}
 			}
 		}
+		sb.withPosition(0);
 		return sb;
 	}
 

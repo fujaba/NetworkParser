@@ -714,8 +714,6 @@ public class StringUtil {
 		return buf.toString();
 	}
 
-
-
 	public static final byte[] clone(byte[] entity) {
 		if (entity == null) {
 			return null;
@@ -745,8 +743,6 @@ public class StringUtil {
 		}
 		return bytes;
 	}
-
-
 
 	/**
 	 * Counts how many times the substring appears in the larger string.
@@ -1060,5 +1056,31 @@ public class StringUtil {
 			}
 		}
 		return value;
+	}
+	public static String encodeParameter(String value) {
+		if(value == null) {
+			return null;
+		}
+		CharacterBuffer sb = new CharacterBuffer().withBufferLength(value.length());
+		for (int i=0;i<value.length();i++) {
+			char character = value.charAt(i);
+			if (
+					(character>= 'a' && character<= 'z') ||
+					(character>= 'A' && character<= 'Z') ||
+					(character>= '0' && character<= '9') ||
+					"-_.*".indexOf(character)>=0)
+			{
+				sb.add(character);
+			} else if (character == ' ') {
+				sb.add('+');
+			} else {
+				sb.add('%');
+				int bit = character / 16;
+				sb.add((char)(bit+(bit>9 ? 55 : 48)));
+				bit = character % 16;
+				sb.add((char)(bit+(bit>9 ? 55 : 48)));
+			}
+		}
+		return sb.toString();
 	}
 }

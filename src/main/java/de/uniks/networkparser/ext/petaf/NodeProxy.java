@@ -110,7 +110,10 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public boolean sendMessageToPeers(Message msg) {
-		return this.space.sendMessageToPeers(msg, this);
+		if(this.space != null) {
+			return this.space.sendMessageToPeers(msg, this);
+		}
+		return false;
 	}
 
 	public boolean isValid() {

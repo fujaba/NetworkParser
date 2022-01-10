@@ -35,4 +35,6 @@ public interface Server {
 	public void run();
 
 	public boolean isRun();
+
+	public void stop();
 }

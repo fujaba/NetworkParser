@@ -1,5 +1,7 @@
 package de.uniks.networkparser.buffer;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 
 import de.uniks.networkparser.bytes.ByteConverter;
@@ -416,7 +418,7 @@ public class ByteBuffer extends BufferedBuffer {
 		return this;
 	}
 
-	public ByteBuffer with(byte[] array) {
+	public ByteBuffer with(byte... array) {
 		this.buffer = array;
 		this.position = 0;
 		if (array != null) {
@@ -545,6 +547,35 @@ public class ByteBuffer extends BufferedBuffer {
 		if (pos >= 0 && pos <= this.length && this.buffer != null) {
 			this.buffer[pos] = value;
 			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean addStream(InputStream stream) {
+		 if(stream == null) {
+			 return true;
+		 }
+		 try {
+			this.resize(stream.available(), true);
+		} catch (IOException e) {
+			return false;
+		}
+		return putStream(stream);
+	}
+	
+	public boolean putStream(InputStream stream) {
+		try {
+			int len = 1048;
+			byte[] buf = new byte[len];
+			do {
+				int read = stream.read(buf);
+				if(read>0) {
+					put(buf, 0, read);
+				}
+			}while(stream.available() > 0);
+			return true;
+		}catch (Exception e) {
 		}
 		return false;
 	}

@@ -2,6 +2,7 @@ package de.uniks.networkparser.test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.RESTServiceTask;
+import de.uniks.networkparser.ext.http.Configuration;
 import de.uniks.networkparser.ext.http.JsonToken;
 import de.uniks.networkparser.ext.http.LoginService;
 import de.uniks.networkparser.ext.http.User;
@@ -23,7 +24,7 @@ public class RestServiceLogin {
 		map.withTimeStamp(1);
 
 		University uni = new University().withName("Uni Kassel");
-		RESTServiceTask service = new RESTServiceTask(8080, map, uni);
+		RESTServiceTask service = new RESTServiceTask().createServer(new Configuration().withPort(8080), map, uni);
 		
 		LoginService loginService = new LoginService().withUser(new User().with("admin", "12346"));
 		loginService.withWriteCookie(true);
@@ -32,9 +33,5 @@ public class RestServiceLogin {
 //		.withAlgorytm(JsonToken.HS256)
 		loginService.withJsonToken(token);
 		service.withLoginService(loginService);
-		
-		
-		Thread t2 = new Thread( service );
-		t2.start();
 	}
 }

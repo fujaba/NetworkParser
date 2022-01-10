@@ -52,13 +52,14 @@ import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.TaskExecutor;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.Server;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.xml.HTMLEntity;
 
-public class NodeProxyTCP extends NodeProxy {
-	public static int BUFFER = 100 * 1024;
+public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
+	public static final int BUFFER = 100 * 1024;
 	public static final String POST = "POST";
 	public static final String GET = "GET";
 	public static final String PUT = "PUT";
@@ -81,6 +82,7 @@ public class NodeProxyTCP extends NodeProxy {
 	private int receivePort = 9876;
 	private String serverType = Server.TCP;
     private TaskExecutor executor;
+    private RESTServiceTask restService;
 
 	/**
 	 * Fallback Executor for Simple Using Serverclasses
@@ -168,57 +170,62 @@ public class NodeProxyTCP extends NodeProxy {
 		return super.setValue(element, attrName, value, type);
 	}
 
-	public Message executeInputStream(Socket socket) throws IOException {
-		ByteBuffer buffer = new ByteBuffer();
-
-		byte[] messageArray = new byte[BUFFER];
-		InputStream is = socket.getInputStream();
-		int bytesRead;
-		while (-1 != (bytesRead = is.read(messageArray, 0, BUFFER))) {
-			buffer.with(new String(messageArray, 0, bytesRead, Charset.forName("UTF-8")));
-			if (bytesRead != BUFFER && allowAnswer) {
-				break;
-			}
-		}
-
-		Message msg = null;
-		if (this.space != null) {
-			IdMap map = this.space.getMap();
-			Object element = map.decode(buffer);
-			this.space.updateNetwork(NodeProxy.TYPE_IN, this);
-			if (element instanceof Message) {
-				msg = (Message) element;
-				NodeProxy receiver = msg.getReceiver();
-				if (element instanceof ConnectMessage) {
-					receiver.updateReceive(buffer.size(), false);
-				} else {
-					receiver.updateReceive(buffer.size(), true);
-				}
-				if (msg instanceof ReceivingTimerTask) {
-					((ReceivingTimerTask) msg).withSpace(this.space);
-				}
-				/* Let my Know about the new Receiver */
-				if (receiver != null) {
-					this.space.with(receiver);
+	public boolean update(Socket socket) {
+		try {
+			InputStream is = socket.getInputStream();
+			ByteBuffer buffer = new ByteBuffer();
+			byte[] messageArray = new byte[BUFFER];
+			int bytesRead;
+			while (-1 != (bytesRead = is.read(messageArray, 0, BUFFER))) {
+				buffer.with(new String(messageArray, 0, bytesRead, Charset.forName("UTF-8")));
+				if (bytesRead != BUFFER && allowAnswer) {
+					break;
 				}
 			}
+			Message msg = null;
+			if (this.space != null) {
+				IdMap map = this.space.getMap();
+				Object element = map.decode(buffer);
+				this.space.updateNetwork(NodeProxy.TYPE_IN, this);
+				if (element instanceof Message) {
+					msg = (Message) element;
+					NodeProxy receiver = msg.getReceiver();
+					if (element instanceof ConnectMessage) {
+						receiver.updateReceive(buffer.size(), false);
+					} else {
+						receiver.updateReceive(buffer.size(), true);
+					}
+					if (msg instanceof ReceivingTimerTask) {
+						((ReceivingTimerTask) msg).withSpace(this.space);
+					}
+					/* Let my Know about the new Receiver */
+					if (receiver != null) {
+						this.space.with(receiver);
+					}
+				}
+			}
+			if (msg == null) {
+				msg = new Message();
+			}
+			msg.withMessage(buffer.flip(false));
+			msg.withSession(socket);
+			msg.withAddToReceived(this);
+			if (this.listener != null) {
+				this.listener.update(msg);
+			}
+			if (allowAnswer) {
+				getExecutor().handleMsg(msg);
+			} else {
+				socket.close();
+				getExecutor().handleMsg(msg);
+			}
+		} catch (Exception e) {
+			if (space != null) {
+				space.handleException(e);
+			}
+			return false;
 		}
-		if (msg == null) {
-			msg = new Message();
-		}
-		msg.withMessage(buffer.flip(false));
-		msg.withSession(socket);
-		msg.withAddToReceived(this);
-		if (this.listener != null) {
-			this.listener.update(msg);
-		}
-		if (allowAnswer) {
-			getExecutor().handleMsg(msg);
-		} else {
-			socket.close();
-			getExecutor().handleMsg(msg);
-		}
-		return msg;
+		return true;
 	}
 
 	@Override
@@ -258,7 +265,7 @@ public class NodeProxyTCP extends NodeProxy {
 				}
 				os.flush();
 				if (allowAnswer) {
-					executeInputStream(requestSocket);
+					update(requestSocket);
 				}
 				setSendTime(buffer.length);
 				requestSocket.close();
@@ -310,12 +317,21 @@ public class NodeProxyTCP extends NodeProxy {
 				}
 			} else if (Server.TIME.equals(this.serverType)) {
 			} else if (Server.REST.equals(this.serverType)) {
-				Space space = this.getSpace();
+				Space space = getSpace();
+				boolean startRest = false;
 				if (space != null) {
 					IdMap map = space.getMap();
 					NodeProxyModel model = space.getModel();
 					Object root = model.getModel();
-					this.server = new RESTServiceTask(receivePort, map, root);
+					startRest= true;
+					if(restService == null) {
+						restService = new RESTServiceTask().withProxy(this);
+					}
+				}else if(restService != null && restService.getRoutings().size() > 0) {
+					startRest = true;
+				}
+				if(startRest) {
+					server = new Server_TCP(this).withHandler(restService);
 				}
 			} else {
 				/* Server.BROADCAST */
@@ -815,5 +831,22 @@ public class NodeProxyTCP extends NodeProxy {
 			return executor;
 		}
 		return super.getExecutor();
+	}
+	
+	public boolean isRun() {
+		return server.isRun();
+	}
+
+	public void stop() {
+		this.server.stop();
+	}
+	
+	public NodeProxyTCP withRestService(RESTServiceTask restService) {
+		this.restService = restService;
+		if(restService != null) {
+			this.restService.withProxy(this);
+			this.serverType = Server.REST;
+		}
+		return this;
 	}
 }

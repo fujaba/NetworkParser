@@ -1,8 +1,5 @@
 package de.uniks.networkparser.test;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.TreeSet;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import org.junit.Test;

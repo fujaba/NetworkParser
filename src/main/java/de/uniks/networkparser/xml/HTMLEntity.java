@@ -32,6 +32,7 @@ public class HTMLEntity implements BaseItem {
 	public static final String KEY_SRC = "src";
 	public static final String GRAPH = "Graph";
 	public static final String CLASSEDITOR = "ClassEditor";
+	public static final String ACTION = "action";
 	//"diagramstyle.css", 
 	public static final String[] GRAPH_RESOURCES = new String[] {  "style.css", "diagram.js", "dagre.min.js", "jspdf.min.js" };
 	public static final String[] CODE_RESOURCES = new String[] { "highlight.pack.js", "highlightjs-line-numbers.min.js", };
@@ -673,6 +674,13 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
+	public XMLEntity withActionButton(String label, String actionValue) {
+		XMLEntity actionTag = createTag("form").withKeyValue("method", "post");
+		actionTag.createChild("input", "type", "submit", "value", label);
+		actionTag.createChild("input", "type", "hidden", "id", ACTION, "name", ACTION, "value", actionValue);
+		return actionTag;
+	}
+	
 	public XMLEntity createChild(String tag, String...values) {
 		return this.createBodyTag(tag, values);
 	}
