@@ -615,9 +615,19 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 * @param valueType Class from Value
 	 * @return This Component
 	 */
-	public SimpleKeyValueList<K, V> withKeyValueString(String keyValue, Class<?> valueType) {
+	public SimpleKeyValueList<K, V> withKeyValueString(String keyValue, Class<?>... types) {
 		int pos = 0, start;
-		String key, value;
+		
+		Object key, value;
+		
+		Class<?> keyType = String.class;
+		Class<?> valueType= String.class;
+		if(types != null && types.length>1) {
+			valueType = types[0];
+			if(types.length>1) {
+				keyType = types[1];
+			}
+		}
 		char item;
 		do {
 			start = pos;
@@ -629,7 +639,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 				}
 				pos++;
 			}
-			key = keyValue.substring(start, pos);
+			key = keyValue.substring(start, pos).trim();
 			pos++;
 			/* Get Integer As Value */
 			start = pos;
@@ -640,13 +650,15 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 				}
 				pos++;
 			}
-			value = keyValue.substring(start, pos);
+			value = keyValue.substring(start, pos).trim();
 			pos++;
 			if (valueType == Integer.class) {
-				withKeyValue(key, Integer.valueOf(value));
-			} else {
-				withKeyValue(key, value);
+				value = Integer.valueOf("" + value);
 			}
+			if (keyType == Integer.class) {
+				key = Integer.valueOf("" + key);
+			}
+			withKeyValue(key, value);
 		} while (pos < keyValue.length());
 		return this;
 	}

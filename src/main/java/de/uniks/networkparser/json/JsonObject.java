@@ -1,5 +1,7 @@
 package de.uniks.networkparser.json;
 
+import java.util.List;
+
 import de.uniks.networkparser.EntityStringConverter;
 import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.Tokener;
@@ -377,14 +379,25 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		Object object = get(key);
 		if (object == null) {
 			int pos = key.indexOf(".");
+			int posB = key.indexOf("[");
+			if(posB > 0 && posB < pos) {
+				pos = posB;
+			}
 			if(pos>0) {
 				object = get(key.substring(0, pos));
 				if(object instanceof Entity) {
 					return ((Entity) object).getChild(key.substring(pos+1));
+				} else if(object instanceof List<?> && key.charAt(pos) == '[') {
+					int end = key.indexOf(']');
+					int listPos = StringUtil.getInteger(key.substring(pos+1, end));
+					Object child = ((List<?>) object).get(listPos);
+					if(child instanceof Entity) {
+						return ((Entity) child).getChild(key.substring(end+2));
+					}
 				}
 			}
 			return null;
 		}
-		return object.toString();
+		return object;
 	}
 }

@@ -18,6 +18,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -66,6 +67,10 @@ public class HTMLEntity implements BaseItem {
 
 	public XMLEntity getBody() {
 		return body;
+	}
+	
+	public JsonObject getBodyJsonObject() {
+		return new JsonObject().withValue(body.getValue());
 	}
 
 	public HTMLEntity withEncoding(String encoding) {

@@ -89,6 +89,18 @@ public class StringUtil {
 		return true;
 	}
 
+
+	public static final int getInteger(String strNum) {
+		if (strNum == null) {
+			return -1;
+		}
+		try {
+			return Integer.valueOf(strNum);
+		} catch (NumberFormatException e) {
+		}
+		return -1;
+	}	
+	
 	/**
 	 * Produce a string from a Number.
 	 *

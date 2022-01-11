@@ -66,5 +66,20 @@ public class Configuration implements SendableEntityCreator {
 	public static final Configuration defaultConfig() {
 		return new Configuration().withPort(80);
 	}
+
+	public Configuration withSetting(String key, SendableEntityCreator setting) {
+		if(settings != null) {
+			settings = new SimpleKeyValueList<String, SendableEntityCreator>();
+		}
+		settings.add(key, setting);
+		return this;
+	}
+	
+	public SendableEntityCreator getSetting(String key) {
+		if(settings != null) {
+			return settings.get(key);
+		}
+		return null;
+	}
 }
 
