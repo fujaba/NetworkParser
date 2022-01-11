@@ -612,10 +612,14 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 * Init The Colleciton with short String
 	 * 
 	 * @param keyValue  The init KeyValue String Key:Value,Key:Value ...
-	 * @param valueType Class from Value
+	 * @param types Class from Value, Class from keys
 	 * @return This Component
 	 */
 	public SimpleKeyValueList<K, V> withKeyValueString(String keyValue, Class<?>... types) {
+		if(keyValue == null || keyValue.length()<1) {
+			return this;
+		}
+		
 		int pos = 0, start;
 		
 		Object key, value;

@@ -530,29 +530,31 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
 		if (params == null || params.length < 1) {
 			return result;
 		}
+		boolean split = false;
 		if (params[0] instanceof Map<?, ?>) {
 			Map<?, ?> map = (Map<?, ?>) params[0];
 			Set<?> keySet = (Set<?>) map.keySet();
 			for (Object key : keySet) {
-				addToList(result, "" + key, "" + map.get(key));
+				split = addToList(result, "" + key, "" + map.get(key), split);
 			}
 		} else if (params.length % 2 == 0) {
 			for (int i = 0; i < params.length; i += 2) {
-				addToList(result, "" + params[i], "" + params[i + 1]);
+				split = addToList(result, "" + params[i], "" + params[i + 1], split);
 			}
 		}
 		return result;
 	}
-
-	private static void addToList(BaseItem params, String key, String value) {
+	
+	private static boolean addToList(BaseItem params, String key, String value, boolean split) {
 		if (params instanceof CharacterBuffer) {
-			if (params.size() > 0) {
+			if (split) {
 				params.add('&');
 			}
 			params.add(key, "=", value);
 		} else {
 			params.add(key, value);
 		}
+		return true;
 	}
 
 	public static HTMLEntity postHTTP(String url, Map<String, String> params) {
@@ -573,6 +575,31 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
 		} catch (IOException e) {
 		}
 
+		return null;
+	}
+	
+	public static HTMLEntity postHTTP(String url, String content, String... params) {
+		CharacterBuffer fullUrl = new CharacterBuffer().with(url);
+		if(params != null) {
+			fullUrl.add("?");
+			convertParams(fullUrl, params);
+		}
+		
+		HttpURLConnection conn = getConnection(fullUrl.toString(), POST);
+		if (conn == null) {
+			return null;
+		}
+		byte[] byteArray = content.getBytes();
+		conn.setFixedLengthStreamingMode(byteArray.length);
+
+		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+		try {
+			conn.connect();
+			OutputStream os = conn.getOutputStream();
+			os.write(byteArray);
+			return readAnswer(conn);
+		} catch (IOException e) {
+		}
 		return null;
 	}
 

@@ -1,6 +1,7 @@
 package de.uniks.networkparser.test;
 
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -103,7 +104,7 @@ public class RestService {
 	@Test
 	public void getPOST() {
 		
-		System.out.println(StringUtil.encodeParameter("Ebereschenring 22, Hann. Münden"));
+		System.out.println(StringUtil.encodeParameter("Ebereschenring 22, Hann. Münden", StandardCharsets.UTF_8));
 		
 		System.out.println(URLEncoder.encode("Ebereschenring 22, Hann. Münden"));
 		

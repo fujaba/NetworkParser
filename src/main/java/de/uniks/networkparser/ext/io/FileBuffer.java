@@ -262,6 +262,13 @@ public class FileBuffer extends Buffer {
 		}
 		return readResource(IdMap.class.getResourceAsStream(file));
 	}
+	
+	public CharacterBuffer readAll() {
+		if (file == null) {
+			return null;
+		}
+		return readFile(file);
+	}
 
 	public static CharacterBuffer readResource(InputStream is) {
 		CharacterBuffer sb = new CharacterBuffer();
@@ -285,6 +292,7 @@ public class FileBuffer extends Buffer {
 		}
 		return sb;
 	}
+
 	public static ByteBuffer readBinaryResource(String file) {
 		return readBinaryResource(file, IdMap.class);
 	}

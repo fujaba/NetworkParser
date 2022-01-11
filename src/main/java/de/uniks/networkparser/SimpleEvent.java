@@ -45,7 +45,6 @@ public class SimpleEvent extends PropertyChangeEvent {
 	 * 
 	 * @param source   List Container
 	 * @param property Property of Event
-	 * @param newValue new Element
 	 */
 	public SimpleEvent(Object source, String property) {
 		super(source, property, null, null);

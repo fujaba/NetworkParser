@@ -1,6 +1,7 @@
 package de.uniks.networkparser;
 
 import java.io.File;
+import java.nio.charset.Charset;
 /*
 NetworkParser
 The MIT License
@@ -1069,9 +1070,38 @@ public class StringUtil {
 		}
 		return value;
 	}
-	public static String encodeParameter(String value) {
+	public static String encodeUmlaute(String value) {
+		CharacterBuffer sb = new CharacterBuffer().withBufferLength(value.length());
+		for (int i=0;i<value.length();i++) {
+			char character = value.charAt(i);
+			if(character == 'ß') {
+				sb.append("ss");
+			} else if(character == 'Ä') {
+				sb.append("Ae");
+			} else if(character == 'Ü') {
+				sb.append("Ue");
+			} else if(character == 'Ö') {
+				sb.append("Oe");
+			} else if(character == 'ä') {
+				sb.append("ae");
+			} else if(character == 'ü') {
+				sb.append("ue");
+			} else if(character == 'ö') {
+				sb.append("oe");
+			}else {
+				sb.add(character);
+			}
+		}
+		return sb.toString(); 
+	}
+	
+	public static String encodeParameter(String value, Charset... charset) {
 		if(value == null) {
 			return null;
+		}
+		Charset currentSet = Charset.defaultCharset();
+		if(charset!= null && charset.length>0) {
+			currentSet = charset[0];
 		}
 		CharacterBuffer sb = new CharacterBuffer().withBufferLength(value.length());
 		for (int i=0;i<value.length();i++) {
@@ -1086,11 +1116,14 @@ public class StringUtil {
 			} else if (character == ' ') {
 				sb.add('+');
 			} else {
-				sb.add('%');
-				int bit = character / 16;
-				sb.add((char)(bit+(bit>9 ? 55 : 48)));
-				bit = character % 16;
-				sb.add((char)(bit+(bit>9 ? 55 : 48)));
+				byte[] str = ("" + character).getBytes(currentSet);
+				for(byte b : str) {
+					sb.add('%');
+					int bit = (b >> 4) & 0xF;
+					sb.add((char)(bit+(bit>9 ? 55 : 48)));
+					bit = b & 0xF;
+					sb.add((char)(bit+(bit>9 ? 55 : 48)));
+				}
 			}
 		}
 		return sb.toString();

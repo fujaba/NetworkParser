@@ -381,6 +381,40 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
     }
     return this;
   }
+  
+  /**
+   * Setter with date-String
+   *
+   * @param date date as String
+   * @return Itself
+   */
+  public DateTimeEntity withValue(String date, String format) {
+    if (date != null && format != null && date.length() == date.length()) {
+    	try {
+    		this.withHour(getValue(format, "HH", date));
+    		this.withMinute(getValue(format, "MM", date));
+    		this.withSecond(getValue(format, "SS", date));
+    		int year = getValue(format, "yyyy", date);
+    		if(year > 0) {
+    			this.withYear(year);
+    		} else {
+    			this.withYear(getValue(format, "yy", date));
+    		}
+            this.withMonth(getValue(format, "mm", date));
+            this.withDate(getValue(format, "dd", date));	
+      } catch (Exception e) {
+      }
+    }
+    return this;
+  }
+  
+  private int getValue(String format, String search, String value) {
+	  int pos = format.indexOf(search);
+	  if(pos >= 0) {
+		  return Integer.parseInt(value.substring(pos, pos+search.length()));
+	  }
+	  return 0;
+  }
 
   /**
    * Setter with date

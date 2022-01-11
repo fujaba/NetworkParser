@@ -1,6 +1,7 @@
 package de.uniks.networkparser.ext.http;
 
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.ObjectMapEntry;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class Configuration implements SendableEntityCreator {
@@ -48,7 +49,12 @@ public class Configuration implements SendableEntityCreator {
 			return true;
 		}
 		if(SETTINGS.equalsIgnoreCase(property)) {
-			((Configuration) element).withSettings((SimpleKeyValueList<String, SendableEntityCreator>) value);
+			if(value instanceof ObjectMapEntry) {
+				ObjectMapEntry entry = (ObjectMapEntry) value;
+				((Configuration) element).withSetting(entry.getKeyString(), (SendableEntityCreator)entry.getValue());
+			} else {
+				((Configuration) element).withSettings((SimpleKeyValueList<String, SendableEntityCreator>) value);
+			}
 			return true;
 		}
 		return false;
@@ -68,7 +74,7 @@ public class Configuration implements SendableEntityCreator {
 	}
 
 	public Configuration withSetting(String key, SendableEntityCreator setting) {
-		if(settings != null) {
+		if(settings == null) {
 			settings = new SimpleKeyValueList<String, SendableEntityCreator>();
 		}
 		settings.add(key, setting);
