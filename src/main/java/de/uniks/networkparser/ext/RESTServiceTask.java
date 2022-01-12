@@ -49,7 +49,7 @@ public class RESTServiceTask implements Condition<Socket> {
 		if (map != null) {
 			creator = map.getCreatorClass(root);
 		}
-		configService = new ConfigService().withConfiguration(config);
+		configService = new ConfigService(config);
 		configService.withTask(this);
 		withRouting(configService.getRouting());
 		this.proxy.withRestService(this);

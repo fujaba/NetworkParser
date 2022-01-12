@@ -44,7 +44,7 @@ public class Swagger implements SendableEntityCreator {
 	private String host;
 	private String basePath;
 	private List<String> schemes;
-	private List<Request> paths;
+//	private List<Request> paths;
 	
 	@Override
 	public String[] getProperties() {

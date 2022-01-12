@@ -1,9 +1,13 @@
 package de.uniks.networkparser.ext.http;
 
+import java.util.Iterator;
+
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.RESTServiceTask;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.Condition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.interfaces.SimpleUpdateListener;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -14,11 +18,15 @@ public class ConfigService implements Condition<HTTPRequest> {
 	private Configuration configuration;
 	
 	public static final String ACTION_CLOSE="close";
+	public static final String ACTION_OPEN="open";
+	public static final String ACTION_SAVE="Speichern";
+	public static final String ACTION_ABORT="Abbrechen";
 	private SimpleUpdateListener listener;
 	
-	public ConfigService() {
-		routing = HTTPRequest.createRouting("/config");
+	public ConfigService(Configuration configuration) {
+		routing = HTTPRequest.createRouting("/"+ configuration.getTag());
 		routing.withUpdateCondition(this);
+		this.configuration = configuration;
 	}
 	
 	public HTTPRequest getRouting() {
@@ -35,25 +43,13 @@ public class ConfigService implements Condition<HTTPRequest> {
 		if(task == null) {
 			return false;
 		}
-		if(NodeProxyTCP.GET.equalsIgnoreCase(value.getHttp_Type())) {
-			HTMLEntity entity = new HTMLEntity();
-			entity.createTag("h1", "Konfiguration");
-			
-			XMLEntity formTag = entity.createTag("form").withKeyValue("action", routing.getPath()).withKeyValue("method", "post")
-					.withKeyValue("enctype", "application/json");
-			XMLEntity portinput = formTag.createChild("input", "name", "port");
-			portinput.setValueItem("value", configuration.getPort());
-			
-			formTag.createChild("input", "type", "submit", "value", "Speichern");
-			
-			entity.withActionButton("Beenden", ACTION_CLOSE);
-
-			value.withBufferResponse(entity);
-			if(listener != null) {
-				listener.update(new SimpleEvent(value, NodeProxyTCP.GET, value));
+		if(NodeProxyTCP.POST.equalsIgnoreCase(value.getHttp_Type())) {
+			if(executeSettings(value)) {
+				return true;
 			}
-			value.write(entity);
-			return true;
+		}
+		if(NodeProxyTCP.GET.equalsIgnoreCase(value.getHttp_Type())) {
+			return this.showDefault(value);
 		} else if(NodeProxyTCP.POST.equalsIgnoreCase(value.getHttp_Type())) {
 			String key = value.parse().getContentValue(HTMLEntity.ACTION);
 			if(ACTION_CLOSE.equalsIgnoreCase(key)) {
@@ -64,9 +60,92 @@ public class ConfigService implements Condition<HTTPRequest> {
 		return false;
 	}
 
-	public ConfigService withConfiguration(Configuration config) {
-		this.configuration = config;
-		return this;
+	private boolean showDefault(HTTPRequest value) {
+		HTMLEntity entity = new HTMLEntity();
+		entity.createTag("h1", "Konfiguration");
+		
+		entity.withActionButton("Allgemein", ACTION_OPEN, this.routing.getAbsolutePath("general"));
+		
+		if(configuration != null && configuration.getSettings() != null) {
+			for(Iterator<SendableEntityCreatorTag> iterator = configuration.getSettings().iterator();iterator.hasNext();) {
+				SendableEntityCreatorTag entry = iterator.next();
+				entity.withActionButton(entry.getTag(), ACTION_OPEN, this.routing.getAbsolutePath(entry.getTag()));
+			}
+		}
+		
+		entity.withActionButton("Beenden", ACTION_CLOSE);
+
+		value.withBufferResponse(entity);
+		if(listener != null) {
+			listener.update(new SimpleEvent(value, NodeProxyTCP.GET, value));
+		}
+		value.write(entity);
+		return true;
+	}
+
+	private boolean executeSettings(HTTPRequest value) {
+		String path = this.routing.getPath()+"/general";
+		if(value.getPath().equalsIgnoreCase(path)) {
+			String key = value.parse().getContentValue(HTMLEntity.ACTION);
+			if(key != null) {
+				if(key.equalsIgnoreCase(ACTION_ABORT)) {
+					return value.redirect(this.routing.getAbsolutePath());
+				}
+				if(key.equalsIgnoreCase(ACTION_SAVE)) {
+					configuration.setValue(configuration, Configuration.PORT, value.getContentValue("port"), SendableEntityCreator.NEW);
+					listener.update(new SimpleEvent(value, HTMLEntity.ACTION, ACTION_SAVE));
+					return value.redirect(this.routing.getAbsolutePath());
+				}
+			}
+			HTMLEntity entity = new HTMLEntity();
+			entity.createTag("h1", "Allgemein");
+			XMLEntity formTag = entity.createTag("form").withKeyValue("method", "post")
+			.withKeyValue("enctype", "application/json");
+			
+			formTag.withChild(entity.createInput("Port:", "port", configuration.getPort()));
+			formTag.createChild("input", "type", "submit", "value", ACTION_SAVE, "name", HTMLEntity.ACTION);
+			formTag.createChild("input", "type", "submit", "value", ACTION_ABORT, "name", HTMLEntity.ACTION);
+			value.withBufferResponse(entity);
+			if(listener != null) {
+				listener.update(new SimpleEvent(value, NodeProxyTCP.GET, value));
+			}
+			value.write(entity);
+			return true;
+		}
+		if(configuration != null && configuration.getSettings() != null) {
+			for(SendableEntityCreatorTag creator : configuration.getSettings()) {
+				path = this.routing.getPath()+"/"+creator.getTag();
+				if(value.getPath().equalsIgnoreCase(path)) {
+					String key = value.parse().getContentValue(HTMLEntity.ACTION);
+					if(key != null) {
+						if(key.equalsIgnoreCase(ACTION_ABORT)) {
+							return value.redirect(this.routing.getAbsolutePath());
+						}
+						if(key.equalsIgnoreCase(ACTION_SAVE)) {
+							for(String prop : creator.getProperties()) {
+								creator.setValue(creator, prop, value.getContentValue(prop), SendableEntityCreator.NEW);
+							}
+							listener.update(new SimpleEvent(value, HTMLEntity.ACTION, ACTION_SAVE));
+							return value.redirect(this.routing.getAbsolutePath());
+						}
+					}
+					HTMLEntity entity = new HTMLEntity();
+					entity.createTag("h1", creator.getTag());
+					XMLEntity formTag = entity.createTag("form").withKeyValue("method", "post").withKeyValue("enctype", "application/json");
+					for(String prop : creator.getProperties()) {
+						formTag.withChild(entity.createInput(prop+":", prop, creator.getValue(creator, prop)));	
+					}
+					formTag.createChild("input", "type", "submit", "value", ACTION_SAVE, "name", HTMLEntity.ACTION);
+					formTag.createChild("input", "type", "submit", "value", ACTION_ABORT, "name", HTMLEntity.ACTION);
+					value.withBufferResponse(entity);
+					if(listener != null) {
+						listener.update(new SimpleEvent(value, NodeProxyTCP.GET, value));
+					}
+					return true;
+				}
+			}			
+		}
+		return false;
 	}
 
 	public ConfigService withListener(SimpleUpdateListener updateListener) {

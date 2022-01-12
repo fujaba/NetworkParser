@@ -1,5 +1,6 @@
 package de.uniks.networkparser.ext.petaf.proxy;
 
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ext.io.MessageSession;
 /*
 The MIT License
@@ -191,7 +192,7 @@ public class NodeProxyMessages extends NodeProxy {
 		return new SocketMessage(this.name).withSubject("Message from PetaF");
 	}
 
-	private NodeProxyMessages withPort(Integer value) {
+	public NodeProxyMessages withPort(Integer value) {
 		if (this.connection == null) {
 			this.connection = getNewConnection();
 		}
@@ -251,10 +252,33 @@ public class NodeProxyMessages extends NodeProxy {
 		}
 
 		message.withMessage(buffer);
-		boolean success = this.connection.sending(message);
+		boolean success = this.connection.sending(message, this.password);
 		if (success) {
 			setSendTime(buffer.length());
 		}
 		return success;
+	}
+	
+	public NodeProxyMessages withTLS(boolean value) {
+		if(this.connection != null) {
+			this.connection.withTLS(value);
+		}
+		return this;
+	}
+	
+	public boolean sendEMail(SocketMessage msg) {
+		boolean success = connection.sending(msg, this.password);
+		if (success) {
+			String buffer = msg.toString();
+			setSendTime(buffer.length());
+		}
+		return success;
+	}
+
+	public NodeProxyMessages withLogger(NetworkParserLog value) {
+		if(this.connection != null) {
+			this.connection.withLogger(value);
+		}
+		return this;
 	}
 }

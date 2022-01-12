@@ -50,7 +50,6 @@ public class DialogBox implements ObjectCondition {
 	
 	protected static final int HEADER_HEIGHT = 28;
 	protected static final URL DIALOGS_CSS_URL = DialogBox.class.getResource("dialogs.css");
-	private boolean alwaysOnTop;
 	boolean modal = true;
 	private String toolkit = TOOLKIT_JAVAFX;
 
@@ -254,11 +253,6 @@ public class DialogBox implements ObjectCondition {
 
 	public DialogBox withInline(boolean value) {
 		this.isInline = value;
-		return this;
-	}
-
-	public DialogBox withAlwaysOnTop(boolean value) {
-		this.alwaysOnTop = value;
 		return this;
 	}
 

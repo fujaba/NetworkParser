@@ -69,13 +69,17 @@ public class FileBuffer extends Buffer {
 		}
 		this.length = (int) this.file.length();
 		try {
-			FileInputStream fis = new FileInputStream(this.file);
+			FileInputStream fis = asStream();
 			InputStreamReader isr = new InputStreamReader(fis, Charset.forName(BaseItem.ENCODING));
 			this.reader = new BufferedReader(isr, cache);
 		} catch (Exception e) {
 		}
 		this.position = 0;
 		return this;
+	}
+	
+	public FileInputStream asStream() throws FileNotFoundException {
+		return new FileInputStream(this.file);
 	}
 
 	public FileBuffer withFile(File file) {
@@ -488,6 +492,16 @@ public class FileBuffer extends Buffer {
 		}
 		return false;
 	}
+	public static boolean createFolder(String file) {
+		if (file == null) {
+			return false;
+		}
+		File folder = new File(file);
+		if(folder.exists()) {
+			return true;
+		}
+		return folder.mkdirs();
+	}
 
 	public int write(byte flag, CharSequence data) {
 		if (data != null) {
@@ -495,7 +509,9 @@ public class FileBuffer extends Buffer {
 		}
 		return -1;
 	}
-
+	public int writeBinary(byte... data) {
+		return write(APPEND, data);
+	}
 	public int write(byte flag, byte... data) {
 		if (this.file == null || data == null) {
 			return -1;

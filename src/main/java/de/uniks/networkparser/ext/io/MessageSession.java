@@ -88,6 +88,7 @@ public class MessageSession {
 	private String id;
 	private BufferedBuffer responseFactory = new CharacterBuffer();
 	private NetworkParserLog logger;
+	private boolean useTLS=true;
 
 	public MessageSession connectSSL(String host, String sender, String password) {
 		this.host = host;
@@ -367,14 +368,13 @@ public class MessageSession {
 
 				sendStart();
 
-				BufferedBuffer answer = sendCommand(FEATURE_TLS);
-
-				startTLS();
-
-				sendStart();
-
+				BufferedBuffer answer;
+				if(useTLS) {
+					answer = sendCommand(FEATURE_TLS);
+					startTLS();
+					sendStart();
+				}
 				answer = sendCommand("AUTH LOGIN");
-
 				if (checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response) == false) {
 					close();
 					return false;
@@ -648,8 +648,13 @@ public class MessageSession {
 			return false;
 		}
 		try {
+			
 			out.write(cmd.getBytes());
+			
 			out.write(BaseItem.CRLF.getBytes());
+			if(logger != null) {
+				logger.debug(this, "sendValues", cmd);
+			}
 			out.flush();
 			this.lastSended = cmd;
 		} catch (IOException e) {
@@ -889,7 +894,7 @@ public class MessageSession {
 		SocketMessage msg = new SocketMessage();
 		msg.withRecipient(to);
 		msg.withMessage(message);
-		return sending(msg);
+		return sending(msg, null);
 	}
 
 	/**
@@ -898,7 +903,7 @@ public class MessageSession {
 	 * @param message to send
 	 * @return success
 	 */
-	public boolean sending(SocketMessage message) {
+	public boolean sending(SocketMessage message, String password) {
 		if (message == null) {
 			return false;
 		}
@@ -907,7 +912,7 @@ public class MessageSession {
 			return sendCommand(xml.toString()) != null;
 		}
 
-		if (connect(this.sender, null) == false) {
+		if (connect(this.sender, password) == false) {
 			return false;
 		}
 
@@ -1027,6 +1032,11 @@ public class MessageSession {
 
 	public MessageSession withLogger(NetworkParserLog logger) {
 		this.logger = logger;
+		return this;
+	}
+
+	public MessageSession withTLS(boolean value) {
+		this.useTLS = value;
 		return this;
 	}
 }

@@ -1,14 +1,16 @@
 package de.uniks.networkparser.ext.http;
 
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.list.ObjectMapEntry;
-import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
+import de.uniks.networkparser.list.SimpleList;
 
-public class Configuration implements SendableEntityCreator {
+
+public class Configuration implements SendableEntityCreatorNoIndex, SendableEntityCreatorTag {
 	public static final String PORT ="port";
 	public static final String SETTINGS ="settings";
 	private static final String[] properties = new String[] {PORT, SETTINGS};
-	private SimpleKeyValueList<String, SendableEntityCreator> settings;
+	private SimpleList<SendableEntityCreatorTag> settings;
 	private int port;
 
 	@Override
@@ -32,11 +34,11 @@ public class Configuration implements SendableEntityCreator {
 		return null;
 	}
 	
-	public SimpleKeyValueList<String, SendableEntityCreator> getSettings() {
+	public SimpleList<SendableEntityCreatorTag> getSettings() {
 		return settings;
 	}
 	
-	public Configuration withSettings(SimpleKeyValueList<String, SendableEntityCreator> settings) {
+	public Configuration withSettings(SimpleList<SendableEntityCreatorTag> settings) {
 		this.settings = settings;
 		return this;
 	}
@@ -49,11 +51,10 @@ public class Configuration implements SendableEntityCreator {
 			return true;
 		}
 		if(SETTINGS.equalsIgnoreCase(property)) {
-			if(value instanceof ObjectMapEntry) {
-				ObjectMapEntry entry = (ObjectMapEntry) value;
-				((Configuration) element).withSetting(entry.getKeyString(), (SendableEntityCreator)entry.getValue());
-			} else {
-				((Configuration) element).withSettings((SimpleKeyValueList<String, SendableEntityCreator>) value);
+			if(value instanceof SendableEntityCreatorTag) {
+				((Configuration) element).withSetting((SendableEntityCreatorTag) value);
+			} else if(value instanceof SimpleList<?>) {
+				((Configuration) element).withSettings((SimpleList<SendableEntityCreatorTag>) value);
 			}
 			return true;
 		}
@@ -73,19 +74,28 @@ public class Configuration implements SendableEntityCreator {
 		return new Configuration().withPort(80);
 	}
 
-	public Configuration withSetting(String key, SendableEntityCreator setting) {
+	public Configuration withSetting(SendableEntityCreatorTag setting) {
 		if(settings == null) {
-			settings = new SimpleKeyValueList<String, SendableEntityCreator>();
+			settings = new SimpleList<SendableEntityCreatorTag>();
 		}
-		settings.add(key, setting);
+		settings.add(setting);
 		return this;
 	}
 	
 	public SendableEntityCreator getSetting(String key) {
-		if(settings != null) {
-			return settings.get(key);
+		if(settings != null && key != null) {
+			for(SendableEntityCreatorTag setting : settings) {
+				if(key.equalsIgnoreCase(setting.getTag())) {
+					return setting;
+				}
+			}
 		}
 		return null;
+	}
+
+	@Override
+	public String getTag() {
+		return "config";
 	}
 }
 

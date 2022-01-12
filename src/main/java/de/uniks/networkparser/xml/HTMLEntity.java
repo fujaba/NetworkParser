@@ -1,10 +1,12 @@
 package de.uniks.networkparser.xml;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.EntityStringConverter;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.GraphConverter;
@@ -679,8 +681,11 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
-	public XMLEntity withActionButton(String label, String actionValue) {
+	public XMLEntity withActionButton(String label, String actionValue, String... url) {
 		XMLEntity actionTag = createTag("form").withKeyValue("method", "post");
+		if(url != null && url.length>0) {
+			actionTag.withKeyValue("action", url[0]);
+		}
 		actionTag.createChild("input", "type", "submit", "value", label);
 		actionTag.createChild("input", "type", "hidden", "id", ACTION, "name", ACTION, "value", actionValue);
 		return actionTag;
@@ -688,5 +693,27 @@ public class HTMLEntity implements BaseItem {
 	
 	public XMLEntity createChild(String tag, String...values) {
 		return this.createBodyTag(tag, values);
+	}
+
+	public BaseItem createInput(String label, String name, Object value) {
+		XMLEntity parent = new XMLEntity().withType("div").withKeyValue("class", "inputgroup");
+		parent.createChild("label", "for", name).withValueItem(label);
+		
+		XMLEntity input = parent.createChild("input", "name", name);
+		if(value instanceof Number) {
+			input.withKeyValue("type", "number");
+		}
+		if(value instanceof Date || value instanceof DateTimeEntity) {
+			input.withKeyValue("type", "date");
+		}
+		if(value instanceof String) {
+			input.withKeyValue("type", "text");
+		}
+		if(name.equalsIgnoreCase("password")) {
+			input.withKeyValue("type", "password");
+		}
+
+		input.setValueItem("value", value);
+		return parent;
 	}
 }

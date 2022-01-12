@@ -2,6 +2,7 @@ package de.uniks.networkparser.buffer;
 
 import java.io.InputStream;
 import java.util.List;
+
 /*
  * NetworkParser The MIT License Copyright (c) 2010-2016 Stefan Lindel
  * https://www.github.com/fujaba/NetworkParser/
@@ -277,7 +278,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
    * @param values the reference CharArray
    * @return the new CharacterBuffer
    */
-  public CharacterBuffer with(byte[] values) {
+  public CharacterBuffer with(byte...values) {
     if (values == null) {
       return this;
     }

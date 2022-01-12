@@ -8,7 +8,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.Socket;
 
-import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
@@ -19,6 +18,7 @@ import de.uniks.networkparser.xml.HTMLEntity;
 public class HTTPRequest implements Comparable<HTTPRequest> {
 	public static final String HTTP__NOTFOUND = "HTTP 404";
 	public static final String HTTP_OK = "HTTP/1.1 200 OK";
+	public static final String HTTP_REDIRECT = "HTTP 302";
 	public static final String HTTP_PERMISSION_DENIED = "HTTP 403";
 	public static final String HTTP_CONTENT = "Content-Type:";
 	public static final String HTTP_AUTHENTIFICATION = "Authentification";
@@ -124,10 +124,18 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return this;
 	}
 	
+	public boolean redirect(String url) {
+		PrintWriter writer = getOutput();
+		writer.println(HTTP_REDIRECT);
+		writer.println("Location: "+url);
+		writer.flush();
+		return true;
+	}
+	
 	public boolean writeHTTPResponse(String response, String... param) {
 		PrintWriter writer = getOutput();
 		String contentType = HTTP_CONTENT_HTML;
-		if(param != null || param.length>0) {
+		if(param != null && param.length>0) {
 			contentType = param[0];
 		}
 		writer.println(HTTP_OK);
@@ -140,7 +148,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		writer.write(BaseItem.CRLF);
 		writer.print(response);
 		writer.flush();
-		return false;
+		return true;
 	}
 	
 	
@@ -305,7 +313,24 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	public String getPath() {
 		return path;
 	}
-
+	public String getAbsolutePath(String... sub) {
+		String result="";
+		if(path != null) {
+			if(path.startsWith("/")) {
+				result = path;
+			}else {
+				result = "/"+path;
+			}
+		}
+		if(sub != null && sub.length>0) {
+			if(path.endsWith("/")) {
+				result += sub[0];
+			}else {
+				result += "/"+sub[0];
+			}
+		}
+		return result;
+	}
 	public HTTPRequest withPath(String value) {
 		this.path = value;
 		return this;

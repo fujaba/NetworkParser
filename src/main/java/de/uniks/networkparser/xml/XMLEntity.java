@@ -489,13 +489,14 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 						children.add(items.getChild(c));
 					}
 				}
-			}
-			if (entity instanceof Entity == false) {
-				continue;
-			}
-			Entity item = (Entity) entity;
-			if (value.equalsIgnoreCase(item.getString(key))) {
-				children.add(item);
+			}else {
+				if (entity instanceof Entity == false) {
+					continue;
+				}
+				Entity item = (Entity) entity;
+				if (value.equalsIgnoreCase(item.getString(key))) {
+					children.add(item);
+				}
 			}
 		}
 		if (children.sizeChildren() == 1) {

@@ -513,44 +513,50 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
     do {
       sub = tokener.nextString(dateFormat, new CharacterBuffer(), false, false, '"').toString();
       if (sub.length() > 0 && !isString) {
-        sub = sub.replace("HZ", StringUtil.strZero(get(HOUR_OF_DAY) - getTimezone(), 2));
-        sub = sub.replace("HH", StringUtil.strZero(get(HOUR_OF_DAY), 2));
-        sub = sub.replace("H", String.valueOf(get(HOUR_OF_DAY)));
-        sub = sub.replace("MM", StringUtil.strZero(get(MINUTE_OF_HOUR), 2));
-        sub = sub.replace("M", String.valueOf(get(MINUTE_OF_HOUR)));
-        sub = sub.replace("SS", StringUtil.strZero(get(SECOND_OF_MINUTE), 2));
-        sub = sub.replace("S", String.valueOf(get(SECOND_OF_MINUTE)));
-        /* Date */
-        int dayOfWeek = (int) get(DAY_OF_WEEK);
-        if (dayOfWeek < 0) {
-          dayOfWeek = 0;
-        }
-        int month = (int) get(MONTH);
-        if (month < 1) {
-          month = 1;
-        }
-        sub = sub.replace("dddd", this.weekDays[dayOfWeek]);
-        sub = sub.replace("ddd", this.weekDays[dayOfWeek].substring(0, 3));
-        sub = sub.replace("dd", StringUtil.strZero(get(DAY_OF_MONTH), 2));
-        sub = sub.replace("d", String.valueOf(get(DAY_OF_MONTH)));
-        sub = sub.replace("mmmm", this.monthOfYear[month - 1]);
-        sub = sub.replace("mmm", this.monthOfYear[month - 1].substring(0, 3));
-        sub = sub.replace("mm", StringUtil.strZero(month, 2));
-        sub = sub.replace("m", String.valueOf(month));
-        sub = sub.replace("yyyy", String.valueOf(get(YEAR)));
-        sub = sub.replace("yyy", String.valueOf(get(YEAR)));
-        sub = sub.replace("yy", StringUtil.strZero(get(YEAR), 2, 2));
-        sub = sub.replace("y", StringUtil.strZero(get(YEAR), 1, 2));
-        if (this.timeZone > 0) {
-          sub = sub.replace("Z", "+" + StringUtil.strZero(this.timeZone, 2, 2) + "00");
-        } else if (this.timeZone < 0) {
-          sub = sub.replace("Z", "-" + StringUtil.strZero(this.timeZone, 2, 2) + "00");
-        } else {
-          sub = sub.replace("Z", "0000");
-        }
-        sub = sub.replace("z", "CEST");
+          /* Date */
+          int dayOfWeek = (int) get(DAY_OF_WEEK);
+          if (dayOfWeek < 0) {
+            dayOfWeek = 0;
+          }
+          int month = (int) get(MONTH);
+          if (month < 1) {
+            month = 1;
+          }
+
+          char search[] = new char[] {'d', 'm', 'y', 'H', 'M', 'S'};
+          int specials[] =new int[6];
+          int pos;
+    	  for(int i=0;i<sub.length();i++) {
+          	char item = sub.charAt(i);
+          	for(pos = 0;pos<search.length;pos++) {
+          		if(search[pos] == item) {
+          			specials[pos] += 1;
+          			break;
+          		}
+          	}
+          	if(pos == search.length) {
+          		// Not found
+          		if(item == 'z') {
+          			sb.with("CEST");
+          		} else if(item == 'Z') {
+          			if(specials[3] == 1) {
+            			specials[3] = 0;
+            			sb.with(StringUtil.strZero(get(HOUR_OF_DAY) - getTimezone(), 2));
+          			} else if (this.timeZone > 0) {
+          				sb.with("+" + StringUtil.strZero(this.timeZone, 2, 2) + "00");
+                    } else if (this.timeZone < 0) {
+                    	sb.with("-" + StringUtil.strZero(this.timeZone, 2, 2) + "00");
+                    } else {
+                    	sb.with("0000");
+                    }
+          		} else {
+	          		replaceSpecial(sb, specials, dayOfWeek, month);
+	          		sb.with(item);
+        		}
+          	}
+          }
+          replaceSpecial(sb, specials, dayOfWeek, month);
       }
-      sb.with(sub);
       if (dateFormat.getCurrentChar() == '\"') {
         dateFormat.getChar();
       }
@@ -559,6 +565,30 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 
     return sb.toString();
   }
+
+	private void replaceSpecial(CharacterBuffer sb, int[] specials, int dayOfWeek, int month) {
+		if(specials[0] == 4) {sb.with(this.weekDays[dayOfWeek]);}
+		if(specials[0] == 3) {sb.with(this.weekDays[dayOfWeek].substring(0, 3));}
+		if(specials[0] == 2) {sb.with(StringUtil.strZero(get(DAY_OF_MONTH), 2));}
+		if(specials[0] == 1) {sb.with(String.valueOf(get(DAY_OF_MONTH)));}
+		if(specials[1] == 4) {sb.with(this.monthOfYear[month - 1]);}
+		if(specials[1] == 3) {sb.with(this.monthOfYear[month - 1].substring(0, 3));}
+		if(specials[1] == 2) {sb.with(StringUtil.strZero(month, 2));}
+		if(specials[1] == 1) {sb.with(String.valueOf(month));}
+		if(specials[2] == 4) {sb.with(String.valueOf(get(YEAR)));}
+		if(specials[2] == 3) {sb.with(String.valueOf(get(YEAR)));}
+		if(specials[2] == 2) {sb.with(StringUtil.strZero(get(YEAR), 2, 2));}
+		if(specials[2] == 1) {sb.with(StringUtil.strZero(get(YEAR), 1, 2));}
+		if(specials[3] == 2) {sb.with(StringUtil.strZero(get(HOUR_OF_DAY), 2));}
+		if(specials[3] == 1) {sb.with(String.valueOf(get(HOUR_OF_DAY)));}
+		if(specials[4] == 2) {sb.with(StringUtil.strZero(get(MINUTE_OF_HOUR), 2));}
+		if(specials[4] == 1) {sb.with(String.valueOf(get(MINUTE_OF_HOUR)));}
+		if(specials[5] == 2) {sb.with(StringUtil.strZero(get(SECOND_OF_MINUTE), 2));}
+		if(specials[5] == 1) {sb.with(String.valueOf(get(SECOND_OF_MINUTE)));}
+		for(int i=0;i<specials.length;i++) {
+			specials[i] = 0;
+		}
+	}
 
   @Override
   public String toString() {
