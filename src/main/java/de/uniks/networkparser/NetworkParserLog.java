@@ -192,11 +192,29 @@ public class NetworkParserLog extends Handler {
    */
   public boolean error(Object owner, String method, Object message, Object... params) {
     if ((flag & LOGLEVEL_ERROR) != 0 && condition != null) {
-      return condition
-          .update(new SimpleEvent(owner, method, null, message).withModelValue(params).withType(ERROR));
+      return condition.update(new SimpleEvent(owner, method, null, message).withModelValue(params).withType(ERROR));
     }
     return false;
-
+  }
+  
+  /**
+   * Log a message with error log level.
+   *
+   * @param owner The Element with call the Methods
+   * @param method The Caller-Method
+   * @param message Typ of Log Value
+   * @param params advanced Information
+   * @return boolean if method must Cancel
+   */
+  public boolean error(Object owner, String method, Throwable exception) {
+    if ((flag & LOGLEVEL_ERROR) != 0 && condition != null) {
+		String msg = "";
+		if(exception != null) {
+			msg = exception.getMessage();
+		}
+   	    return condition.update(new SimpleEvent(owner, method, null, msg).withModelValue(exception).withType(ERROR));
+    }
+    return false;
   }
 
   /**

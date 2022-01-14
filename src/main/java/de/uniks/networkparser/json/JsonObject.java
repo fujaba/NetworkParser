@@ -368,36 +368,5 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		return super.equals(obj);
 	}
 
-	/**
-	 * Get the string associated with an index.
-	 *
-	 * @param key The Value
-	 * @return A string value.
-	 */
-	@Override
-	public Object getChild(String key) {
-		Object object = get(key);
-		if (object == null) {
-			int pos = key.indexOf(".");
-			int posB = key.indexOf("[");
-			if(posB > 0 && posB < pos) {
-				pos = posB;
-			}
-			if(pos>0) {
-				object = get(key.substring(0, pos));
-				if(object instanceof Entity) {
-					return ((Entity) object).getChild(key.substring(pos+1));
-				} else if(object instanceof List<?> && key.charAt(pos) == '[') {
-					int end = key.indexOf(']');
-					int listPos = StringUtil.getInteger(key.substring(pos+1, end));
-					Object child = ((List<?>) object).get(listPos);
-					if(child instanceof Entity) {
-						return ((Entity) child).getChild(key.substring(end+2));
-					}
-				}
-			}
-			return null;
-		}
-		return object;
-	}
+	
 }

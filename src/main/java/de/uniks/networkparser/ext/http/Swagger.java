@@ -254,7 +254,7 @@ public class Swagger implements SendableEntityCreator {
 	public Swagger withValue(Entity element) {
 		this.withVersion(element.getString(PROPERTY_VERSION));
 		for(String prop : this.getProperties()) {
-			this.setValue(this, prop, element.getChild(prop), null);
+			this.setValue(this, prop, element.getValue(prop), null);
 		}
 		return this;
 	}

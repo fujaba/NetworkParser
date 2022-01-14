@@ -34,9 +34,10 @@ public class IdMap extends SimpleMap {
 	protected Object decodingByte(Filter filter, byte firstChar, Buffer buffer) {
 		MapEntity map = new MapEntity(filter, flag, this, byteTokener);
 		/* MUST BE BYTE */
-		return byteTokener.decodeValue((byte) firstChar, buffer, map);
+		return byteTokener.decodeValue(firstChar, buffer, map);
 	}
 
+	@Override
 	protected Object decodingEMF(Tokener tokener, Filter filter, byte flag, Buffer element, Object root) {
 		EMFTokener emfTokener = null;
 		if (tokener instanceof EMFTokener) {
@@ -53,6 +54,7 @@ public class IdMap extends SimpleMap {
 		return null;
 	}
 
+	@Override
 	protected Object decoding(BaseItem value, MapEntity map) {
 		if (value instanceof ByteEntity) {
 			ByteEntity entity = (ByteEntity) value;
@@ -100,7 +102,7 @@ public class IdMap extends SimpleMap {
 	}
 
 	public boolean addI18N(Object root, TextItems i18n) {
-		return addI18N(root, i18n, new SimpleSet<Object>(), null, null);
+		return addI18N(root, i18n, new SimpleSet<>(), null, null);
 	}
 
 	private boolean addI18N(Object root, TextItems i18n, SimpleSet<Object> items, String key, List<?> subElements) {

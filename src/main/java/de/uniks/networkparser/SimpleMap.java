@@ -1515,7 +1515,7 @@ public int size() {
   public Object simpleDecoding(Entity element, SendableEntityCreator creator) {
 	  Object entry = creator.getSendableInstance(true);
 	  for(String prop : creator.getProperties()) {
-		creator.setValue(entry, prop, element.getChild(prop), null);
+		creator.setValue(entry, prop, element.getValue(prop), null);
 	  }
 	  return this;
   }

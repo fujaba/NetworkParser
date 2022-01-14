@@ -411,7 +411,7 @@ public class Gradle implements ObjectCondition {
     boolean result = true;
     try {
       FileInputStream fis = new FileInputStream(file);
-      zis = new ZipInputStream(fis);
+      zis  = new ZipInputStream(fis);
       ZipEntry ze = zis.getNextEntry();
       FileOutputStream fos = null;
       byte[] buffer = new byte[1024];
@@ -468,14 +468,15 @@ public class Gradle implements ObjectCondition {
         ze = zis.getNextEntry();
       }
     } catch (Exception e) {
-      try {
-        if (zis != null) {
-          zis.close();
-        }
-      } catch (Exception e2) {
-        result = false;
-      }
-    }
+    	logger.error(this, "extractGradleFiles", e);
+    } finally {
+    	try {
+      	  if (zis != null) {
+                zis.close();
+              }
+        } catch (Exception e2) {
+          result = false;
+        }	}
     return result;
   }
 

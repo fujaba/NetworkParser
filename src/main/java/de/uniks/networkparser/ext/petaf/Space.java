@@ -318,7 +318,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 
 		/* New Structure */
 		NodeProxy proxy = getProxy(NodeProxy.PROPERTY_ID);
-		if (proxy != null) {
+		if (proxy != null || props == null) {
 			return proxy;
 		}
 		/* Proxy not exist must be create */
@@ -437,16 +437,14 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	}
 
 	public boolean startModelDistribution(boolean alwaysEncode) {
-		IdMap map = getMap();
 		boolean result = true;
 		for (NodeProxy proxy : this.proxies) {
 			if (proxy instanceof NodeProxyModel) {
 				NodeProxyModel modelProxy = (NodeProxyModel) proxy;
 				Object model = modelProxy.getModel();
-				if (alwaysEncode || map.getKey(model) == null) {
-					if (getMap().encode(model, tokener) == null) {
+				if ((alwaysEncode || map.getKey(model) == null)
+					&& (map.encode(model, tokener) == null)) {
 						result = false;
-					}
 				}
 			}
 		}
@@ -1065,7 +1063,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	public boolean sendEventToClients(SimpleEvent event) {
 		boolean result = true;
 		for (ObjectCondition client : clients) {
-			result = result & client.update(event);
+			result = result && client.update(event);
 		}
 		return result;
 	}
@@ -1165,5 +1163,12 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		this.with(proxy);
 		
 		return proxy;
+	}
+	
+	public boolean logException(Object owner, String method, Throwable exception) {
+		if(log != null) {
+			return log.error(owner, method, exception);
+		}
+		return false;
 	}
 }

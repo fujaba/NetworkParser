@@ -279,26 +279,6 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 		return object.toString();
 	}
-	/**
-	 * Get the string associated with an index.
-	 *
-	 * @param key The Value
-	 * @return A value.
-	 */
-	public Object getStringChild(String key) {
-		Object object = get(key);
-		if (object == null) {
-			int pos = key.indexOf(".");
-			if(pos>0) {
-				object = get(key.substring(0, pos));
-				if(object instanceof Entity) {
-					return ((Entity) object).getChild(key.substring(pos+1));
-				}
-			}
-			return "";
-		}
-		return object;
-	}
 
 	/**
 	 * Get the string associated with an index.

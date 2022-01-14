@@ -121,7 +121,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	protected boolean sending(Message msg) {
-		if (this.isValid() == false) {
+		if (!this.isValid()) {
 			return true;
 		}
 		msg.withAddToReceived(this);
@@ -180,7 +180,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		if (time == Space.DISABLE) {
 			return false;
 		}
-		boolean result = (isOnline() == false) && (System.currentTimeMillis() - lastSendTryTime) > time;
+		boolean result = !isOnline() && (System.currentTimeMillis() - lastSendTryTime) > time;
 		if (result) {
 			this.lastSendCount++;
 		}
@@ -242,6 +242,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		try {
 			return Integer.valueOf(history);
 		} catch (Exception e) {
+			// DO Nothing
 		}
 		return null;
 	}
@@ -284,7 +285,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 
 	@Override
 	public boolean setValue(Object element, String attrName, Object value, String type) {
-		if (element instanceof NodeProxy == false) {
+		if (!(element instanceof NodeProxy)) {
 			return false;
 		}
 		NodeProxy nodeProxy = (NodeProxy) element;
@@ -328,7 +329,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 
 	@Override
 	public Object getValue(Object element, String attrName) {
-		if (element instanceof NodeProxy == false) {
+		if (!(element instanceof NodeProxy)) {
 			return null;
 		}
 		NodeProxy nodeProxy = (NodeProxy) element;

@@ -308,21 +308,20 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
 				server = new Server_TCP(this);
 				if (url == null) {
 					try {
-						String url = InetAddress.getLocalHost().getHostAddress();
-						if (LOCALHOST.equals(url) == false) {
-							this.url = url;
+						String urlValue = InetAddress.getLocalHost().getHostAddress();
+						if (LOCALHOST.equals(urlValue) == false) {
+							this.url = urlValue;
 						}
 					} catch (UnknownHostException e) {
+						space.logException(this, "startProxy", e);
 					}
 				}
 			} else if (Server.TIME.equals(this.serverType)) {
+				// DO Nothing
 			} else if (Server.REST.equals(this.serverType)) {
 				Space space = getSpace();
 				boolean startRest = false;
 				if (space != null) {
-					IdMap map = space.getMap();
-					NodeProxyModel model = space.getModel();
-					Object root = model.getModel();
 					startRest= true;
 					if(restService == null) {
 						restService = new RESTServiceTask().withProxy(this);
@@ -384,11 +383,14 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
 		if (uri == null) {
 			return null;
 		}
-		if (BODY_JSON.equalsIgnoreCase(bodyType) == false && BODY_PLAIN.equalsIgnoreCase(bodyType) == false
-				&& HEADER_PLAIN.equalsIgnoreCase(bodyType) == false) {
+		if (!BODY_JSON.equalsIgnoreCase(bodyType) && !BODY_PLAIN.equalsIgnoreCase(bodyType)
+				&& !HEADER_PLAIN.equalsIgnoreCase(bodyType)) {
 			return null;
 		}
 		HttpURLConnection conn = getConnection(uri, POST);
+		if (conn == null) {
+			return null;
+		}
 
 		byte[] byteArray = null;
 		if (HEADER_PLAIN.equalsIgnoreCase(bodyType)) {
@@ -406,7 +408,11 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
 			byteArray = json.toString().getBytes();
 			conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
 		}
-		conn.setFixedLengthStreamingMode(byteArray.length);
+		if (byteArray == null) {
+			conn.setFixedLengthStreamingMode(0);
+		}else {
+			conn.setFixedLengthStreamingMode(byteArray.length);
+		}
 		try {
 			conn.connect();
 			OutputStream os = conn.getOutputStream();
@@ -443,6 +449,9 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
 			return null;
 		}
 		HttpURLConnection conn = getConnection(uri, GET);
+		if(conn == null) {
+			return null;
+		}
 		List<String> cookies = session.getConnectionHeaders("Set-Cookie");
 		if (cookies != null) {
 			for (int i = 0; i < cookies.size(); i++) {
@@ -482,6 +491,9 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
 			return null;
 		}
 		HttpURLConnection conn = getConnection(uri, POST);
+		if(conn == null) {
+			return null;
+		}
 		List<String> cookies = session.getConnectionHeaders("Set-Cookie");
 		if (cookies != null) {
 			for (int i = 0; i < cookies.size(); i++) {
@@ -582,7 +594,7 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
 		CharacterBuffer fullUrl = new CharacterBuffer().with(url);
 		if(params != null) {
 			fullUrl.add("?");
-			convertParams(fullUrl, params);
+			convertParams(fullUrl, (Object[])params);
 		}
 		
 		HttpURLConnection conn = getConnection(fullUrl.toString(), POST);

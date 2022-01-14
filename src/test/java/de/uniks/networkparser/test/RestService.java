@@ -1,15 +1,10 @@
 package de.uniks.networkparser.test;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.ext.RESTServiceTask;
-import de.uniks.networkparser.ext.http.ConfigService;
 import de.uniks.networkparser.ext.http.Configuration;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.json.JsonObject;
@@ -103,10 +98,6 @@ public class RestService {
 	
 	@Test
 	public void getPOST() {
-		
-		System.out.println(StringUtil.encodeParameter("Ebereschenring 22, Hann. Münden", StandardCharsets.UTF_8));
-		
-		System.out.println(URLEncoder.encode("Ebereschenring 22, Hann. Münden"));
 		
 		String url = "https://maps.googleapis.com/maps/api/geocode/json?address=Ebereschenring%2022,%20Hann.%20M%C3%BCnden&key=AIzaSyBASBVED3AnnBMUAuFl8y7z34bZ3r91wrU";
 //		String url = "https://maps.googleapis.com/maps/api/geocode/json?address=";

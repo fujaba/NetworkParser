@@ -571,25 +571,5 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return children;
 	}
 
-	/**
-	 * Get the string associated with an index.
-	 *
-	 * @param key The Value
-	 * @return A string value.
-	 */
-	@Override
-	public Object getChild(String key) {
-		Object object = get(key);
-		if (object == null) {
-			int pos = key.indexOf(".");
-			if(pos>0) {
-				object = get(key.substring(0, pos));
-				if(object instanceof Entity) {
-					return ((Entity) object).getChild(key.substring(pos+1));
-				}
-			}
-			return null;
-		}
-		return object;
-	}
+	
 }

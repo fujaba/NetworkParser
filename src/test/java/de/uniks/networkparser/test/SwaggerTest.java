@@ -1,5 +1,7 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.http.Swagger;
@@ -15,5 +17,7 @@ public class SwaggerTest {
 		Swagger swagger = new Swagger().withValue(json);
 		
 		System.out.println(json);
+		
+		assertNotNull(swagger);
 	}
 }

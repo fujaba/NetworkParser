@@ -223,7 +223,9 @@ public class SocketMessage implements BaseItem {
 			return this;
 		}
 		for (int i = 0; i < toAdresses.length; i++) {
-			this.to.add(toAdresses[i]);
+			for(String item : toAdresses[i].split(",")) {
+				this.to.add(item);
+			}
 		}
 		return this;
 	}

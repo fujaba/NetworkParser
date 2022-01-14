@@ -1241,7 +1241,7 @@ public String toString() {
     if (key instanceof String == false) {
       return null;
     }
-    String keyString = "" + key;
+    String keyString = (String)key;
     int len = 0;
     int end = 0;
     int id = 0;
@@ -1295,7 +1295,7 @@ public String toString() {
             id = list.size() - 1;
           }
           if (list.size() >= id) {
-            return list.get(id);
+            return list.getValue(id);
           }
         }
       } else {
