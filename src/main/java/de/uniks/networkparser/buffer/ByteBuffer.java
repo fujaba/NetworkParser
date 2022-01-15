@@ -46,6 +46,7 @@ public class ByteBuffer extends BufferedBuffer {
 	}
 
 	public ByteBuffer withBufferLength(int length) {
+		super.withLength(length);
 		if (length >= 0) {
 			this.buffer = new byte[length];
 		}
