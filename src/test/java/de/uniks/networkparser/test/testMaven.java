@@ -9,7 +9,6 @@ public class testMaven {
 	@Test
 	public void  testMavenTest() {
 		MavenXML xml = new MavenXML();
-//		xml.buildMaven("build\\libs", "de.uniks", "maven", "jar");
 		xml.buildMaven("build/libs", "de.uniks", "maven");
 	}
 }

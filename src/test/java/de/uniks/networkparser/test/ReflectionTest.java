@@ -10,6 +10,7 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.gui.DialogBox;
 import de.uniks.networkparser.ext.io.StringPrintStream;
 import de.uniks.networkparser.gui.JavaBridge;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -27,6 +28,7 @@ public class ReflectionTest {
     tester.withDisableSimpleException(true);
     tester.breakByErrorCount(100);
     tester.withOverrideLogger(true);
+    tester.withIgnoreClazzes(DialogBox.class);
 
     tester.test("de.uniks.networkparser", logger);
 

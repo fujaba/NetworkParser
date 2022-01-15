@@ -8,7 +8,8 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.Converter;
 
-/** ByteConverter */
+/** ByteConverter 
+ * @author Stefan Lindel */
 public abstract class ByteConverter implements Converter {
 	public abstract String toString(BufferedBuffer values);
 

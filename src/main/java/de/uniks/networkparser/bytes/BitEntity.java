@@ -28,7 +28,8 @@ import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;
 
-/** BitEntity */
+/** BitEntity 
+ * @author Stefan Lindel */
 public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	/* Can be a Type */
 	protected String property;
@@ -91,8 +92,10 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 		return false;
 	}
 
-	/*
+	/**
 	 * Generic Getter for Attributes
+	 * @param attrName AttributeName
+	 * @return the Element from Entity
 	 */
 	public Object get(String attrName) {
 		if (attrName == null) {

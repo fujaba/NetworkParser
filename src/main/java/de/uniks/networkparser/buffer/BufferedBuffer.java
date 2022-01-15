@@ -28,7 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-/** Buffered Buffer */
+/** Buffered Buffer
+ * @author Stefan Lindel */
 public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	/** The count is the number of characters used. */
 	protected int length;

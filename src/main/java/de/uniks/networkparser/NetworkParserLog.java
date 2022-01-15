@@ -202,8 +202,7 @@ public class NetworkParserLog extends Handler {
    *
    * @param owner The Element with call the Methods
    * @param method The Caller-Method
-   * @param message Typ of Log Value
-   * @param params advanced Information
+   * @param exception Exception
    * @return boolean if method must Cancel
    */
   public boolean error(Object owner, String method, Throwable exception) {

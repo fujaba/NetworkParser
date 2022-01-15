@@ -42,7 +42,8 @@ import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
-/** RabbitMessage */
+/** RabbitMessage 
+ * @author Stefan Lindel */
 public class RabbitMessage {
 	public static final byte NULL = 0;
 
@@ -89,7 +90,8 @@ public class RabbitMessage {
 	private short methodId;
 	private SimpleKeyValueList<String, Object> payloadData = new SimpleKeyValueList<String, Object>();
 
-	/* with values or ByteEntity */
+	/** with values or ByteEntity 
+	 * @param value Message */
 	public RabbitMessage withShortString(String value) {
 		withValues(ByteEntity.create(ByteTokener.DATATYPE_STRING + ByteTokener.LEN_LITTLE, value));
 		return this;

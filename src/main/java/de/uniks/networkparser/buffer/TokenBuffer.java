@@ -24,7 +24,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-/** TokenBuffer */
+/** TokenBuffer 
+ * @author Stefan Lindel */
 public class TokenBuffer extends CharacterBuffer {
 	private int startToken = -1;
 

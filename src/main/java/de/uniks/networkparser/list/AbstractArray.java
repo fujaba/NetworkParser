@@ -1295,7 +1295,7 @@ public String toString() {
             id = list.size() - 1;
           }
           if (list.size() >= id) {
-            return list.getValue(id);
+            return list.get(id);
           }
         }
       } else {

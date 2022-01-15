@@ -36,21 +36,21 @@ public class RestService {
 		uni.withStudents(albert);
 
 		RESTServiceTask task = new RESTServiceTask().createServer(new Configuration().withPort(8080), map, uni);
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"U1\",\"prop\":{\"name\":\"Uni Kassel\",\"students\":[{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S2\"},{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S3\"}]}}", task.executeRequest("/json/"));
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"root\",\"prop\":{\"name\":\"Uni Kassel\",\"students\":[{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S1\"},{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S2\"}]}}", task.executeRequest("/json/"));
 
-		Assert.assertEquals("[{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S2\",\"prop\":{\"name\":\"Stefan\",\"in\":{\"class\":\"de.uniks.networkparser.test.model.Room\",\"id\":\"R4\"},\"university\":{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"U1\"}}},{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S3\",\"prop\":{\"name\":\"Albert\",\"university\":{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"U1\"}}}]",task.executeRequest("/json/students/"));
+		Assert.assertEquals("[{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S1\",\"prop\":{\"name\":\"Stefan\",\"in\":{\"class\":\"de.uniks.networkparser.test.model.Room\",\"id\":\"R3\"},\"university\":{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"root\"}}},{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S2\",\"prop\":{\"name\":\"Albert\",\"university\":{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"root\"}}}]",task.executeRequest("/json/students/"));
 		//task.executeRequest
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S2\",\"prop\":{\"name\":\"Stefan\",\"in\":{\"class\":\"de.uniks.networkparser.test.model.Room\",\"id\":\"R4\"},\"university\":{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"U1\"}}}", task.executeRequest("/json/students[0]"));
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S1\",\"prop\":{\"name\":\"Stefan\",\"in\":{\"class\":\"de.uniks.networkparser.test.model.Room\",\"id\":\"R3\"},\"university\":{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"root\"}}}", task.executeRequest("/json/students[0]"));
 
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Room\",\"id\":\"R4\",\"prop\":{\"name\":\"MathRoom\",\"students\":[{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S2\"}]}}", task.executeRequest("/json/students[0]/in"));
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Room\",\"id\":\"R3\",\"prop\":{\"name\":\"MathRoom\",\"students\":[{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S1\"}]}}", task.executeRequest("/json/students[0]/in"));
 
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S2\",\"prop\":{\"name\":\"Stefan\",\"in\":{\"class\":\"de.uniks.networkparser.test.model.Room\",\"id\":\"R4\"},\"university\":{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"U1\"}}}", task.executeRequest("/json/[S2]"));
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S2\",\"prop\":{\"name\":\"Albert\",\"university\":{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"root\"}}}", task.executeRequest("/json/[S2]"));
 
 		Assert.assertEquals("HTTP 404", task.executeRequest("/json/students[J1.Student.2]"));
 
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S2\",\"prop\":{\"name\":\"Stefan\",\"in\":{\"class\":\"de.uniks.networkparser.test.model.Room\",\"id\":\"R4\"},\"university\":{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"U1\"}}}", task.executeRequest("/json/students[S2]"));
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S2\",\"prop\":{\"name\":\"Albert\",\"university\":{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"root\"}}}", task.executeRequest("/json/students[S2]"));
 
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"U1\",\"prop\":{\"name\":\"Uni Kassel\",\"students\":[{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S2\"},{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S3\"}]}}", task.executeRequest("/json/students[0]/in/students/university/"));
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"root\",\"prop\":{\"name\":\"Uni Kassel\",\"students\":[{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S1\"},{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S2\"}]}}", task.executeRequest("/json/students[0]/in/students/university/"));
 	}
 
 	public void RESTTestPOST() {
@@ -94,20 +94,5 @@ public class RestService {
 
 		RESTServiceTask task = new RESTServiceTask();
 		task.createServer(new Configuration().withPort(8080), map, uni);
-	}
-	
-	@Test
-	public void getPOST() {
-		
-		String url = "https://maps.googleapis.com/maps/api/geocode/json?address=Ebereschenring%2022,%20Hann.%20M%C3%BCnden&key=AIzaSyBASBVED3AnnBMUAuFl8y7z34bZ3r91wrU";
-//		String url = "https://maps.googleapis.com/maps/api/geocode/json?address=";
-//		url += "Ebereschenring 22, Hann. Münden";
-//		url += "&key=AIzaSyBASBVED3AnnBMUAuFl8y7z34bZ3r91wrU";
-		
-		HTMLEntity answer = NodeProxyTCP.getHTTP(url);
-		
-		XMLEntity body = answer.getBody();
-		System.out.println(body);
-		
 	}
 }

@@ -1,6 +1,7 @@
 package de.uniks.networkparser.buffer;
 
-/** Container for String */
+/** Container for String 
+ * @author Stefan Lindel */
 public class StringContainer implements CharSequence {
   /**
    * The value is used for character storage.

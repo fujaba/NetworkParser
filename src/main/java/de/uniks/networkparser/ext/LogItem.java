@@ -26,7 +26,8 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-/** LogItem */
+/** LogItem 
+ * @author Stefan Lindel */
 public class LogItem extends SendableItem implements SendableEntityCreator {
 	public static final String INCOMING = "Empfange";
 	public static final String OUTGOING = "Sende";

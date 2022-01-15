@@ -386,6 +386,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
    * Setter with date-String
    *
    * @param date date as String
+   * @param format Format of DateTime
    * @return Itself
    */
   public DateTimeEntity withValue(String date, String format) {
@@ -556,6 +557,8 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
           	}
           }
           replaceSpecial(sb, specials, dayOfWeek, month);
+      } else if(isString) {
+    	  sb.with(sub);
       }
       if (dateFormat.getCurrentChar() == '\"') {
         dateFormat.getChar();

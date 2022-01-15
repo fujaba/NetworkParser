@@ -20,7 +20,9 @@ package de.uniks.networkparser.buffer;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/** Reader for Characters */
+/** Reader for Characters
+ * @author Stefan Lindel
+ *  */
 public class CharacterReader extends CharacterBuffer {
   /** The line. */
   protected int line;

@@ -901,6 +901,7 @@ public class MessageSession {
 	 * Sends a message using the SMTP protocol.
 	 * 
 	 * @param message to send
+	 * @param password Password for Sending
 	 * @return success
 	 */
 	public boolean sending(SocketMessage message, String password) {

@@ -7,7 +7,8 @@ import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 
-/** Buffered InputStream for String or Byte */
+/** Buffered InputStream for String or Byte 
+ * @author Stefan Lindel */
 public class BufferedByteInputStream extends InputStream {
 	BufferedBuffer mBuf = new CharacterBuffer();
 	private int pos;

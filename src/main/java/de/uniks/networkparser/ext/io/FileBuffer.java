@@ -43,7 +43,8 @@ import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.xml.XMLEntity;
 
-/** Buffer for FileContext */
+/** Buffer for FileContext 
+ * @author Stefan Lindel */
 public class FileBuffer extends Buffer {
 	public static final int BUFFER = 4096;
 	private BufferedReader reader;

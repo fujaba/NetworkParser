@@ -886,7 +886,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	}
 
 	public void export(String type, Object value, String name, String context) {
-		if (this.controller == null) {
+		if (this.controller == null || value == null) {
 			return;
 		}
 		String typeName = "files";

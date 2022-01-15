@@ -585,7 +585,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 			}
 		}
 		/* REST IS CLASSIFIER */
-		artifactFile.classifier.add(fileName);
+		artifactFile.addClassifier(fileName);
 		artifactFile.time = time;
 
 		artifactFile.groupId = groupId;
@@ -625,6 +625,9 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	}
 
 	public boolean addClassifier(String value) {
+		if(this.classifier == null) {
+			this.classifier = new SimpleList<String>();
+		}
 		return this.classifier.add(value);
 	}
 
