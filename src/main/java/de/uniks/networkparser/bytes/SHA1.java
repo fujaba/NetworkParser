@@ -25,6 +25,10 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
+/**
+ * Secure Hash Algorithm Version 1
+ * @author Stefan Lindel
+ */
 public class SHA1 extends Checksum {
 	private int H0, H1, H2, H3, H4;
 
@@ -293,6 +297,11 @@ public class SHA1 extends Checksum {
 	public static CharacterBuffer value(CharSequence value) {
 		SHA1 sha1 = new SHA1();
 		sha1.update(toByteArray(value));
+		return convertToHex(sha1.getByteArray());
+	}
+	public static CharacterBuffer value(byte[] value) {
+		SHA1 sha1 = new SHA1();
+		sha1.update(value);
 		return convertToHex(sha1.getByteArray());
 	}
 

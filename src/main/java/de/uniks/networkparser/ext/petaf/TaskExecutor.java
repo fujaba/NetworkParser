@@ -25,6 +25,10 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.DateTimeEntity;
 
+/**
+ * Interfae for Execution
+ * @author Stefan Lindel
+ */
 public interface TaskExecutor {
 	public Object executeTask(Runnable task, int delay, int interval);
 

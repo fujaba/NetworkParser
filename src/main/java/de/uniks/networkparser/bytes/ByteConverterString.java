@@ -25,10 +25,12 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.BufferedBuffer;
 
+/**
+ * Converter for Byte to String
+ * @author Stefan Lindel
+ */
 public class ByteConverterString extends ByteConverter {
-	/**
-	 * To simple string.
-	 *
+	/** To simple string.
 	 * @param values the bytes
 	 * @return the string
 	 */

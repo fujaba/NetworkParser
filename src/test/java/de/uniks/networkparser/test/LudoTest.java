@@ -170,6 +170,7 @@ public class LudoTest {
 	public void testReflection() {
 		StoryStepJUnit story = new StoryStepJUnit();
 		story.withPackageName("de.uniks.ludo.model");
+		story.withIgnoreError(true);
 		story.executeBlackBoxTest("src/test/java/");
 	}
 	

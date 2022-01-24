@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.RESTServiceTask;
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
@@ -43,14 +42,14 @@ public class ConfigService implements Condition<HTTPRequest> {
 		if(task == null) {
 			return false;
 		}
-		if(NodeProxyTCP.POST.equalsIgnoreCase(value.getHttp_Type())) {
+		if(HTTPRequest.HTTP_TYPE_POST.equalsIgnoreCase(value.getHttp_Type())) {
 			if(executeSettings(value)) {
 				return true;
 			}
 		}
-		if(NodeProxyTCP.GET.equalsIgnoreCase(value.getHttp_Type())) {
+		if(HTTPRequest.HTTP_TYPE_GET.equalsIgnoreCase(value.getHttp_Type())) {
 			return this.showDefault(value);
-		} else if(NodeProxyTCP.POST.equalsIgnoreCase(value.getHttp_Type())) {
+		} else if(HTTPRequest.HTTP_TYPE_POST.equalsIgnoreCase(value.getHttp_Type())) {
 			String key = value.parse().getContentValue(HTMLEntity.ACTION);
 			if(ACTION_CLOSE.equalsIgnoreCase(key)) {
 				task.close();
@@ -75,17 +74,17 @@ public class ConfigService implements Condition<HTTPRequest> {
 		
 		entity.withActionButton("Beenden", ACTION_CLOSE);
 
-		value.withBufferResponse(entity);
+		value.withContent(entity);
 		if(listener != null) {
-			listener.update(new SimpleEvent(value, NodeProxyTCP.GET, value));
+			listener.update(new SimpleEvent(value, HTTPRequest.HTTP_TYPE_GET, value));
 		}
 		value.write(entity);
 		return true;
 	}
 
 	private boolean executeSettings(HTTPRequest value) {
-		String path = this.routing.getPath()+"/general";
-		if(value.getPath().equalsIgnoreCase(path)) {
+		String path = this.routing.getUrl()+"/general";
+		if(value.getUrl().equalsIgnoreCase(path)) {
 			String key = value.parse().getContentValue(HTMLEntity.ACTION);
 			if(key != null) {
 				if(key.equalsIgnoreCase(ACTION_ABORT)) {
@@ -105,17 +104,17 @@ public class ConfigService implements Condition<HTTPRequest> {
 			formTag.withChild(entity.createInput("Port:", "port", configuration.getPort()));
 			formTag.createChild("input", "type", "submit", "value", ACTION_SAVE, "name", HTMLEntity.ACTION);
 			formTag.createChild("input", "type", "submit", "value", ACTION_ABORT, "name", HTMLEntity.ACTION);
-			value.withBufferResponse(entity);
+			value.withContent(entity);
 			if(listener != null) {
-				listener.update(new SimpleEvent(value, NodeProxyTCP.GET, value));
+				listener.update(new SimpleEvent(value, HTTPRequest.HTTP_TYPE_GET, value));
 			}
 			value.write(entity);
 			return true;
 		}
 		if(configuration != null && configuration.getSettings() != null) {
 			for(SendableEntityCreatorTag creator : configuration.getSettings()) {
-				path = this.routing.getPath()+"/"+creator.getTag();
-				if(value.getPath().equalsIgnoreCase(path)) {
+				path = this.routing.getUrl()+"/"+creator.getTag();
+				if(value.getUrl().equalsIgnoreCase(path)) {
 					String key = value.parse().getContentValue(HTMLEntity.ACTION);
 					if(key != null) {
 						if(key.equalsIgnoreCase(ACTION_ABORT)) {
@@ -137,9 +136,9 @@ public class ConfigService implements Condition<HTTPRequest> {
 					}
 					formTag.createChild("input", "type", "submit", "value", ACTION_SAVE, "name", HTMLEntity.ACTION);
 					formTag.createChild("input", "type", "submit", "value", ACTION_ABORT, "name", HTMLEntity.ACTION);
-					value.withBufferResponse(entity);
+					value.withContent(entity);
 					if(listener != null) {
-						listener.update(new SimpleEvent(value, NodeProxyTCP.GET, value));
+						listener.update(new SimpleEvent(value, HTTPRequest.HTTP_TYPE_GET, value));
 					}
 					return true;
 				}

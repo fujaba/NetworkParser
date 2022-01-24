@@ -47,7 +47,7 @@ public class Configuration implements SendableEntityCreatorNoIndex, SendableEnti
 	@Override
 	public boolean setValue(Object element, String property, Object value, String type) {
 		if(PORT.equalsIgnoreCase(property)) {
-			((Configuration) element).withPort((int) value);
+			((Configuration) element).withPort((Integer) value);
 			return true;
 		}
 		if(SETTINGS.equalsIgnoreCase(property)) {

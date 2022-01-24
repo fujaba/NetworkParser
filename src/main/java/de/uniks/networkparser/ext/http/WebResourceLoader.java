@@ -21,7 +21,7 @@ public class WebResourceLoader implements Condition<HTTPRequest> {
 	@Override
 	public boolean update(HTTPRequest value) {
 		if (value != null) {
-			value.withPath(redirect);
+			value.withURL(redirect);
 			PrintWriter output = value.getOutput();
 			if (output != null) {
 				output.println("HTTP/1.1 301 Moved Permanently");

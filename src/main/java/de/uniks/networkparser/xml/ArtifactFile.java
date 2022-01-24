@@ -70,13 +70,13 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	public String toGITString() {
 		if (System.getenv().get("BUILD_NUMBER") != null) {
 			try {
-				pomNumber[5] = Integer.valueOf(System.getenv().get("BUILD_NUMBER"));
-			} catch (Exception e) {
+				pomNumber[5] = Integer.parseInt(System.getenv().get("BUILD_NUMBER"));
+			} catch (Exception e) { // Empty
 			}
 		}
 		if (latest) {
 			return "";
-		} else if (isRelease() == false && !isMaster()) {
+		} else if (!isRelease() && !isMaster()) {
 			return pomNumber[3] + "." + pomNumber[4] + "." + pomNumber[5] + "-SNAPSHOT";
 		}
 		return pomNumber[3] + "." + pomNumber[4] + "." + pomNumber[5];
@@ -168,15 +168,15 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		try {
 			part = this.version.substring(start, start + this.pomNumber[i + 3]);
 			start += this.pomNumber[i + 3] + 1;
-			temp += StringUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
+			temp += StringUtil.strZero(Integer.parseInt(part), this.pomNumber[i]);
 			i++;
 
 			if (start + this.pomNumber[i + 3] < this.version.length()) {
 				part = this.version.substring(start, start + this.pomNumber[i + 3]);
 				start += this.pomNumber[i + 3] + 1;
 				try {
-					temp += StringUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
-				} catch (Exception e) {
+					temp += StringUtil.strZero(Integer.parseInt(part), this.pomNumber[i]);
+				} catch (Exception e) { //Empty
 				}
 				i++;
 			}
@@ -186,12 +186,12 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 				} catch (Exception e) {
 				}
 				try {
-					temp += StringUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
+					temp += StringUtil.strZero(Integer.parseInt(part), this.pomNumber[i]);
 				} catch (Exception e) {
 				}
-				this.pomNumber[6] = Integer.valueOf(temp);
+				this.pomNumber[6] = Integer.parseInt(temp);
 			}
-		} catch (Exception e) {
+		} catch (Exception e) { //Empty
 		}
 		return change;
 	}

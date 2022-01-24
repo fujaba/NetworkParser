@@ -33,7 +33,6 @@ import de.uniks.networkparser.interfaces.Condition;
  *
  * @param <V> generic Parameter for Simple-Collection
  */
-
 public abstract class AbstractList<V> extends AbstractArray<V> implements Iterable<V>, Cloneable {
   private Class<?> type;
 

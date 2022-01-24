@@ -28,6 +28,10 @@ import java.net.SocketTimeoutException;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
 
+/**
+ * MQTT Message
+ * @author Stefan Lindel
+ */
 public class MQTTMessage {
 	public static final byte MESSAGE_TYPE_CONNECT = 1;
 	public static final byte MESSAGE_TYPE_CONNACK = 2;

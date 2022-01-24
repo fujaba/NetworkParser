@@ -7,6 +7,10 @@ import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * List of Byte
+ * @author Stefan Lindel
+ */
 public class ByteList extends SimpleList<ByteItem> implements ByteItem {
   /** The children of the ByteEntity. */
   private byte type;

@@ -44,7 +44,7 @@ public class Pos {
 		}
 		if (rowPos < tag.length()) {
 			try {
-				pos.y = Integer.valueOf(tag.substring(rowPos));
+				pos.y = Integer.parseInt(tag.substring(rowPos));
 			} catch (Exception e) {
 			}
 		}

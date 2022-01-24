@@ -7,6 +7,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.RESTServiceTask;
 import de.uniks.networkparser.ext.http.Configuration;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.Room;
 import de.uniks.networkparser.test.model.Student;
@@ -14,8 +15,6 @@ import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.util.RoomCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
-import de.uniks.networkparser.xml.HTMLEntity;
-import de.uniks.networkparser.xml.XMLEntity;
 
 public class RestService {
 	@Test
@@ -70,7 +69,7 @@ public class RestService {
 
 		Assert.assertEquals(uni.getStudents().size(), 0);
 
-		NodeProxyTCP.postHTTP("localhost:8080/students", jsonObject);
+		NodeProxyTCP.postHTTP("localhost:8080/students", (BaseItem) jsonObject);
 
 		Assert.assertEquals(uni.getStudents().size(), 1);
 		Student s = (Student) uni.getStudents().toArray()[0];

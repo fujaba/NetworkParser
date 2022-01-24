@@ -26,6 +26,10 @@ THE SOFTWARE.
 import de.uniks.networkparser.ext.petaf.Message;
 //TODO ADD FUNCTIONALITY
 
+/**
+ * Get Missing Messages
+ * @author Stefan Lindel
+ */
 public class GetObjectMessage extends Message {
 	@Override
 	public Object getSendableInstance(boolean prototyp) {

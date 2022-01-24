@@ -32,6 +32,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.ErrorHandler;
 
+/**
+ * Thread for executing ModelChanges
+ * @author Stefan Lindel
+ */
 public class ModelThread {
 	private IdMap map;
 	private ThreadPoolExecutor execute;

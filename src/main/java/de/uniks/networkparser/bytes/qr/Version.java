@@ -2,6 +2,7 @@ package de.uniks.networkparser.bytes.qr;
 
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.list.AbstractArray;
 
 /**
  * See ISO 18004:2006 Annex D
@@ -19,7 +20,7 @@ public final class Version {
 			0x1AFAB, 0x1B08E, 0x1CC1A, 0x1D33F, 0x1ED75, 0x1F250, 0x209D5, 0x216F0, 0x228BA, 0x2379F, 0x24B0B, 0x2542E,
 			0x26A64, 0x27541, 0x28C69 };
 
-	private static Version[] VERSIONS;
+	private static Version[] allVersions;
 
 	private final int versionNumber;
 	private final int[] alignmentPatternCenters;
@@ -34,19 +35,20 @@ public final class Version {
 		this.alignmentPatternCenters = alignmentPatternCenters;
 
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.withFlag(JsonObject.ALLOWDUPLICATE);
+		jsonObject.withFlag(AbstractArray.ALLOWDUPLICATE);
 		jsonObject.withValue(json);
 		this.ecBlocks1 = getECBS(jsonObject, 0);
 		this.ecBlocks2 = getECBS(jsonObject, 1);
 		this.ecBlocks3 = getECBS(jsonObject, 2);
 		this.ecBlocks4 = getECBS(jsonObject, 3);
-
 		int total = 0;
-		ECB element = ecBlocks1;
-		int codeword = element.getECCodewordsPerBlock();
-		while (element != null) {
-			total += element.getCount() * (element.getDataCodewords() + codeword);
-			element = element.next();
+		if(ecBlocks1 != null) {
+			ECB element = ecBlocks1;
+			int codeword = element.getECCodewordsPerBlock();
+			while (element != null) {
+				total += element.getCount() * (element.getDataCodewords() + codeword);
+				element = element.next();
+			}
 		}
 		this.totalCodewords = total;
 	}
@@ -55,7 +57,7 @@ public final class Version {
 		if (jsonObject == null || jsonObject.size() < 1) {
 			return new ECB(-1, -1, -1);
 		}
-		int ecCodeBlocks = Integer.valueOf(jsonObject.getKeyByIndex(index));
+		int ecCodeBlocks = Integer.parseInt(jsonObject.getKeyByIndex(index));
 		JsonArray array = (JsonArray) jsonObject.getValueByIndex(index);
 		ECB prev = null;
 		ECB first = null;
@@ -126,13 +128,13 @@ public final class Version {
 		if (versionNumber < 1 || versionNumber > 40) {
 			return null;
 		}
-		if (VERSIONS == null) {
+		if (allVersions == null) {
 			/**
 			 * See ISO 18004:2006 6.5.1 Table 9
 			 *
 			 * @return Version-Array with Build Polynom
 			 */
-			VERSIONS = new Version[] { new Version(1, new int[] {}, "{7:[1,19], 10:[1,16], 13:[1,13], 17:[1,9]}"),
+			allVersions = new Version[] { new Version(1, new int[] {}, "{7:[1,19], 10:[1,16], 13:[1,13], 17:[1,9]}"),
 					new Version(2, new int[] { 6, 18 }, "{10:[1,34], 16:[1,28], 22:[1,22], 28:[1,16]}"),
 					new Version(3, new int[] { 6, 22 }, "{15:[1,55], 26:[1,44], 18:[2,17], 22:[2,13]}"),
 					new Version(4, new int[] { 6, 26 }, "{20:[1,80], 18:[2,32], 26:[2,24], 16:[4,9]}"),
@@ -206,7 +208,7 @@ public final class Version {
 					new Version(40, new int[] { 6, 30, 58, 86, 114, 142, 170 },
 							"{30:[19, 118,6, 119], 28:[18, 47,31, 48], 30:[34, 24,34, 25], 30:[20, 15,61, 16]}") };
 		}
-		return VERSIONS[versionNumber - 1];
+		return allVersions[versionNumber - 1];
 	}
 
 	static Version decodeVersionInformation(int versionBits) {

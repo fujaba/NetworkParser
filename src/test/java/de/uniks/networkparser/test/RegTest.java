@@ -1,7 +1,5 @@
 package de.uniks.networkparser.test;
 
-import java.util.TreeSet;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,20 +18,6 @@ public class RegTest {
 		Assert.assertNotNull(root);
 	}
 
-	
-	@Test
-	public void testSS()  {
-		TreeSet<Integer> treeSet = new TreeSet<>();
-		treeSet.add(new Integer(1));
-		treeSet.add(new Integer(42));
-		treeSet.add(new Integer(23));
-		System.out.println(new Integer(1).compareTo(new Integer(42)));
-		System.out.println(new Integer(42).compareTo(new Integer(1)));
-		
-		for(Integer value : treeSet) {
-			System.out.println(value);
-		}
-	}
 	
 	public ObjectCondition parseCurrentChar(CharacterBuffer item){
 		char ch = item.getCurrentChar();

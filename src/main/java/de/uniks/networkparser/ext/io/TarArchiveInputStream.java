@@ -29,6 +29,10 @@ import java.util.zip.GZIPInputStream;
 
 import de.uniks.networkparser.NetworkParserLog;
 
+/**
+ * Simple Class for Tar-Files s InputStream
+ * @author Stefan Lindel
+ */
 public class TarArchiveInputStream extends InputStream {
   private final byte[] single = new byte[1];
   private static final int BYTE_MASK = 0xFF;

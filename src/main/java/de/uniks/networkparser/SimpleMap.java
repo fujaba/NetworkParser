@@ -1363,10 +1363,9 @@ public int size() {
               if (parent instanceof EntityList) {
                 parent.add(value);
                 continue;
-              } else if (parent instanceof Entity) {
-                parent.put(property, value);
-                continue;
               }
+              parent.put(property, value);
+              continue;
             }
             className = value.getClass().getName();
             String fullProp = prop.toString();

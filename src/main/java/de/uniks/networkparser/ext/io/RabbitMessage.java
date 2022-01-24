@@ -91,7 +91,8 @@ public class RabbitMessage {
 	private SimpleKeyValueList<String, Object> payloadData = new SimpleKeyValueList<String, Object>();
 
 	/** with values or ByteEntity 
-	 * @param value Message */
+	 * @param value Message 
+	 * @return This Component */
 	public RabbitMessage withShortString(String value) {
 		withValues(ByteEntity.create(ByteTokener.DATATYPE_STRING + ByteTokener.LEN_LITTLE, value));
 		return this;

@@ -33,6 +33,10 @@ import de.uniks.networkparser.ext.sql.SQLStatement;
 import de.uniks.networkparser.ext.sql.SQLStatementList;
 import de.uniks.networkparser.ext.sql.SQLTokener;
 
+/**
+ * Proxy for Database COnnection
+ * @author Stefan Lindel
+ */
 public class NodeProxySQL extends NodeProxy {
 	public static final String PROPERTY_DATABASE = "database";
 	public static final String PROPERTY_DRIVER = "driver";
@@ -86,7 +90,7 @@ public class NodeProxySQL extends NodeProxy {
 
 	@Override
 	public boolean setValue(Object element, String attrName, Object value, String type) {
-		if (element instanceof NodeProxyMessages) {
+		if (element instanceof NodeProxySQL) {
 			NodeProxySQL nodeProxy = (NodeProxySQL) element;
 			if (PROPERTY_DATABASE.equals(attrName)) {
 				nodeProxy.withDatabase((String) value);
@@ -140,6 +144,8 @@ public class NodeProxySQL extends NodeProxy {
 			if (split.length > 2) {
 				this.tokener = new SQLTokener(SQLStatement.connect(split[0], split[1], split[2]));
 				this.database = split[2];
+			} else {
+				return;
 			}
 		}
 		if (con != null) {

@@ -28,6 +28,10 @@ import java.beans.PropertyChangeEvent;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
 
+/**
+ * Property Change Event
+ * @author Stefan Lindel
+ */
 public class PropertyChangeEventWrapper extends SendableEntityCreatorWrapper {
 	public static final String PROPERTY_SOURCE = "source";
 	public static final String PROPERTY_PROPERTY = "property";

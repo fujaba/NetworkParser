@@ -35,6 +35,10 @@ import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
+/**
+ * Proxy for Broker
+ * @author Stefan Lindel
+ */
 public class NodeProxyBroker extends NodeProxy {
 	public static final String PROPERTY_SERVERURL = "url";
 	public static final String PROPERTY_clientId = "clientId";

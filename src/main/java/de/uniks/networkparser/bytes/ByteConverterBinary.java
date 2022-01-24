@@ -26,6 +26,10 @@ THE SOFTWARE.
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 
+/**
+ * Converter for Byte to ByteStream
+ * @author Stefan Lindel
+ */
 public class ByteConverterBinary extends ByteConverter {
 	public static String toString(byte value) {
 		ByteConverterBinary converter = new ByteConverterBinary();

@@ -16,6 +16,10 @@ import de.uniks.networkparser.parser.ExcelCell;
 import de.uniks.networkparser.parser.ExcelRow;
 import de.uniks.networkparser.parser.ExcelSheet;
 
+/**
+ * Conition with Pattern
+ * @author Stefan Lindel
+ */
 public class PatternCondition implements ObjectCondition {
 	public static final String CREATEPATTERN = "createpattern";
 	private String link;

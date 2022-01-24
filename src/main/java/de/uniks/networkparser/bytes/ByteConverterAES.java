@@ -26,6 +26,10 @@ THE SOFTWARE.
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
+/**
+ * Converter for byteArray to AES Code
+ * @author Stefan Lindel
+ */
 public class ByteConverterAES extends ByteConverter {
 	private AES aes;
 

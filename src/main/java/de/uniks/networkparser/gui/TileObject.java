@@ -66,7 +66,7 @@ public class TileObject implements SendableEntityCreatorTag {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (entity instanceof TileObject == false) {
+		if (!(entity instanceof TileObject)) {
 			return null;
 		}
 		TileObject tileObj = (TileObject) entity;
@@ -99,7 +99,7 @@ public class TileObject implements SendableEntityCreatorTag {
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (entity instanceof TileObject == false) {
+		if (!(entity instanceof TileObject)) {
 			return false;
 		}
 		TileObject tileObj = (TileObject) entity;
@@ -116,23 +116,23 @@ public class TileObject implements SendableEntityCreatorTag {
 			return true;
 		}
 		if (PROPERTY_GID.equalsIgnoreCase(attribute)) {
-			tileObj.gid = Integer.valueOf("" + value);
+			tileObj.gid = Integer.parseInt("" + value);
 			return true;
 		}
 		if (PROPERTY_WIDTH.equalsIgnoreCase(attribute)) {
-			tileObj.width = Integer.valueOf("" + value);
+			tileObj.width = Integer.parseInt("" + value);
 			return true;
 		}
 		if (PROPERTY_HEIGHT.equalsIgnoreCase(attribute)) {
-			tileObj.height = Integer.valueOf("" + value);
+			tileObj.height = Integer.parseInt("" + value);
 			return true;
 		}
 		if (PROPERTY_X.equalsIgnoreCase(attribute)) {
-			tileObj.x = Integer.valueOf("" + value);
+			tileObj.x = Integer.parseInt("" + value);
 			return true;
 		}
 		if (PROPERTY_Y.equalsIgnoreCase(attribute)) {
-			tileObj.y = Integer.valueOf("" + value);
+			tileObj.y = Integer.parseInt("" + value);
 			return true;
 		}
 		return false;

@@ -33,6 +33,10 @@ import de.uniks.networkparser.ext.petaf.proxy.NodeProxyModel;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * Change Model Message
+ * @author Stefan Lindel
+ */
 public class ChangeMessage extends ReceivingTimerTask {
 	public static final String PROPERTY_TYPE = "change";
 	public static final String PROPERTY_ID = "changeid";

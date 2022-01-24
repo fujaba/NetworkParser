@@ -750,7 +750,11 @@ public String toString() {
     boolean changed = false;
     for (Object value : values) {
       if (value == null) {
-        continue;
+    	  if(isAllowEmptyValue()) {
+    		  this.addKey(this.size, value, newSize);
+    	      changed = true;
+    	  }
+    	  continue;
       }
       int pos = hashKeyPos(value, newSize);
       if (pos >= 0) {

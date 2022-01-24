@@ -29,6 +29,10 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
+/** Simple one Dimension List 
+ * @author Stefan Lindel
+ * @param <V> Type of Elements
+ */
 public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	public static final String PROPERTY = "items";
 	private ObjectCondition listener;
@@ -43,6 +47,7 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	}
 
 	@SuppressWarnings("unchecked")
+	@Override
 	public SimpleList<V> subList(int fromIndex, int toIndex) {
 		return (SimpleList<V>) super.subList(fromIndex, toIndex);
 	}

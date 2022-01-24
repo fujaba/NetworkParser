@@ -4,6 +4,10 @@ import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
+/**
+ * Converter for Byte to HEX-Values
+ * @author Stefan Lindel
+ */
 public class ByteConverterHex extends ByteConverter {
 	private static final String HEXVAL = "0123456789ABCDEF";
 

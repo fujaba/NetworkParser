@@ -204,8 +204,6 @@ public class Storyboards {
 		if(Os.isGenerator() == false) {
 			return;
 		}
-		System.out.println(" (StudyRightWithAssignmentsStoryboards.java:85)");
-
 		Story story = new Story();
 		story.addText("Read graph from yaml text:");
 

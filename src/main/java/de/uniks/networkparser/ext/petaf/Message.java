@@ -36,6 +36,10 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * Simple Message
+ * @author Stefan Lindel
+ */
 public class Message implements SendableEntityCreator, SendableEntityCreatorNoIndex {
 	public static final String PROPERTY_HISTORYID = "id";
 	public static final String PROPERTY_PREVIOUSCHANGE = "prevChange";

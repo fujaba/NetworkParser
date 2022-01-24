@@ -1,7 +1,5 @@
 package de.uniks.networkparser.json;
 
-import java.util.List;
-
 import de.uniks.networkparser.EntityStringConverter;
 import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.Tokener;
@@ -310,6 +308,11 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 
 	public static JsonObject create(String value) {
 		return new JsonObject().withValue(value);
+	}
+	public JsonObject createChild(String key) {
+		JsonObject child = new JsonObject();
+		this.put(key, child);
+		return child;
 	}
 
 	@Override

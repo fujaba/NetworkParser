@@ -30,6 +30,10 @@ import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.ErrorHandler;
 
+/**
+ * Simple Task
+ * @author Stefan Lindel
+ */
 public class SimpleTimerTask extends TimerTask implements Callable<Object> {
 	protected final ErrorHandler handler = new ErrorHandler();
 	protected Runnable task;

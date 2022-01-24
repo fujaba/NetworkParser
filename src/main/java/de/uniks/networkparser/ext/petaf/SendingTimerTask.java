@@ -24,6 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * Task for Sending Message
+ * @author Stefan Lindel
+ */
 public class SendingTimerTask extends SimpleTimerTask {
 	private NodeProxy sender;
 

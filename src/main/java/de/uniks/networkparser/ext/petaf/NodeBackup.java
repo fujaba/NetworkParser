@@ -29,6 +29,10 @@ import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 
+/**
+ * Node for Backup Modell
+ * @author Stefan Lindel
+ */
 public class NodeBackup implements Runnable {
 	public static final String KEY = "Backup";
 	private SimpleEventCondition task;

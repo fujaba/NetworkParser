@@ -63,7 +63,7 @@ public class TestTemplate {
 
 	@Test
 	public void testFunctionCondition() {
-		String value = "{{#func de.uniks.networkparser.EntityUtil.upFirstChar({{hello}})}} World!!";
+		String value = "{{#func de.uniks.networkparser.StringUtil.upFirstChar({{hello}})}} World!!";
 		Template template = Template.create(value);
 		ObjectCondition condition = template.parsing(new FunctionCondition());
 

@@ -63,7 +63,7 @@ public class Event extends JsonObject implements SendableEntityCreator {
 	protected Object event;
 	protected String id;
 	protected boolean active = true;
-	static protected String[] properties = { CURRENT_TARGET, TIME_STAMP, EVENT_TYPE, ID };
+	protected static final String[] properties = { CURRENT_TARGET, TIME_STAMP, EVENT_TYPE, ID };
 
 	public Object getCurrentTarget() {
 		return currentTarget;
@@ -80,7 +80,7 @@ public class Event extends JsonObject implements SendableEntityCreator {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (entity instanceof Event == false) {
+		if (!(entity instanceof Event)) {
 			return null;
 		}
 		Event e = (Event) entity;
@@ -104,7 +104,7 @@ public class Event extends JsonObject implements SendableEntityCreator {
 		}
 		Event e = (Event) entity;
 		if (TIME_STAMP.equals(attribute)) {
-			e.timeStamp = Integer.valueOf("" + value);
+			e.timeStamp = Integer.parseInt("" + value);
 			return true;
 		}
 		if (EVENT_TYPE.equals(attribute)) {

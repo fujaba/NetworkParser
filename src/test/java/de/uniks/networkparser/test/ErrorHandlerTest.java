@@ -6,7 +6,7 @@ public class ErrorHandlerTest {
 
 	public static void main(String[] args) {
 		ErrorHandler errorHandler = new ErrorHandler();
-		errorHandler.withPath("error");
+		errorHandler.withURL("error");
 
 		System.out.println(errorHandler.getJVMStartUp().toString("dd.mm.yyyy HH:MM:SS"));
 		errorHandler.saveErrorFile(null, "error.txt", "build", new RuntimeException("Test"));

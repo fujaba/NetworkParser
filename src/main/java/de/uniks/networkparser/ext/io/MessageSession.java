@@ -70,7 +70,7 @@ public class MessageSession {
 	public static final int MQTT_PORT = 1883;
 	/** 15 sec. socket read timeout */
 	public static final int SOCKET_READ_TIMEOUT = 15 * 1000;
-	public static String FEATURE_TLS = "STARTTLS";
+	public static final String FEATURE_TLS = "STARTTLS";
 	public static final int BUFFER = 1024;
 
 	private String host;
@@ -133,7 +133,7 @@ public class MessageSession {
 		byte[] userBytes = user.getBytes();
 		byte[] passwordBytes = password.getBytes();
 
-		if (type == TYPE_AMQ) {
+		if (TYPE_AMQ.equalsIgnoreCase(type)) {
 			byte[] bytes = new byte[userBytes.length + passwordBytes.length + 2];
 			int i = 0;
 			for (; i < userBytes.length; i++) {
@@ -186,9 +186,8 @@ public class MessageSession {
 		}
 		int pos = url.lastIndexOf(":");
 		if (pos > 0) {
-			String port = url.substring(pos + 1);
 			try {
-				this.port = Integer.valueOf(port);
+				this.port = Integer.parseInt(url.substring(pos + 1));
 				this.host = url.substring(0, pos);
 			} catch (Exception e) {
 				pos = -1;
@@ -264,7 +263,7 @@ public class MessageSession {
 	public boolean connectXMPP(String sender, String password) {
 		this.type = TYPE_XMPP;
 		this.factory = javax.net.SocketFactory.getDefault();
-		if (isValid(sender) == false) {
+		if (!isValid(sender)) {
 			return false;
 		}
 		try {
@@ -290,20 +289,22 @@ public class MessageSession {
 						new java.security.SecureRandom());
 				this.factory = context.getSocketFactory();
 
-				if (startTLS() == false) {
+				if (!startTLS()) {
 					return false;
 				}
 				sendStart();
 
 				String login = getLoginText(sender, password);
-				response = sendCommand(
-						"<auth mechanism=\"PLAIN\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">" + login + "</auth>");
+				response = sendCommand("<auth mechanism=\"PLAIN\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">" + login + "</auth>");
 
 				sendStart();
 				bindXMPP();
 			}
 			return true;
 		} catch (Exception e) {
+		    if(logger != null) {
+		        logger.error(this,  "connectXMPP", e);
+		    }
 		}
 		return false;
 	}
@@ -311,7 +312,7 @@ public class MessageSession {
 	public boolean connectFCM(String sender, String password) {
 		this.type = TYPE_FCM;
 		this.factory = SSLSocketFactory.getDefault();
-		if (isValid(sender) == false) {
+		if (!isValid(sender)) {
 			return false;
 		}
 		try {
@@ -337,44 +338,43 @@ public class MessageSession {
 				this.supportedFeature.add(child.getValue().toUpperCase());
 			}
 			String login = getLoginText(sender, password);
-			response = sendCommand(
-					"<auth mechanism=\"PLAIN\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">" + login + "</auth>");
+			sendCommand("<auth mechanism=\"PLAIN\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">" + login + "</auth>");
 
-			response = sendStart();
+			sendStart();
 
 			XMLEntity iq = XMLEntity.TAG("iq");
 			iq.with("type", "set");
 			XMLEntity bind = iq.createChild("bind");
 			bind.with("xmlns", "urn:ietf:params:xml:ns:xmpp-bind");
 
-			response = sendCommand(iq.toString());
+			sendCommand(iq.toString());
 			return true;
-		} catch (Exception e) {
-		}
+        } catch (Exception e) {
+            if (logger != null) {
+                logger.error(this, "connectFCM", e);
+            }
+        }
 		return false;
 	}
 
 	public boolean connectSMTP(String sender, String password) {
 		this.type = TYPE_EMAIL;
 		this.factory = javax.net.SocketFactory.getDefault();
-		if (isValid(sender) == false) {
+		if (!isValid(sender)) {
 			return false;
 		}
 		try {
 			if (serverSocket == null) {
 				initSockets(host, port);
-
 				checkServerResponse(getResponse(), RESPONSE_SERVERREADY);
-
 				sendStart();
 
-				BufferedBuffer answer;
 				if(useTLS) {
-					answer = sendCommand(FEATURE_TLS);
+					sendCommand(FEATURE_TLS);
 					startTLS();
 					sendStart();
 				}
-				answer = sendCommand("AUTH LOGIN");
+				BufferedBuffer answer = sendCommand("AUTH LOGIN");
 				if (checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response) == false) {
 					close();
 					return false;
@@ -394,6 +394,9 @@ public class MessageSession {
 			}
 			return true;
 		} catch (Exception e) {
+            if (logger != null) {
+                logger.error(this, "connectSMTP", e);
+            }
 		}
 		return false;
 	}
@@ -403,7 +406,7 @@ public class MessageSession {
 			return null;
 		}
 		message.write(this.out, logger);
-		if (answer == false) {
+		if (!answer) {
 			return message;
 		}
 		RabbitMessage response = RabbitMessage.readFrom(diInput, logger);
@@ -434,11 +437,10 @@ public class MessageSession {
 			bytes.flip(false);
 			out.write(bytes.array(), 0, bytes.length());
 			out.flush();
-			if (answer == false) {
+			if (!answer) {
 				return message;
 			}
-			MQTTMessage response = MQTTMessage.readFrom(diInput);
-			return response;
+			return MQTTMessage.readFrom(diInput);
 		} catch (IOException e) {
 			broker.executeException(e);
 		}
@@ -487,7 +489,7 @@ public class MessageSession {
 			sender = "guest";
 			password = "guest";
 		}
-		if (isValid(sender) == false) {
+		if (!isValid(sender)) {
 			return false;
 		}
 		try {
@@ -509,9 +511,9 @@ public class MessageSession {
 
 				message = RabbitMessage.createTuneOK((Short) response.getData("channelMax"),
 						(Integer) response.getData("frameMax"), (Short) response.getData("heartbeat"));
-				response = sending(broker, message, false);
+				sending(broker, message, false);
 				message = RabbitMessage.createConnectionOpen(null);
-				response = sending(broker, message, false);
+				sending(broker, message, false);
 			}
 			return true;
 		} catch (Exception e) {
@@ -586,8 +588,8 @@ public class MessageSession {
 				String[] prots = socket.getEnabledProtocols();
 				SimpleList<String> eprots = new SimpleList<String>();
 				for (int i = 0; i < prots.length; i++) {
-					if (prots[i] != null && prots[i].startsWith("SSL") == false
-							&& prots[i].equalsIgnoreCase("TLSv1") == false)
+					if (prots[i] != null && !prots[i].startsWith("SSL")
+							&& !prots[i].equalsIgnoreCase("TLSv1") )
 						eprots.add(prots[i]);
 				}
 				socket.setEnabledProtocols(eprots.toArray(new String[eprots.size()]));
@@ -596,7 +598,9 @@ public class MessageSession {
 				return true;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+            if (logger != null) {
+                logger.error(this, "startTLS", e);
+            }
 		}
 		return false;
 	}
@@ -609,8 +613,7 @@ public class MessageSession {
 	 */
 	protected BufferedBuffer sendCommand(String commandString) {
 		sendValues(commandString);
-		BufferedBuffer response = getResponse();
-		return response;
+		return getResponse();
 	}
 
 	/**
@@ -624,13 +627,13 @@ public class MessageSession {
 			return false;
 		}
 		try {
-
-			this.lastSended = new String(cmd);
-			out.write(new String(cmd).getBytes());
-			if (BaseItem.CRLF.equals(new String(cmd)) == false) {
+		    String value = new String(cmd);
+			out.write(value.getBytes());
+			if (!BaseItem.CRLF.equals(value)) {
 				out.write(BaseItem.CRLF.getBytes());
 			}
 			out.flush();
+			this.lastSended = value;
 		} catch (IOException e) {
 			return false;
 		}
@@ -648,9 +651,7 @@ public class MessageSession {
 			return false;
 		}
 		try {
-			
 			out.write(cmd.getBytes());
-			
 			out.write(BaseItem.CRLF.getBytes());
 			if(logger != null) {
 				logger.debug(this, "sendValues", cmd);
@@ -784,9 +785,7 @@ public class MessageSession {
 				return response;
 			}
 			if (TYPE_MQTT.equals(broker.getFormat())) {
-				MQTTMessage resonse = MQTTMessage.readFrom(diInput);
-
-				return resonse;
+				return MQTTMessage.readFrom(diInput);
 			}
 			return null;
 		}
@@ -913,7 +912,7 @@ public class MessageSession {
 			return sendCommand(xml.toString()) != null;
 		}
 
-		if (connect(this.sender, password) == false) {
+		if (!connect(this.sender, password)) {
 			return false;
 		}
 
@@ -926,7 +925,7 @@ public class MessageSession {
 		SimpleList<String> headerTo = message.getHeaderTo();
 		int pos = 0;
 		for (int i = 0; i < headerTo.size(); i++) {
-			if (doCommand(headerTo.get(i), RESPONSE_MAILACTIONOKEY) == false) {
+			if (!doCommand(headerTo.get(i), RESPONSE_MAILACTIONOKEY)) {
 				message.removeToAdress(pos);
 			} else {
 				pos++;

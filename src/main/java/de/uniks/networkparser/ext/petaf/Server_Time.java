@@ -36,6 +36,10 @@ import java.util.Date;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.Server;
 
+/**
+ * Server Time
+ * @author Stefan Lindel
+ */
 public class Server_Time extends Thread implements Server {
 	protected boolean run = true;
 	private int port = 37;

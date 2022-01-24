@@ -5,6 +5,10 @@ import de.uniks.networkparser.bytes.ByteConverter64;
 import de.uniks.networkparser.bytes.HMAC;
 import de.uniks.networkparser.json.JsonObject;
 
+/**
+ * Tokener for Json Format
+ * @author Stefan Lindel
+ */
 public class JsonToken {
 	public static final long EXPIRATION_DAY = 24 * 60 * 60;
 	public static final String ALG = "alg";

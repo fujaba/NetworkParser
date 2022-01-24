@@ -56,6 +56,10 @@ import de.uniks.networkparser.logic.TemplateCondition;
 import de.uniks.networkparser.logic.TemplateFragmentCondition;
 import de.uniks.networkparser.logic.VariableCondition;
 
+/**
+ * Template for Codegeneration
+ * @author Stefan Lindel
+ */
 public class Template implements TemplateParser {
 	public static final String PROPERTY_FEATURE = "features";
 	public static final String TYPE_JAVA = "java";

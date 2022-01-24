@@ -29,6 +29,10 @@ import java.util.function.Supplier;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * UpdateModelChange
+ * @author Stefan Lindel
+ */
 public class UpdateModel implements Callable<Object>, Runnable, Supplier<Object> {
 	private Object newValue;
 	private String property;

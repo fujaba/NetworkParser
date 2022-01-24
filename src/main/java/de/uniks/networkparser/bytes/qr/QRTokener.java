@@ -25,6 +25,10 @@ THE SOFTWARE.
 */
 import java.io.UnsupportedEncodingException;
 
+/**
+ * Tokener for QR-Code
+ * @author Stefan Lindel
+ */
 public class QRTokener {
 	private final ReedSolomon rsDecoder = new ReedSolomon(GenericGF.QR_CODE_FIELD_256);
 

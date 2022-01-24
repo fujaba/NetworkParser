@@ -36,6 +36,7 @@ import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 
 public class StringUtil {
 	public static final String CLASS = "class";
@@ -96,7 +97,7 @@ public class StringUtil {
 			return -1;
 		}
 		try {
-			return Integer.valueOf(strNum);
+			return Integer.parseInt(strNum);
 		} catch (NumberFormatException e) {
 		}
 		return -1;
@@ -266,7 +267,7 @@ public class StringUtil {
 			if (item instanceof AbstractList<?>) {
 				((AbstractList<?>) item).withList((Collection<?>) value).toString(converter);
 			}
-			return ((BaseItem) item).toString(converter);
+			return item.toString(converter);
 		}
 		if (value.getClass().getName().equals("[B")) {
 			/* Its a ByteArray */
@@ -275,6 +276,9 @@ public class StringUtil {
 		if (value.getClass().isArray()) {
 			Object[] items = (Object[]) value;
 			BaseItem item = reference.getNewList(false);
+			if(item instanceof AbstractArray<?>) {
+				((AbstractArray<?>)item).withFlag(SimpleList.ALLOWEMPTYVALUE);
+			}
 			for (Object entity : items) {
 				item.add(entity);
 			}
@@ -1074,19 +1078,19 @@ public class StringUtil {
 		CharacterBuffer sb = new CharacterBuffer().withBufferLength(value.length());
 		for (int i=0;i<value.length();i++) {
 			char character = value.charAt(i);
-			if(character == 'ß') {
+			if(character == 223) {
 				sb.append("ss");
-			} else if(character == 'Ä') {
+			} else if(character == 196) {
 				sb.append("Ae");
-			} else if(character == 'Ü') {
+			} else if(character == 220) {
 				sb.append("Ue");
-			} else if(character == 'Ö') {
+			} else if(character == 214) {
 				sb.append("Oe");
-			} else if(character == 'ä') {
+			} else if(character == 228) {
 				sb.append("ae");
-			} else if(character == 'ü') {
+			} else if(character == 252) {
 				sb.append("ue");
-			} else if(character == 'ö') {
+			} else if(character == 246) {
 				sb.append("oe");
 			}else {
 				sb.add(character);

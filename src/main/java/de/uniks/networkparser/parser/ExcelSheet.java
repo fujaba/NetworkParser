@@ -76,7 +76,7 @@ public class ExcelSheet extends SimpleList<ExcelRow> {
 				}
 			}
 			SimpleList<ExcelCell> rowCells = row.getChildren();
-			if (cells == null) {
+			if (rowCells == null) {
 				empty = true;
 			}
 			cells.add(rowCells);

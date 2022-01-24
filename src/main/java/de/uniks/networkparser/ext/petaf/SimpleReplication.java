@@ -9,6 +9,10 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 
+/**
+ * Simple Replication
+ * @author Stefan Lindel
+ */
 public class SimpleReplication implements ObjectCondition {
 	private Space space;
 	private Object creator;

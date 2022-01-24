@@ -4,6 +4,10 @@ import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * Filter with Tree
+ * @author Stefan Lindel
+ */
 public class TreeFilter extends SendableItem {
 	public static final String PROPERTY_CHILDREN = "children";
 	public static final String PROPERTY_PARENT = "parent";

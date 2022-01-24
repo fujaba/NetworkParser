@@ -153,7 +153,7 @@ public class TileMap implements SendableEntityCreatorTag {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (entity instanceof TileMap == false) {
+		if (!(entity instanceof TileMap)) {
 			return null;
 		}
 		TileMap map = (TileMap) entity;
@@ -245,7 +245,7 @@ public class TileMap implements SendableEntityCreatorTag {
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (entity instanceof TileMap == false) {
+		if (!(entity instanceof TileMap)) {
 			return false;
 		}
 		TileMap map = (TileMap) entity;
@@ -262,19 +262,19 @@ public class TileMap implements SendableEntityCreatorTag {
 			return true;
 		}
 		if (WIDTH.equalsIgnoreCase(attribute)) {
-			map.width = Integer.valueOf("" + value);
+			map.width = Integer.parseInt("" + value);
 			return true;
 		}
 		if (HEIGHT.equalsIgnoreCase(attribute)) {
-			map.height = Integer.valueOf("" + value);
+			map.height = Integer.parseInt("" + value);
 			return true;
 		}
 		if (TILEWIDTH.equalsIgnoreCase(attribute)) {
-			map.tilewidth = Integer.valueOf("" + value);
+			map.tilewidth = Integer.parseInt("" + value);
 			return true;
 		}
 		if (TILEHEIGHT.equalsIgnoreCase(attribute)) {
-			map.tileheight = Integer.valueOf("" + value);
+			map.tileheight = Integer.parseInt("" + value);
 			return true;
 		}
 		if (TILESET_TILE.equalsIgnoreCase(attribute)) {
@@ -310,12 +310,12 @@ public class TileMap implements SendableEntityCreatorTag {
 							continue;
 						}
 						String number = text.substring(start, i);
-						map.background[z++] = Integer.valueOf(number.trim());
+						map.background[z++] = Integer.parseInt(number.trim());
 						i++;
 						start = i;
 					}
 					String number = text.substring(start, i);
-					map.background[z] = Integer.valueOf(number.trim());
+					map.background[z] = Integer.parseInt(number.trim());
 					return true;
 				}
 			}

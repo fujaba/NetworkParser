@@ -31,6 +31,10 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * Abstrakt Class for Proxy
+ * @author Stefan Lindel
+ */
 public abstract class NodeProxy extends SendableItem implements Comparable<NodeProxy>, SendableEntityCreatorNoIndex {
 	public static final String TYPE_IN = "IN";
 	public static final String TYPE_OUT = "OUT";
@@ -294,13 +298,13 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		}
 		if (PROPERTY_SEND.equals(attrName)) {
 			long oldValue = nodeProxy.sendtime;
-			nodeProxy.sendtime = Long.valueOf("" + value);
+			nodeProxy.sendtime = Long.parseLong("" + value);
 			firePropertyChange(PROPERTY_SEND, oldValue, nodeProxy.sendtime);
 			return true;
 		}
 		if (PROPERTY_RECEIVE.equals(attrName)) {
 			long oldValue = nodeProxy.receivetime;
-			nodeProxy.receivetime = Long.valueOf("" + value);
+			nodeProxy.receivetime = Long.parseLong("" + value);
 			firePropertyChange(PROPERTY_RECEIVE, oldValue, nodeProxy.receivetime);
 			return true;
 		}

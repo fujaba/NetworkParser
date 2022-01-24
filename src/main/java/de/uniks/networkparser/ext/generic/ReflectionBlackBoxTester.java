@@ -483,7 +483,7 @@ public class ReflectionBlackBoxTester {
 						+ "." + split[split.length - 1] + ")";
 				String value = split[split.length - 1];
 				if (value.indexOf(":") > 0) {
-					pos = Integer.valueOf(value.substring(value.indexOf(":") + 1));
+					pos = Integer.parseInt(value.substring(value.indexOf(":") + 1));
 				}
 			}
 		}
@@ -500,9 +500,9 @@ public class ReflectionBlackBoxTester {
 		} else if (e.getMessage() != null) {
 			causes = ": " + e.getMessage();
 		}
-		if (ignoreClassError == false || pos != 1) {
+		if (!ignoreClassError || pos != 1) {
 			/* Check for Exception */
-			if (ignoreSimpleException == false || exception == null || exception instanceof SimpleException == false) {
+			if (!ignoreSimpleException || exception == null || !(exception instanceof SimpleException)) {
 				output(m, "at " + clazz.getName() + causes + " " + shortName, logger, NetworkParserLog.LOGLEVEL_ERROR,
 						e);
 				errorCount++;

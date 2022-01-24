@@ -32,6 +32,10 @@ import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
+/**
+ * StringPrintStream for Output
+ * @author Stefan Lindel
+ */
 public class StringPrintStream extends PrintStream implements ObjectCondition {
 	private ErrorHandler handler;
 	private boolean error;

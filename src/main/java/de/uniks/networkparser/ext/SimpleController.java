@@ -420,7 +420,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	}
 
 	public void show(Object root, boolean wait, boolean newStage) {
-		if (Os.isFXThread() == false) {
+		if (!Os.isFXThread()) {
 			this.runParams = new Object[] { root, wait, newStage };
 			this.runAction = SHOWING;
 			JavaAdapter.executeAndWait(this);
@@ -589,7 +589,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	}
 
 	public SimpleController withErrorPath(String value) {
-		this.errorHandler.withPath(value);
+		this.errorHandler.withURL(value);
 		if (isEclipse == false) {
 			if (Thread.getDefaultUncaughtExceptionHandler() == null) {
 				Thread.setDefaultUncaughtExceptionHandler(this);

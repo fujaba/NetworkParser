@@ -9,21 +9,19 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:[2,)"
 		classpath "com.moowork.gradle:gradle-node-plugin:[1,)"
-		//classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:[1,)"
 	}
 }
+
 plugins {
-  id "org.sonarqube" version "2.6"
+  id "org.sonarqube" version "3.3"
   id 'java'
-//  id 'maven-publish'
-//  id "com.github.spotbugs" version "4.6.0"
   id 'eclipse'
   id 'idea'
-//  id 'checkstyle'
   id 'jacoco'
-  id 'com.github.kt3k.coveralls' version '2.8.4'
+//  id 'maven-publish'
+  id "com.github.spotbugs" version "5.0.5"
+  id 'checkstyle'
 }
 
 // MAJOR VERSION - Manually set
@@ -38,14 +36,10 @@ apply from: 'gradle/tasks.gradle'
 //apply from: 'gradle/mavencentral.gradle'
 //apply from: 'gradle/artifactory.gradle'
 repositories {
-	jcenter()
-	mavenCentral()
 	maven {
 		url "https://repo.eclipse.org/content/groups/releases/"
 	}
 }
-
-
 test {
 	// enable TestNG support (default is JUnit)
 	useJUnit {
@@ -64,8 +58,10 @@ test {
     }
 	reports.junitXml {
 		enabled true
-		destination new File("${buildDir}/reports/")
+		destination file("${buildDir}/test-results/xml")
 	}
+	reports.html.destination = file("$buildDir/test-results/junit_html")
+	jacoco.destinationFile = file("${buildDir}/test-results/test.exec")
 }
 
 def execute(String... args) {
@@ -84,7 +80,6 @@ def execute(String... args) {
 	}
 		"";
 }
-
 
 def copyFile(String source, String dest) {
 	InputStream is = null;
@@ -148,7 +143,21 @@ def delete(File file) {
 	file.delete();
 }
 
-
+def unzipPassword(fileName, password) {
+	def urls=[]
+	sourceSets.main.runtimeClasspath.files.each {urls.add(it.toURL())}
+	sourceSets.main.output.files.each {urls.add(it.toURL())}
+	files('build/classes/main18').each {urls.add(it.toURL())}
+	try {
+		ClassLoader cl = new URLClassLoader(urls.toArray(new URL[urls.size()]))
+		Class<?> myClass = cl.loadClass("de.uniks.networkparser.ext.io.ZipContainer");
+		
+		//def method = myClass.getMethod("decoding", new Class<?>[]{String[].class})
+		//return method.invoke(null, new Object[] {new String[] {fileName, password}});
+	}catch(Exception e) {
+		e.printStackTrace()
+	}
+}
 
 if(JavaVersion.current() != JavaVersion.VERSION_1_8){
 	println "JavaVersion: " + JavaVersion.current() + " (1.9)"
@@ -179,22 +188,21 @@ jacoco.toolVersion = "0.8.+"
 jacocoTestReport {
 	group = "Reporting"
 	description = "Generate Jacoco coverage reports after running tests."
-	executionData(files("${buildDir}/jacoco/test.exec"))
+	executionData(files("${buildDir}/test-results/test.exec"))
 	reports {
 		xml {
 			enabled = true
 			//Following value is a file
 			destination = new File("${buildDir}/test-results/jacoco.xml")
-			//build/reports/jacoco/test/jacocoTestReport.xml
 		}
 		csv{
-			destination = new File("${buildDir}/jacoco/report.csv")
+			destination = new File("${buildDir}/test-results/report.csv")
 			enabled = true
 		}
 		html {
 			enabled = true
 			//Following value is a folder
-			destination = new File("${buildDir}/jacoco/html")
+			destination = new File("${buildDir}/test-results/html")
 		}
 	}
 	afterEvaluate {
@@ -208,19 +216,24 @@ if (project.hasProperty('branch')) {
 	new ProcessBuilder("git", "checkout", findProperty('branch')).start()
 }
 
-tasks.withType(Checkstyle) {
-    reports {
-        xml.enabled false
-        html.enabled true
-    }
-}
-
 test.finalizedBy jacocoTestReport
 
 defaultTasks 'test', 'jacocoTestReport', 'buildJavadoc', 'buildGitJar'
 
+sonarqube {
+  properties {
+    property "sonar.projectKey", "StefanLindel_NetworkParser"
+    property "sonar.organization", "stefanlindel"
+    property "sonar.host.url", "https://sonarcloud.io"
+  }
+}
+
 tasks.withType(Checkstyle) {
-	configFile = new File("src/test/resources/de/uniks/networkparser/test/sun_checks.xml")
+	//configFile = file("src/test/resources/de/uniks/networkparser/test/google_checks.xml")
+	//configFile = file("sun_checks.xml")
+	configFile = file("src/test/resources/de/uniks/networkparser/test/networkparser.xml")
+	
+	//classpath = (sourceSets.main.compileClasspath + sourceSets.main.output + files('build/classes/main18') + files('src/test/resources/de/uniks/networkparser/test/') )
 	reports {
 		xml.enabled true
 		xml.destination = new File("build/checkStyle.xml")
@@ -235,5 +248,55 @@ task npm(type:JavaExec) {
 	errorOutput = System.err
 	main = "de.uniks.networkparser.ext.DiagramEditor"
 	args 'NPM'
-	classpath = (sourceSets.main.compileClasspath + sourceSets.main.output + files('build/classes/main18') )
+	classpath = (sourceSets.main.compileClasspath + sourceSets.main.output + files('build/classes/main18'))
+}
+
+sonarqube {
+    properties {
+      property("sonar.login", SONAR_TOKEN)
+      property("sonar.sourceEncoding", "UTF-8")
+    }
+}
+task extractSignature(){
+	doFirst {
+		unzipPassword("signiture.zip", System.getenv("SIGNITURE_PASSWORD"))
+	}
+}
+spotbugsMain {
+    reports {
+        xml {
+		  enabled = true
+		  destination = new File("${buildDir}/test-results/spotbugs.xml")
+		}
+		html {
+			enabled = true
+			destination = new File("${buildDir}/test-results/spotbugs.html")
+		}
+    }
+	excludeFilter = file("lib/spotbug_exlude.xml")
+	ignoreFailures = true
+}
+
+task coverallReport() {
+	doFirst {
+		def urls=[]
+		files(configurations.gitVersion).each {urls.add(it.toURL())}
+		sourceSets.main.runtimeClasspath.files.each {urls.add(it.toURL())}
+		sourceSets.main.output.files.each {urls.add(it.toURL())}
+		files('build/classes/main18').each {urls.add(it.toURL())}
+		try {
+			ClassLoader cl = new URLClassLoader(urls.toArray(new URL[urls.size()]))
+			Class<?> myClass = cl.loadClass("de.uniks.networkparser.ext.io.Coveralls");
+			Object element = myClass.newInstance();
+			def method = myClass.getMethod("execute", Object.class)
+			element.reportFile = "build/report.json"
+			element.token = COVERALLS_REPO_TOKEN
+			element.url = null
+			element.git = gitVersion
+			
+			method.invoke(element, new Object[]{null})
+		}catch(Exception e) {
+			e.printStackTrace()
+		}
+	}
 }

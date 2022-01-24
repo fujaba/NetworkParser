@@ -60,7 +60,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 
 	public static String addResource(HTMLEntity entity, String name, boolean include) {
 		name = name.replace('\\', '/');
-		if (name.toLowerCase().endsWith(".html") == false) {
+		if (!name.toLowerCase().endsWith(".html")) {
 			name += ".html";
 		}
 		String path = "";
@@ -73,7 +73,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 		Class<?> listClass = GraphList.class;
 		for (String item : HTMLEntity.GRAPH_RESOURCES) {
 			String content = FileBuffer.readResource(listClass.getResourceAsStream(item)).toString();
-			if (include == false) {
+			if (!include) {
 			  if(path.length()>0 && absolutePath) {
 			    entity.addResources(include, path + item, content);
 			  }else {
@@ -276,7 +276,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 		}
 
 		if (file == null || file.length() < 1) {
-			if (steps.size() < 1) {
+			if (steps.isEmpty()) {
 				return false;
 			}
 			/* get FileName from Stack */
@@ -300,7 +300,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 
 		SimpleEvent evt = new SimpleEvent(this, null, null, output);
 		for (ObjectCondition step : steps) {
-			if (step.update(evt) == false) {
+			if (!step.update(evt)) {
 				return false;
 			}
 		}
@@ -398,7 +398,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 			return false;
 		}
 		this.add(step);
-		if (step.checkCondition() == false && breakOnAssert) {
+		if (!step.checkCondition() && breakOnAssert) {
 			this.writeToFile();
 			Method assertClass = null;
 			try {
@@ -406,11 +406,10 @@ public class Story extends StoryElement implements Comparable<Story> {
 				if (assertClass != null) {
 					assertClass.invoke(null, "FAILED: " + step.getMessage(), false);
 				}
-			} catch (ReflectiveOperationException e) {
-				if (e instanceof InvocationTargetException) {
-					Throwable targetException = ((InvocationTargetException) e).getTargetException();
-					StoryUtil.throwException(targetException);
-				}
+			} catch (InvocationTargetException e) {
+				Throwable targetException = e.getTargetException();
+				StoryUtil.throwException(targetException);
+			} catch (ReflectiveOperationException e) {//EMPTY
 			}
 			throw new SimpleException(step.getMessage(), this);
 		}
@@ -496,7 +495,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 
 	@Override
    public String getOutputFile(boolean calculate) {
-		if(calculate == false || outputFile != null) {
+		if(!calculate || outputFile != null) {
 			return outputFile;
 		}
 		StoryStepTitle title = this.getTitle();

@@ -27,6 +27,10 @@ import java.util.Timer;
 
 import de.uniks.networkparser.DateTimeEntity;
 
+/**
+ * Executor for Timer
+ * @author Stefan Lindel
+ */
 public class TimerExecutor extends Timer implements TaskExecutor {
 	private boolean isCancel;
 	private Space space;

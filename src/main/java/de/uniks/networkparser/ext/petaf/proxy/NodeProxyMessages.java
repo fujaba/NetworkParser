@@ -28,7 +28,6 @@ THE SOFTWARE.
 import de.uniks.networkparser.ext.io.SocketMessage;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
-import de.uniks.networkparser.interfaces.ObjectCondition;
 /**  This.name is receiver  
  * https://console.firebase.google.com/project/ Project /settings/cloudmessaging/ */
 
@@ -43,7 +42,6 @@ public class NodeProxyMessages extends NodeProxy {
 	public static final String PROPERTY_MESSAGETYPE = "msgtype";
 
 	private MessageSession connection = null;
-	private ObjectCondition creator;
 	private String password;
 	private String msgType = MessageSession.TYPE_EMAIL;
 
@@ -173,22 +171,10 @@ public class NodeProxyMessages extends NodeProxy {
 	}
 
 	protected MessageSession getNewConnection() {
-		if (creator != null) {
-			Object item = creator.update(EVENT_CONNECTION);
-			if (item instanceof MessageSession) {
-				return (MessageSession) item;
-			}
-		}
 		return new MessageSession();
 	}
 
 	protected SocketMessage getNewEMailMessage() {
-		if (creator != null) {
-			Object item = creator.update(MESSAGE);
-			if (item != null) {
-				return (SocketMessage) item;
-			}
-		}
 		return new SocketMessage(this.name).withSubject("Message from PetaF");
 	}
 
@@ -244,13 +230,6 @@ public class NodeProxyMessages extends NodeProxy {
 		} else {
 			buffer = msg.toString();
 		}
-		if (this.creator != null) {
-			Object item = creator.update(buffer);
-			if (item instanceof String) {
-				buffer = (String) item;
-			}
-		}
-
 		message.withMessage(buffer);
 		boolean success = this.connection.sending(message, this.password);
 		if (success) {

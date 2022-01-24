@@ -24,6 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * CRC CheckSum (Cyclic redundancy check)
+ * @author Stefan Lindel
+ */
 public class CRC extends Checksum {
 	/*
 	 * CRC-8, poly = x^8 + x^2 + x^1 + 1, init = 0 1 0000 0111 0111 0000 1
@@ -134,7 +138,7 @@ public class CRC extends Checksum {
 		for (int i = 0; i < 256; i++) {
 			result[i] = i;
 			if (isReflect) {
-				result[i] = Reflect(i, 8);
+				result[i] = reflect(i, 8);
 			}
 			result[i] = result[i] << (order - 8);
 			for (int j = 0; j < 8; ++j) {
@@ -145,7 +149,7 @@ public class CRC extends Checksum {
 				}
 			}
 			if (isReflect) {
-				result[i] = Reflect(result[i], order);
+				result[i] = reflect(result[i], order);
 			}
 			result[i] &= widthMask;
 		}
@@ -159,7 +163,7 @@ public class CRC extends Checksum {
 	 * @param numBits The number of bits to reflect.
 	 * @return The reflected value.
 	 */
-	static private int Reflect(int data, int numBits) {
+	private static int reflect(int data, int numBits) {
 		int temp = data;
 
 		for (int i = 0; i < numBits; i++) {
@@ -175,4 +179,15 @@ public class CRC extends Checksum {
 		}
 		return data;
 	}
+	
+	public int indexOf(int pos) {
+		if(pos>0 && pos <this.crc_table.length) {
+			return this.crc_table[pos];
+		}
+		return -1;
+	}
+	
+	public int crc32(int oldCrc, byte charAt) {
+    	return (oldCrc >>> 8) ^ this.crc_table[(oldCrc ^ charAt) & 0xff];
+    }
 }

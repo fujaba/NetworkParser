@@ -26,6 +26,10 @@ THE SOFTWARE.
 import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 
+/**
+ * Feature for Merge two Models
+ * @author Stefan Lindel
+ */
 public class MergeFeature extends Feature {
 	public static final String IGNORE = "ignore";
 	public static final String OVERRIDE = "override";

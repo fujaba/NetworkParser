@@ -35,9 +35,9 @@ public class LoginService implements SimpleUpdateListener {
 		User user = null;
 		String userName = null;
 		if (request.getContent() != null && tokener != null) {
-			SimpleKeyValueList<String, String> params = request.parseForm();
-			userName = params.get("username");
-			String password = params.get("password");
+			SimpleKeyValueList<String, Object> params = request.parseForm();
+			userName = ""+ params.get("username");
+			String password = "" + params.get("password");
 			/* Validate Data */
 			user = validateUser(userName, password);
 		}
@@ -52,12 +52,12 @@ public class LoginService implements SimpleUpdateListener {
 			if (writeCookie) {
 				int expiration = 0;
 				if (generator.getExpiration() != null) {
-					expiration = Integer.valueOf("" + generator.getExpiration());
+					expiration = Integer.parseInt("" + generator.getExpiration());
 				}
 				request.writeCookie(HTTPRequest.HTTP_AUTHENTIFICATION, token, expiration);
 				request.writeCookie(HTTPRequest.HTTP_REFRESH, refreshToken, expiration);
 			}
-			request.withBufferResponse("Login ok");
+			request.withContent("Login ok");
 			return true;
 		}
 		String authString = request.getHeader(HTTPRequest.HTTP_AUTHENTIFICATION);

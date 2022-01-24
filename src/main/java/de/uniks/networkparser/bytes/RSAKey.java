@@ -26,6 +26,10 @@ import de.uniks.networkparser.buffer.DERBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 
+/**
+ * Random sequential adsorption
+ * @author Stefan Lindel
+ */
 public class RSAKey {
   public static final String BEGINPUBLICKEY = "-----BEGIN PUBLIC RSA KEY-----\n";
   public static final String ENDPUBLICKEY = "-----END PUBLIC RSA KEY-----";

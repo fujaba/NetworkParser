@@ -27,6 +27,10 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.DateTimeEntity;
 
+/**
+ * Simple Execution
+ * @author Stefan Lindel
+ */
 public class SimpleExecutor implements TaskExecutor {
 	private DateTimeEntity lastRun = new DateTimeEntity();
 	private Space space;

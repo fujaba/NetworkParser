@@ -151,4 +151,44 @@ public class ZipContainer {
 		}
 		return null;
 	}
+	
+	public static boolean decoding(String... params) {
+		if(params == null || params.length <1) {
+			return false;
+		}
+		String fileName = params[0];
+		String pwd = null;
+		if(params.length >1) {
+			pwd = params[1]; 
+		}
+		
+		String folder = "";
+		if(params.length >2) {
+			folder = params[2]; 
+		}
+		
+		FileBuffer file = new FileBuffer().withFile(fileName);
+		ZipInputStream zis=null;
+		try {
+			zis = new ZipInputStream(new ZipDecryptInputStream(file.asStream(), pwd));
+			ZipEntry item = zis.getNextEntry();
+			byte[] buffer = new byte[2048];
+			CharacterBuffer output = new CharacterBuffer();
+			int len = 0;
+			while ((len = zis.read(buffer)) > 0) {
+				output.write(buffer, len);
+			}
+			FileBuffer.writeFile(folder + item.getName(), output);
+		} catch (Exception e) {
+		} finally {
+			if(zis != null) {
+				try {
+					zis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return true;
+	}
 }

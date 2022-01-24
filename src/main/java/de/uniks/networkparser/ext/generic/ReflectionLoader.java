@@ -35,7 +35,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -934,13 +933,7 @@ public class ReflectionLoader {
 		return false;
 	}
 
-	private static URLClassLoader initDriver() {
-		ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-		URLClassLoader sysloader = URLClassLoader.newInstance(new URL[] {}, systemClassLoader);
-		return sysloader;
-	}
-
-	private static final URLClassLoader sysloader = initDriver();
+	private static final JarClassLoader sysloader = new JarClassLoader(ClassLoader.getSystemClassLoader());
 
 	public static Connection loadSQLDriver(String driver, String database) {
 		int pos = 0;
@@ -955,24 +948,15 @@ public class ReflectionLoader {
 			if ("jdbc:sqlite".equalsIgnoreCase(driver)) {
 				File f = new File(host);
 				URL url = new URL("file:///" + f.getAbsolutePath());
-
-				Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[] { URL.class });
-				method.setAccessible(true);
-
-				method.invoke(sysloader, url);
+				sysloader.addURL(url);
 
 				Thread.currentThread().setContextClassLoader(sysloader);
 
-				Method getConnection = DriverManager.class.getDeclaredMethod("getConnection", String.class,
-						Properties.class, Class.class);
-				getConnection.setAccessible(true);
-
-				Object manager = getConnection.invoke(DriverManager.class, driver + ":" + database, new Properties(),
-						null);
+				Method getConnection = DriverManager.class.getDeclaredMethod("getConnection", String.class, Properties.class);
+				Object manager = getConnection.invoke(DriverManager.class, driver + ":" + database, new Properties());
 				return (Connection) manager;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return null;
 	}

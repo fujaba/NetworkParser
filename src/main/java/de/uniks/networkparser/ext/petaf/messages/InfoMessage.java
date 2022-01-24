@@ -30,6 +30,10 @@ import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 
+/**
+ * InfoMessage
+ * @author Stefan Lindel
+ */
 public class InfoMessage extends ReceivingTimerTask {
 	public static final String PROPERTY_PROXIES = "proxies";
 	public static final String PROPERTY_LASTID = "history_id";

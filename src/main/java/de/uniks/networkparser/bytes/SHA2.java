@@ -1,5 +1,9 @@
 package de.uniks.networkparser.bytes;
 
+/**
+ * Secure Hash Algorithm Version 2
+ * @author Stefan Lindel
+ */
 public class SHA2 {
   int digestLength = 32;
   int blockSize = 64;

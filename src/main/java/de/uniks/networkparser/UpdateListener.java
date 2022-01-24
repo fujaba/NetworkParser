@@ -521,12 +521,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
       return false;
     }
     /* put changes into msg and send to receiver */
-    Object source;
-    if (evt instanceof SimpleEvent) {
-      source = evt.getModelValue();
-    } else {
-      source = evt.getSource();
-    }
+    Object source = evt.getModelValue();
     String property = evt.getPropertyName();
     SendableEntityCreator creatorClass = this.map.getCreatorClass(source);
     if (creatorClass == null) {

@@ -26,6 +26,10 @@ THE SOFTWARE.
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.json.JsonObject;
 
+/**
+ * ModelChange for PetaF
+ * @author Stefan Lindel
+ */
 public class ModelChange implements Comparable<ModelChange> {
 	/* History-Id */
 	public static final String PROPERTY_KEY = "key";
@@ -72,8 +76,8 @@ public class ModelChange implements Comparable<ModelChange> {
 	public int getKeyNumber() {
 		int result = -1;
 		try {
-			result = Integer.valueOf(key);
-		} catch (Exception e) {
+			result = Integer.parseInt(key);
+		} catch (Exception e) { //Empty
 		}
 		return result;
 	}

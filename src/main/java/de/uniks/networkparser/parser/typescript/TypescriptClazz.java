@@ -2,6 +2,10 @@ package de.uniks.networkparser.parser.typescript;
 
 import de.uniks.networkparser.parser.Template;
 
+/**
+ * Template for Generation Typescript Classes
+ * @author Stefan Lindel
+ */
 public class TypescriptClazz extends Template {
 	/* TODO return superclazzes and interfaces, to add proper imports via short */
 	/* clazz name */

@@ -17,14 +17,14 @@ public class VersionCondition implements ObjectCondition, Comparable<VersionCond
 			this.revision = 0;
 			if (split.length > 2) {
 				try {
-					this.revision = Integer.valueOf(split[2]);
+					this.revision = Integer.parseInt(split[2]);
 				} catch (Exception e) {
 				}
 			}
 			if (split.length > 1) {
 				try {
-					this.minor = Integer.valueOf(split[1]);
-				} catch (Exception e) {
+					this.minor = Integer.parseInt(split[1]);
+				} catch (Exception e) { //Empty
 				}
 			}
 			if (split.length > 0) {
@@ -32,11 +32,11 @@ public class VersionCondition implements ObjectCondition, Comparable<VersionCond
 					if (split[0].startsWith("^")) {
 						/* COMPAREGRATER */
 						this.children = new CompareTo().withCompare(CompareTo.GREATER);
-						this.mayor = Integer.valueOf(split[0].substring(1));
+						this.mayor = Integer.parseInt(split[0].substring(1));
 					} else {
-						this.mayor = Integer.valueOf(split[0]);
+						this.mayor = Integer.parseInt(split[0]);
 					}
-				} catch (Exception e) {
+				} catch (Exception e) { //Empty
 				}
 			}
 		}
@@ -50,18 +50,13 @@ public class VersionCondition implements ObjectCondition, Comparable<VersionCond
 
 	@Override
 	public boolean update(Object value) {
-		if (value instanceof SimpleEvent == false) {
+		if (!(value instanceof SimpleEvent)) {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
 		Object newValue = evt.getNewValue();
-		if (newValue instanceof VersionCondition) {
-			if (children != null) {
-				if (children instanceof CompareTo) {
-//					CompareTo.
-				}
-				return children.update(value);
-			}
+		if (newValue instanceof VersionCondition && children != null) {
+			return children.update(value);
 		}
 		return true;
 	}
@@ -88,5 +83,4 @@ public class VersionCondition implements ObjectCondition, Comparable<VersionCond
 		}
 		return 0;
 	}
-
 }

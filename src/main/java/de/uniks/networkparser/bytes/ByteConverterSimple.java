@@ -3,6 +3,10 @@ package de.uniks.networkparser.bytes;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 
+/**
+ * Converter for Simple ByteFormat
+ * @author Stefan Lindel
+ */
 public class ByteConverterSimple extends ByteConverter {
 	@Override
 	public String toString(BufferedBuffer values) {

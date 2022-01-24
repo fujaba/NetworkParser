@@ -7,6 +7,7 @@ public class GraphMetric extends GraphMember {
 	private int methodheader = 0;
 	private int emptyLine = 0;
 	private int annotation = 0;
+	private String crc;
 
 	public GraphMetric withMcCabe(int value) {
 		this.mccabe = value;
@@ -86,4 +87,12 @@ public class GraphMetric extends GraphMember {
 		return this;
 	}
 
+	public GraphMetric withCRC(String value) {
+		this.crc = value;
+		return this;
+	}
+	
+	public String getCRC() {
+		return crc;
+	}
 }

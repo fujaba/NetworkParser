@@ -29,6 +29,10 @@ import java.io.InputStream;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
+/**
+ * Representation for Manifest
+ * @author Stefan Lindel
+ */
 public class Manifest extends SimpleKeyValueList<String, String> {
 	public static char SPLITTER = ':';
 	public static char[] CRLF = new char[] { '\r', '\n' };

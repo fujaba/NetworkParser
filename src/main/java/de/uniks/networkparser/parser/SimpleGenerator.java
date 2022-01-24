@@ -8,6 +8,10 @@ import de.uniks.networkparser.interfaces.TemplateItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * Class for Simple Codegenertation
+ * @author Stefan Lindel
+ */
 public class SimpleGenerator extends Template {
 	public SimpleKeyValueList<String, ParserCondition> customTemplate;
 

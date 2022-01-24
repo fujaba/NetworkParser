@@ -27,6 +27,10 @@ import java.net.Socket;
 
 import de.uniks.networkparser.interfaces.Condition;
 
+/**
+ * Request for Message
+ * @author Stefan Lindel
+ */
 public class MessageRequest implements Runnable {
 	public static final int BUFFER = 100 * 1024;
 	private final Socket requestSocket;

@@ -25,6 +25,10 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.ext.ErrorHandler;
 
+/**
+ * ReceivingTimerTask 
+ * @author Stefan Lindel
+ */
 public abstract class ReceivingTimerTask extends Message implements Runnable {
 	protected final ErrorHandler handler = new ErrorHandler();
 	protected Runnable task;

@@ -107,4 +107,10 @@ public class DataTypeSet extends DataType {
 		}
 		return super.getValue(value);
 	}
+	
+	@Override
+	public DataTypeSet withArray(boolean value) {
+		super.withArray(value);
+		return this;
+	}
 }

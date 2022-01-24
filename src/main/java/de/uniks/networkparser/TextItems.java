@@ -144,10 +144,7 @@ public class TextItems extends SimpleKeyValueList<String, Object>
 
 	public String getLabelString(CharSequence label) {
 		if (containsKey(label)) {
-			Object value = get(label);
-			if (value instanceof String) {
-				return (String) value;
-			}
+			return get(label);
 		}
 		return null;
 	}

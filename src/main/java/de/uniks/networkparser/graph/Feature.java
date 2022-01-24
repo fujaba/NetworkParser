@@ -28,6 +28,10 @@ THE SOFTWARE.
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * Feature for Modell
+ * @author Stefan Lindel
+ */
 public class Feature implements Comparable<Feature> {
 	public static final Clazz ALL = new Clazz("*");
 	public static final String NAME = "name";

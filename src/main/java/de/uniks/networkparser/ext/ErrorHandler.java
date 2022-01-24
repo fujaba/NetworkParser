@@ -227,7 +227,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     return null;
   }
 
-  public ErrorHandler withPath(String value) {
+  public ErrorHandler withURL(String value) {
     this.path = value;
     return this;
   }

@@ -86,7 +86,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	private static NetworkParserLog logger = new NetworkParserLog().withListener(new StringPrintStream());
 	private static final String EDITOR = "Editor.html";
 
-	private static DiagramEditor editor;
+	private static DiagramEditor instance;
 
 	public static DiagramEditor edobs(Object... items) {
 		return edobs(false, items);
@@ -95,51 +95,57 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	public NetworkParserLog getLogger() {
 		return logger;
 	}
+	
+	public static DiagramEditor instance() {
+		if(instance == null) {
+			instance = new DiagramEditor();
+		}
+		return instance;
+	}
 
 	public static DiagramEditor edobs(boolean all, Object... items) {
 		if (items == null) {
 			return null;
 		}
-		if (editor == null) {
-			editor = new DiagramEditor();
-			editor.type = TYPE_EDOBS;
+		if (instance == null) {
+			instance().type = TYPE_EDOBS;
 		}
-		if (editor.map == null) {
+		if (instance().map == null) {
 			for (Object child : items) {
 				if (child instanceof IdMap) {
-					editor.map = (IdMap) child;
+					instance().map = (IdMap) child;
 					break;
 				}
 			}
-			if (editor.map == null)
-				editor.map = new IdMap();
+			if (instance().map == null)
+				instance().map = new IdMap();
 		}
 
 		for (Object child : items) {
 			if (child instanceof IdMap || child == null) {
 				continue;
 			}
-			SendableEntityCreator creator = editor.map.getCreatorClass(child);
+			SendableEntityCreator creator = instance().map.getCreatorClass(child);
 			if (creator == null) {
 				String id = child.getClass().getSimpleName();
 				id += "." + System.identityHashCode(child);
 				creator = new GenericCreator().withItem(child).withId(id);
-				editor.map.put(id, child, false);
-				editor.map.withCreator(creator);
-			} else if (editor.map.getId(child) == null) {
+				instance().map.put(id, child, false);
+				instance().map.withCreator(creator);
+			} else if (instance().map.getId(child) == null) {
 				/* Ups No ID */
 				String id = child.getClass().getSimpleName();
 				id += "." + System.identityHashCode(child);
-				editor.map.put(id, child, false);
+				instance().map.put(id, child, false);
 			}
 		}
 
 		HTMLEntity entity = new HTMLEntity();
-		GraphList list = editor.map.toObjectDiagram(items[0]);
+		GraphList list = instance().map.toObjectDiagram(items[0]);
 		if (all == false) {
 			SimpleList<String> ids = new SimpleList<String>();
 			for (Object item : items) {
-				String id = editor.map.getId(item);
+				String id = instance().map.getId(item);
 				ids.add(id);
 			}
 			Clazz[] array = list.getClazzes().toArray();
@@ -184,8 +190,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			e.printStackTrace();
 		}
 		FileBuffer.writeFile("neu.html", entity.toString());
-		converting(editor, string, null, false, false);
-		return editor;
+		converting(instance(), string, null, false, false);
+		return instance();
 	}
 	
 	public static void addGraphType(Buffer resourceHandler, HTMLEntity entity) {
@@ -279,8 +285,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 					int commit = 1;
 					if (args.length > 1) {
 						try {
-							commit = Integer.valueOf(args[1]);
-						} catch (Exception e) {
+							commit = Integer.parseInt(args[1]);
+						} catch (Exception e) { // Empty
 						}
 					}
 					logger.debug(DiagramEditor.class, "main", revision.execute(commit));
@@ -305,11 +311,11 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 					System.exit(1);
 				}
 				int i=1;
-				if (filename.toLowerCase().endsWith(".jar") == false) {
+				if (!filename.toLowerCase().endsWith(".jar")) {
 					if (args.length > i && args[i] != null) {
 						filename =args[i].toLowerCase();
 					}
-					if (filename.toLowerCase().endsWith(".jar") == false) {
+					if (!filename.toLowerCase().endsWith(".jar")) {
 						System.exit(2);
 					}
 					i++;
@@ -377,7 +383,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 					} else if (item.startsWith("time=")) {
 						String param = item.substring(5);
 						try {
-							timeOut = Integer.valueOf(param) * 1000;
+							timeOut = Integer.parseInt(param) * 1000;
 						} catch (Exception e) {
 						}
 					} else if (item.startsWith("fatjar")) {
@@ -446,7 +452,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 				tester.mainTester(args);
 			}
 		}
-		if (converting(null, null, null, false, true) == false) {
+		if (!converting(null, null, null, false, true)) {
 			/* NO JAVAFX Found */
 			NodeProxyTCP server = NodeProxyTCP.createServer(8080);
 			server.withListener(new DiagramEditor());
@@ -457,7 +463,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 					if (desktop != null) {
 						try {
 							ReflectionLoader.call(desktop, "browse", URI.class, new URI("http://" + server.getKey()));
-						} catch (URISyntaxException e) {
+						} catch (URISyntaxException e) { // Empty
 						}
 					}
 				}
@@ -544,23 +550,21 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		if (value instanceof SimpleEvent) {
 			SimpleEvent evt = (SimpleEvent) value;
 			Object newValue = evt.getNewValue();
-			if (newValue != null) {
-				if (JavaViewAdapter.STATE.equalsIgnoreCase(newValue.getClass().getName())) {
-					if (newValue.toString().equals(JavaViewAdapter.FAILED)) {
-						logger.error(this, "update", evt);
-					}
-					if (newValue.toString().equals(JavaViewAdapter.SUCCEEDED)) {
-						Object win = super.executeScript("window", false);
-						ReflectionLoader.call(win, "setMember", String.class, "JavaBridge", Object.class, this);
-						this.changed(evt);
-
-						if (TYPE_EDITOR.equalsIgnoreCase(type)) {
-							/* Load Editor */
-							super.executeScript("window['editor'] = new ClassEditor(\"board\");", false);
-						}
-					}
-					return true;
+			if (newValue != null && JavaViewAdapter.STATE.equalsIgnoreCase(newValue.getClass().getName())) {
+				if (newValue.toString().equals(JavaViewAdapter.FAILED)) {
+					logger.error(this, "update", evt);
 				}
+				if (newValue.toString().equals(JavaViewAdapter.SUCCEEDED)) {
+					Object win = super.executeScript("window", false);
+					ReflectionLoader.call(win, "setMember", String.class, "JavaBridge", Object.class, this);
+					this.changed(evt);
+
+					if (TYPE_EDITOR.equalsIgnoreCase(type)) {
+						/* Load Editor */
+						super.executeScript("window['editor'] = new ClassEditor(\"board\");", false);
+					}
+				}
+				return true;
 			}
 		}
 		String name = (String) ReflectionLoader.callChain(value, "getEventType", "toString");
@@ -579,13 +583,10 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		if (value instanceof GUIEvent) {
 			GUIEvent evt = (GUIEvent) value;
 			EventTypes evtName = evt.getEventType();
-			if (EventTypes.KEYPRESS == evtName) {
-				if (evt.getCode() == 123) {
-					enableDebug();
-				}
+			if (EventTypes.KEYPRESS == evtName && evt.getCode() == 123) {
+				enableDebug();
 			}
 		}
-
 		return false;
 	}
 
@@ -665,20 +666,20 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		List<File> files = getFiles(event);
 		if (files != null) {
 			boolean error = true;
-			for (File file : files) {
-				String name = file.getName().toLowerCase();
+			for (File fileItem : files) {
+				String name = fileItem.getName().toLowerCase();
 				if (name.indexOf("json", name.length() - 4) >= 0) {
 					error = false;
 				}
 			}
-			if (error == false) {
-				Object mode = ReflectionLoader.getField(ReflectionLoader.TRANSFERMODE, "COPY");
-				ReflectionLoader.call(event, "acceptTransferModes", ReflectionLoader.TRANSFERMODE, mode);
-				getJSEditor().setBoardStyle("OK");
-			} else {
+			if (error) {
 				Object mode = ReflectionLoader.getField(ReflectionLoader.TRANSFERMODE, "NONE");
 				ReflectionLoader.call(event, "acceptTransferModes", ReflectionLoader.TRANSFERMODE, mode);
 				getJSEditor().setBoardStyle("Error");
+			} else {
+				Object mode = ReflectionLoader.getField(ReflectionLoader.TRANSFERMODE, "COPY");
+				ReflectionLoader.call(event, "acceptTransferModes", ReflectionLoader.TRANSFERMODE, mode);
+				getJSEditor().setBoardStyle("OK");
 			}
 		}
 		ReflectionLoader.call(event, "consume");
@@ -688,13 +689,13 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	protected boolean onDragDropped(Object event) {
 		List<File> files = getFiles(event);
 		if (files != null) {
-			for (File file : files) {
+			for (File fileItem : files) {
 				StringBuilder sb = new StringBuilder();
-				byte buf[] = new byte[1024];
+				byte[] buf = new byte[1024];
 				int read;
 				FileInputStream is = null;
 				try {
-					is = new FileInputStream(file);
+					is = new FileInputStream(fileItem);
 					do {
 						read = is.read(buf, 0, buf.length);
 						if (read > 0) {
@@ -789,8 +790,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			return this;
 		}
 		if (this.controller == null) {
-			SimpleController controller = new SimpleController(stage);
-			this.controller = controller;
+			this.controller = new SimpleController(stage);
 			this.controller.withListener(this);
 		}
 		SimpleKeyValueList<String, String> parameterMap = controller.getParameterMap();
@@ -901,12 +901,9 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		} else if ("PDF".equalsIgnoreCase(type)) {
 			typeName = "Portable Document Format";
 		}
-		String file = DialogBox.showFileSaveChooser("Export Diagramm", name, typeName, type,
-				this.controller.getStage());
-		if (file != null) {
-			if (value instanceof String) {
-				FileBuffer.writeFile(file, ((String) value).getBytes());
-			}
+		String file = DialogBox.showFileSaveChooser("Export Diagramm", name, typeName, type, this.controller.getStage());
+		if (file != null && value instanceof String) {
+			FileBuffer.writeFile(file, ((String) value).getBytes());
 		}
 	}
 

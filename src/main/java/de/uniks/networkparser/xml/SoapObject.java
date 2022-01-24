@@ -31,9 +31,9 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class SoapObject implements BaseItem, SendableEntityCreatorTag {
-	public static String XMLNS_XSI = "http://www.w3.org/2001/XMLSchema-instance";
-	public static String XMLNS_XSD = "http://www.w3.org/2001/XMLSchema";
-	public static String XMLNS_SOAP = "http://schemas.xmlsoap.org/soap/envelope/";
+	public static final String XMLNS_XSI = "http://www.w3.org/2001/XMLSchema-instance";
+	public static final String XMLNS_XSD = "http://www.w3.org/2001/XMLSchema";
+	public static final String XMLNS_SOAP = "http://schemas.xmlsoap.org/soap/envelope/";
 	private String nameSpace = "s";
 
 	public static final String PROPERTY_HEADER = "Header";

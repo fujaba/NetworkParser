@@ -17,6 +17,9 @@ import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLTokener;
 
 public class ExcelParser {
+    private final static String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n";
+    private final static String APP = "<Properties xmlns=\"http://schemas.openxmlformats.org/officeDocument/2006/extended-properties\" xmlns:vt=\"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes\"><TotalTime>0</TotalTime><Application>NetworkParser</Application><DocSecurity>0</DocSecurity><ScaleCrop>false</ScaleCrop><AppVersion>1.42</AppVersion></Properties>";
+    private final static String RELS = "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\"><Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/><Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties\" Target=\"docProps/core.xml\"/><Relationship Id=\"rId3\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties\" Target=\"docProps/app.xml\"/></Relationships>";
 	public static final String ROW = "row";
 	public static final String CELL = "c";
 	public static final String CELL_TYPE = "t";
@@ -79,45 +82,44 @@ public class ExcelParser {
 			if (sheetData != null) {
 				for (int i = 0; i < sheetData.sizeChildren(); i++) {
 					BaseItem child = sheetData.getChild(i);
-					if (child == null || child instanceof XMLEntity == false) {
+					if (!(child instanceof XMLEntity)) {
 						continue;
 					}
 					XMLEntity row = (XMLEntity) child;
-					if (ROW.equalsIgnoreCase(row.getTag()) == false) {
+					if (!ROW.equalsIgnoreCase(row.getTag())) {
 						continue;
 					}
 					ExcelRow dataRow = new ExcelRow();
 					/* <c r="A1" t="s"><v>2</v></c> */
 					for (int c = 0; c < row.size(); c++) {
 						BaseItem item = row.getChild(c);
-						if (item == null || item instanceof ExcelCell == false) {
+						if (!(item instanceof ExcelCell)) {
 							continue;
 						}
 						ExcelCell cell = (ExcelCell) item;
-						if (CELL.equalsIgnoreCase(cell.getTag()) == false) {
+						if (!CELL.equalsIgnoreCase(cell.getTag())) {
 							continue;
 						}
-						ExcelCell excelCell = (ExcelCell) cell;
-						if (CELL_TYPE_REFERENCE.equalsIgnoreCase(excelCell.getType())) {
+						if (CELL_TYPE_REFERENCE.equalsIgnoreCase(cell.getType())) {
 							/* <v>2</v> */
 							EntityList element = cell.getChild(0);
 							if (element != null) {
 								String ref = ((XMLEntity) element).getValue();
 								if (sharedStrings != null) {
-									XMLEntity refString = (XMLEntity) sharedStrings.getChild(Integer.valueOf(ref));
+									XMLEntity refString = (XMLEntity) sharedStrings.getChild(Integer.parseInt(ref));
 									String text = ((XMLEntity) refString.getChild(0)).getValue();
-									excelCell.setContent(text);
+									cell.setContent(text);
 								}
 							}
-						} else if (excelCell.sizeChildren() < 1) {
-							String pos = mergeCellPos.get(excelCell.getReferenz().toString());
+						} else if (cell.sizeChildren() < 1) {
+							String pos = mergeCellPos.get(cell.getReferenz().toString());
 							if (pos != null && cells.contains(pos)) {
 								ExcelCell firstCell = cells.get(pos);
-								excelCell.setReferenceCell(firstCell);
+								cell.setReferenceCell(firstCell);
 							}
 						}
-						cells.add(excelCell.getReferenz().toString(), excelCell);
-						dataRow.add(excelCell);
+						cells.add(cell.getReferenz().toString(), cell);
+						dataRow.add(cell);
 					}
 					if (dataRow.size() > 0) {
 						data.add(dataRow);
@@ -136,7 +138,7 @@ public class ExcelParser {
 		for (SimpleList<ExcelCell> row : data) {
 			boolean first = true;
 			for (ExcelCell cell : row) {
-				if (first == false) {
+				if (!first) {
 					result.with(SEMICOLON);
 				}
 				result.with(cell.getContentAsString());
@@ -188,10 +190,6 @@ public class ExcelParser {
 		} while (line != null);
 		return result;
 	}
-
-	private final static String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n";
-	private final static String APP = "<Properties xmlns=\"http://schemas.openxmlformats.org/officeDocument/2006/extended-properties\" xmlns:vt=\"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes\"><TotalTime>0</TotalTime><Application>NetworkParser</Application><DocSecurity>0</DocSecurity><ScaleCrop>false</ScaleCrop><AppVersion>1.42</AppVersion></Properties>";
-	private final static String RELS = "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\"><Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/><Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties\" Target=\"docProps/core.xml\"/><Relationship Id=\"rId3\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties\" Target=\"docProps/app.xml\"/></Relationships>";
 
 	public SimpleKeyValueList<String, String> createExcelContent(ExcelWorkBook content) {
 		int id = 4;
@@ -267,7 +265,7 @@ public class ExcelParser {
 		data.with("</sheetData>");
 		data.with("</worksheet>");
 		return data.toString();
-	};
+	}
 
 	private String getHeaderWorkbookRel(ExcelWorkBook content, int id) {
 		CharacterBuffer data = new CharacterBuffer().with(HEADER);

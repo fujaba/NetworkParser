@@ -27,6 +27,10 @@ import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
+/**
+ * Converter for converting String in BYTE64
+ * @author Stefan Lindel
+ */
 public class ByteConverter64 extends ByteConverter {
 	/* private static final int BYTEPERATOM = 3; */
 	private static final char[] pem_array = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',

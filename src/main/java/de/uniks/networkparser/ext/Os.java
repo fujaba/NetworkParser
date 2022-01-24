@@ -30,6 +30,10 @@ import java.util.List;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * AbstractClass for Os Detection
+ * @author Stefan Lindel
+ */
 public class Os {
 	public static final String WINDOWS = "windows";
 	public static final String MAC = "mac";
@@ -190,5 +194,14 @@ public class Os {
 			return true;
 		}
 		return false;
+	}
+	
+	public static final boolean isHeadless()
+	{
+		Object result = ReflectionLoader.call(ReflectionLoader.getClass("java.awt.GraphicsEnvironment"), "isHeadless");
+		if (Boolean.FALSE.equals(result)) {
+			return false;
+		}
+		return true;
 	}
 }

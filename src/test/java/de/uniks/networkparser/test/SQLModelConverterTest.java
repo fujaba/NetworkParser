@@ -23,6 +23,8 @@ import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class SQLModelConverterTest {
+    private static final String DRIVER="lib/sql/sqlite-jdbc-3.36.0.3.jar";
+    
 	@Test
 	public void testClassToSQL() {
 		GraphList model = new GraphList().with("gen.model");
@@ -53,7 +55,10 @@ public class SQLModelConverterTest {
 		SQLTokener tokener = new SQLTokener(SQLStatement.connect("jdbc", "sqlite", "build/sampleA.db"));
 
 
-		tokener.withConnection(ReflectionLoader.loadSQLDriver("jdbc:sqlite", "lib/sql/sqlite-jdbc-3.8.11.2.jar", "build/sampleA.db"));
+		tokener.withConnection(ReflectionLoader.loadSQLDriver("jdbc:sqlite", DRIVER, "build/sampleA.db"));
+		if(tokener.getConnection() == null) {
+		    return;
+		}
 
 		SQLStatementList statements = tokener.encode(model);
 
@@ -217,7 +222,7 @@ public class SQLModelConverterTest {
 		}
 
 		SQLTokener tokener = new SQLTokener(SQLStatement.connect("jdbc", "sqlite", "build/sampleB.db"));
-		tokener.withConnection(ReflectionLoader.loadSQLDriver("jdbc:sqlite", "lib/sql/sqlite-jdbc-3.8.11.2.jar", "build/sampleB.db"));
+		tokener.withConnection(ReflectionLoader.loadSQLDriver("jdbc:sqlite", DRIVER, "build/sampleB.db"));
 
 		IdMap map = UniversityCreator.createIdMap("1");
 		map.withTimeStamp(1);
@@ -246,8 +251,10 @@ public class SQLModelConverterTest {
 
 		SQLTokener tokener = new SQLTokener(SQLStatement.connect("jdbc", "sqlite", "build/sampleC.db"));
 
-		Connection conn = ReflectionLoader.loadSQLDriver("jdbc:sqlite", "lib/sql/sqlite-jdbc-3.8.11.2.jar", "build/sampleC.db");
-//		System.out.println(conn);
+		Connection conn = ReflectionLoader.loadSQLDriver("jdbc:sqlite", DRIVER, "build/sampleC.db");
+		if(conn == null) {
+		    return;
+		}
 		Assert.assertNotNull(conn);
 		tokener.withConnection(conn);
 

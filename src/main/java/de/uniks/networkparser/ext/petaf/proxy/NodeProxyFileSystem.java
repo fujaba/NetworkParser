@@ -33,6 +33,10 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
+/**
+ * Proxy for FileSystem
+ * @author Stefan Lindel
+ */
 public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 	private String fileName;
 	private FileWatcher nodeProxyFileWatcher;

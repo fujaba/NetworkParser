@@ -28,6 +28,10 @@ import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * Filter for Model Network Communication
+ * @author Stefan Lindel
+ */
 public class PetaFilter extends Filter {
 	public static final String UPDATE = "update"; /* UPDATE only send basic info */
 	public static final String ID = "id"; /* UPDATE only send basic info */

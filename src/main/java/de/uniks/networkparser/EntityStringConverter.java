@@ -37,7 +37,7 @@ public class EntityStringConverter implements Converter {
 			return ((Entity) entity).toString(getIndentFactor());
 		}
 		if (entity != null) {
-			return ((BaseItem) entity).toString(this);
+			return entity.toString(this);
 		}
 		return null;
 	}

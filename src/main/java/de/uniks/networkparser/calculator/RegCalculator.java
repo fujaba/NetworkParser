@@ -172,9 +172,9 @@ public class RegCalculator {
               }
             }
             if (operator.getTag().equals("-")) {
-              parts.set(z - 1, "" + (Double.valueOf(parts.get(z)) * -1));
+              parts.set(z - 1, "" + (Double.parseDouble(parts.get(z)) * -1));
             } else {
-              parts.set(z - 1, "" + (Double.valueOf(parts.get(z))));
+              parts.set(z - 1, "" + (Double.parseDouble(parts.get(z))));
             }
             parts.remove(z);
             z--;
@@ -201,7 +201,7 @@ public class RegCalculator {
         Operator operator = operators.get(parts.get(i));
         if (operator != null && operator.getPriority() == prio) {
           parts.set(i - 1, "" + operator.calculate(
-              new Double[] {Double.valueOf(parts.get(i - 1)), Double.valueOf(parts.get(i + 1))}));
+             Double.parseDouble(parts.get(i - 1)), Double.parseDouble(parts.get(i + 1))));
           parts.remove(i);
           parts.remove(i);
           i = i - 1;
@@ -212,8 +212,8 @@ public class RegCalculator {
     Double[] result = new Double[parts.size()];
     for (int i = 0; i < parts.size(); i++) {
       try {
-        result[i] = Double.valueOf(parts.get(i));
-      } catch (Exception e) {
+        result[i] = Double.parseDouble(parts.get(i));
+      } catch (Exception e) { //Empty
       }
     }
     return result;

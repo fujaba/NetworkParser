@@ -27,6 +27,10 @@ THE SOFTWARE.
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
+/**
+ * Fitler for Serialization or Deserializaition
+ * @author Stefan Lindel
+ */
 public class Filter {
 	/** The Constant MERGE. */
 	public static final String MERGE = "merge";

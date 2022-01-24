@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.HashMap;
+import java.util.Map;
 
 import de.uniks.networkparser.gui.controls.GUILine;
 import de.uniks.networkparser.interfaces.GUIPosition;
@@ -154,6 +155,9 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 		return this;
 	}
 
+    /**
+     * @return new StyleObject
+     */
 	@Override
 	public Style clone() {
 		return clone(new Style());
@@ -232,7 +236,7 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 				this.borders.put(position, new GUILine().withColor(color).withWidth(width));
 				this.propertyChange(PROPERTY_BORDER, null, this.borders);
 			} else {
-				if (border.isCustomLine() == false) {
+				if (!border.isCustomLine()) {
 					border.withColor(color);
 					border.withWidth(width);
 					this.propertyChange(PROPERTY_BORDER, null, this.borders);
@@ -246,7 +250,7 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 		}
 	}
 
-	public HashMap<GUIPosition, GUILine> getBorders() {
+	public Map<GUIPosition, GUILine> getBorders() {
 		return borders;
 	}
 
@@ -271,7 +275,7 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 	@Override
 	public Object getValue(Object entity, String attrName) {
 		String attribute;
-		if (attrName == null || entity instanceof Style == false) {
+		if (attrName == null || !(entity instanceof Style)) {
 			return false;
 		}
 		Style style = (Style) entity;
@@ -319,7 +323,7 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (entity instanceof Style == false) {
+		if (!(entity instanceof Style)) {
 			return false;
 		}
 		Style style = (Style) entity;
@@ -358,15 +362,15 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 			return true;
 		}
 		if (PROPERTY_WIDTH.equalsIgnoreCase(attribute)) {
-			style.withWidth(Double.valueOf("" + value));
+			style.withWidth(Double.parseDouble("" + value));
 			return true;
 		}
 		if (PROPERTY_HEIGHT.equalsIgnoreCase(attribute)) {
-			style.withHeight(Double.valueOf("" + value));
+			style.withHeight(Double.parseDouble("" + value));
 			return true;
 		}
 		if (PROPERTY_NAME.equalsIgnoreCase(attribute)) {
-			style.withName("" + value);
+			style.withName((String) value);
 			return true;
 		}
 		return false;

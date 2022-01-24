@@ -17,6 +17,10 @@ import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLContainer;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * MavenXML Generation
+ * @author Stefan Lindel
+ */
 public class MavenXML {
 	public static final String CRLF = "\r\n";
 	public static final String JSFILE = "diagram.js";

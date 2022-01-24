@@ -25,6 +25,10 @@ import java.nio.charset.StandardCharsets;
 
 import de.uniks.networkparser.SimpleException;
 
+/**
+ * Utility for Tar-File
+ * @author Stefan Lindel
+ */
 public class TarUtils {
 	/* CONST */
 	/** Default record size */

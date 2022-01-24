@@ -27,14 +27,14 @@ import de.uniks.networkparser.list.SimpleSet;
 public class SQLTokener extends Tokener {
 	private SQLStatement sqlConnection;
 	private Connection connection;
-	public static String TABLE_FLAT = "table";
-	public static String TABLE_PRIVOTISIERUNG = "pivotisierung";
+	public static final String TABLE_FLAT = "table";
+	public static final String TABLE_PRIVOTISIERUNG = "pivotisierung";
 	public static final byte FLAG_NONE = 0x00;
 	public static final byte FLAG_CREATE = 0x01;
 	public static final byte FLAG_DROP = 0x02;
-	private String TYPE_INTEGER = "INTEGER";
-	private String TYPE_STRING = "STRING";
-	private String TYPE_OBJECT = "OBJECT";
+	private static final String TYPE_INTEGER = "INTEGER";
+	private static final String TYPE_STRING = "STRING";
+	private static final String TYPE_OBJECT = "OBJECT";
 	private byte flag = FLAG_CREATE;
 	private String stragety = TABLE_FLAT;
 

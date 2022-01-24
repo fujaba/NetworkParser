@@ -34,20 +34,31 @@ import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Server;
 
+/**
+ * Server for UPD
+ * @author Stefan Lindel
+ */
 public class Server_UPD extends Thread implements Server {
 	protected boolean run = true;
+	protected boolean startReady = false;
 	protected DatagramSocket socket;
 	private NodeProxyTCP proxy;
 
-	public Server_UPD(NodeProxyTCP proxy, boolean asyn) {
+	public Server_UPD(NodeProxyTCP proxy) {
 		this.proxy = proxy;
 		if (init()) {
-			if (asyn) {
-				start();
-			}
+			startReady = true;
 		} else {
 			run = false;
 		}
+	}
+	
+	public Server_UPD withStart() {
+		if(this.startReady) {
+			startReady = false;
+			this.start();
+		}
+		return this;
 	}
 
 	public boolean close() {
@@ -61,7 +72,7 @@ public class Server_UPD extends Thread implements Server {
 
 	@Override
 	public boolean isRun() {
-		return socket != null && socket.isClosed() == false;
+		return socket != null && !socket.isClosed();
 	}
 
 	@Override
@@ -70,9 +81,7 @@ public class Server_UPD extends Thread implements Server {
 			runServer();
 		} else {
 			DatagramPacket data = runClient();
-			if (proxy != null) {
-				proxy.getSpace().firePropertyChange(BROADCAST, null, data);
-			}
+			proxy.getSpace().firePropertyChange(BROADCAST, null, data);
 		}
 	}
 
@@ -86,17 +95,13 @@ public class Server_UPD extends Thread implements Server {
 			IPAddress = InetAddress.getByName("localhost");
 		} catch (UnknownHostException e) {
 		}
-		DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
-		return sendPacket;
+		return new DatagramPacket(sendData, sendData.length, IPAddress, port);
 	}
 
 	public DatagramPacket runClient() {
 		DatagramPacket message = createSendPacket(proxy.getReceivePort());
 		DatagramPacket receivePacket;
 		try {
-			if (socket == null) {
-
-			}
 			socket.send(message);
 
 			byte[] receiveData = new byte[proxy.getBufferSize()];
@@ -110,20 +115,18 @@ public class Server_UPD extends Thread implements Server {
 
 	public void runServer() {
 		Thread.currentThread().setName(proxy.getPort() + " broadcast server");
-		while (isInterrupted() == false && this.run) {
+		while (!isInterrupted() && this.run) {
 			try {
 				byte[] receiveData = new byte[proxy.getBufferSize()];
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 				socket.receive(receivePacket);
 
-				InetAddress IPAddress = receivePacket.getAddress();
 				int port = receivePacket.getPort();
 				Entity answer = proxy.getSpace().getReplicationInfo();
 				byte[] sendData = answer.toString().getBytes();
-				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
+				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), port);
 				socket.send(sendPacket);
-			} catch (IOException e) {
-
+			} catch (IOException e) { // Empty
 			}
 		}
 	}

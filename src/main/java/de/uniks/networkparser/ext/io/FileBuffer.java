@@ -83,6 +83,10 @@ public class FileBuffer extends Buffer {
 		return new FileInputStream(this.file);
 	}
 
+	public File asFile() {
+		return this.file;
+	}
+
 	public FileBuffer withFile(File file) {
 		return withFile(file, 1024 * 1024);
 	}

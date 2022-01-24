@@ -121,4 +121,10 @@ public class DataTypeMap extends DataType {
 		}
 		return null;
 	}
+	
+	@Override
+	public DataTypeMap withArray(boolean value) {
+		super.withArray(value);
+		return this;
+	}
 }

@@ -27,6 +27,10 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.Space;
 
+/**
+ * Proxy for Model
+ * @author Stefan Lindel
+ */
 public class NodeProxyModel extends NodeProxy {
 	private Object root;
 	private String id;

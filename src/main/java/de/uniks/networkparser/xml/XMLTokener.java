@@ -230,10 +230,7 @@ public class XMLTokener extends Tokener {
     }
     do {
       tag = buffer.getString(2);
-      if (tag == null) {
-        tag = new CharacterBuffer();
-        break;
-      } else if (tag.equals("<?")) {
+      if (tag.equals("<?")) {
         skipEntity(buffer);
         skip = true;
       } else if (tag.equals("<!")) {
@@ -245,9 +242,7 @@ public class XMLTokener extends Tokener {
       }
     } while (skip);
     String item = tag.toString();
-    if (buffer != null) {
-      buffer.withLookAHead(item);
-    }
+    buffer.withLookAHead(item);
     return item;
   }
 

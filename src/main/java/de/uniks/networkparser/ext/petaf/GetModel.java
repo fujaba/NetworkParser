@@ -28,6 +28,10 @@ import java.util.function.Supplier;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * GetModel from NodeProxy
+ * @author Stefan Lindel
+ */
 public class GetModel implements Supplier<Object> {
 	private String property;
 	private Object entity;

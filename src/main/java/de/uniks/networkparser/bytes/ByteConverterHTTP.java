@@ -31,6 +31,10 @@ import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 
+/**
+ * Converter for Byte to HTTP-Request
+ * @author Stefan Lindel
+ */
 public class ByteConverterHTTP extends ByteConverter {
 	@Override
 	public String toString(BufferedBuffer values) {

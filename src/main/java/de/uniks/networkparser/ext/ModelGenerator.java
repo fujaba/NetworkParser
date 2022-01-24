@@ -62,6 +62,10 @@ import de.uniks.networkparser.parser.java.JavaCreatorCreator;
 import de.uniks.networkparser.parser.java.JavaSetCreator;
 import de.uniks.networkparser.parser.typescript.TypescriptClazz;
 
+/**
+ * Model Generator
+ * @author Stefan Lindel
+ */
 public class ModelGenerator extends SimpleGenerator {
 	private FeatureSet features = Feature.createAll();
 	private GraphModel defaultModel;
@@ -396,13 +400,11 @@ public class ModelGenerator extends SimpleGenerator {
 		if (this.defaultModel != null) {
 			if (param != null) {
 				if (param.length > 0) {
-					if (param[0] instanceof String) {
-						if (TYPE_JAVA.equalsIgnoreCase(param[0]) || TYPE_TYPESCRIPT.equalsIgnoreCase(param[0])
-								|| TYPE_CPP.equalsIgnoreCase(param[0])) {
-							type = param[0];
-						} else if (param.length < 2) {
-							rootDir = param[0];
-						}
+					if (TYPE_JAVA.equalsIgnoreCase(param[0]) || TYPE_TYPESCRIPT.equalsIgnoreCase(param[0])
+							|| TYPE_CPP.equalsIgnoreCase(param[0])) {
+						type = param[0];
+					} else if (param.length < 2) {
+						rootDir = param[0];
 					}
 				}
 				if (param.length > 1) {

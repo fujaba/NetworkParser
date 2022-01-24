@@ -28,11 +28,12 @@ import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
+/**
+ * Filter for Proxy
+ * @author Stefan Lindel
+ */
 public class ProxyFilter implements ObjectCondition {
 	private SimpleKeyValueList<String, NodeProxy> nodeProxyList = new SimpleKeyValueList<String, NodeProxy>();
-
-	public ProxyFilter() {
-	}
 
 	private String getClassName(NodeProxy proxy) {
 		if (proxy == null) {

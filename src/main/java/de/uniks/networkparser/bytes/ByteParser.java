@@ -30,6 +30,10 @@ import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
+/**
+ * Parser for ByteStreams
+ * @author Stefan Lindel
+ */
 public class ByteParser {
 	public Object decode(ByteBuffer buffer, BitEntityCreator creator) {
 		if (creator == null) {

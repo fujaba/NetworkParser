@@ -24,6 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * FCS-Check  (Frame check sequence)
+ * @author Stefan Lindel
+ */
 public class FCS16 extends Checksum {
 	protected int polynom = 0x8408;
 	protected int[] crc_table = getGenTable();

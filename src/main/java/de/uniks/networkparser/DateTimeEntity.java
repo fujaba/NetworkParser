@@ -67,7 +67,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
   public static final String MINUTE_OF_HOUR = "MINUTE_OF_HOUR";
   public static final String HOUR_OF_DAY = "HOUR_OF_DAY";
   public static final String AMPM = "AMPM";
-  public static final String TIMEZONE = "TIMEZONE";
+  public static final String TIME_ZONE = "TIMEZONE";
   public static final String DAY_OF_WEEK = "DAY_OF_WEEK";
   public static final String DAY_OF_MONTH = "DAY_OF_MONTH";
   public static final String DAY_OF_YEAR = "DAY_OF_YEAR";
@@ -326,7 +326,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
         oldValue = getValueInMillisecond(MILLISECOND_OF_YEAR);
         fields.put(field, value);
         addTime(getValueInMillisecond(MILLISECOND_OF_YEAR) - oldValue);
-      } else if (field.equals(TIMEZONE)) {
+      } else if (field.equals(TIME_ZONE)) {
         withTimezone((byte) value);
       } else {
         fields.put(field, value);

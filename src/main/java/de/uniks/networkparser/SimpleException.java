@@ -1,5 +1,9 @@
 package de.uniks.networkparser;
 
+/**
+ * Simple Exception
+ * @author Stefan Lindel
+ */
 public class SimpleException extends RuntimeException {
   private static final long serialVersionUID = 1L;
   private final transient Object source;

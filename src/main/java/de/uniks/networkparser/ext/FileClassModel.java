@@ -6,11 +6,13 @@ import java.util.regex.Pattern;
 
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.bytes.SHA1;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.ClazzSet;
 import de.uniks.networkparser.graph.Feature;
+import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphMetric;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphUtil;
@@ -18,6 +20,7 @@ import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.MethodSet;
 import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.graph.Parameter;
+import de.uniks.networkparser.graph.SourceCode;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
@@ -42,8 +45,7 @@ public class FileClassModel extends ClassModel {
 	private SimpleKeyValueList<String, SimpleList<ParserEntity>> packageList = new SimpleKeyValueList<String, SimpleList<ParserEntity>>();
 	private boolean parseFile = true;
 	private ObjectCondition reverseEngineering;
-	
-	
+
 	public FileClassModel(String packageName) {
 		with(packageName);
 	}
@@ -555,14 +557,14 @@ public class FileClassModel extends ClassModel {
 			SimpleList<ParserEntity> packageEntity = new SimpleList<ParserEntity>();
 			ObjectCondition con = null;
 			boolean isRekusive = true;
-			if(condition instanceof FeatureCondition) {
-        Feature feature = ((FeatureCondition) condition).getFeature(null);
-        if(feature != null && RECURSIVE.equalsIgnoreCase(feature.getName())){
-          isRekusive = false;
-        }
-      }
-			if(isRekusive) {
-			  con = condition;
+			if (condition instanceof FeatureCondition) {
+				Feature feature = ((FeatureCondition) condition).getFeature(null);
+				if (feature != null && RECURSIVE.equalsIgnoreCase(feature.getName())) {
+					isRekusive = false;
+				}
+			}
+			if (isRekusive) {
+				con = condition;
 			}
 			for (File file : items) {
 				if (file.getName().endsWith(JAVA_FILE_SUFFIX)) {
@@ -570,9 +572,9 @@ public class FileClassModel extends ClassModel {
 					list.add(element);
 					packageEntity.add(element);
 				} else if (file.getName().equalsIgnoreCase("test") == false && file.isDirectory()) {
-			    if(isRekusive == false){
-			      continue;
-			    }
+					if (isRekusive == false) {
+						continue;
+					}
 					getFiles(file, condition, parent + directory.getName() + ".");
 				}
 			}
@@ -690,7 +692,7 @@ public class FileClassModel extends ClassModel {
 
 	public GraphMetric analyseLoC(Object item) {
 		String methodBody = null;
-		Method owner = null;
+		GraphMember owner = null;
 		if (item instanceof GraphModel) {
 			GraphModel model = (GraphModel) item;
 			GraphMetric modelMetric = GraphMetric.create(model);
@@ -707,8 +709,13 @@ public class FileClassModel extends ClassModel {
 			return modelMetric;
 		}
 		if (item instanceof Method) {
-			owner = (Method) item;
-			methodBody = owner.getBody();
+			Method m =(Method) item;
+			owner = m;
+			methodBody = m.getBody();
+		} else if(item instanceof SourceCode) {
+			SourceCode s = (SourceCode) item;
+			owner = s;
+			methodBody = s.getContent().toString();
 		} else if (item instanceof String) {
 			methodBody = (String) item;
 		}
@@ -777,18 +784,34 @@ public class FileClassModel extends ClassModel {
 		}
 		return super.getValue(attribute);
 	}
-	
+
 	@Override
 	public HTMLEntity dumpHTML(String diagramName, boolean... write) {
-	  finishReverseEngineering();
-	  return super.dumpHTML(diagramName, write);
+		finishReverseEngineering();
+		return super.dumpHTML(diagramName, write);
 	}
-	
-	 public static final FeatureCondition createFeature(String key) {
-	    FeatureCondition condition=new FeatureCondition();
-	    Feature item= GraphUtil.createFeature(key);
-	    condition.withFeature(item);
-	    return condition;
-	  }
 
+	public static final FeatureCondition createFeature(String key) {
+		FeatureCondition condition = new FeatureCondition();
+		Feature item = GraphUtil.createFeature(key);
+		condition.withFeature(item);
+		return condition;
+	}
+
+	public SourceCode analyse(SourceCode code) {
+		if(code == null) {
+			return code;
+		}
+		this.analyseLoC(code);
+		this.analyseCheckValue(code);
+		return code;
+	}
+
+	private void analyseCheckValue(Object code) {
+		if(code instanceof SourceCode) {
+			SourceCode s = (SourceCode) code;
+			GraphMetric metric = GraphMetric.create(s);
+			metric.withCRC(SHA1.value(s.getContent().toBytes(true)).toString());
+		}
+	}
 }

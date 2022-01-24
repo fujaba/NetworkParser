@@ -1,6 +1,8 @@
 package de.uniks.networkparser.test.list;
 
 
+import static org.junit.Assert.fail;
+
 import org.junit.Test;
 
 import de.uniks.networkparser.list.SortedSet;
@@ -20,8 +22,12 @@ public class TestListWithKey {
 			list.add(new Wallet().withSum(i+add[i%4]));
 		}
 		
+		double sum = 0;
 		for(Wallet value : list) {
-			System.out.println(value);
+			if(value.getSum()<sum) {
+				fail();
+			}
+			sum = value.getSum();
 		}
 	}
 }

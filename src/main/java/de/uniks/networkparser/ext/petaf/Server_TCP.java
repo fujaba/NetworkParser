@@ -32,6 +32,10 @@ import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.Server;
 
+/**
+ * Server for TCP-Connection
+ * @author Stefan Lindel
+ */
 public class Server_TCP extends Thread implements Server {
 	protected boolean run = true;
 	private boolean searchFreePort = true;

@@ -24,7 +24,7 @@ public class JavaAttribute extends Template {
 					
 /* Getter */
 			+	"	{{annotation(getter)}}",
-				"	public {{modifiers} }{{type}} {{#if {{type}}==boolean ? is : get}}{{Name}}(){{#if {{file.member.type}}==interface}};",
+				"	public {{modifiers} }{{type}} {{#if {{type}}==boolean ?is:get}}{{Name}}(){{#if {{file.member.type}}==interface}};",
 				"", 
 					"{{#endif}}",
 					"{{#ifnot {{file.member.type}}==interface}} {",

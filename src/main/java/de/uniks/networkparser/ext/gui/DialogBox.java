@@ -605,7 +605,7 @@ public class DialogBox implements ObjectCondition {
 			}
 		} else {
 			/* SWING??? */
-			if (ReflectionLoader.JFRAME == null) {
+			if (ReflectionLoader.JFRAME == null || Os.isHeadless()) {
 				return null;
 			}
 			ReflectionLoader.logger = new PrintStream(System.out);

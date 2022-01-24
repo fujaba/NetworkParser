@@ -29,6 +29,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * Bit Value
+ * @author Stefan Lindel
+ */
 public class BitValue implements ByteItem {
 	private byte start;
 	private byte size;

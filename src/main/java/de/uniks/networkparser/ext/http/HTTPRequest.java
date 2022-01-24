@@ -7,29 +7,46 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.Socket;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
+import de.uniks.networkparser.json.JsonArray;
+import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public class HTTPRequest implements Comparable<HTTPRequest> {
-	public static final String HTTP__NOTFOUND = "HTTP 404";
-	public static final String HTTP_OK = "HTTP/1.1 200 OK";
-	public static final String HTTP_REDIRECT = "HTTP 302";
-	public static final String HTTP_PERMISSION_DENIED = "HTTP 403";
-	public static final String HTTP_CONTENT = "Content-Type:";
-	public static final String HTTP_AUTHENTIFICATION = "Authentification";
+	public static final String HTTP_STATE_NOTFOUND = "HTTP 404";
+	public static final String HTTP_STATE_OK = "HTTP/1.1 200 OK";
+	public static final String HTTP_STATE_REDIRECT = "HTTP 302";
+	public static final String HTTP_STATE_PERMISSION_DENIED = "HTTP 403";
+	public static final String HTTP_CONTENT = "Content-Type";
+	public static final String HTTP_LENGTH = "Content-Length";
 	public static final String HTTP_REFRESH = "REFRESH";
 	public static final String HTTP_CONTENT_HTML = "text/html";
+	public static final String HTTP_CONTENT_PLAIN = "text/plain";
+	public static final String HTTP_CONTENT_JSON = "application/json";
 	public static final String HTTP_CONTENT_CSS = "text/css";
 	public static final String HTTP_CONTENT_ICON = "image/x-icon";
-	public static final String HTTP_CHARSET = "charset=UTF-8";
 	public static final String HTTP_CONTENT_FORM = "application/x-www-form-urlencoded";
-	public static final String HTTP_LENGTH = "Content-Length:";
+	public static final String HTTP_CONTENT_MULTIFORM = "multipart/form-data;";
+	public static final String HTTP_CHARSET = "charset=UTF-8";
+	public static final String HTTP_DISPOSITION = "Content-Disposition:";
+	public static final String HTTP_CONTENT_HEADER = "plainHeader";
+
+    public static final String HTTP_TYPE_POST = "POST";
+    public static final String HTTP_TYPE_GET = "GET";
+    public static final String HTTP_TYPE_PUT = "PUT";
+    public static final String HTTP_TYPE_PATCH = "PATCH";
+    public static final String HTTP_TYPE_DELETE = "DELETE";
+	
 	public static final String BEARER = "Bearer";
+	public static final String HTTP_AUTHENTIFICATION = "Authentification";
 	public static final Character STATIC = 'S';
 	public static final Character VARIABLE = 'V';
 
@@ -38,13 +55,14 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	private Condition<Exception> errorListener;
 	private Condition<HTTPRequest> updateCondition;
 	private Socket socket;
-	private String path;
+	private String url;
 	private SimpleList<String> headers = new SimpleList<String>();
-	private SimpleKeyValueList<String, String> contentValues;
-	private String content;
+
+	private Map<String, Object> contentValues;
+	private BaseItem content;
+	private String contentType;
 
 	private String http_Type; /* GET OR POST */
-	private String contentType;
 
 	private boolean writeHeader;
 	private boolean writeBody;
@@ -52,7 +70,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	private SimpleList<String> partPath;
 	private SimpleList<String> fullPath;
 	private SimpleList<Character> pathType;
-	private BaseItem bufferResponse;
+	
 
 	private SimpleKeyValueList<String, String> matchVariables = new SimpleKeyValueList<String, String>();
 	private boolean matchValid = true;
@@ -66,7 +84,15 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		}
 	}
 
-	HTTPRequest() {
+	public HTTPRequest(String... params) {
+	    if(params != null) {
+	        if(params.length>0) {
+	            this.url = params[0];
+	        }
+            if(params.length>1) {
+                this.http_Type = params[1];
+            }
+	    }
 	}
 
 	private HTTPRequest(Socket socket) {
@@ -126,7 +152,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	
 	public boolean redirect(String url) {
 		PrintWriter writer = getOutput();
-		writer.println(HTTP_REDIRECT);
+		writer.println(HTTP_STATE_REDIRECT);
 		writer.println("Location: "+url);
 		writer.flush();
 		return true;
@@ -138,13 +164,13 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		if(param != null && param.length>0) {
 			contentType = param[0];
 		}
-		writer.println(HTTP_OK);
+		writer.println(HTTP_STATE_OK);
 		if(HTTP_CONTENT_HTML.equalsIgnoreCase(contentType)) {
-			writer.println(HTTP_CONTENT + " " + contentType + ";" + HTTP_CHARSET + ";");
+			writer.println(HTTP_CONTENT + ": " + contentType + ";" + HTTP_CHARSET + ";");
 		}else {
-			writer.println(HTTP_CONTENT + " " + contentType);
+			writer.println(HTTP_CONTENT + ": " + contentType);
 		}
-		writer.println(HTTP_LENGTH + response.length());
+		writer.println(HTTP_LENGTH + ": " +response.length());
 		writer.write(BaseItem.CRLF);
 		writer.print(response);
 		writer.flush();
@@ -154,11 +180,11 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	
 	
 	public boolean close() {
-		if (this.writeBody == false && this.bufferResponse != null) {
-			if(this.bufferResponse instanceof HTMLEntity) {
-				this.write((HTMLEntity)this.bufferResponse);
+		if (this.writeBody == false && this.content != null) {
+			if(this.content instanceof HTMLEntity) {
+				this.write((HTMLEntity)this.content);
 			}else {
-				writeBody(this.bufferResponse.toString());
+				writeBody(this.content.toString());
 			}
 		}
 		if (outputStream != null) {
@@ -180,8 +206,8 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	}
 	
 	public HTMLEntity getHTMLEntity() {
-		if(bufferResponse instanceof HTMLEntity) {
-			return (HTMLEntity) bufferResponse;
+		if(content instanceof HTMLEntity) {
+			return (HTMLEntity) content;
 		}
 		return null;
 	}
@@ -218,7 +244,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 			defaultValue = "";
 		}
 		if (input == null) {
-			this.path = defaultValue;
+			this.url = defaultValue;
 			return false;
 		}
 		CharacterBuffer buffer = new CharacterBuffer();
@@ -302,7 +328,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		if (buffer.charAt(0) == '/') {
 			buffer.withStartPosition(1);
 		}
-		this.path = buffer.toString();
+		this.url = buffer.toString();
 		return true;
 	}
 
@@ -310,20 +336,21 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return http_Type;
 	}
 
-	public String getPath() {
-		return path;
+	public String getUrl() {
+		return url;
 	}
+
 	public String getAbsolutePath(String... sub) {
 		String result="";
-		if(path != null) {
-			if(path.startsWith("/")) {
-				result = path;
+		if(url != null) {
+			if(url.startsWith("/")) {
+				result = url;
 			}else {
-				result = "/"+path;
+				result = "/"+url;
 			}
 		}
 		if(sub != null && sub.length>0) {
-			if(path.endsWith("/")) {
+			if(url.endsWith("/")) {
 				result += sub[0];
 			}else {
 				result += "/"+sub[0];
@@ -331,8 +358,8 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		}
 		return result;
 	}
-	public HTTPRequest withPath(String value) {
-		this.path = value;
+	public HTTPRequest withURL(String value) {
+		this.url = value;
 		return this;
 	}
 
@@ -345,9 +372,9 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		if (output != null) {
 			this.writeHeader = true;
 			this.writeBody = true;
-			output.println(HTTP_OK);
-			output.println(HTTP_CONTENT + " " + HTTP_CONTENT_HTML + ";" + HTTP_CHARSET + ";");
-			output.println(HTTP_LENGTH + content.length());
+			output.println(HTTP_STATE_OK);
+			output.println(HTTP_CONTENT + ": " + HTTP_CONTENT_HTML + ";" + HTTP_CHARSET + ";");
+			output.println(HTTP_LENGTH + ": "+ content.length());
 			output.write(BaseItem.CRLF);
 			output.print(content);
 			output.flush();
@@ -360,8 +387,8 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		PrintWriter output = getOutput();
 		if (output != null) {
 			if (this.writeHeader == false) {
-				output.println(HTTP_OK);
-				output.println(HTTP_CONTENT + " " + HTTP_CONTENT_HTML + ";" + HTTP_CHARSET + ";");
+				output.println(HTTP_STATE_OK);
+				output.println(HTTP_CONTENT + ": " + HTTP_CONTENT_HTML + ";" + HTTP_CHARSET + ";");
 				this.writeHeader = true;
 			}
 			if (header != null) {
@@ -386,7 +413,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 				for (String item : body) {
 					len += item.length() + 2;
 				}
-				output.println(HTTP_LENGTH + len);
+				output.println(HTTP_LENGTH + ": " + len);
 				output.write(BaseItem.CRLF);
 				for (String item : body) {
 					output.println(item);
@@ -416,6 +443,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 				if (c == HTTP_LENGTH.charAt(pos)) {
 					pos++;
 					if (pos == HTTP_LENGTH.length()) {
+					    pos++; // SKIP ":"
 						length = 1;
 						break;
 					}
@@ -448,7 +476,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 						break;
 					}
 				}
-				this.withHeader(HTTP_LENGTH + " " + length);
+				this.withHeader(HTTP_LENGTH + ": " + length);
 				if (c == 13) {
 					c = input.read();
 				}
@@ -471,7 +499,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 				input.read(item, 1, item.length - 1);
 				CharacterBuffer entry = new CharacterBuffer();
 				entry.with(item, 0, item.length);
-				this.content = entry.toString();
+				this.content = new CharacterBuffer().with(entry.toString());
 			}
 		} catch (IOException e) {
 			executeExeption(e);
@@ -487,35 +515,37 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return writeHeader;
 	}
 
-	public SimpleKeyValueList<String, String> parseForm() {
-		contentValues = new SimpleKeyValueList<String, String>();
-		if (HTTP_CONTENT_FORM.equals(this.contentType) && this.content != null) {
+	public SimpleKeyValueList<String, Object> parseForm() {
+	    SimpleKeyValueList<String, Object> contentValueResult = new SimpleKeyValueList<String, Object>();
+		contentValues = contentValueResult;
+		if (HTTP_CONTENT_FORM.equals(this.contentType) && this.content instanceof CharacterBuffer) {
 			CharacterBuffer buffer = new CharacterBuffer();
+			CharacterBuffer source = (CharacterBuffer) this.content;
 			char c;
 			String key = null;
-			for (int i = 0; i < this.content.length(); i++) {
-				c = this.content.charAt(i);
+			for (int i = 0; i < source.length(); i++) {
+				c = source.charAt(i);
 				if (c == '=') {
 					key = buffer.toString();
 					buffer.clear();
 					continue;
 				}
 				if (c == '&') {
-					contentValues.add(key, buffer.toString());
+					contentValues.put(key, buffer.toString());
 					buffer.clear();
 					continue;
 				}
 				buffer.with(c);
 			}
 			if (buffer.length() > 0) {
-				contentValues.add(key, buffer.toString());
+				contentValues.put(key, buffer.toString());
 			}
 		}
-		return contentValues;
+		return contentValueResult;
 	}
 	
 	public String getContentValue(String key) {
-		return contentValues.get(key);
+		return ""+contentValues.get(key);
 	}
 
 	public HTTPRequest withHeader(String value) {
@@ -523,7 +553,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 			value = value.trim();
 			if (value.length() > 0) {
 				if (value.startsWith(HTTP_CONTENT)) {
-					this.contentType = value.substring(HTTP_CONTENT.length() + 1);
+					this.contentType = value.substring(HTTP_CONTENT.length() + 2);
 				}
 				this.headers.add(value);
 			}
@@ -543,8 +573,14 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return null;
 	}
 
+	public BaseItem getContentElement() {
+        return content;
+    }
 	public String getContent() {
-		return content;
+	    if(content == null) {
+	        return null;
+	    }
+		return content.toString();
 	}
 	
 	public HTTPRequest parse() {
@@ -607,12 +643,12 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return 0;
 	}
 
-	public HTTPRequest withBufferResponse(String... values) {
-		if (bufferResponse == null) {
-			bufferResponse = new CharacterBuffer();
+	public HTTPRequest withContent(String... values) {
+		if (content == null) {
+			content = new CharacterBuffer();
 		}
-		if (values != null && bufferResponse instanceof CharacterBuffer) {
-			CharacterBuffer sb = (CharacterBuffer) bufferResponse;
+		if (values != null && content instanceof CharacterBuffer) {
+			CharacterBuffer sb = (CharacterBuffer) content;
 			for (String item : values) {
 				if (item != null) {
 					sb.append(item);
@@ -622,8 +658,14 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return this;
 	}
 	
-	public HTTPRequest withBufferResponse(HTMLEntity entity) {
-		bufferResponse = entity;
+	public HTTPRequest withContentForm(String splitter, Map<String, Object> values) {
+	    this.contentValues = values;
+	    this.contentType = HTTP_CONTENT_MULTIFORM+" boundary="+splitter;
+	    return this;
+	}
+	
+	public HTTPRequest withContent(BaseItem entity) {
+	    content = entity;
 		return this;
 	}
 
@@ -671,5 +713,81 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 
 	public SimpleList<String> getFullPath() {
 		return fullPath;
+	}
+
+    public HTTPRequest withType(String value) {
+        this.http_Type = value;
+        return this;
+    }
+
+    public CharacterBuffer getMultiContent() {
+        if(contentValues == null || !(contentType != null && contentType.startsWith(HTTP_CONTENT_MULTIFORM))) {
+            return null;
+        } 
+        int pos = contentType.indexOf("boundary=");
+        if(pos<1) {
+        	return null;
+        }
+        String splitter = contentType.substring(pos+9);
+        CharacterBuffer content = new CharacterBuffer();
+        for(Iterator<Entry<String, Object>> iterator = contentValues.entrySet().iterator();iterator.hasNext();) {
+            Entry<String, Object> item = iterator.next();
+            Object element = item.getValue();
+            if(element == null) {
+                continue;
+            }
+            content.withLine("--"+splitter);
+            if (element instanceof JsonArray || element instanceof JsonObject) {
+                content.withLine(HTTP_DISPOSITION+" form-data; name=\"" + item.getKey() + "\"; filename=\"" + item.getKey() +".json\"");
+                content.withLine(HTTP_CONTENT + ": " + HTTP_CONTENT_JSON);
+                content.with(BaseItem.CRLF);
+                content.withLine(element.toString());
+            } else if (element instanceof BaseItem) {
+                content.withLine(HTTP_DISPOSITION + " form-data; name=\"" + item.getKey() + "\"; filename=\"" + item.getKey()+".txt\"");
+                content.with(BaseItem.CRLF);
+                content.withLine(element.toString());
+            } else {
+                content.withLine(HTTP_DISPOSITION+" form-data; name=\""+item.getKey()+"\"");
+                content.withLine(element.toString());
+            }
+        }
+        content.withLine("--"+splitter+"--");
+        return content;
+    }
+
+    public HTTPRequest withContent(String bodyType, Object[] params) {
+        if(params == null || params.length % 2 == 1) {
+            return this;
+        }
+        this.contentType = bodyType;
+        this.contentValues = new SimpleKeyValueList<String, Object>();
+        for(int i=0;i<params.length;i+=2) {
+             this.contentValues.put(""+ params[i], params[i+1]);
+        }
+        return this;
+    }
+    public HTTPRequest withContent(String bodyType, Map<String, Object> values) {
+    	this.contentType = bodyType;
+    	this.contentValues = values;
+    	return this;
+    }
+    
+    public boolean isValidContentType() {
+        return (HTTP_CONTENT_PLAIN.equalsIgnoreCase(contentType) || 
+        		HTTP_CONTENT_JSON.equalsIgnoreCase(contentType) ||
+        		HTTP_CONTENT_HEADER.equalsIgnoreCase(contentType));
+    }
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public Map<String, Object> getContentValues() {
+		return contentValues;
+	}
+
+	public HTTPRequest withContentType(String value) {
+		this.contentType = value;
+		return this;
 	}
 }

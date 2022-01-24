@@ -105,7 +105,7 @@ public class VariableCondition implements ParserCondition {
 			}
 			Object object = variables.getValue(variables, v);
 
-			if (object == null && (this.expression == false || defaultStringValue)) {
+			if (object == null && (!this.expression || defaultStringValue)) {
 				this.expression = false;
 				return key;
 			}
@@ -132,9 +132,9 @@ public class VariableCondition implements ParserCondition {
 			if(object instanceof Integer && param != null) {
 				Integer intValue = (Integer) object;
 				if(param.startsWith(">")) {
-					return intValue > Integer.valueOf(param.substring(1));
+					return intValue > Integer.parseInt(param.substring(1));
 				}else if(param.startsWith("<")) {
-					return intValue < Integer.valueOf(param.substring(1));
+					return intValue < Integer.parseInt(param.substring(1));
 				}
 			}
 			if (object instanceof Set<?> && format != null) {
@@ -175,7 +175,7 @@ public class VariableCondition implements ParserCondition {
 		if (param == null && anno.getScope() != null) {
 			return;
 		}
-		if (param != null && param.equalsIgnoreCase(anno.getScope()) == false) {
+		if (param != null && !param.equalsIgnoreCase(anno.getScope())) {
 			return;
 		}
 		GraphSimpleSet children = GraphUtil.getChildren(anno);
@@ -214,7 +214,7 @@ public class VariableCondition implements ParserCondition {
 		if ("tolower".equalsIgnoreCase(format)) {
 			return value.toLowerCase();
 		}
-		if ((small == false && upper) || "toupper".equalsIgnoreCase(format)) {
+		if ((!small && upper) || "toupper".equalsIgnoreCase(format)) {
 			return value.toUpperCase();
 		}
 		if (firstUpper || "firstUpper".equalsIgnoreCase(format)) {
@@ -229,10 +229,10 @@ public class VariableCondition implements ParserCondition {
 			int start = 0;
 			int end = value.length() - 1;
 			if (item.length > 0) {
-				start = Integer.valueOf(item[0].trim());
+				start = Integer.parseInt(item[0].trim());
 			}
 			if (item.length > 1) {
-				int temp = Integer.valueOf(item[1].trim());
+				int temp = Integer.parseInt(item[1].trim());
 				;
 				if (temp < end) {
 					end = temp;

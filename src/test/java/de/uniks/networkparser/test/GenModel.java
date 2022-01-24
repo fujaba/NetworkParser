@@ -116,9 +116,9 @@ public class GenModel {
 		
 		method.withBidirectional(parameter, "children", Association.MANY, "parent", Association.ONE);
 		
-		datatype.withBidirectional(parameter, "parent", Association.ONE, "childre", Association.MANY);
-		datatype.withBidirectional(attribute, "parent", Association.ONE, "childre", Association.MANY);
-		datatype.withBidirectional(method, "parent", Association.ONE, "childre", Association.MANY);
+		datatype.withBidirectional(parameter, "parent", Association.ONE, "children", Association.MANY);
+		datatype.withBidirectional(attribute, "parent", Association.ONE, "children", Association.MANY);
+		datatype.withBidirectional(method, "parent", Association.ONE, "children", Association.MANY);
 		datatype.withUniDirectional(clazz, "clazz", Association.ONE);
 		
 		sdmLib.withGraph(modelMeta);

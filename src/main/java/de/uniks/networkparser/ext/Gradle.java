@@ -114,12 +114,10 @@ public class Gradle implements ObjectCondition {
         while ((len = zis.read(buffer)) > 0) {
           fos.write(buffer, 0, len);
         }
-        fos.close();
       }
     } catch (IOException e) {
       throw new SimpleException(e);
     } finally {
-
       try {
         if (jar != null) {
           jar.close();

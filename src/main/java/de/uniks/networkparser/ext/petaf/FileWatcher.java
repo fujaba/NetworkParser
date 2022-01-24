@@ -41,6 +41,10 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyFileSystem;
 
+/**
+ * FileWatcher for Changes on Storage 
+ * @author Stefan Lindel
+ */
 public class FileWatcher implements Runnable {
 	protected NodeProxy proxy;
 	protected String fileName;

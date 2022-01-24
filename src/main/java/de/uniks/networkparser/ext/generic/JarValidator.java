@@ -294,12 +294,12 @@ public class JarValidator
             int end = content.indexOf("</td", pos);
             pos += search.length();
             String cc = content.substring(pos, end);
-            cc = cc.replaceAll("&nbsp;", "");
-            cc = cc.replaceAll("%", "");
+            cc = cc.replace("&nbsp;", "");
+            cc = cc.replace("%", "");
             cc = cc.replace((char) 160, ' ');
             cc = cc.trim();
             logger.print(this, "Found CC: " + cc);
-            int no = Integer.valueOf(cc);
+            int no = Integer.parseInt(cc);
             if (no >= this.minCoverage)
             {
                return 0;

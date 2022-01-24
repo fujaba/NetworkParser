@@ -85,16 +85,16 @@ public class RESTServiceTask implements Condition<Socket> {
 		HTTPRequest clientSocket = HTTPRequest.create(socket);
 		clientSocket.readType();
 		clientSocket.readPath();
-		System.out.println(clientSocket.getHttp_Type() + ": " + clientSocket.getPath());
+		System.out.println(clientSocket.getHttp_Type() + ": " + clientSocket.getUrl());
 		HTTPRequest match = null;
 		if (routing != null && routing.size() > 0) {
 			/* Parsing Path */
 			HTTPRequest defaultMatch = null;
-			String path = clientSocket.getPath();
+			String path = clientSocket.getUrl();
 			SortedList<HTTPRequest> matches = new SortedList<HTTPRequest>(true);
 			for (int i = 0; i < routing.size(); i++) {
 				HTTPRequest key = routing.get(i);
-				if ("*".equals(key.getPath())) {
+				if ("*".equals(key.getUrl())) {
 					defaultMatch = key;
 				}
 				if (clientSocket.match(key)) {
@@ -111,10 +111,10 @@ public class RESTServiceTask implements Condition<Socket> {
 			}
 		}
 		/* SO NEW MATCHES */
-		SimpleEvent event = new SimpleEvent(clientSocket, clientSocket.getPath());
+		SimpleEvent event = new SimpleEvent(clientSocket, clientSocket.getUrl());
 		if (allowListener != null) {
 			if (!allowListener.update(event)) {
-				clientSocket.writeHeader(HTTPRequest.HTTP_PERMISSION_DENIED);
+				clientSocket.writeHeader(HTTPRequest.HTTP_STATE_PERMISSION_DENIED);
 				clientSocket.close();
 				return false;
 			}
@@ -162,20 +162,20 @@ public class RESTServiceTask implements Condition<Socket> {
 			return null;
 		}
 		String type = socketRequest.getType();
-		if (NodeProxyTCP.GET.equalsIgnoreCase(type) || "".equals(type)
+		if (HTTPRequest.HTTP_TYPE_GET.equalsIgnoreCase(type) || "".equals(type)
 				|| SendableEntityCreator.NEW.equalsIgnoreCase(type)) {
 			return this.getExecute(socketRequest);
 		}
-		if (NodeProxyTCP.POST.equalsIgnoreCase(type)) {
+		if (HTTPRequest.HTTP_TYPE_POST.equalsIgnoreCase(type)) {
 			return this.postExecute(socketRequest);
 		}
-		if (NodeProxyTCP.PUT.equalsIgnoreCase(type)) {
+		if (HTTPRequest.HTTP_TYPE_PUT.equalsIgnoreCase(type)) {
 			return this.putExecute(socketRequest);
 		}
-		if (NodeProxyTCP.PATCH.equalsIgnoreCase(type)) {
+		if (HTTPRequest.HTTP_TYPE_PATCH.equalsIgnoreCase(type)) {
 			return this.patchExecute(socketRequest);
 		}
-		if (NodeProxyTCP.DELETE.equalsIgnoreCase(type)) {
+		if (HTTPRequest.HTTP_TYPE_DELETE.equalsIgnoreCase(type)) {
 			return this.deleteExecute(socketRequest);
 		}
 		return null;
@@ -311,7 +311,7 @@ public class RESTServiceTask implements Condition<Socket> {
 				return jsonObject.toString();
 			}
 		}
-		return HTTPRequest.HTTP__NOTFOUND;
+		return HTTPRequest.HTTP_STATE_NOTFOUND;
 	}
 
 	/** DELETE
@@ -328,9 +328,9 @@ public class RESTServiceTask implements Condition<Socket> {
 		Object element = getElement(request, path, listID, false);
 		if (element != null) {
 			space.getMap().removeObj(element, true);
-			return HTTPRequest.HTTP_OK;
+			return HTTPRequest.HTTP_STATE_OK;
 		}
-		return HTTPRequest.HTTP__NOTFOUND;
+		return HTTPRequest.HTTP_STATE_NOTFOUND;
 	}
 
 	/** POST
@@ -342,17 +342,17 @@ public class RESTServiceTask implements Condition<Socket> {
 	 */
 	private String postExecute(SimpleEvent socketRequest) {
 		if (socketRequest == null) {
-			return HTTPRequest.HTTP__NOTFOUND;
+			return HTTPRequest.HTTP_STATE_NOTFOUND;
 		}
 		Object source = socketRequest.getSource();
 		if (source instanceof HTTPRequest == false) {
-			return HTTPRequest.HTTP__NOTFOUND;
+			return HTTPRequest.HTTP_STATE_NOTFOUND;
 		}
 		HTTPRequest request = (HTTPRequest) source;
 
 		CharacterBuffer path = new CharacterBuffer();
 		CharacterBuffer listID = new CharacterBuffer();
-		CharacterBuffer pathValue = new CharacterBuffer().with(request.getPath());
+		CharacterBuffer pathValue = new CharacterBuffer().with(request.getUrl());
 		Object element = getElement(pathValue, path, listID, true);
 
 		/* First item SWITCH */
@@ -365,7 +365,7 @@ public class RESTServiceTask implements Condition<Socket> {
 			if (creator != null) {
 				creator.setValue(element, pathValue.toString(), child, SendableEntityCreator.NEW);
 			}
-			return HTTPRequest.HTTP_OK;
+			return HTTPRequest.HTTP_STATE_OK;
 		}
 		/* PLAIN KEY VALUE */
 		SimpleKeyValueList<String, String> child = new SimpleKeyValueList<String, String>().withKeyValueString(body,
@@ -382,7 +382,7 @@ public class RESTServiceTask implements Condition<Socket> {
 					SendableEntityCreator.NEW);
 		}
 		creator.setValue(element, pathValue.toString(), childValue, SendableEntityCreator.NEW);
-		return HTTPRequest.HTTP_OK;
+		return HTTPRequest.HTTP_STATE_OK;
 	}
 
 	/** PUT
@@ -392,7 +392,7 @@ public class RESTServiceTask implements Condition<Socket> {
 	*   @param socketRequest The SocketRequest
 	*   @return Response */
 	private String putExecute(SimpleEvent socketRequest) {
-		return HTTPRequest.HTTP__NOTFOUND;
+		return HTTPRequest.HTTP_STATE_NOTFOUND;
 	}
 
 	/** PATCH Update/Modify
@@ -402,7 +402,7 @@ public class RESTServiceTask implements Condition<Socket> {
 	* @param socketRequest The SocketRequest
 	* @return Response */
 	private String patchExecute(SimpleEvent socketRequest) {
-		return HTTPRequest.HTTP__NOTFOUND;
+		return HTTPRequest.HTTP_STATE_NOTFOUND;
 	}
 
 	public void stop() {
