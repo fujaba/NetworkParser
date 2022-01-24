@@ -276,8 +276,22 @@ spotbugsMain {
 	excludeFilter = file("lib/spotbug_exlude.xml")
 	ignoreFailures = true
 }
+spotbugsTest {
+    reports {
+        xml {
+		  enabled = true
+		  destination = new File("${buildDir}/test-results/spotbugs_test.xml")
+		}
+		html {
+			enabled = true
+			destination = new File("${buildDir}/test-results/spotbugs_test.html")
+		}
+    }
+	excludeFilter = file("lib/spotbug_exlude.xml")
+	ignoreFailures = true
+}
 
-task coverallReport() {
+task coveralls() {
 	doFirst {
 		def urls=[]
 		files(configurations.gitVersion).each {urls.add(it.toURL())}
