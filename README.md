@@ -24,6 +24,10 @@ The Framework have many other features like:
 - SimpleList as universal solution for datamodels
 
 ## Current Status ##
+- GitLab CI
+  - Coveralls [![Coverage Status](https://coveralls.io/repos/gitlab/StefanLindel/NetworkParser/badge.svg?branch=feature/gitlab)](https://coveralls.io/gitlab/StefanLindel/NetworkParser?branch=feature/gitlab)
+  - SonarCloud [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=StefanLindel_NetworkParser&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=StefanLindel_NetworkParser)
+- 
 - Master
   - travis-ci: [![Build Status](https://travis-ci.org/fujaba/NetworkParser.svg?branch=master)](https://travis-ci.org/fujaba/NetworkParser)
 <!--  - Maven: [![Maven Status](http://se.cs.uni-kassel.de/maven/icon?project=NetworkParser)](http://se.cs.uni-kassel.de/maven/de/uniks/NetworkParser/latest/NetworkParser.jar)-->

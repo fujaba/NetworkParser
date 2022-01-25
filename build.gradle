@@ -305,7 +305,6 @@ task coveralls() {
 			def method = myClass.getMethod("execute", Object.class)
 			element.reportFile = "build/report.json"
 			element.token = COVERALLS_REPO_TOKEN
-			element.url = null
 			element.git = gitVersion
 			
 			method.invoke(element, new Object[]{null})
