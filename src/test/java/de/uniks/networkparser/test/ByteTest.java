@@ -18,11 +18,11 @@ import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.DERBuffer;
 import de.uniks.networkparser.bytes.AES;
+import de.uniks.networkparser.bytes.ByteConverter;
 import de.uniks.networkparser.bytes.ByteConverter64;
 import de.uniks.networkparser.bytes.ByteConverterAES;
 import de.uniks.networkparser.bytes.ByteConverterBinary;
 import de.uniks.networkparser.bytes.ByteConverterHex;
-import de.uniks.networkparser.bytes.ByteConverterString;
 import de.uniks.networkparser.bytes.ByteEntity;
 import de.uniks.networkparser.bytes.ByteMessage;
 import de.uniks.networkparser.bytes.SHA1;
@@ -179,7 +179,7 @@ public class ByteTest{
 		ByteItem data = map.toByteItem(uni);
 		ByteBuffer byteBuffer = data.getBytes(false);
 //		assertEquals("ALde.uniks.networkparser.test.model.UniversityOUni Kassel", data.toString(new ByteConverterString()));
-		assertEquals("#uOUni Kassel", data.toString(new ByteConverterString()));
+		assertEquals("#uOUni Kassel", data.toString(new ByteConverter()));
 		assertEquals(13, byteBuffer.length());
 		University decodeObj = (University) map.decode(byteBuffer);
 

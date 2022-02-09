@@ -100,7 +100,7 @@ public class AES {
 		}
 	}
 
-	private ByteConverterString converter = new ByteConverterString();
+	private ByteConverter converter = new ByteConverter();
 
 	/**
 	 * return number of rounds for a given AES key size.

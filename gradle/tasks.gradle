@@ -34,21 +34,11 @@ ext{
 
 gradle.projectsEvaluated {
 	if(args != "[buildLocalJar]") {
-		//compileJava.dependsOn(compileJava16)
-		compileJava.dependsOn(compileJava17)
-		//buildCoreJar17.dependsOn(buildCoreJar16)
+	    compileJava.dependsOn(compileJava17)
 		test.dependsOn(FinishTest)
 	}
 }
 
-task compileJava16(type: JavaCompile) {
-	source = fileTree(dir: 'src', exclude: ['**/test/**', 'jmh/**', 'gitsrc/**'])
-	destinationDir = file('build/classes/main16')
-	sourceCompatibility = '1.6'
-	targetCompatibility = '1.6'
-	classpath = files('build/classes/main16')
-	options.compilerArgs << "-Xlint:-options"
-}
 task compileJava17(type: JavaCompile) {
 	source = fileTree(dir: 'src', exclude: ['**/test/**', 'jmh/**', 'gitsrc/**'])
 	destinationDir = file('build/classes/main17')
@@ -62,12 +52,6 @@ jar{
 	group "Jar"
 	exclude '**/test/**'
 	from sourceSets.main.output
-	manifest = project.manifest {from sharedManifest}
-}
-
-task buildCoreJar16(type: Jar, dependsOn: jar) {
-	description 'Build Jar with NetworkParser-Core for Java 1.6'
-	group "Jar"; from fileTree(dir: 'build/classes/main16'); classifier = 'core16'
 	manifest = project.manifest {from sharedManifest}
 }
 
@@ -97,73 +81,77 @@ task buildMinCoreJar(type: Jar) {
 
 task buildMinJsonJar(type: Jar) {
 	description 'Build Minimum-Json-Jar with NetworkParser-Core'
-	group "Jar";from sourceSets.main.output; classifier = 'json';
+	group "Jar"; classifier = 'json';includeEmptyDirs = false;
+	from {(sourceSets.main.output + sourceSets.main.allJava)};
+//	from sourceSets.main.output; 
 	manifest = project.manifest {from sharedManifest}
+	def ext='.java'
+	def pkg='de/uniks/networkparser/';
 	includes = ['**/Licence.txt',
 'de/uniks/networkparser.gwt.xml',
-'de/uniks/networkparser/Deep.class',
-'de/uniks/networkparser/EntityCreator.class',
-'de/uniks/networkparser/EntityStringConverter.class',
-'de/uniks/networkparser/EntityValueFactory.class',
-'de/uniks/networkparser/Filter.class',
-'de/uniks/networkparser/MapEntity.class',
-'de/uniks/networkparser/MapEntityStack.class',
-'de/uniks/networkparser/MapFilter.class',
-'de/uniks/networkparser/NetworkParserLog.class',
-'de/uniks/networkparser/SimpleEvent.class',
-'de/uniks/networkparser/SimpleException.class',
-'de/uniks/networkparser/SimpleMap.class',
-'de/uniks/networkparser/SimpleObject.class',
-'de/uniks/networkparser/SimpleGrammar.class',
-'de/uniks/networkparser/StringUtil.class',
-'de/uniks/networkparser/Tokener.class',
-'de/uniks/networkparser/UpdateCondition.class',
-'de/uniks/networkparser/UpdateListener.class',
-'de/uniks/networkparser/buffer/Buffer.class',
-'de/uniks/networkparser/buffer/BufferedBuffer.class',
-'de/uniks/networkparser/buffer/ByteBuffer.class',
-'de/uniks/networkparser/buffer/CharacterBuffer.class',
-'de/uniks/networkparser/bytes/ByteConverter.class',
-'de/uniks/networkparser/bytes/ByteConverterHex.class',
-'de/uniks/networkparser/bytes/ByteConverterString.class',
-'de/uniks/networkparser/interfaces/BaseItem.class',
-'de/uniks/networkparser/interfaces/BufferItem.class',
-'de/uniks/networkparser/interfaces/ByteItem.class',
-'de/uniks/networkparser/interfaces/Condition.class',
-'de/uniks/networkparser/interfaces/Converter.class',
-'de/uniks/networkparser/interfaces/Entity.class',
-'de/uniks/networkparser/interfaces/EntityList.class',
-'de/uniks/networkparser/interfaces/Grammar.class',
-'de/uniks/networkparser/interfaces/ObjectCondition.class',
-'de/uniks/networkparser/interfaces/SendableEntity.class',
-'de/uniks/networkparser/interfaces/SendableEntityCreator.class',
-'de/uniks/networkparser/interfaces/SendableEntityCreatorIndexId.class',
-'de/uniks/networkparser/interfaces/SendableEntityCreatorNoIndex.class',
-'de/uniks/networkparser/interfaces/SendableEntityCreatorTag.class',
-'de/uniks/networkparser/interfaces/SendableEntityCreatorWrapper.class',
-'de/uniks/networkparser/json/JsonArray.class',
-'de/uniks/networkparser/json/JsonObject.class',
-'de/uniks/networkparser/json/JsonTokener.class',
-'de/uniks/networkparser/json/YamlEntity.class',
-'de/uniks/networkparser/json/YamlItem.class',
-'de/uniks/networkparser/json/YAMLTokener.class',
-'de/uniks/networkparser/list/AbstractArray.class',
-'de/uniks/networkparser/list/AbstractList.class',
-'de/uniks/networkparser/list/EntityComparator.class',
-'de/uniks/networkparser/list/MapEntry.class',
-'de/uniks/networkparser/list/ObjectMapEntry.class',
-'de/uniks/networkparser/list/SimpleEntity.class',
-'de/uniks/networkparser/list/SimpleEntrySet.class',
-'de/uniks/networkparser/list/SimpleIterator.class',
-'de/uniks/networkparser/list/SimpleIteratorSet.class',
-'de/uniks/networkparser/list/SimpleKeyValueList.class',
-'de/uniks/networkparser/list/SimpleList.class',
-'de/uniks/networkparser/list/SimpleMapEntry.class',
-'de/uniks/networkparser/list/SimpleSet.class',
-'de/uniks/networkparser/list/SortedList.class',
-'de/uniks/networkparser/list/SortingDirection.class',
-'de/uniks/networkparser/xml/XMLEntity.class',
-'de/uniks/networkparser/xml/XMLTokener.class']
+pkg+'Deep'+ext,
+pkg+'EntityCreator'+ext,
+pkg+'EntityStringConverter'+ext,
+pkg+'EntityValueFactory'+ext,
+pkg+'Filter'+ext,
+pkg+'MapEntity'+ext,
+pkg+'MapEntityStack'+ext,
+pkg+'MapFilter'+ext,
+pkg+'NetworkParserLog'+ext,
+pkg+'SimpleEvent'+ext,
+pkg+'SimpleException'+ext,
+pkg+'SimpleMap'+ext,
+pkg+'SimpleObject'+ext,
+pkg+'SimpleGrammar'+ext,
+pkg+'StringUtil'+ext,
+pkg+'Tokener'+ext,
+pkg+'UpdateCondition'+ext,
+pkg+'UpdateListener'+ext,
+pkg+'buffer/Buffer'+ext,
+pkg+'buffer/BufferedBuffer'+ext,
+pkg+'buffer/ByteBuffer'+ext,
+pkg+'buffer/CharacterBuffer'+ext,
+pkg+'bytes/ByteConverter'+ext,
+pkg+'bytes/ByteConverterHex'+ext,
+pkg+'interfaces/BaseItem'+ext,
+pkg+'interfaces/BufferItem'+ext,
+pkg+'interfaces/ByteItem'+ext,
+pkg+'interfaces/Condition'+ext,
+pkg+'interfaces/Converter'+ext,
+pkg+'interfaces/Entity'+ext,
+pkg+'interfaces/EntityList'+ext,
+pkg+'interfaces/Grammar'+ext,
+pkg+'interfaces/MapListener'+ext,
+pkg+'interfaces/ObjectCondition'+ext,
+pkg+'interfaces/SendableEntity'+ext,
+pkg+'interfaces/SendableEntityCreator'+ext,
+pkg+'interfaces/SendableEntityCreatorIndexId'+ext,
+pkg+'interfaces/SendableEntityCreatorNoIndex'+ext,
+pkg+'interfaces/SendableEntityCreatorTag'+ext,
+pkg+'interfaces/SendableEntityCreatorWrapper'+ext,
+pkg+'json/JsonArray'+ext,
+pkg+'json/JsonObject'+ext,
+pkg+'json/JsonTokener'+ext,
+pkg+'json/YamlEntity'+ext,
+pkg+'json/YamlItem'+ext,
+pkg+'json/YAMLTokener'+ext,
+pkg+'list/AbstractArray'+ext,
+pkg+'list/AbstractList'+ext,
+pkg+'list/EntityComparator'+ext,
+pkg+'list/MapEntry'+ext,
+pkg+'list/ObjectMapEntry'+ext,
+pkg+'list/SimpleEntity'+ext,
+pkg+'list/SimpleEntrySet'+ext,
+pkg+'list/SimpleIterator'+ext,
+pkg+'list/SimpleIteratorSet'+ext,
+pkg+'list/SimpleKeyValueList'+ext,
+pkg+'list/SimpleList'+ext,
+pkg+'list/SimpleMapEntry'+ext,
+pkg+'list/SimpleSet'+ext,
+pkg+'list/SortedList'+ext,
+pkg+'list/SortingDirection'+ext,
+pkg+'xml/XMLEntity'+ext,
+pkg+'xml/XMLTokener'+ext]
 }
 
 

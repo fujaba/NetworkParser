@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 
 import de.uniks.networkparser.bytes.ByteConverter;
-import de.uniks.networkparser.bytes.ByteConverterString;
 import de.uniks.networkparser.interfaces.Converter;
 
 /** ByteBuffer 
@@ -444,7 +443,7 @@ public class ByteBuffer extends BufferedBuffer {
 
 	@Override
 	public String toString() {
-		return toString(new ByteConverterString());
+		return toString(new ByteConverter());
 	}
 
 	@Override
@@ -463,7 +462,7 @@ public class ByteBuffer extends BufferedBuffer {
 
 	public String toString(Converter converter) {
 		if (converter == null) {
-			converter = new ByteConverterString();
+			converter = new ByteConverter();
 		}
 		if (converter instanceof ByteConverter) {
 			return ((ByteConverter) converter).toString(this.toBytes());

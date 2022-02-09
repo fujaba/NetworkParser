@@ -106,6 +106,13 @@ public class Annotation extends GraphMember {
 		return this;
 	}
 
+	/**
+	 * decode BufferItem.
+	 * @param tokener Tokener
+	 * @param endTag Character of EndTag
+	 * @param parent Parent parent
+	 * @return ThisComponent
+	 */
 	public Annotation decode(BufferItem tokener, char endTag, Annotation parent) {
 		if (tokener == null) {
 			return null;

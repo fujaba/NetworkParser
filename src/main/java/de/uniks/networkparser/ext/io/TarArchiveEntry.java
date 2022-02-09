@@ -221,8 +221,7 @@ public class TarArchiveEntry {
 	public static final int MILLIS_PER_SECOND = 1000;
 
 	/**
-	 * Construct an empty entry and prepares the header values.
-	 * @param preserveAbsolutePath Switch for AbsolutePath
+	 * Construct an empty entry
 	 */
 	public TarArchiveEntry() {
 		String user = System.getProperty("user.name", "");

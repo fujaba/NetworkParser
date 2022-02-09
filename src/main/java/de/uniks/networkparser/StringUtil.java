@@ -1133,7 +1133,7 @@ public class StringUtil {
 		return sb.toString();
 	}
 
-    public static boolean isText(CharSequence name) {
+    public static boolean isText(String name) {
         if(name == null || name.isEmpty()) {
             return true;
         }

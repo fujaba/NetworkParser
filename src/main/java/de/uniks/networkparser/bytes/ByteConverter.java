@@ -10,8 +10,21 @@ import de.uniks.networkparser.interfaces.Converter;
 
 /** ByteConverter 
  * @author Stefan Lindel */
-public abstract class ByteConverter implements Converter {
-	public abstract String toString(BufferedBuffer values);
+public class ByteConverter implements Converter {
+    /** To simple string.
+     * @param values the bytes
+     * @return the string
+     */
+    public String toString(BufferedBuffer values) {
+        if (values == null) {
+            return null;
+        }
+        StringBuilder returnValue = new StringBuilder(values.length());
+        for (int i = 0; i < values.length(); i++) {
+            returnValue.append(values.charAt(i));
+        }
+        return returnValue.toString();
+    }
 
 	public String toString(byte... values) {
 		ByteBuffer buffer = new ByteBuffer().with(values);
@@ -23,8 +36,10 @@ public abstract class ByteConverter implements Converter {
 		ByteBuffer buffer;
 		if (entity instanceof ByteItem) {
 			buffer = ((ByteItem) entity).getBytes(true);
+		} else if(entity instanceof BufferedBuffer){
+		    return toString((BufferedBuffer) entity);
 		} else {
-			byte[] array = ((BaseItem) entity).toString().getBytes(Charset.forName(BaseItem.ENCODING));
+			byte[] array = entity.toString().getBytes(Charset.forName(BaseItem.ENCODING));
 			buffer = new ByteBuffer().with(array);
 		}
 		if (buffer != null) {
@@ -33,5 +48,22 @@ public abstract class ByteConverter implements Converter {
 		return "";
 	}
 
-	public abstract byte[] decode(CharSequence value);
+	/**
+     * To byte string.
+     *
+     * @param value the hex string
+     * @return the byte[]
+     */
+    public byte[] decode(CharSequence value) {
+        if (value == null) {
+            return null;
+        }
+        byte[] out = new byte[value.length()];
+        int n = value.length();
+
+        for (int i = 0; i < n; i++) {
+            out[i] = (byte) value.charAt(i);
+        }
+        return out;
+    }
 }

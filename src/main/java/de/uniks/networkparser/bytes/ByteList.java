@@ -170,7 +170,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
   }
 
   public SimpleList<ByteItem> withValue(String value) {
-    ByteConverterString converter = new ByteConverterString();
+    ByteConverter converter = new ByteConverter();
     this.add(((ByteEntity) getNewList(true)).withValue(ByteTokener.DATATYPE_FIXED, converter.decode(value)));
     return this;
   }

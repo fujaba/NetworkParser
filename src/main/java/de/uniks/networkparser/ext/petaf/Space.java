@@ -13,7 +13,6 @@ import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.bytes.ByteConverter;
-import de.uniks.networkparser.bytes.ByteConverterString;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.LogItem;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
@@ -419,7 +418,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 
 	public ByteConverter getConverter() {
 		if (converter == null) {
-			converter = new ByteConverterString();
+			converter = new ByteConverter();
 		}
 		return converter;
 	}
