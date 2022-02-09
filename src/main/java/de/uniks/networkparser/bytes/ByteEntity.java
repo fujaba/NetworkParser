@@ -31,8 +31,8 @@ import de.uniks.networkparser.interfaces.Converter;
 
 /**
  * The Class ByteEntity.
+ * @author Stefan
  */
-
 public class ByteEntity implements ByteItem {
   /** The Constant BIT OF A BYTE. */
   public static final int BITOFBYTE = 8;

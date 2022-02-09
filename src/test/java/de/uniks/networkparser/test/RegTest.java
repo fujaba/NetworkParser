@@ -18,6 +18,11 @@ public class RegTest {
 		Assert.assertNotNull(root);
 	}
 
+	@Test
+	public void testRegExString() {
+	    String pattern = "((public|private|protected|static|final|native|synchronized|abstract|transient)+\\s)+[\\$_\\w\\<\\>\\[\\]]*\\s+[\\$_\\w]+\\([^\\)]*\\)?\\s*\\{?";
+	    System.out.println(pattern);
+	}
 	
 	public ObjectCondition parseCurrentChar(CharacterBuffer item){
 		char ch = item.getCurrentChar();

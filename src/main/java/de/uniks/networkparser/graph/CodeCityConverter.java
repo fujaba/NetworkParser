@@ -33,20 +33,21 @@ public class CodeCityConverter implements Converter {
 	@Override
 	public String encode(BaseItem entity) {
 		CharacterBuffer buffer = new CharacterBuffer();
-		if (entity instanceof FileClassModel == false) {
+		if (!(entity instanceof FileClassModel)) {
 			return buffer.toString();
 		}
 		FileClassModel model = (FileClassModel) entity;
 		buffer.with("(Moose.Model (sourceLanguage 'Java') (entity ", BaseItem.CRLF);
 
 		SimpleKeyValueList<String, SimpleList<ParserEntity>> packageList = model.getPackageList();
+		
 		for (int i = 0; i < packageList.size(); i++) {
 			String packageName = packageList.get(i);
 			buffer.with("(FAMIX.Namespace (id: " + (i + 1) + ") (name '" + packageName.replace(".", "::") + "'))",
 					BaseItem.CRLF);
 		}
 		int index = ((packageList.size() + 2) / 100) + 100;
-		SimpleKeyValueList<GraphMember, Integer> list = new SimpleKeyValueList<GraphMember, Integer>();
+		SimpleKeyValueList<GraphMember, Integer> list = new SimpleKeyValueList<>();
 
 		for (int i = 0; i < packageList.size(); i++) {
 			SimpleList<ParserEntity> entities = packageList.getValueByIndex(i);

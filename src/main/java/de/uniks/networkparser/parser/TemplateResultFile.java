@@ -216,9 +216,9 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 	public SourceCode getCode() {
 		if (this.member instanceof Clazz) {
 			Clazz clazz = (Clazz) this.member;
-			GraphMember code = clazz.getChildByName(SourceCode.NAME, SourceCode.class);
-			if (code != null && code instanceof SourceCode) {
-				return (SourceCode) code;
+			SourceCode code = clazz.getChildByClass(SourceCode.class);
+			if (code != null) {
+				return code;
 			}
 		}
 		return null;

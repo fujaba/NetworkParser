@@ -34,9 +34,9 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.parser.TemplateResultFragment;
 
 /**
- * @author Stefan Lindel IfCondition Clazz
+ * IfCondition Clazz
+ * @author Stefan
  */
-
 public class IfCondition implements ParserCondition, SendableEntityCreator {
 	public static final String TAG = "if";
 	public static final String IFNOT = "ifnot";

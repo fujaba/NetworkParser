@@ -39,8 +39,8 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
  * The Class YUMLIdParser.
+ * @author Stefan
  */
-
 public class GraphTokener extends Tokener {
 	/** The Constant for CLASS Diagramms. */
 	public static final String CLASSDIAGRAM = "classdiagram";

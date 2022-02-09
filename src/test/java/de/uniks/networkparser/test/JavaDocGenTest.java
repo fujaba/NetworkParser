@@ -21,18 +21,13 @@ public class JavaDocGenTest {
 		}
 		Assert.assertEquals(0, errors.size());
 //		try{
-//			time = System.currentTimeMillis();
 //			ProcessBuilder pb = new ProcessBuilder("javadoc","-notree", "-noindex", "-nonavbar", "-quiet", "-subpackages", "de.uniks.networkparser", "-sourcepath", "src/main/java", "-d", "build/testJavadoc");
-////			pb = new ProcessBuilder("javadoc", "-noindex", "-notree", "-quiet", "-subpackages", "de.uniks.networkparser", "-sourcepath", "src/main/java", "-d", "build/testJavadoc");
-////			pb.redirectOutput(Redirect.INHERIT);
-////			pb.redirectError(Redirect.INHERIT);
+//			pb = new ProcessBuilder("javadoc", "-noindex", "-notree", "-quiet", "-subpackages", "de.uniks.networkparser", "-sourcepath", "src/main/java", "-d", "build/testJavadoc");
+//			pb.redirectOutput(Redirect.INHERIT);
+//			pb.redirectError(Redirect.INHERIT);
 //
 //			Process p = pb.start();
 //			BufferedReader errorReader = new BufferedReader (new InputStreamReader(p.getErrorStream()));
-//
-//
-//
-//			SimpleList<String> errors=new SimpleList<String>();
 //			String line;
 //			while ((line = errorReader.readLine ()) != null) {
 //				line = line.trim();
@@ -61,7 +56,6 @@ public class JavaDocGenTest {
 //				}
 //			}
 //			Assert.assertEquals(0, errors.size());
-//			System.out.println("Time: "+(System.currentTimeMillis()- time));
 //		}catch(Exception e) {
 //			Assert.fail();
 //		}

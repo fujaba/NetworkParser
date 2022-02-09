@@ -25,10 +25,10 @@ THE SOFTWARE.
 */
 import java.util.Set;
 
-import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleException;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.Association;
@@ -45,35 +45,32 @@ import de.uniks.networkparser.graph.ParameterSet;
 import de.uniks.networkparser.graph.SourceCode;
 import de.uniks.networkparser.graph.Throws;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
-public class ParserEntity {
+public class ParserEntity implements SendableEntityCreator {
 	public static final String NAME_TOKEN = "nameToken";
-
 	public static final String CLASS_BODY = "classBody";
-
 	public static final String CLASS_END = "classEnd";
-
 	public static final String ERROR = "ERROR";
+	public static final String PROPERTY_FILENAME = "FILENAME";
 
 	private ObjectCondition update;
-	public Token lookAheadToken = new Token();
-	public Token previousToken = new Token();
-	public Token currentToken = new Token();
+	private Token lookAheadToken = new Token();
+	private Token previousToken = new Token();
+	private Token currentToken = new Token();
 
-	public SymTabEntry symTabEntry;
+	private SymTabEntry symTabEntry;
 	private SourceCode code;
 
-	/* FIXME REMOVE */
-	public char currentChar;
-	public char lookAheadChar;
-	public int index;
-	public int lookAheadIndex = -1;
-	public int parsePos;
-	public long line = 1;
-	private NetworkParserLog logger;
+	private char currentChar;
+	private char lookAheadChar;
+	private int index;
+	private int lookAheadIndex = -1;
+	private int parsePos;
+	private long line = 1;
 
 	public ParserEntity withCondition(ObjectCondition update) {
 		if (update != null) {
@@ -85,7 +82,7 @@ public class ParserEntity {
 	public long getLine() {
 		return line;
 	}
-
+	
 	public ParserEntity withFile(String fileName) {
 		this.code = new SourceCode();
 		this.code.withFileName(fileName);
@@ -132,7 +129,7 @@ public class ParserEntity {
 			this.code = new SourceCode();
 			this.code.with(new Clazz(""));
 		}
-		if (sequence == null || sequence.length() < 1 || this.code == null) {
+		if (sequence == null || sequence.length() < 1) {
 			return getClazz();
 		}
 		this.code.withContent(sequence);
@@ -284,10 +281,7 @@ public class ParserEntity {
 			event.withType(ERROR);
 			return this.update.update(event);
 		}
-		if (logger != null) {
-			logger.error(this, "parse error", buffer.toString());
-		}
-		throw new SimpleException("parse error", this);
+		throw new SimpleException("parse error", this, buffer); 
 	}
 
 	public void nextRealToken() {
@@ -775,11 +769,10 @@ public class ParserEntity {
 		boolean isDebug = this.update instanceof DebugCondition;
 		code.withStartBody(currentToken.startPos, getLine());
 
-		while (currentKindEquals(Token.EOF) == false && currentKindEquals('}') == false) {
+		while (!currentKindEquals(Token.EOF) && !currentKindEquals('}')) {
 			if (isDebug) {
-				if (logger != null) {
-					logger.debug(this, "parsing", "Parsing: " + getCurrentLine());
-				}
+			    SimpleEvent event = new SimpleEvent(this, "parsing", "Parsing: " + getCurrentLine()).withType(NetworkParserLog.DEBUG);
+			    ((DebugCondition) this.update).update(event);
 			}
 			parseMemberDecl();
 		}
@@ -803,8 +796,6 @@ public class ParserEntity {
 	* (javadoc) comment?
 	*/
 	private void parseMemberDecl() {
-/* FIXME		int preCommentStartPos = currentToken.preCommentStartPos; */
-/*		int preCommentEndPos = currentToken.preCommentEndPos; */
 		long startLine = getLine();
 		while (parseComment(true) != null) {
 			skipNewLine();
@@ -1716,9 +1707,38 @@ public class ParserEntity {
 		}
 		return null;
 	}
-
-	public ParserEntity withLogger(NetworkParserLog value) {
-		this.logger = value;
-		return this;
+	
+	public boolean isContent() {
+	    if(code != null) {
+	        return !code.getContent().isEmpty();
+	    }
+	    return false;
 	}
+
+    @Override
+    public String[] getProperties() {
+        return new String[] {PROPERTY_FILENAME};
+    }
+
+    @Override
+    public Object getValue(Object entity, String attribute) {
+        if(entity instanceof ParserEntity && PROPERTY_FILENAME.equalsIgnoreCase(attribute)) {
+            return ((ParserEntity)entity).getFileName();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean setValue(Object entity, String attribute, Object value, String type) {
+        if(entity instanceof ParserEntity && PROPERTY_FILENAME.equalsIgnoreCase(attribute)) {
+             ((ParserEntity)entity).withFile("" + value);
+             return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Object getSendableInstance(boolean prototyp) {
+        return new ParserEntity();
+    }
 }

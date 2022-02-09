@@ -29,7 +29,6 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.parser.SymTabEntry;
 
 public class SourceCode extends GraphMember {
-	public static final String NAME = "SourceCode";
 	private CharacterBuffer content;
 	private SimpleKeyValueList<String, SimpleList<SymTabEntry>> keys = new SimpleKeyValueList<String, SimpleList<SymTabEntry>>();
 	private boolean fileBodyHasChanged = false;
@@ -48,7 +47,6 @@ public class SourceCode extends GraphMember {
 
 	public SourceCode() {
 		super();
-		this.name = NAME;
 	}
 
 	public SourceCode withFileName(String name) {

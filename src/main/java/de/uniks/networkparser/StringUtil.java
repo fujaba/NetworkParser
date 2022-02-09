@@ -1132,4 +1132,16 @@ public class StringUtil {
 		}
 		return sb.toString();
 	}
+
+    public static boolean isText(CharSequence name) {
+        if(name == null || name.isEmpty()) {
+            return true;
+        }
+        for(int i=0;i<name.length();i++) {
+            if (!((name.charAt(i) >= 'a' && name.charAt(i)<= 'z') || (name.charAt(i) >= 'A' && name.charAt(i)<= 'Z'))) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

@@ -40,6 +40,16 @@ public class ByteConverterHex extends ByteConverter {
 		}
 		return returnValue.toString();
 	}
+	
+	public static CharacterBuffer convert(CharacterBuffer buffer, byte... values) {
+	    if(buffer == null) {
+	        return buffer;
+	    }
+	    for(byte item : values) {
+	        buffer.with(HEXVAL.charAt(item %16)); 
+	    }
+	    return buffer;
+	}
 
 	/**
 	 * To byte string.

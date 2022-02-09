@@ -27,8 +27,8 @@ THE SOFTWARE.
  * A class that can be used to compute the Adler32 of a data stream. This
  * implementation uses the class java.util.zip.Adler32 from the Java Standard
  * API.
+ * @author Stefan
  */
-
 public class Adler32 extends Checksum {
 	private static final int BASE = 65521;
 

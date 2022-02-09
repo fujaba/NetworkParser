@@ -27,7 +27,6 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  *
  * @author Stefan Lindel
  */
-
 public class Deep implements SendableEntityCreator, ObjectCondition {
   /** Constant of Deep. */
   public static final String DEPTH = "depth";

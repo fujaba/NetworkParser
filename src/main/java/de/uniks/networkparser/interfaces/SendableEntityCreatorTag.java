@@ -25,8 +25,8 @@ THE SOFTWARE.
 */
 /**
  * The Interface XMLEntityCreator.
+ * @author Stefan
  */
-
 public interface SendableEntityCreatorTag extends SendableEntityCreator {
 	/**
 	 * Gets the tag of the XML Entity.

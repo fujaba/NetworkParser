@@ -26,8 +26,8 @@ THE SOFTWARE.
 /**
  * The Interface SendableEntityCreator. This is the Basic Interface for the
  * Creator for Serialization
+ * @author Stefan
  */
-
 public interface SendableEntityCreator {
 	/** The Constant REMOVE_YOU. */
 	public static final String REMOVE_YOU = "REMOVE_YOU";

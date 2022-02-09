@@ -16,9 +16,9 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
- * @author Stefan Lindel Clazz of EqualsCondition
+ * Clazz of EqualsCondition
+ * @author Stefan
  */
-
 public class Equals implements ParserCondition, SendableEntityCreator {
 	/** Constant of KEY. */
 	public static final String PROPERTY_KEY = "key";

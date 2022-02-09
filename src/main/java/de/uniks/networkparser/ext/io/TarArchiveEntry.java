@@ -141,16 +141,14 @@ import de.uniks.networkparser.SimpleException;
  * which is identical to new-style POSIX up to the first 130 bytes of the
  * prefix.
  * </p>
+ * @author Stefan
  */
-
 public class TarArchiveEntry {
-	private static final TarArchiveEntry[] EMPTY_TAR_ARCHIVE_ENTRIES = new TarArchiveEntry[0];
-
 	/** The entry is name. */
 	private String name = "";
 
 	/** Whether to allow leading slashes or drive names inside the name */
-	private final boolean preserveAbsolutePath;
+	private boolean preserveAbsolutePath;
 
 	/** The entry is permission mode. */
 	private int mode;
@@ -205,11 +203,10 @@ public class TarArchiveEntry {
 	/** is this entry a star sparse entry using the PAX header? */
 	private boolean starSparse;
 
-	/** The entry is file reference */
-	private final File file;
-
 	/** Extra, user supplied pax headers */
 	private final Map<String, String> extraPaxHeaders = new HashMap<String, String>();
+
+    private File file;
 
 	/** Maximum length of a user is name in the tar file */
 	public static final int MAX_NAMELEN = 31;
@@ -227,180 +224,35 @@ public class TarArchiveEntry {
 	 * Construct an empty entry and prepares the header values.
 	 * @param preserveAbsolutePath Switch for AbsolutePath
 	 */
-	private TarArchiveEntry(boolean preserveAbsolutePath) {
+	public TarArchiveEntry() {
 		String user = System.getProperty("user.name", "");
 
 		if (user.length() > MAX_NAMELEN) {
 			user = user.substring(0, MAX_NAMELEN);
 		}
-
 		this.userName = user;
-		this.file = null;
-		this.preserveAbsolutePath = preserveAbsolutePath;
+	}
+	
+	public TarArchiveEntry withAbsolutePath(boolean value) {
+	    this.preserveAbsolutePath = value;
+	    return this;
 	}
 
 	/**
-	 * Construct an entry with only a name. This allows the programmer to construct
-	 * the entry is header "by hand". File is set to null.
-	 *
-	 * <p>
-	 * The entry is name will be the value of the {@code name} argument with all
-	 * file separators replaced by forward slashes and leading slashes as well as
-	 * Windows drive letters stripped.
-	 * </p>
-	 *
-	 * @param name the entry name
-	 */
-	public TarArchiveEntry(final String name) {
-		this(name, false);
-	}
-
-	/**
-	 * Construct an entry with only a name. This allows the programmer to construct
-	 * the entry is header "by hand". File is set to null.
-	 *
-	 * <p>
-	 * The entry is name will be the value of the {@code name} argument with all
-	 * file separators replaced by forward slashes. Leading slashes and Windows
-	 * drive letters are stripped if {@code preserveAbsolutePath} is {@code false}.
-	 * </p>
-	 *
-	 * @param name                 the entry name
-	 * @param preserveAbsolutePath whether to allow leading slashes or drive letters
-	 *                             in the name.
-	 *
-	 * @since 1.1
-	 */
-	public TarArchiveEntry(String name, final boolean preserveAbsolutePath) {
-		this(preserveAbsolutePath);
-
-		name = normalizeFileName(name, preserveAbsolutePath);
-		if (name != null) {
-			final boolean isDir = name.endsWith("/");
-			this.mode = isDir ? DEFAULT_DIR_MODE : DEFAULT_FILE_MODE;
-			this.linkFlag = isDir ? TarUtils.LF_DIR : TarUtils.LF_NORMAL;
-		}
-		this.modTime = new Date().getTime() / MILLIS_PER_SECOND;
-	}
-
-	/**
-	 * Construct an entry with a name and a link flag.
-	 *
-	 * <p>
-	 * The entry is name will be the value of the {@code name} argument with all
-	 * file separators replaced by forward slashes and leading slashes as well as
-	 * Windows drive letters stripped.
-	 * </p>
-	 *
-	 * @param name     the entry name
-	 * @param linkFlag the entry link flag.
-	 */
-	public TarArchiveEntry(final String name, final byte linkFlag) {
-		this(name, linkFlag, false);
-	}
-
-	/**
-	 * Construct an entry with a name and a link flag.
-	 *
-	 * <p>
-	 * The entry is name will be the value of the {@code name} argument with all
-	 * file separators replaced by forward slashes. Leading slashes and Windows
-	 * drive letters are stripped if {@code preserveAbsolutePath} is {@code false}.
-	 * </p>
-	 *
-	 * @param name                 the entry name
 	 * @param linkFlag             the entry link flag.
-	 * @param preserveAbsolutePath whether to allow leading slashes or drive letters
-	 *                             in the name.
-	 *
-	 * @since 1.5
 	 */
-	public TarArchiveEntry(final String name, final byte linkFlag, final boolean preserveAbsolutePath) {
-		this(name, preserveAbsolutePath);
+	public TarArchiveEntry withLinkFlag(byte linkFlag) {
 		this.linkFlag = linkFlag;
 		if (linkFlag == TarUtils.LF_GNUTYPE_LONGNAME) {
 			magic = TarUtils.MAGIC_GNU;
 			version = TarUtils.VERSION_GNU_SPACE;
 		}
+		return this;
 	}
-
-	/**
-	 * Construct an entry for a file. File is set to file, and the header is
-	 * constructed from information from the file. The name is set from the
-	 * normalized file path.
-	 *
-	 * <p>
-	 * The entry is name will be the value of the {@code file} is path with all file
-	 * separators replaced by forward slashes and leading slashes as well as Windows
-	 * drive letters stripped. The name will end in a slash if the {@code file}
-	 * represents a directory.
-	 * </p>
-	 *
-	 * @param file The file that the entry represents.
-	 */
-	public TarArchiveEntry(final File file) {
-		this(file, file.getPath());
-	}
-
-	/**
-	 * Construct an entry for a file. File is set to file, and the header is
-	 * constructed from information from the file.
-	 *
-	 * <p>
-	 * The entry is name will be the value of the {@code fileName} argument with all
-	 * file separators replaced by forward slashes and leading slashes as well as
-	 * Windows drive letters stripped. The name will end in a slash if the
-	 * {@code file} represents a directory.
-	 * </p>
-	 *
-	 * @param file     The file that the entry represents.
-	 * @param fileName the name to be used for the entry.
-	 */
-	public TarArchiveEntry(final File file, final String fileName) {
-		final String normalizedName = normalizeFileName(fileName, false);
-		this.file = file;
-
-		if (file.isDirectory()) {
-			this.mode = DEFAULT_DIR_MODE;
-			this.linkFlag = TarUtils.LF_DIR;
-
-			final int nameLength = normalizedName.length();
-			if (nameLength == 0 || normalizedName.charAt(nameLength - 1) != '/') {
-				this.name = normalizedName + "/";
-			} else {
-				this.name = normalizedName;
-			}
-		} else {
-			this.mode = DEFAULT_FILE_MODE;
-			this.linkFlag = TarUtils.LF_NORMAL;
-			this.size = file.length();
-			this.name = normalizedName;
-		}
-
-		this.modTime = file.lastModified() / MILLIS_PER_SECOND;
-		this.userName = "";
-		preserveAbsolutePath = false;
-	}
-
-	/**
-	 * Construct an entry from an archive is header bytes. File is set to null.
-	 *
-	 * @param headerBuf The header bytes from a tar archive entry.
-	 */
-	public TarArchiveEntry(byte[] headerBuf) {
-		this(false);
-		parseTarHeader(headerBuf);
-	}
-
-	/**
-	 * Construct an entry from an archive is header bytes. File is set to null.
-	 *
-	 * @param headerBuf The header bytes from a tar archive entry.
-	 * @param encoding  encoding to use for file names
-	 */
-	public TarArchiveEntry(byte[] headerBuf, final NioZipEncoding encoding) {
-		this(false);
-		parseTarHeader(headerBuf, encoding);
+	
+	public TarArchiveEntry withFile(File value) {
+	    this.file = value;
+	    return this;                                                                                                
 	}
 
 	/**
@@ -450,15 +302,10 @@ public class TarArchiveEntry {
 		if (desc == null) {
 			return false;
 		}
-		String name = desc.getName();
-		if (name == null) {
-			return false;
-		}
-		String name2 = getName();
-		if (name2 == null) {
-			return false;
-		}
-		return name.startsWith(name2);
+		if (this.name == null) {
+            return false;
+        }
+		return name.startsWith(desc.getName());
 	}
 
 	/**
@@ -479,17 +326,20 @@ public class TarArchiveEntry {
 	 *
 	 * @param name This entry is new name.
 	 */
-	public void setName(String name) {
+	public TarArchiveEntry withName(String name) {
 		this.name = normalizeFileName(name, this.preserveAbsolutePath);
+		return this;
 	}
 
 	/**
 	 * Set the mode for this entry
 	 *
 	 * @param mode the mode for this entry
+	 * @return ThisComponent
 	 */
-	public void setMode(int mode) {
+	public TarArchiveEntry withMode(int mode) {
 		this.mode = mode;
+		return this;
 	}
 
 	/**
@@ -505,41 +355,19 @@ public class TarArchiveEntry {
 	 * Set this entry is link name.
 	 *
 	 * @param link the link name to use.
-	 *
-	 * @since 1.1
+	 * @return ThisComponent
 	 */
-	public void setLinkName(String link) {
+	public TarArchiveEntry withLinkName(String link) {
 		this.linkName = link;
+		return this;
 	}
 
 	/**
 	 * Get this entry is user id.
 	 *
 	 * @return This entry is user id.
-	 * @deprecated use #getLongUserId instead as user ids can be bigger than
-	 *             {@link Integer#MAX_VALUE}
 	 */
-	@Deprecated
-	public int getUserId() {
-		return (int) (userId & 0xffffffff);
-	}
-
-	/**
-	 * Set this entry is user id.
-	 *
-	 * @param userId This entry is new user id.
-	 */
-	public void setUserId(int userId) {
-		setUserId((long) userId);
-	}
-
-	/**
-	 * Get this entry is user id.
-	 *
-	 * @return This entry is user id.
-	 * @since 1.10
-	 */
-	public long getLongUserId() {
+	public long getUserId() {
 		return userId;
 	}
 
@@ -547,51 +375,31 @@ public class TarArchiveEntry {
 	 * Set this entry is user id.
 	 *
 	 * @param userId This entry is new user id.
-	 * @since 1.10
+	 * @return ThisComponent
 	 */
-	public void setUserId(long userId) {
+	public TarArchiveEntry withUserId(long userId) {
 		this.userId = userId;
+		return this;
 	}
 
 	/**
 	 * Get this entry is group id.
 	 *
 	 * @return This entry is group id.
-	 * @deprecated use #getLongGroupId instead as group ids can be bigger than
-	 *             {@link Integer#MAX_VALUE}
 	 */
-	@Deprecated
-	public int getGroupId() {
-		return (int) (groupId & 0xffffffff);
-	}
-
-	/**
-	 * Set this entry is group id.
-	 *
-	 * @param groupId This entry is new group id.
-	 */
-	public void setGroupId(int groupId) {
-		setGroupId((long) groupId);
-	}
-
-	/**
-	 * Get this entry is group id.
-	 *
-	 * @since 1.10
-	 * @return This entry is group id.
-	 */
-	public long getLongGroupId() {
+	public long getGroupId() {
 		return groupId;
 	}
 
 	/**
 	 * Set this entry is group id.
 	 *
-	 * @since 1.10
 	 * @param groupId This entry is new group id.
+	 * @return ThisComponent
 	 */
-	public void setGroupId(long groupId) {
+	public TarArchiveEntry withGroupId(long groupId) {
 		this.groupId = groupId;
+		return this;
 	}
 
 	/**
@@ -607,9 +415,11 @@ public class TarArchiveEntry {
 	 * Set this entry is user name.
 	 *
 	 * @param userName This entry is new user name.
+	 * @return ThisComponent
 	 */
-	public void setUserName(String userName) {
+	public TarArchiveEntry withUserName(String userName) {
 		this.userName = userName;
+		return this;
 	}
 
 	/**
@@ -625,9 +435,11 @@ public class TarArchiveEntry {
 	 * Set this entry is group name.
 	 *
 	 * @param groupName This entry is new group name.
+	 * @return ThisComponent
 	 */
-	public void setGroupName(String groupName) {
+	public TarArchiveEntry withGroupName(String groupName) {
 		this.groupName = groupName;
+		return this;
 	}
 
 	/**
@@ -635,10 +447,11 @@ public class TarArchiveEntry {
 	 *
 	 * @param userId  This entry is new user id.
 	 * @param groupId This entry is new group id.
+	 * @return ThisComponent
 	 */
-	public void setIds(int userId, int groupId) {
-		setUserId(userId);
-		setGroupId(groupId);
+	public TarArchiveEntry withIds(int userId, int groupId) {
+		withUserId(userId);
+		return withGroupId(groupId);
 	}
 
 	/**
@@ -647,9 +460,9 @@ public class TarArchiveEntry {
 	 * @param userName  This entry is new user name.
 	 * @param groupName This entry is new group name.
 	 */
-	public void setNames(String userName, String groupName) {
-		setUserName(userName);
-		setGroupName(groupName);
+	public TarArchiveEntry withNames(String userName, String groupName) {
+		withUserName(userName);
+		return withGroupName(groupName);
 	}
 
 	/**
@@ -657,20 +470,24 @@ public class TarArchiveEntry {
 	 * in "Java time".
 	 *
 	 * @param time This entry is new modification time.
+	 * @return ThisComponent
 	 */
-	public void setModTime(long time) {
+	public TarArchiveEntry withModTime(long time) {
 		modTime = time / MILLIS_PER_SECOND;
+		return this;
 	}
 
 	/**
 	 * Set this entry is modification time.
 	 *
 	 * @param time This entry is new modification time.
+	 * @return ThisComponent
 	 */
-	public void setModTime(Date time) {
+	public TarArchiveEntry withModTime(Date time) {
 		if (time != null) {
 			modTime = time.getTime() / MILLIS_PER_SECOND;
 		}
+		return this;
 	}
 
 	/**
@@ -691,7 +508,6 @@ public class TarArchiveEntry {
 	 *
 	 * @return if the header checksum is reasonably correct
 	 * @see TarUtils#verifyCheckSum(byte[])
-	 * @since 1.5
 	 */
 	public boolean isCheckSumOK() {
 		return checkSumOK;
@@ -708,7 +524,7 @@ public class TarArchiveEntry {
 	 * @return This entry is file.
 	 */
 	public File getFile() {
-		return file;
+        return file;
 	}
 
 	/**
@@ -733,18 +549,19 @@ public class TarArchiveEntry {
 	 * Set this entry is file size.
 	 *
 	 * @param size This entry is new file size.
+	 * @return ThisComponent
 	 */
-	public void setSize(long size) {
+	public TarArchiveEntry withSize(long size) {
 		if (size >= 0) {
 			this.size = size;
 		}
+		return this;
 	}
 
 	/**
 	 * Get this entry is major device number.
 	 *
 	 * @return This entry is major device number.
-	 * @since 1.4
 	 */
 	public int getDevMajor() {
 		return devMajor;
@@ -755,17 +572,17 @@ public class TarArchiveEntry {
 	 *
 	 * @param devNo This entry is major device number.
 	 */
-	public void setDevMajor(int devNo) {
+	public TarArchiveEntry withDevMajor(int devNo) {
 		if (devNo >= 0) {
 			this.devMajor = devNo;
 		}
+		return this;
 	}
 
 	/**
 	 * Get this entry is minor device number.
 	 *
 	 * @return This entry is minor device number.
-	 * @since 1.4
 	 */
 	public int getDevMinor() {
 		return devMinor;
@@ -775,11 +592,13 @@ public class TarArchiveEntry {
 	 * Set this entry is minor device number.
 	 *
 	 * @param devNo This entry is minor device number.
+	 * @return ThisComponent
 	 */
-	public void setDevMinor(int devNo) {
+	public TarArchiveEntry withDevMinor(int devNo) {
 		if (devNo >= 0) {
 			this.devMinor = devNo;
 		}
+		return this;
 	}
 
 	/**
@@ -814,7 +633,6 @@ public class TarArchiveEntry {
 	 * Indicate if this entry is a GNU or star sparse block using the oldgnu format.
 	 *
 	 * @return true if this is a sparse extension provided by GNU tar or star
-	 * @since 1.11
 	 */
 	public boolean isOldGNUSparse() {
 		return linkFlag == TarUtils.LF_GNUTYPE_SPARSE;
@@ -824,7 +642,6 @@ public class TarArchiveEntry {
 	 * Indicate if this entry is a GNU sparse block using one of the PAX formats.
 	 *
 	 * @return true if this is a sparse extension provided by GNU tar
-	 * @since 1.11
 	 */
 	public boolean isPaxGNUSparse() {
 		return paxGNUSparse;
@@ -834,7 +651,6 @@ public class TarArchiveEntry {
 	 * Indicate if this entry is a star sparse block using PAX headers.
 	 *
 	 * @return true if this is a sparse extension provided by star
-	 * @since 1.11
 	 */
 	public boolean isStarSparse() {
 		return starSparse;
@@ -897,7 +713,6 @@ public class TarArchiveEntry {
 	/**
 	 * Check if this is a "normal file"
 	 *
-	 * @since 1.2
 	 * @return whether this is a "normal file"
 	 */
 	public boolean isFile() {
@@ -913,7 +728,6 @@ public class TarArchiveEntry {
 	/**
 	 * Check if this is a symbolic link entry.
 	 *
-	 * @since 1.2
 	 * @return whether this is a symbolic link
 	 */
 	public boolean isSymbolicLink() {
@@ -923,7 +737,6 @@ public class TarArchiveEntry {
 	/**
 	 * Check if this is a link entry.
 	 *
-	 * @since 1.2
 	 * @return whether this is a link entry
 	 */
 	public boolean isLink() {
@@ -933,7 +746,6 @@ public class TarArchiveEntry {
 	/**
 	 * Check if this is a character device entry.
 	 *
-	 * @since 1.2
 	 * @return whether this is a character device
 	 */
 	public boolean isCharacterDevice() {
@@ -943,7 +755,6 @@ public class TarArchiveEntry {
 	/**
 	 * Check if this is a block device entry.
 	 *
-	 * @since 1.2
 	 * @return whether this is a block device
 	 */
 	public boolean isBlockDevice() {
@@ -953,7 +764,6 @@ public class TarArchiveEntry {
 	/**
 	 * Check if this is a FIFO (pipe) entry.
 	 *
-	 * @since 1.2
 	 * @return whether this is a FIFO entry
 	 */
 	public boolean isFIFO() {
@@ -964,7 +774,6 @@ public class TarArchiveEntry {
 	 * Check whether this is a sparse entry.
 	 *
 	 * @return whether this is a sparse entry
-	 * @since 1.11
 	 */
 	public boolean isSparse() {
 		return isGNUSparse() || isStarSparse();
@@ -974,7 +783,6 @@ public class TarArchiveEntry {
 	 * get extra PAX Headers
 	 *
 	 * @return read-only map containing any extra PAX Headers
-	 * @since 1.15
 	 */
 	public Map<String, String> getExtraPaxHeaders() {
 		return Collections.unmodifiableMap(extraPaxHeaders);
@@ -983,7 +791,6 @@ public class TarArchiveEntry {
 	/**
 	 * clear all extra PAX headers.
 	 *
-	 * @since 1.15
 	 */
 	public void clearExtraPaxHeaders() {
 		extraPaxHeaders.clear();
@@ -996,7 +803,6 @@ public class TarArchiveEntry {
 	 *
 	 * @param name  The full name of the header to set.
 	 * @param value value of header.
-	 * @since 1.15
 	 */
 	public void addPaxHeader(String name, String value) {
 		processPaxHeader(name, value);
@@ -1007,7 +813,6 @@ public class TarArchiveEntry {
 	 *
 	 * @param name The full name of an extended PAX header to retrieve
 	 * @return The value of the header, if any.
-	 * @since 1.15
 	 */
 	public String getExtraPaxHeader(String name) {
 		return extraPaxHeaders.get(name);
@@ -1017,7 +822,6 @@ public class TarArchiveEntry {
 	 * Update the entry using a map of pax headers.
 	 *
 	 * @param headers
-	 * @since 1.15
 	 */
 	void updateEntryFromPaxHeaders(Map<String, String> headers) {
 		if (headers == null) {
@@ -1050,92 +854,53 @@ public class TarArchiveEntry {
 	 * @param headers map of headers used for dealing with sparse file.
 	 * @return success
 	 */
-	private boolean processPaxHeader(String key, String val, Map<String, String> headers) {
+	private TarArchiveEntry processPaxHeader(String key, String val, Map<String, String> headers) {
 		if ("path".equals(key)) {
-			setName(val);
-			return true;
+			return withName(val);
 		}
 		if ("linkpath".equals(key)) {
-			setLinkName(val);
-			return true;
+			return withLinkName(val);
 		}
 		if ("gid".equals(key)) {
-			setGroupId(Long.parseLong(val));
-			return true;
+			return withGroupId(Long.parseLong(val));
 		}
 		if ("gname".equals(key)) {
-			setGroupName(val);
-			return true;
+			return withGroupName(val);
 		}
 		if ("uid".equals(key)) {
-			setUserId(Long.parseLong(val));
-			return true;
+			return withUserId(Long.parseLong(val));
 		}
 		if ("uname".equals(key)) {
-			setUserName(val);
-			return true;
+		    return withUserName(val);
 		}
 		if ("size".equals(key)) {
-			setSize(Long.parseLong(val));
-			return true;
+			return withSize(Long.parseLong(val));
 		}
 		if ("mtime".equals(key)) {
-			setModTime((long) (Double.parseDouble(val) * 1000));
-			return true;
+			return withModTime((long) (Double.parseDouble(val) * 1000));
 		}
 		if ("SCHILY.devminor".equals(key)) {
-			setDevMinor(Integer.parseInt(val));
-			return true;
+			return withDevMinor(Integer.parseInt(val));
 		}
 		if ("SCHILY.devmajor".equals(key)) {
-			setDevMajor(Integer.parseInt(val));
-			return true;
+			return withDevMajor(Integer.parseInt(val));
 		}
 		if ("GNU.sparse.size".equals(key)) {
 			fillGNUSparse0xData(headers);
-			return true;
+			return this;
 		}
 		if ("GNU.sparse.realsize".equals(key)) {
 			fillGNUSparse1xData(headers);
-			return true;
+			return this;
 		}
 		if ("SCHILY.filetype".equals(key)) {
 			if ("sparse".equals(val)) {
 				fillStarSparseData(headers);
 			}
-			return true;
+			return this;
 		}
 		extraPaxHeaders.put(key, val);
-		return true;
-	}
-
-	/**
-	 * If this entry represents a file, and the file is a directory, return an array
-	 * of TarEntries for this entry is children.
-	 *
-	 * <p>
-	 * This method is only useful for entries created from a {@code
-	 * File} but not for entries read from an archive.
-	 * </p>
-	 *
-	 * @return An array of Tarentry is for this entry is children.
-	 */
-	public TarArchiveEntry[] getDirectoryEntries() {
-		if (file == null || !file.isDirectory()) {
-			return EMPTY_TAR_ARCHIVE_ENTRIES;
-		}
-
-		final String[] list = file.list();
-		if (list == null) {
-			return EMPTY_TAR_ARCHIVE_ENTRIES;
-		}
-		final TarArchiveEntry[] result = new TarArchiveEntry[list.length];
-
-		for (int i = 0; i < result.length; ++i) {
-			result[i] = new TarArchiveEntry(new File(file, list[i]));
-		}
-
-		return result;
+		return this;
 	}
 
 	/**
@@ -1213,12 +978,13 @@ public class TarArchiveEntry {
 	 *
 	 * @param header The tar entry header buffer to get information from.
 	 */
-	public void parseTarHeader(byte[] header) {
+	public TarArchiveEntry parseTarHeader(byte[] header) {
 		try {
 			parseTarHeader(header, TarUtils.DEFAULT_ENCODING);
 		} catch (final SimpleException ex) {
 			parseTarHeader(header, TarUtils.DEFAULT_ENCODING, true);
 		}
+		return this;
 	}
 
 	/**
@@ -1227,8 +993,9 @@ public class TarArchiveEntry {
 	 * @param header   The tar entry header buffer to get information from.
 	 * @param encoding encoding to use for file names
 	 */
-	public void parseTarHeader(byte[] header, NioZipEncoding encoding) {
+	public TarArchiveEntry parseTarHeader(byte[] header, NioZipEncoding encoding) {
 		parseTarHeader(header, encoding, false);
+		return this;
 	}
 
 	private boolean parseTarHeader(byte[] header, NioZipEncoding encoding, boolean oldStyle) {

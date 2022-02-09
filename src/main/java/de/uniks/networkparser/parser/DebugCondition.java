@@ -48,9 +48,9 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 		if (evt instanceof SimpleEvent) {
 			SimpleEvent simpleEvt = (SimpleEvent) evt;
 			if (simpleEvt.getSource() instanceof ParserEntity) {
-				if (NetworkParserLog.DEBUG.equals(simpleEvt.getType()) && line >= 0) {
+				if (NetworkParserLog.DEBUG.equals(simpleEvt.getType())) {
 					logger.debug(this, "update", simpleEvt.getNewValue());
-					if (line == simpleEvt.getIndex()) {
+					if (line >= 0 && line == simpleEvt.getIndex()) {
 						logger.debug(this, "update", "DEBUG");
 					}
 				} else if (ParserEntity.ERROR.equals(simpleEvt.getType())) {

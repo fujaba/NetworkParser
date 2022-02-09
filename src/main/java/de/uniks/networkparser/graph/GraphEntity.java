@@ -246,7 +246,7 @@ public abstract class GraphEntity extends GraphMember {
 	}
 
 	public GraphMember getChildByName(String name, Class<?> subClass) {
-		if (this.children == null) {
+		if (this.children == null || subClass == null ) {
 			return null;
 		}
 		GraphSimpleSet children = this.getChildren();
@@ -258,14 +258,25 @@ public abstract class GraphEntity extends GraphMember {
 			} else {
 				itemName = item.getName();
 			}
-			if (itemName != null && itemName.equals(name)) {
-				if (subClass != null && subClass == item.getClass()) {
-					return item;
-				}
+			if (itemName != null && itemName.equals(name) && subClass == item.getClass()) {
+				return item;
 			}
 		}
 		return null;
 	}
+
+    public <T> T getChildByClass(Class<T> subClass) {
+        if (this.children == null || subClass == null) {
+            return null;
+        }
+        GraphSimpleSet children = this.getChildren();
+        for (GraphMember item : children) {
+            if (subClass == item.getClass()) {
+                return subClass.cast(item);
+            }
+        }
+        return null;
+    }
 
 	/**
 	 * get all Associations

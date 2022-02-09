@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
@@ -10,6 +11,7 @@ import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleGrammar;
 import de.uniks.networkparser.UpdateCondition;
@@ -324,12 +326,8 @@ public class ModelTest implements ObjectCondition {
 	public void testTest() {
 		FileClassModel model = new FileClassModel("de.uniks.networkparser");
 		model.readFiles("src/main/java/");
-//		model.createParserEntity(new File("src/main/java/de/uniks/networkparser/ext/io/TarArchiveEntry.java"), new DebugCondition());
-
-		model.analyseBounds(null);
-		if(model.getErros().size()>0) {
-//			System.out.println("ERROR: "+model.getErros().size());
-		}
+		model.analyseBounds();
+		model.withLogger(new NetworkParserLog().withListener(new StringPrintStream()));
 	}
 	
 	@Test
@@ -337,9 +335,9 @@ public class ModelTest implements ObjectCondition {
 		FileClassModel model = new FileClassModel("de.uniks.networkparser");
 		model.readFiles("src/main/java/");
 		
-		model.analyseSymTabEntry(null);
+		model.fixClassModel();
 		model.analyseLoC(model);
-		model.analyseBounds(null);
+		model.analyseBounds();
 //		model.createParserEntity(new File("src/main/java/de/uniks/networkparser/ext/io/TarArchiveEntry.java"), new DebugCondition());
 
 		CodeCityConverter converter = new CodeCityConverter();
@@ -350,11 +348,11 @@ public class ModelTest implements ObjectCondition {
 	@Test
 	public void testMSEIdMap() {
 		FileClassModel model = new FileClassModel("de.uniks.networkparser");
-		model.readFile("src/main/java/de/uniks/networkparser/IdMap.java", new DebugCondition());
+		model.readFiles(new File("src/main/java/de/uniks/networkparser/IdMap.java"), new DebugCondition());
 		
-		model.analyseSymTabEntry(null);
+		model.fixClassModel();
 		model.analyseLoC(model);
-		model.analyseBounds(null);
+		model.analyseBounds();
 //		model.createParserEntity(new File("src/main/java/de/uniks/networkparser/ext/io/TarArchiveEntry.java"), new DebugCondition());
 
 		CodeCityConverter converter = new CodeCityConverter();

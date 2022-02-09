@@ -28,8 +28,8 @@ import java.beans.PropertyChangeListener;
 /**
  * The Interface SendableEntity. Add this Interface to your Modellentity to
  * activate the propertyChange Notification
+ * @author Stefan
  */
-
 public interface SendableEntity {
 	/**
 	 * Adds the property change listener.

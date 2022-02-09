@@ -40,9 +40,9 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
 
 /**
- * @author Stefan The XSD Entity
+ * The XSD Entity
+ * @author Stefan
  */
-
 public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 	public static final String XSD_COMPLEX_TYPE = ":complexType";
 	public static final String XSD_ELEMENT_TYPE = ":element";

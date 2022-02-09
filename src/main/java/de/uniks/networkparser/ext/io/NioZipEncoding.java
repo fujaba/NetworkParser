@@ -27,25 +27,23 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
 import java.nio.charset.CodingErrorAction;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.bytes.ByteConverterHex;
+
 /**
  * A ZipEncoding, which uses a java.nio {@link java.nio.charset.Charset Charset}
  * to encode names.
  * <p>
  * The methods of this class are reentrant.
  * </p>
- * 
+ * @author Stefan
  * @Immutable
  */
 class NioZipEncoding {
 
 	private final Charset charset;
 	private final boolean useReplacement;
-	private static final char REPLACEMENT = '?';
-	private static final byte[] REPLACEMENT_BYTES = { (byte) REPLACEMENT };
-	private static final String REPLACEMENT_STRING = String.valueOf(REPLACEMENT);
-	private static final char[] HEX_CHARS = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B',
-			'C', 'D', 'E', 'F' };
-
+    private static final byte[] REPLACEMENT_BYTES = { (byte) '?' };
 	/**
 	 * Construct an NioZipEncoding using the given charset.
 	 * 
@@ -64,21 +62,6 @@ class NioZipEncoding {
 
 	public Charset getCharset() {
 		return charset;
-	}
-
-	/**
-	 * Check for encoding Stream
-	 * 
-	 * @param name Name of Encoding
-	 * @return if Buffer can encode
-	 */
-	public boolean canEncode(String name) {
-		if (this.charset == null) {
-			return true;
-		}
-		final CharsetEncoder enc = newEncoder();
-
-		return enc.canEncode(name);
 	}
 
 	/**
@@ -102,17 +85,15 @@ class NioZipEncoding {
 			return ByteBuffer.wrap(buf);
 		}
 		final CharsetEncoder enc = newEncoder();
-
 		final CharBuffer cb = CharBuffer.wrap(name);
-		CharBuffer tmp = null;
+		CharacterBuffer tmp = new CharacterBuffer();
 		ByteBuffer out = ByteBuffer.allocate(estimateInitialBufferSize(enc, cb.remaining()));
 
 		while (cb.remaining() > 0) {
 			final CoderResult res = enc.encode(cb, out, false);
 
 			if (res.isUnmappable() || res.isMalformed()) {
-
-				/*
+ 				/*
 				 * write the unmappable characters in utf-16 pseudo-URL encoding style to
 				 * ByteBuffer.
 				 */
@@ -131,9 +112,7 @@ class NioZipEncoding {
 					int totalExtraSpace = estimateIncrementalEncodingSize(enc, charCount);
 					out = TarUtils.growBufferBy(out, totalExtraSpace - out.remaining());
 				}
-				if (tmp == null) {
-					tmp = CharBuffer.allocate(6);
-				}
+				
 				for (int i = 0; i < res.length(); ++i) {
 					out = encodeFully(enc, encodeSurrogate(tmp, cb.get()), out);
 				}
@@ -181,13 +160,14 @@ class NioZipEncoding {
 		return null;
 	}
 
-	private static ByteBuffer encodeFully(CharsetEncoder enc, CharBuffer cb, ByteBuffer out) {
+	private ByteBuffer encodeFully(CharsetEncoder enc, CharacterBuffer cb, ByteBuffer out) {
 		ByteBuffer o = out;
 		if (cb == null) {
 			return o;
 		}
-		while (cb.hasRemaining()) {
-			CoderResult result = enc.encode(cb, o, false);
+		CharBuffer buffer=CharBuffer.wrap(cb.toCharArray());
+		while (buffer.hasRemaining()) {
+			CoderResult result = enc.encode(buffer, o, false);
 			if (result.isOverflow()) {
 				int increment = estimateIncrementalEncodingSize(enc, cb.remaining());
 				o = TarUtils.growBufferBy(o, increment);
@@ -196,20 +176,14 @@ class NioZipEncoding {
 		return o;
 	}
 
-	private static CharBuffer encodeSurrogate(CharBuffer cb, char c) {
-		if (cb == null) {
-			return null;
-		}
-		cb.position(0).limit(6);
-		cb.put('%');
-		cb.put('U');
-
-		cb.put(HEX_CHARS[(c >> 12) & 0x0f]);
-		cb.put(HEX_CHARS[(c >> 8) & 0x0f]);
-		cb.put(HEX_CHARS[(c >> 4) & 0x0f]);
-		cb.put(HEX_CHARS[c & 0x0f]);
-		cb.flip();
-		return cb;
+	private CharacterBuffer encodeSurrogate(CharacterBuffer buffer, char c) {
+	    if(buffer == null) {
+	        return null;
+	    }
+	    buffer.clear(); 
+		buffer.with((byte)'%', (byte)'U');
+		ByteConverterHex.convert(buffer, (byte)((c >> 12) & 0x0f), (byte)((c >> 8) & 0x0f), (byte)((c >> 4) & 0x0f), (byte) (c & 0x0f));
+		return buffer;
 	}
 
 	private CharsetEncoder newEncoder() {
@@ -234,7 +208,7 @@ class NioZipEncoding {
 					.onUnmappableCharacter(CodingErrorAction.REPORT);
 		} else {
 			return charset.newDecoder().onMalformedInput(CodingErrorAction.REPLACE)
-					.onUnmappableCharacter(CodingErrorAction.REPLACE).replaceWith(REPLACEMENT_STRING);
+					.onUnmappableCharacter(CodingErrorAction.REPLACE).replaceWith("?");
 		}
 	}
 
@@ -273,5 +247,4 @@ class NioZipEncoding {
 		}
 		return (int) Math.ceil(charCount * enc.averageBytesPerChar());
 	}
-
 }

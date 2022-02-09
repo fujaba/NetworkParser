@@ -25,8 +25,8 @@ import de.uniks.networkparser.list.SimpleList;
 
 /**
  * Interface for Buffer For Tokener to parse some Values
+ * @author Stefan
  */
-
 public abstract class Buffer implements BufferItem {
   public static final String STOPCHARSJSON = ",:]}/\\\"[{;=# ";
   public static final String STOPCHARSXML = ",]}/\\\"[{;=# ";

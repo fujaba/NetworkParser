@@ -29,6 +29,12 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * AbstractArray for any Collection
+ * 
+ * @author Stefan Lindel
+ * @param <V> Value of Element in List
+ */
 public abstract class AbstractArray<V> implements BaseItem {
   /** Is Allow Duplicate Items in List */
   public static final byte ALLOWDUPLICATE = 0x01;
@@ -45,7 +51,7 @@ public abstract class AbstractArray<V> implements BaseItem {
   public static final byte MAP = 0x20;
   /** Is List is Key,Value and Value, Key */
   public static final byte BIDI = 0x40;
-
+  /** REMOVED Element */
   public static final Integer REMOVED = -1;
 
   static final int MINHASHINGSIZE = 420; /* Minimum (SIZE_BIG: 5) */
@@ -1552,7 +1558,6 @@ public String toString() {
 
   /**
    * Make a prettyprinted Text of this Entity.
-   * <p>
    *
    * @param converter Converter for transform Item to String
    */

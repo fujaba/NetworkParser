@@ -43,8 +43,8 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
  * The Class ByteIdMap.
+ * @author Stefan
  */
-
 public class ByteTokener extends Tokener {
   /** The SPLITTER. */
   public static final char SPLITTER = ' ';

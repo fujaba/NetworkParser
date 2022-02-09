@@ -701,6 +701,26 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   public boolean startsWith(CharSequence prefix) {
     return this.startsWith(prefix, 0, false);
   }
+  
+  public boolean skip(CharSequence... values) {
+      if(values == null || values.length<1) {
+          return true;
+      }
+      boolean found = false;
+      boolean skip;
+      do {
+          skip=false;
+          for(CharSequence item : values) {
+              if(startsWith(item, 0, false)) {
+                  start += item.length();
+                  found = true;
+                  skip = true;
+                  break;
+              }
+          }
+      }while(skip);
+      return found;
+  }
 
   public boolean startsWith(CharSequence prefix, int toffset, boolean ignoreCase) {
     if (buffer == null) {

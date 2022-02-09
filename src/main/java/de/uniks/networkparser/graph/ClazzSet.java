@@ -91,7 +91,7 @@ public class ClazzSet extends SimpleSet<Clazz> {
 		}
 		return null;
 	}
-
+	
 	@Override
 	public Clazz[] toArray() {
 		return super.toArray(new Clazz[size()]);

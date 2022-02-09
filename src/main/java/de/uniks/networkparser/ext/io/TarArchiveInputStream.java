@@ -279,7 +279,7 @@ public class TarArchiveInputStream extends InputStream {
         currEntry = null;
         return null;
       }
-      currEntry = new TarArchiveEntry(headerBuf, zipEncoding);
+      currEntry = new TarArchiveEntry().parseTarHeader(headerBuf, zipEncoding);
     } catch (Exception e) {
       return null;
     }
@@ -293,7 +293,7 @@ public class TarArchiveInputStream extends InputStream {
         return null;
       }
       try {
-        currEntry.setLinkName(zipEncoding.decode(longLinkData));
+        currEntry.withLinkName(zipEncoding.decode(longLinkData));
       } catch (Exception e) {
         return null;
       }
@@ -305,7 +305,7 @@ public class TarArchiveInputStream extends InputStream {
         return null;
       }
       try {
-        currEntry.setName(zipEncoding.decode(longNameData));
+        currEntry.withName(zipEncoding.decode(longNameData));
       } catch (Exception e) {
         return null;
       }

@@ -327,15 +327,13 @@ public class ModelGenerator extends SimpleGenerator {
 		/* check existing file for possible changes */
 		if (content != null) {
 			ParserEntity parser = new ParserEntity();
-			parser.withLogger(logger);
 			try {
 				parser.withFile(fileName, (Clazz) entity.getMember());
 				parser.parse(content);
 				return parser;
 			} catch (Exception e) {
-				e.printStackTrace();
 				if (logger != null) {
-					logger.error(this, "parse2", "Cant parse File:" + fileName, e);
+					logger.error(this, "parse", "Cant parse File:" + fileName, e);
 				}
 			}
 		}
