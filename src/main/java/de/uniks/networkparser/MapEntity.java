@@ -9,6 +9,9 @@ import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.AbstractList;
+import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.xml.XMLEntity;
 
 /*
@@ -43,13 +46,17 @@ public class MapEntity extends AbstractList<Object> {
 	protected Filter filter;
 	protected int deep;
 	protected Object target;
-	protected MapEntityStack stack;
 	/** The show line. */
 	protected byte tokenerFlag;
 	private SimpleMap map;
 	public byte mapFlag;
 	private Grammar grammar;
 	private Tokener tokener;
+    
+    /** The Stack. */
+	private SimpleKeyValueList<Object, SendableEntityCreator> stackItems = new SimpleKeyValueList<Object, SendableEntityCreator>();
+	private SimpleList<String> tags = new SimpleList<String>();
+	private SimpleKeyValueList<String, SimpleSet<String>> childProperties = new SimpleKeyValueList<String, SimpleSet<String>>();
 
 	public MapEntity(Filter filter, byte flag, SimpleMap map, Tokener tokener) {
 		if (filter != null) {
@@ -162,34 +169,10 @@ public class MapEntity extends AbstractList<Object> {
 		return null;
 	}
 
-	/**
-	 * @return the stack
-	 */
-	public MapEntityStack getStack() {
-		return stack;
-	}
 
 	public void pushStack(String className, Object entity, SendableEntityCreator creator) {
-		if (this.stack != null) {
-			this.stack.withStack(className, entity, creator);
-		}
+		this.withStack(className, entity, creator);
 		this.deep = this.deep + 1;
-	}
-
-	public void popStack() {
-		if (this.stack != null) {
-			this.stack.popStack();
-		}
-		this.deep = this.deep - 1;
-	}
-
-	/**
-	 * @param stack the stack to set
-	 * @return ThisComponent
-	 */
-	public MapEntity withStack(MapEntityStack stack) {
-		this.stack = stack;
-		return this;
 	}
 
 	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Object entity, String className) {
@@ -248,10 +231,7 @@ public class MapEntity extends AbstractList<Object> {
 		if ((mapFlag & SimpleMap.FLAG_ID) != 0) {
 			return true;
 		}
-		if (stack != null) {
-			return stack.getPrevItem() != value;
-		}
-		return false;
+		return getPrevItem() != value;
 	}
 
 	public int getIndexOfClazz(String clazzName) {
@@ -391,4 +371,134 @@ public class MapEntity extends AbstractList<Object> {
 		}
 		return SendableEntityCreator.NEW.equalsIgnoreCase(this.filter.getStrategy());
 	}
+
+    /**
+     * Remove The Last Element
+     */
+    public void popStack() {
+        this.stackItems.removePos(this.stackItems.size() - 1);
+        this.deep = this.deep - 1;
+        this.tags.remove(this.tags.size() - 1);
+    }
+
+    /** @return The StackSize */
+    public int getStackSize() {
+        return this.stackItems.size();
+    }
+
+    public SimpleList<String> getTags() {
+        return tags;
+    }
+
+    /**
+     * Get the current Element
+     *
+     * @return The Stack Element - offset
+     */
+    public Object getCurrentItem() {
+        return this.stackItems.last();
+    }
+
+    /**
+     * Get the previous Element
+     * 
+     * @return The Stack Element - offset
+     */
+    public Object getPrevItem() {
+        int pos = this.stackItems.size() - 2;
+        if (pos < 0) {
+            return null;
+        }
+        return this.stackItems.get(pos);
+    }
+
+    /**
+     * Add a new Reference Object to Stack.
+     * 
+     * @param tag     The new Tag
+     * @param item    new Reference Object
+     * @param creator The Creator for the Item
+     * @return XMLTokener Instance
+     */
+    public MapEntity withStack(String tag, Object item, SendableEntityCreator creator) {
+        if (creator == null) {
+            return this;
+        }
+        stackItems.add(item, creator);
+        tags.add(tag);
+        String[] properties = creator.getProperties();
+        for (String property : properties) {
+            int lastPos = property.lastIndexOf(SimpleMap.ENTITYSPLITTER);
+            if (lastPos >= 0) {
+                String prop;
+                if (lastPos == property.length() - 1) {
+                    /* Value of XML Entity like uni. */
+                    prop = ".";
+                } else {
+                    prop = property.substring(lastPos + 1);
+                }
+                int pos = childProperties.indexOf(prop);
+                if (pos >= 0) {
+                    childProperties.getValueByIndex(pos).add(property);
+                } else {
+                    SimpleSet<String> child = new SimpleSet<String>();
+                    child.add(property);
+                    childProperties.put(prop, child);
+                }
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Get the Current Creator for the MapEntity
+     *
+     * @return The Stack Element - offset
+     */
+    public SendableEntityCreator getCurrentCreator() {
+        return this.stackItems.getValueByIndex(this.stackItems.size() - 1);
+    }
+
+    public void setValue(String key, String value) {
+        SimpleSet<String> set = childProperties.get(key);
+        if (set != null) {
+            for (String ChildKey : set) {
+                int pos = getEntityPos(ChildKey);
+                if (pos >= 0) {
+                    Object entity = stackItems.getKeyByIndex(pos);
+                    SendableEntityCreator creator = stackItems.getValueByIndex(pos);
+                    creator.setValue(entity, ChildKey, value, SendableEntityCreator.NEW);
+                }
+            }
+        }
+    }
+
+    private int getEntityPos(String entity) {
+        if (entity == null) {
+            return -1;
+        }
+        int start = entity.lastIndexOf(SimpleMap.ENTITYSPLITTER);
+        int pos = this.tags.size() - 1;
+        for (int end = start - 1; end >= 0; end--) {
+            if (entity.charAt(end) == SimpleMap.ENTITYSPLITTER) {
+                String item = entity.substring(end + 1, start);
+                String tag = tags.get(pos);
+                if (tag == null || tag.equals(item) == false) {
+                    return -1;
+                }
+                start = end;
+                pos--;
+            }
+        }
+        return pos;
+    }
+
+    public String getCurrentTag() {
+        if (this.tags.size() > 0) {
+            return this.tags.get(this.tags.size() - 1);
+        }
+        return null;
+    }
+
+	
 }

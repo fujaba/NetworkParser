@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import de.uniks.networkparser.EntityCreator;
 import de.uniks.networkparser.EntityStringConverter;
 import de.uniks.networkparser.MapEntity;
-import de.uniks.networkparser.MapEntityStack;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.SimpleMap;
@@ -274,12 +273,8 @@ public class XMLTokener extends Tokener {
     return parseChildren(tokener, buffer, map);
   }
 
-  protected void parseAttribute(XMLTokener tokener, Buffer buffer, MapEntity map) {
-    if (map == null) {
-      return;
-    }
-    MapEntityStack stack = map.getStack();
-    if (stack == null) {
+  protected void parseAttribute(XMLTokener tokener, Buffer buffer, MapEntity stack) {
+    if (map == null || stack == null) {
       return;
     }
     Object entity = stack.getCurrentItem();
@@ -310,12 +305,8 @@ public class XMLTokener extends Tokener {
     }
   }
 
-  protected Object parseChildren(XMLTokener tokener, Buffer buffer, MapEntity map) {
-    if (map == null) {
-      return null;
-    }
-    MapEntityStack stack = map.getStack();
-    if (stack == null) {
+  protected Object parseChildren(XMLTokener tokener, Buffer buffer, MapEntity stack) {
+    if (map == null || stack == null) {
       return null;
     }
     Object entity = stack.getCurrentItem();
@@ -376,7 +367,7 @@ public class XMLTokener extends Tokener {
         /* show next Tag */
         Object child;
         do {
-          valueItem = parseEntity(tokener, buffer, map);
+          valueItem = parseEntity(tokener, buffer, stack);
           if (valueItem == null) {
             if (buffer.getCurrentChar() == ENDTAG) {
               /* Show if Item is End */
@@ -399,7 +390,7 @@ public class XMLTokener extends Tokener {
           }
 
           String childTag = stack.getCurrentTag();
-          child = parse(tokener, buffer, map);
+          child = parse(tokener, buffer, stack);
           if (childTag != null && child != null) {
             creator.setValue(entity, childTag, child, CHILDREN);
           }
@@ -414,10 +405,10 @@ public class XMLTokener extends Tokener {
    *
    * @param tokener the tokener
    * @param buffer Buffer for Values
-   * @param map the decoding runtime values
+   * @param stack the decoding runtime values
    * @return the entity
    */
-  public CharacterBuffer parseEntity(XMLTokener tokener, Buffer buffer, MapEntity map) {
+  public CharacterBuffer parseEntity(XMLTokener tokener, Buffer buffer, MapEntity stack) {
     CharacterBuffer valueItem = new CharacterBuffer();
     if (tokener == null || buffer == null) {
       return valueItem;
@@ -459,7 +450,7 @@ public class XMLTokener extends Tokener {
       item = idMap.getCreator(tag.toString(), false, true, null);
     }
     if (item != null && item instanceof SendableEntityCreatorTag) {
-      addToStack((SendableEntityCreatorTag) item, tokener, tag, valueItem, map);
+      addToStack((SendableEntityCreatorTag) item, tokener, tag, valueItem, stack);
       return valueItem;
     }
     String startTag;
@@ -478,7 +469,6 @@ public class XMLTokener extends Tokener {
         }
       }
     }
-    MapEntityStack stack = map.getStack();
     SendableEntityCreator defaultCreator = getDefaultFactory();
     SendableEntityCreatorTag creator;
     if (defaultCreator instanceof SendableEntityCreatorTag) {
@@ -487,13 +477,13 @@ public class XMLTokener extends Tokener {
       creator = EntityCreator.createXML();
     }
     if (filter.size() < 1) {
-      addToStack(creator, tokener, tag, valueItem, map);
+      addToStack(creator, tokener, tag, valueItem, stack);
       return valueItem;
     }
     StringBuilder sTag = new StringBuilder(startTag);
     while (filter.size() > 0) {
-      addToStack(creator, tokener, tag, valueItem, map);
-      parseAttribute(tokener, buffer, map);
+      addToStack(creator, tokener, tag, valueItem, stack);
+      parseAttribute(tokener, buffer, stack);
       if (buffer.getCurrentChar() == '/') {
         stack.popStack();
       } else {
@@ -520,14 +510,14 @@ public class XMLTokener extends Tokener {
           if (key.equals(sTag.toString())) {
             /* FOUND THE Item */
             creator = filter.getValueByIndex(i);
-            addToStack(creator, tokener, tag, valueItem, map);
+            addToStack(creator, tokener, tag, valueItem, stack);
             return valueItem;
           }
           if (!key.startsWith(sTag.toString())) {
             filter.removePos(i);
           }
         }
-        addToStack(creator, tokener, tag, valueItem, map);
+        addToStack(creator, tokener, tag, valueItem, stack);
       }
     }
     return valueItem;
@@ -550,7 +540,7 @@ public class XMLTokener extends Tokener {
       creator.setValue(entity, XMLEntity.PROPERTY_VALUE, value.toString(), SendableEntityCreator.NEW);
       creator.setValue(entity, XMLEntity.PROPERTY_TAG, tag.toString(), SendableEntityCreator.NEW);
     }
-    map.getStack().withStack(tag.toString(), entity, creator);
+    map.withStack(tag.toString(), entity, creator);
     return entity;
   }
 

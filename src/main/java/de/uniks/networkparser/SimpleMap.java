@@ -882,7 +882,6 @@ public int size() {
       return null;
     }
     if (buffer.skipTo(XMLEntity.START, false)) {
-      map.withStack(new MapEntityStack());
       /* FIRST TAG */
       tokener.parseEntity(tokener, buffer, map);
       return tokener.parse(tokener, buffer, map);
@@ -1016,7 +1015,6 @@ public int size() {
     byte value = (byte) ((this.flag | FLAG_ID) - FLAG_ID | FLAG_SIMPLEFORMAT);
 
     MapEntity map = new MapEntity(filter, value, this, xmlTokener);
-    map.withStack(new MapEntityStack());
     return (XMLEntity) this.encode(entity, map);
   }
 

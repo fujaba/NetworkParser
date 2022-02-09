@@ -24,7 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.MapEntity;
-import de.uniks.networkparser.MapEntityStack;
 import de.uniks.networkparser.Pos;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -344,7 +343,7 @@ public class TileMap implements SendableEntityCreatorTag {
 		TileMap entity = new TileMap();
 		String tag = entity.getTag();
 		MapEntity map = new MapEntity(null);
-		map.withStack(new MapEntityStack().withStack(tag, entity, entity));
+		map.withStack(tag, entity, entity);
 		XMLTokener tokener = new XMLTokener();
 		CharacterBuffer buffer = new CharacterBuffer().with(value);
 		tokener.skipHeader(buffer);
