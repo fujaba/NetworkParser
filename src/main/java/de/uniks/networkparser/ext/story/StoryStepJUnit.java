@@ -64,16 +64,15 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 	private JacocoColumn column;
 	private IdMap map;
 	private GraphModel model;
-	private boolean ignoreError=false;
 
 	public StoryStepJUnit() {
-		initColumn(false);
+		initColumn();
 	}
-	public boolean initColumn(boolean showError) {
+	public boolean initColumn() {
 		if(this.column != null) {
 			return true;
 		}
-		this.column = JacocoColumn.create(showError);
+		this.column = JacocoColumn.create(logger);
 		if (this.column != null) {
 			this.addColumn("BBT", column);
 		}
@@ -179,7 +178,7 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 	public boolean executeBlackBoxTest(String path) {
 		this.task = path;
 		try {
-			initColumn(!ignoreError);
+			initColumn();
 			tester.test(packageName, logger);
 			writeResult(this, new HTMLEntity());
 		} catch (Exception e) {
@@ -499,8 +498,5 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 	@Override
 	public boolean writeToFile(String... fileName) {
 		return true;
-	}
-	public void withIgnoreError(boolean value) {
-		this.ignoreError = value;
 	}
 }

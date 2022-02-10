@@ -27,6 +27,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
 
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.AbstractArray;
@@ -37,6 +38,7 @@ import de.uniks.networkparser.list.SimpleList;
 public class SQLTable extends SimpleList<Object> {
 	private String table;
 	private boolean simple;
+	private static NetworkParserLog logger;
 
 	public static SQLTable create(ResultSet executeQuery, SQLStatement statement, boolean dynamic) {
 		AbstractArray<?> values = statement.getValues();
@@ -101,7 +103,9 @@ public class SQLTable extends SimpleList<Object> {
 					}
 				}
 			} catch (SQLException e) {
-				System.out.println(e);
+			    if(logger != null) {
+			        logger.error(executeQuery, "create", e);
+			    }
 			}
 		}
 		return sqlTable;

@@ -101,7 +101,6 @@ public class I18NUtil {
 					JsonArray first = answer.getJSONArray(0).getJSONArray(0);
 					newLanguage.put(fieldName, first.getString(0));
 				}
-				System.out.println("Missing: " + prefix + "." + fieldName);
 			}
 			if (newValue != null) {
 				if (value instanceof Entity && newValue instanceof Entity) {

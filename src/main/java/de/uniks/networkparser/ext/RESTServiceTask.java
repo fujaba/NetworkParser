@@ -85,7 +85,6 @@ public class RESTServiceTask implements Condition<Socket> {
 		HTTPRequest clientSocket = HTTPRequest.create(socket);
 		clientSocket.readType();
 		clientSocket.readPath();
-		System.out.println(clientSocket.getHttp_Type() + ": " + clientSocket.getUrl());
 		HTTPRequest match = null;
 		if (routing != null && routing.size() > 0) {
 			/* Parsing Path */

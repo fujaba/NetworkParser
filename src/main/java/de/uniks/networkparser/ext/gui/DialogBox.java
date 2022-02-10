@@ -1,7 +1,6 @@
 package de.uniks.networkparser.ext.gui;
 
 import java.io.File;
-import java.io.PrintStream;
 /*
 NetworkParser
 The MIT License
@@ -34,6 +33,7 @@ import javax.swing.JPanel;
 
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.io.StringPrintStream;
 import de.uniks.networkparser.gui.controls.Button;
 import de.uniks.networkparser.gui.controls.Control;
 import de.uniks.networkparser.gui.controls.Label;
@@ -608,7 +608,7 @@ public class DialogBox implements ObjectCondition {
 			if (ReflectionLoader.JFRAME == null || Os.isHeadless()) {
 				return null;
 			}
-			ReflectionLoader.logger = new PrintStream(System.out);
+			ReflectionLoader.logger = new StringPrintStream();
 			if (parentObj == null || ReflectionLoader.JFRAME.isAssignableFrom(parentObj.getClass()) == false) {
 				parentObj = ReflectionLoader.newInstance(ReflectionLoader.JFRAME);
 			}
@@ -668,6 +668,6 @@ public class DialogBox implements ObjectCondition {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(DialogBox.getInputString());
+		DialogBox.getInputString();
 	}
 }

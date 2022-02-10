@@ -1,5 +1,6 @@
 package de.uniks.networkparser.parser;
 
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationTypes;
@@ -14,6 +15,19 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class SimpleReverseEngineering implements ObjectCondition {
+    private NetworkParserLog logger;
+    
+    public SimpleReverseEngineering withLogger(NetworkParserLog logger) {
+        this.logger = logger;
+        return this;
+    }
+    
+    private void info(String method, String msg) {
+        if(logger != null) {
+            logger.info(this, method, msg);
+        }
+    }
+    
 	public boolean parsing(GraphModel model, SimpleSet<?> lists) {
 		if (lists == null) {
 			return true;
@@ -94,7 +108,7 @@ public class SimpleReverseEngineering implements ObjectCondition {
 						assoc.with(otherAssoc);
 						assocList.add(assoc);
 					} else {
-						System.out.println(symbolEntry.getDataType() + ":" + symbolEntry.getName());
+					    info("parsing", symbolEntry.getDataType() + ":" + symbolEntry.getName());
 					}
 					continue;
 				}
@@ -112,7 +126,7 @@ public class SimpleReverseEngineering implements ObjectCondition {
 						assoc.with(otherAssoc);
 						assocList.add(assoc);
 					} else {
-						System.out.println(symbolEntry.getDataType() + ":" + symbolEntry.getName());
+					    info("parsing", symbolEntry.getDataType() + ":" + symbolEntry.getName());
 					}
 					continue;
 				}
@@ -148,7 +162,7 @@ public class SimpleReverseEngineering implements ObjectCondition {
 					/* Its a Date */
 					clazz.createAttribute(name, DataType.DATE.withArray(isArray));
 				} else {
-					System.out.println(symbolEntry.getDataType() + ":" + symbolEntry.getName());
+				    info("parsing", symbolEntry.getDataType() + ":" + symbolEntry.getName());
 				}
 			}
 		}
@@ -180,7 +194,7 @@ public class SimpleReverseEngineering implements ObjectCondition {
 			GraphUtil.setChildren(valueAssoc.getClazz(), valueAssoc);
 			Association otherAssoc = valueAssoc.getOther();
 			if (otherAssoc.getName() == null) {
-				System.out.println("UNDIRECTIONAL");
+			    info("parsing", "UNDIRECTIONAL");
 			}
 			GraphUtil.setChildren(otherAssoc.getClazz(), otherAssoc);
 		}

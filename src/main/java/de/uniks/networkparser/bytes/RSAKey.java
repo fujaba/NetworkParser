@@ -107,7 +107,7 @@ public class RSAKey {
       return null;
     }
     if (message.divide(modulus).intValue() > 0) {
-      System.out.println("WARNUNG MODULUS MUST BIGGER (HASH-VALUE)");
+      // "WARNUNG MODULUS MUST BIGGER (HASH-VALUE)"
     }
     return message.modPow(getPublicKey(), getModulus());
   }
@@ -129,7 +129,8 @@ public class RSAKey {
     if (message != null) {
       try {
         return decrypt(new BigInteger(message));
-      } catch (Exception e) {
+      } catch (Exception ex) {
+          // Catch Error
       }
     }
     return null;

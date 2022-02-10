@@ -90,7 +90,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	private SimpleKeyValueList<Object, SendableEntityCreator> mapping;
 	private SimpleList<SendableEntityCreator> controllers;
 	private IdMap map;
-	private NetworkParserLog logger = new NetworkParserLog();
+	private static NetworkParserLog logger = new NetworkParserLog();
 
 	public SimpleController() {
 	}
@@ -861,7 +861,9 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			NodeProxyTCP server = NodeProxyTCP.createServer(8080);
 			server.withListener(listener);
 			if (server.start()) {
-				System.out.println("LISTEN ON: " + server.getKey());
+			    if(SimpleController.logger != null) {
+			        SimpleController.logger.info("LISTEN ON: " + server.getKey());
+			    }
 				if (ReflectionLoader.DESKTOP != null) {
 					Object desktop = ReflectionLoader.call(ReflectionLoader.DESKTOP, "getDesktop");
 					if (desktop != null) {

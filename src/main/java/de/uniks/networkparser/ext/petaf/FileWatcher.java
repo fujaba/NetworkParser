@@ -13,6 +13,7 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.io.FileBuffer;
@@ -50,6 +51,7 @@ public class FileWatcher implements Runnable {
 	protected String fileName;
 	private boolean runTask = true;
 	private WatchService watcher;
+	private NetworkParserLog logger;
 	private long lastChange = -1;
 	private Space space;
 
@@ -78,7 +80,9 @@ public class FileWatcher implements Runnable {
 				} else {
 					if (last != lastChange) {
 						this.lastChange = last;
-						System.out.println("New (version of) file " + fileName + " detected");
+						if(logger != null) {
+						    logger.info(this, "run", "New (version of) file " + fileName + " detected");
+						}
 						CharacterBuffer buffer = FileBuffer.readFile(fileName);
 						space.getMap().decode(buffer);
 					}
@@ -107,7 +111,9 @@ public class FileWatcher implements Runnable {
 			if (kind == ENTRY_CREATE) {
 				/* if its a new json file, read it */
 				Path filepath = (Path) event.context();
-				System.out.println("New (version of) file " + filepath.toFile() + " detected");
+				if(logger != null) {
+                    logger.info(this, "run", "New (version of) file " + filepath.toFile() + " detected");
+                }
 				CharacterBuffer buffer = FileBuffer.readFile(filepath.toFile());
 				space.getMap().decode(buffer);
 			}

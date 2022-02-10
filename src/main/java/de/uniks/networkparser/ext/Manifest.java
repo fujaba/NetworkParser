@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.io.StringPrintStream;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
@@ -34,8 +35,8 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  * @author Stefan Lindel
  */
 public class Manifest extends SimpleKeyValueList<String, String> {
-	public static char SPLITTER = ':';
-	public static char[] CRLF = new char[] { '\r', '\n' };
+    private static char SPLITTER = ':';
+	private static char[] CRLF = new char[] { '\r', '\n' };
 	public static final String VERSION = "Implementation-Version";
 	public static final String TITLE = "Specification-Title";
 	public static final String BUILD = "Built-Time";
@@ -79,7 +80,6 @@ public class Manifest extends SimpleKeyValueList<String, String> {
 			sb.withLine("Coverage: " + manifest.getString(COVERAGE));
 
 			System.out.println(sb.toString());
-
 		}
 	}
 

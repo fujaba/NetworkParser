@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.util.ArrayList;
 
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
@@ -61,6 +62,8 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 	/** Constant of Maximum Elements. */
 	public static final String PROPERTY_MAXOCCURS = "maxOccurs";
 	private static final String PROEPRTY_CHILDREN = "children";
+	
+	private NetworkParserLog logger;
 
 	protected Clazz container;
 
@@ -253,9 +256,7 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		if (prefix == null) {
 			return model;
 		}
-		System.out.println(this.sizeChildren());
 		this.cleanUp(prefix);
-		System.out.println(this.sizeChildren());
 		/* Create Classes */
 		String elementType = prefix + XSDEntity.XSD_ELEMENT_TYPE;
 		String complexType = prefix + XSDEntity.XSD_COMPLEX_TYPE;
@@ -331,7 +332,9 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 
 					String containerType = first.getString("type");
 					if (XSD_UNBOUNDED.equalsIgnoreCase(first.getMaxOccurs()) == false) {
-						System.out.println("IGNORE: " + first.getString("name") + " " + containerType);
+					    if(logger != null) {
+					        logger.info("IGNORE: " + first.getString("name") + " " + containerType);
+					    }
 					} else if (stringType.equalsIgnoreCase(containerType)) {
 						String containerName = first.getString("name");
 						DataType type;
@@ -357,7 +360,9 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 						if ("0".equals(element.getMinOccurs()) == false) {
 							/* ITS NESSESSARY */
 							attr.withValue("\"\"");
-							System.out.println("MUST BE INIT: " + clazz.getName() + ":" + name);
+							if(logger != null) {
+							    logger.info("MUST BE INIT: " + clazz.getName() + ":" + name);
+							}
 						}
 						callBack(attr, true);
 					} else {
@@ -379,7 +384,9 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 								}
 							}
 						} else {
-							System.err.println(type + " not parsing");
+                            if (logger != null) {
+                                logger.info(type + " not parsing");
+                            }
 						}
 					}
 				}

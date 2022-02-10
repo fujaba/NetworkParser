@@ -196,7 +196,9 @@ public class ModelGenerator extends SimpleGenerator {
 		}
 
 		if (model.fixClassModel() == false) {
-			System.out.println("Reparing of Model failed");
+		    if(logger != null) {
+		        logger.info("Reparing of Model failed");
+		    }
 			return null;
 		}
 		String name = model.getName();
