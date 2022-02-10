@@ -274,7 +274,7 @@ public class XMLTokener extends Tokener {
   }
 
   protected void parseAttribute(XMLTokener tokener, Buffer buffer, MapEntity stack) {
-    if (map == null || stack == null) {
+    if (stack == null) {
       return;
     }
     Object entity = stack.getCurrentItem();
@@ -306,7 +306,7 @@ public class XMLTokener extends Tokener {
   }
 
   protected Object parseChildren(XMLTokener tokener, Buffer buffer, MapEntity stack) {
-    if (map == null || stack == null) {
+    if (stack == null) {
       return null;
     }
     Object entity = stack.getCurrentItem();

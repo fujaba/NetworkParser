@@ -177,7 +177,7 @@ idea {
 }
 
 artifacts { 
-	archives buildCoreJar17, buildCoreJar18, buildCoreJar19, buildSourceJar, buildSourceJar18, buildMinCoreJar, buildJavadoc, buildGitJar
+	archives buildCoreJar17, buildCoreJar18, buildCoreJar19, buildSourceJar, buildSourceJar18, buildMinCoreJar, buildJavadoc, buildGitJar, buildMinJsonJar
 }
 
 wrapper {
