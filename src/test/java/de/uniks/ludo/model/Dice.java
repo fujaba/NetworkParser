@@ -34,7 +34,6 @@ public class Dice {
 		if (listeners != null) {
 			listeners.removePropertyChangeListener(listener);
 		}
-		listeners.removePropertyChangeListener(listener);
 		return true;
 	}
 

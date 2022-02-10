@@ -231,7 +231,6 @@ public class FileClassModel extends ClassModel {
 	private SimpleList<String> checkMethodsJavaDoc(SimpleList<String> lines, boolean fullCheck, String currentPackage, String currentFileName) {
 		SimpleList<String> msg = new SimpleList<>();
 		/* Create a matcher to find all method declarations */
-		// "((public|private|protected|static|final|native|synchronized|abstract|transient)+\\s)+[\\$_\\w\\<\\>\\[\\]]*\\s+[\\$_\\w]+\\([^\\)]*\\)?\\s*\\{?"
 		
 	    /* Go through all matches */
 		for(int lineMethod = 0; lineMethod <lines.size();lineMethod++) {

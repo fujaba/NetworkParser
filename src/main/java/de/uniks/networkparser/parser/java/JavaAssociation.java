@@ -144,7 +144,7 @@ public class JavaAssociation extends Template {
 /* MULTI WITH */
 				"	public {{modifiers} }{{clazz.name}} without{{other.Name}}({{other.clazz.name}}... value){{#if {{file.member.type}}==interface}};",
 				"", "{{#endif}}", "{{#ifnot {{file.member.type}}==interface}} {",
-				"		if(this.{{other.name}} == null) {", "			return this;", "		}",
+				"		if(this.{{other.name}} == null || value == null) {", "			return this;", "		}",
 				"		for ({{other.clazz.name}} item : value) {", "			if (item != null) {",
 				"{{#if {{type}}==assoc}}", "				if (this.{{other.name}}.remove(item)) {",
 				"{{#if {{cardinality}}==1}}", "					item.with{{Name}}(null);", "{{#else}}",

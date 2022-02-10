@@ -135,7 +135,7 @@ public class Ludo {
 	}
 
 	public Ludo withoutField(Field... value) {
-		if(this.field == null) {
+		if(this.field == null || value == null) {
 			return this;
 		}
 		for (Field item : value) {
@@ -240,7 +240,7 @@ public class Ludo {
 	}
 
 	public Ludo withoutPlayers(Player... value) {
-		if(this.players == null) {
+		if(this.players == null || value == null) {
 			return this;
 		}
 		for (Player item : value) {

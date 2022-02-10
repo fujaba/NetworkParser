@@ -80,8 +80,8 @@ public class NetworkParserLog extends Handler {
   public static final String SEVERE = "SEVERE";
   public static final String LOG = "LOG";
 
-  /** ERROR + INFO */
-  private byte flag = LOGLEVEL_ERROR + LOGLEVEL_INFO;
+  /** ERROR */
+  private byte flag = LOGLEVEL_ERROR;
   protected ObjectCondition condition;
 
   /**

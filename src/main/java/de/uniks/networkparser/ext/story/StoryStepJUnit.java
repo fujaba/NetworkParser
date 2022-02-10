@@ -52,7 +52,7 @@ import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class StoryStepJUnit extends StoryElement implements ObjectCondition {
-	private static final String BLACKBOXFILE = "backbox.txt";
+	private static final String BLACKBOXFILE = "blackbox.txt";
 	private ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 	private NetworkParserLog logger = new NetworkParserLog().withListener(this);
 	private String packageName = null;

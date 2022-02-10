@@ -77,7 +77,6 @@ public class JavaClazz extends Template {
 				"		if (listeners != null) {",
 				"			listeners.removePropertyChangeListener(listener);",
 				"		}",
-				"		listeners.removePropertyChangeListener(listener);",
 				"		return true;",
 				"	}",
 				"",

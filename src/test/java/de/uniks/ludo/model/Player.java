@@ -150,7 +150,7 @@ public class Player {
 	}
 
 	public Player withoutHome(Home... value) {
-		if(this.home == null) {
+		if(this.home == null || value == null) {
 			return this;
 		}
 		for (Home item : value) {
@@ -327,7 +327,7 @@ public class Player {
 	}
 
 	public Player withoutMeeple(Meeple... value) {
-		if(this.meeple == null) {
+		if(this.meeple == null || value == null) {
 			return this;
 		}
 		for (Meeple item : value) {
@@ -504,7 +504,7 @@ public class Player {
 	}
 
 	public Player withoutTarget(Target... value) {
-		if(this.target == null) {
+		if(this.target == null || value == null) {
 			return this;
 		}
 		for (Target item : value) {

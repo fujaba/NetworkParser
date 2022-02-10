@@ -34,7 +34,6 @@ public class Field {
 		if (listeners != null) {
 			listeners.removePropertyChangeListener(listener);
 		}
-		listeners.removePropertyChangeListener(listener);
 		return true;
 	}
 
