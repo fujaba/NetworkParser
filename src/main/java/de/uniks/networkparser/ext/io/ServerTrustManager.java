@@ -62,7 +62,7 @@ class ServerTrustManager implements X509TrustManager {
     /* Look the identity in the subjectAltName extension if available */
     List<String> names = getSubjectAlternativeNames(x509Certificate);
     if (names.isEmpty() && x509Certificate != null) {
-      String name = x509Certificate.getSubjectDN().getName();
+      String name = x509Certificate.getSubjectX500Principal().getName();
       Matcher matcher = cnPattern.matcher(name);
       if (matcher.find()) {
         name = matcher.group(2);

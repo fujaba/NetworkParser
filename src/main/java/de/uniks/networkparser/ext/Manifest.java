@@ -27,8 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.ext.io.StringPrintStream;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 
 /**
  * Representation for Manifest
@@ -66,21 +66,40 @@ public class Manifest extends SimpleKeyValueList<String, String> {
 		}
 		return create(value);
 	}
-
-	public static void printVersion() {
-		Manifest manifest = create();
-		if (manifest.isEmptyManifest() == false) {
-			CharacterBuffer sb = new CharacterBuffer();
-			sb.withLine("Title: " + manifest.getString(TITLE));
-			sb.withLine("Version: " + manifest.getString(VERSION));
-			sb.withLine("Time: " + manifest.getString(BUILD));
-			sb.withLine("Hash: " + manifest.getString(HASH));
-			sb.withLine("Licence: " + manifest.getString(LICENCE));
-			sb.withLine("Homepage: " + manifest.getString(HOMEPAGE));
-			sb.withLine("Coverage: " + manifest.getString(COVERAGE));
-
-			System.out.println(sb.toString());
-		}
+	public static String getGlobalVersion() {
+        Manifest manifest = create();
+        if (!manifest.isEmptyManifest()) {
+            return manifest.getVersion();
+        }
+        return "";
+	}
+	
+	public String getVersion() {
+		CharacterBuffer sb = new CharacterBuffer();
+		sb.withLine("Title: " + getString(TITLE));
+		sb.withLine("Version: " + getString(VERSION));
+		sb.withLine("Time: " + getString(BUILD));
+		sb.withLine("Hash: " + getString(HASH));
+		sb.withLine("Licence: " + getString(LICENCE));
+		sb.withLine("Homepage: " + getString(HOMEPAGE));
+		sb.withLine("Coverage: " + getString(COVERAGE));
+		return sb.toString();
+	}
+	
+	public CharacterBuffer getFullVersion(String splitter, String... excludes) {
+	    CharacterBuffer sb = new CharacterBuffer();
+	    SimpleList<String> excludeList = new SimpleList<>();
+	    excludeList.rawAdd(excludes);
+	    if(splitter == null) {
+	        splitter = "";
+	    }
+	    for(int i=0;i<this.size();i++) {
+	        String key = this.getKeyByIndex(i);
+	        if(!excludeList.containsKey(key)) {
+	            sb.withLine(key + ": " +this.getValueByIndex(i) + splitter);
+	        }
+	    }
+	    return sb;
 	}
 
 	public static Manifest create(CharSequence value) {
@@ -90,7 +109,7 @@ public class Manifest extends SimpleKeyValueList<String, String> {
 			CharacterBuffer section = tokener.nextToken(true, SPLITTER);
 			CharacterBuffer sectionheader = tokener.nextToken(false, CRLF);
 			boolean isCoverage = section.toString().equals(COVERAGE);
-			tokener.skip();
+			tokener.skipFor('\n');
 			while (tokener.getCurrentChar() == ' ' || tokener.getCurrentChar() == '\t') {
 				CharacterBuffer newLine = tokener.nextToken(true, CRLF);
 				if (isCoverage) {
@@ -98,10 +117,13 @@ public class Manifest extends SimpleKeyValueList<String, String> {
 				} else {
 					sectionheader.with(newLine);
 				}
-				tokener.skip();
+				tokener.skipFor('\n');
 			}
 			String key = section.toString();
-			manifest.add(key, sectionheader.trim().toString());
+			String valueKey = sectionheader.trim().toString();
+			if(!key.isEmpty() && !valueKey.isEmpty()) {
+			    manifest.add(key, valueKey);
+			}
 		}
 		manifest.empty = manifest.containsAll(VERSION, TITLE, BUILD) == false;
 		return manifest;

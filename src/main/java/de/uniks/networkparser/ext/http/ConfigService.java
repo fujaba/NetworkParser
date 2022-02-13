@@ -53,7 +53,7 @@ public class ConfigService implements Condition<HTTPRequest> {
 			String key = value.parse().getContentValue(HTMLEntity.ACTION);
 			if(ACTION_CLOSE.equalsIgnoreCase(key)) {
 				task.close();
-				listener.update(new SimpleEvent(value, HTMLEntity.ACTION, ACTION_CLOSE));
+				listener.update(new SimpleEvent(this, ACTION_CLOSE, value));
 			}
 		}
 		return false;
@@ -73,10 +73,14 @@ public class ConfigService implements Condition<HTTPRequest> {
 		}
 		
 		entity.withActionButton("Beenden", ACTION_CLOSE);
-
+		if(this.task.getImpressumService() != null) {
+		    XMLEntity footer = entity.createTag("div").with("class", "footer");
+		    XMLEntity lnk = footer.createChild("a", "href", this.task.getImpressumService().getRouting().getAbsolutePath());
+		    lnk.withValue("Impressum");
+		}
 		value.withContent(entity);
 		if(listener != null) {
-			listener.update(new SimpleEvent(value, HTTPRequest.HTTP_TYPE_GET, value));
+			listener.update(new SimpleEvent(this, HTTPRequest.HTTP_TYPE_GET, value));
 		}
 		value.write(entity);
 		return true;
@@ -92,7 +96,7 @@ public class ConfigService implements Condition<HTTPRequest> {
 				}
 				if(key.equalsIgnoreCase(ACTION_SAVE)) {
 					configuration.setValue(configuration, Configuration.PORT, value.getContentValue("port"), SendableEntityCreator.NEW);
-					listener.update(new SimpleEvent(value, HTMLEntity.ACTION, ACTION_SAVE));
+					listener.update(new SimpleEvent(this, ACTION_SAVE, value));
 					return value.redirect(this.routing.getAbsolutePath());
 				}
 			}
@@ -106,7 +110,7 @@ public class ConfigService implements Condition<HTTPRequest> {
 			formTag.createChild("input", "type", "submit", "value", ACTION_ABORT, "name", HTMLEntity.ACTION);
 			value.withContent(entity);
 			if(listener != null) {
-				listener.update(new SimpleEvent(value, HTTPRequest.HTTP_TYPE_GET, value));
+				listener.update(new SimpleEvent(this, HTTPRequest.HTTP_TYPE_GET, value));
 			}
 			value.write(entity);
 			return true;
@@ -124,7 +128,7 @@ public class ConfigService implements Condition<HTTPRequest> {
 							for(String prop : creator.getProperties()) {
 								creator.setValue(creator, prop, value.getContentValue(prop), SendableEntityCreator.NEW);
 							}
-							listener.update(new SimpleEvent(value, HTMLEntity.ACTION, ACTION_SAVE));
+							listener.update(new SimpleEvent(this, ACTION_SAVE, value));
 							return value.redirect(this.routing.getAbsolutePath());
 						}
 					}
@@ -138,7 +142,7 @@ public class ConfigService implements Condition<HTTPRequest> {
 					formTag.createChild("input", "type", "submit", "value", ACTION_ABORT, "name", HTMLEntity.ACTION);
 					value.withContent(entity);
 					if(listener != null) {
-						listener.update(new SimpleEvent(value, HTTPRequest.HTTP_TYPE_GET, value));
+						listener.update(new SimpleEvent(this, HTTPRequest.HTTP_TYPE_GET, value));
 					}
 					return true;
 				}

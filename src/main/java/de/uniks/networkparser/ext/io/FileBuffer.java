@@ -271,6 +271,12 @@ public class FileBuffer extends Buffer {
 		}
 		return readResource(IdMap.class.getResourceAsStream(file));
 	}
+	public static CharacterBuffer readResource(String file, Class<?> reference) {
+        if (file == null ||  reference == null) {
+            return null;
+        }
+        return readResource(reference.getResourceAsStream(file));
+    }
 	
 	public CharacterBuffer readAll() {
 		if (file == null) {

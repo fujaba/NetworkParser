@@ -16,8 +16,11 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.list.MapEntry;
+import de.uniks.networkparser.list.SimpleEntity;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.StringEntry;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public class HTTPRequest implements Comparable<HTTPRequest> {
@@ -47,15 +50,14 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	
 	public static final String BEARER = "Bearer";
 	public static final String HTTP_AUTHENTIFICATION = "Authentification";
-	public static final Character STATIC = 'S';
-	public static final Character VARIABLE = 'V';
+	public static final String STATIC = "S";
+	public static final String VARIABLE = "V";
 
 	private BufferedReader inputStream;
 	private PrintWriter outputStream;
 	private Condition<Exception> errorListener;
 	private Condition<HTTPRequest> updateCondition;
 	private Socket socket;
-	private String url;
 	private SimpleList<String> headers = new SimpleList<String>();
 
 	private Map<String, Object> contentValues;
@@ -66,12 +68,10 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 
 	private boolean writeHeader;
 	private boolean writeBody;
-	private SimpleList<String> partParameter;
-	private SimpleList<String> partPath;
-	private SimpleList<String> fullPath;
-	private SimpleList<Character> pathType;
+	private SimpleList<MapEntry> part;
+    private String url;
+	private String tag;
 	
-
 	private SimpleKeyValueList<String, String> matchVariables = new SimpleKeyValueList<String, String>();
 	private boolean matchValid = true;
 	private int matchOfRequestPath;
@@ -205,7 +205,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return new HTTPRequest(socket);
 	}
 	
-	public HTMLEntity getHTMLEntity() {
+	public HTMLEntity getContentHTML() {
 		if(content instanceof HTMLEntity) {
 			return (HTMLEntity) content;
 		}
@@ -236,10 +236,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	 * @return success
 	 */
 	private boolean parsingPath(Reader input, String defaultValue) {
-		this.partPath = new SimpleList<String>();
-		this.partParameter = new SimpleList<String>();
-		this.pathType = new SimpleList<Character>();
-		this.fullPath = new SimpleList<String>();
+		this.part = new SimpleList<MapEntry>();
 		if (defaultValue == null) {
 			defaultValue = "";
 		}
@@ -268,9 +265,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 				if (c == '&' && isVariable) {
 					part.withStartPosition(1);
 					String value = part.toString();
-					this.fullPath.add(value);
-					this.partParameter.add(value);
-					this.pathType.add(VARIABLE);
+					this.part.add(MapEntry.create(VARIABLE, value));
 					part.clear();
 					continue;
 				}
@@ -279,22 +274,16 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 					if (isVariable) {
 						if (part.startsWith(":")) {
 							part.withStartPosition(1);
-							String value = part.toString();
-							this.fullPath.add(value);
-							this.partParameter.add(part.toString());
-							this.pathType.add(VARIABLE);
+		                    this.part.add(MapEntry.create(VARIABLE, part.toString()));
 							part.clear();
 							continue;
 						}
 					} else {
 						String value = part.toString();
-						this.fullPath.add(value);
 						if ("*".equals(value)) {
-							this.partParameter.add(value);
-							this.pathType.add(VARIABLE);
+                            this.part.add(MapEntry.create(VARIABLE, value));
 						} else {
-							this.partPath.add(value);
-							this.pathType.add(STATIC);
+                            this.part.add(MapEntry.create(STATIC, value));
 						}
 					}
 					part.clear();
@@ -307,18 +296,13 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 				if (isVariable) {
 					part.withStartPosition(1);
 					String value = part.toString();
-					this.fullPath.add(value);
-					this.partParameter.add(value);
-					this.pathType.add(VARIABLE);
+                    this.part.add(MapEntry.create(VARIABLE, value));
 				} else {
 					String value = part.toString();
-					this.fullPath.add(value);
 					if ("*".equals(value)) {
-						this.partParameter.add(part.toString());
-						this.pathType.add(VARIABLE);
+					    this.part.add(MapEntry.create(VARIABLE, part.toString()));
 					} else {
-						this.partPath.add(value);
-						this.pathType.add(STATIC);
+                        this.part.add(MapEntry.create(STATIC, value));
 					}
 				}
 			}
@@ -603,18 +587,6 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return false;
 	}
 
-	public SimpleList<String> getPathParts() {
-		return this.partPath;
-	}
-
-	public SimpleList<String> getPathParameter() {
-		return this.partParameter;
-	}
-
-	public SimpleList<Character> getPathType() {
-		return pathType;
-	}
-
 	public int getMatchOfRequestPath() {
 		return matchOfRequestPath;
 	}
@@ -675,31 +647,36 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		this.matchValid = false;
 		this.matchVariables.clear();
 
-		if (routing == null || pathType == null) {
+		if (routing == null || part == null) {
 			return false;
 		}
-		SimpleList<String> paths = routing.getFullPath();
-		for (matchOfRequestPath = 0; matchOfRequestPath < this.pathType.size(); matchOfRequestPath++) {
-			Character type = this.pathType.get(matchOfRequestPath);
-			String currentPathpart = this.fullPath.get(getMatchOfRequestPath());
+		SimpleList<MapEntry> paths = routing.getPathParts();
+		for (matchOfRequestPath = 0; matchOfRequestPath < this.part.size(); matchOfRequestPath++) {
+			MapEntry item = this.part.get(matchOfRequestPath);
+			String type = item.getKey();
+			String currentPathpart = item.getValueString();
 			if (HTTPRequest.STATIC.equals(type)) {
 				if (paths.size() < matchOfRequestPath) {
 					break;
 				}
 				/* Must be the Same */
-				if (currentPathpart.equalsIgnoreCase(paths.get(matchOfRequestPath)) == false) {
+				if (!currentPathpart.equalsIgnoreCase(paths.get(matchOfRequestPath).getValueString())) {
 					break;
 				}
 			} else if (HTTPRequest.VARIABLE.equals(type)) {
 				/* NEW ONE */
-				this.matchVariables.put(paths.get(matchOfRequestPath), currentPathpart);
+				this.matchVariables.put(paths.get(matchOfRequestPath).getValueString(), currentPathpart);
 			}
 		}
 		matchValid = matchOfRequestPath == paths.size();
-		return true;
+		return matchValid;
 	}
 
-	public HTTPRequest withUpdateCondition(Condition<HTTPRequest> condition) {
+	private SimpleList<MapEntry> getPathParts() {
+        return part;
+    }
+
+    public HTTPRequest withUpdateCondition(Condition<HTTPRequest> condition) {
 		this.updateCondition = condition;
 		return this;
 	}
@@ -709,10 +686,6 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 			return updateCondition.update(value);
 		}
 		return false;
-	}
-
-	public SimpleList<String> getFullPath() {
-		return fullPath;
 	}
 
     public HTTPRequest withType(String value) {
@@ -790,4 +763,21 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		this.contentType = value;
 		return this;
 	}
+	
+	@Override
+	public String toString() {
+	    if(this.url != null) {
+	        return this.url;
+	    }
+	    return super.toString();
+	}
+
+	public HTTPRequest withTag(String value) {
+	    this.tag = value;
+	    return this;
+	}
+	
+	public String getTag() {
+        return tag;
+    }
 }

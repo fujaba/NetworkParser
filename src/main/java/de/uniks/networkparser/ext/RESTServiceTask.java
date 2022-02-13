@@ -12,6 +12,7 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.http.ConfigService;
 import de.uniks.networkparser.ext.http.Configuration;
 import de.uniks.networkparser.ext.http.HTTPRequest;
+import de.uniks.networkparser.ext.http.ImpressumService;
 import de.uniks.networkparser.ext.http.LoginService;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyModel;
@@ -42,6 +43,7 @@ public class RESTServiceTask implements Condition<Socket> {
 	private NodeProxyTCP proxy;
 	private boolean routingExists;
 	private ConfigService configService;
+    private ImpressumService impressumService;
 	
 	public RESTServiceTask createServer(Configuration config, IdMap map, Object root) {
 		this.proxy = NodeProxyTCP.createServer(config.getPort());
@@ -51,6 +53,10 @@ public class RESTServiceTask implements Condition<Socket> {
 		configService = new ConfigService(config);
 		configService.withTask(this);
 		withRouting(configService.getRouting());
+		
+		impressumService = new ImpressumService();
+        withRouting(getImpressumService().getRouting());
+		
 		this.proxy.withRestService(this);
 		
 		space = new Space();
@@ -86,7 +92,7 @@ public class RESTServiceTask implements Condition<Socket> {
 		clientSocket.readType();
 		clientSocket.readPath();
 		HTTPRequest match = null;
-		if (routing != null && routing.size() > 0) {
+		if (routing != null && !routing.isEmpty()) {
 			/* Parsing Path */
 			HTTPRequest defaultMatch = null;
 			String path = clientSocket.getUrl();
@@ -110,7 +116,7 @@ public class RESTServiceTask implements Condition<Socket> {
 			}
 		}
 		/* SO NEW MATCHES */
-		SimpleEvent event = new SimpleEvent(clientSocket, clientSocket.getUrl());
+		SimpleEvent event = new SimpleEvent(this, clientSocket.getUrl(), clientSocket);
 		if (allowListener != null) {
 			if (!allowListener.update(event)) {
 				clientSocket.writeHeader(HTTPRequest.HTTP_STATE_PERMISSION_DENIED);
@@ -152,7 +158,7 @@ public class RESTServiceTask implements Condition<Socket> {
 	}
 
 	public String executeRequest(String request) {
-		SimpleEvent event = new SimpleEvent(this, request, null, null);
+		SimpleEvent event = new SimpleEvent(this, request);
 		return executeRequest(event);
 	}
 
@@ -436,4 +442,8 @@ public class RESTServiceTask implements Condition<Socket> {
 		this.executeController = executeController;
 		return this;
 	}
+
+    public ImpressumService getImpressumService() {
+        return impressumService;
+    }
 }

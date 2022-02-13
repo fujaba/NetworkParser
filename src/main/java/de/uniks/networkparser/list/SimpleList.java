@@ -76,4 +76,30 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 		}
 		return super.fireProperty(type, oldElement, newElement, beforeElement, index, value);
 	}
+	
+	public boolean containsKey(String key) {
+	    if(key == null) {
+	        return false;
+	    }
+	    for(int i=0;i<this.size();i++) {
+	        V keyObj = this.get(i);
+	        if(keyObj instanceof String) {
+	            String search = (String) keyObj;
+	            if(search.startsWith("*")) {
+	                if (key.endsWith(search.substring(1))) {
+	                    return true;
+	                }
+	            }else if(search.endsWith("*")) {
+	                if (key.startsWith(search.substring(0, search.length() - 1))) {
+                        return true;
+                    }
+	            } else {
+	                if (key.equals(search)) {
+                        return true;
+                    }
+	            }
+	        }
+	    }
+	    return false;
+	}
 }

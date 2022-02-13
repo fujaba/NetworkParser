@@ -523,6 +523,27 @@ public abstract class Buffer implements BufferItem {
     }
     return true;
   }
+  
+  public boolean skipFor(char... quotes) {
+      char c = getChar();
+      if (quotes == null) {
+        return true;
+      }
+      boolean found;
+      do {
+          found=false;
+          for (int i = 0; i < quotes.length; i++) {
+              if(quotes[i] == c) {
+                  found = true;
+                  break;
+              }
+          }
+          if(found) {
+              c = getChar();
+          }
+      } while(found);
+      return true;
+    }
 
   public void printError(String msg) {
     if (msg != null && msg.length() > 0) {

@@ -43,4 +43,14 @@ public class MapEntry extends SimpleEntity<String, Object> {
 		this.withValue(value);
 		return this;
 	}
+	
+    public static MapEntry create(String key, String value) {
+        MapEntry entry = new MapEntry();
+        entry.withKey(key).withValue(value);
+        return entry;
+    }
+    
+    public String getValueString() {
+        return "" + this.getValue();
+    }
 }

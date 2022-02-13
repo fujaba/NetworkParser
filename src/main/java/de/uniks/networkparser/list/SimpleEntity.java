@@ -45,8 +45,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntity
 	public static final String PROPERTY_KEY = "key";
 	/** Constant for VALUE. */
 	public static final String PROPERTY_VALUE = "value";
-	/** Propertys for Values. */
-	private final String[] properties = new String[] { PROPERTY_KEY, PROPERTY_VALUE };
+
 	/** The Variable of Key. */
 	private K key;
 	/** The Variable of Value. */
@@ -165,7 +164,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntity
 
 	@Override
 	public String[] getProperties() {
-		return properties;
+		return new String[] {PROPERTY_KEY, PROPERTY_VALUE};
 	}
 
 	@Override

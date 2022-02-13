@@ -29,7 +29,6 @@ public class WebResourceLoader implements Condition<HTTPRequest> {
 				output.println("Connection: close");
 			}
 		}
-
 		return true;
 	}
 }
