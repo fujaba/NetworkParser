@@ -9,24 +9,44 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 
 /**
- * Sending Connection Link with all Input Proxies and Filter
- * 
+ * Sending Connection Link with all Input Proxies and Filter.
+ *
  * @author Stefan Lindel
  */
 public class AcceptMessage extends ReceivingTimerTask {
+	
+	/** The Constant PROPERTY_TYPE. */
 	public static final String PROPERTY_TYPE = "accept";
+	
+	/** The Constant PROPERTY_PROXIES. */
 	public static final String PROPERTY_PROXIES = "proxies";
+	
+	/** The Constant PROPERTY_MODEL. */
 	public static final String PROPERTY_MODEL = "model";
+	
+	/** The Constant PROPERTY_MODELID. */
 	public static final String PROPERTY_MODELID = "model_id";
+	
+	/** The Constant PROPERTY_MODELCLASS. */
 	public static final String PROPERTY_MODELCLASS = "model_class";
 
 	private String id;
 
+	/**
+	 * Instantiates a new accept message.
+	 */
 	public AcceptMessage() {
 		this.type = PROPERTY_TYPE;
 		AcceptMessage.props.add(PROPERTY_PROXIES, PROPERTY_MODELID, PROPERTY_MODELCLASS, PROPERTY_MODEL);
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (attribute == null || entity instanceof AcceptMessage == false) {
@@ -71,6 +91,15 @@ public class AcceptMessage extends ReceivingTimerTask {
 		return super.getValue(entity, attribute);
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	/* Add helper Variable to creating Objects */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
@@ -126,6 +155,11 @@ public class AcceptMessage extends ReceivingTimerTask {
 		return super.setValue(entity, attribute, value, type);
 	}
 
+	/**
+	 * Run task.
+	 *
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean runTask() {
 		if (super.runTask()) {
@@ -142,12 +176,23 @@ public class AcceptMessage extends ReceivingTimerTask {
 		return true;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @return the accept message
+	 */
 	public static AcceptMessage create() {
 		AcceptMessage msg = new AcceptMessage();
 		msg.withSendAnyHow(true);
 		return msg;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		AcceptMessage acceptMessage = new AcceptMessage();
@@ -157,6 +202,11 @@ public class AcceptMessage extends ReceivingTimerTask {
 		return acceptMessage;
 	}
 
+	/**
+	 * Checks if is sending to peers.
+	 *
+	 * @return true, if is sending to peers
+	 */
 	@Override
 	public boolean isSendingToPeers() {
 		return false;

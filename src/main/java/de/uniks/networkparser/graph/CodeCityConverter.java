@@ -11,9 +11,20 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.parser.ParserEntity;
 import de.uniks.networkparser.parser.SymTabEntry;
 
+/**
+ * The Class CodeCityConverter.
+ *
+ * @author Stefan
+ */
 public class CodeCityConverter implements Converter {
 	private NetworkParserLog logger;
 
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @return the string
+	 */
 	/*
 	 * Root := Document ? Document := OPEN ElementNode \* CLOSE ElementNode := OPEN
 	 * NAME Serial ? AttributeNode \* CLOSE Serial := OPEN ID INTEGER CLOSE

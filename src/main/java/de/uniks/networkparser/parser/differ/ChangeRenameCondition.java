@@ -7,8 +7,16 @@ import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.GraphMatcher;
 
+/**
+ * The Class ChangeRenameCondition.
+ *
+ * @author Stefan
+ */
 public class ChangeRenameCondition extends MatchCondition {
 
+	/**
+	 * Instantiates a new change rename condition.
+	 */
 	public ChangeRenameCondition() {
 		super(true);
 	}
@@ -62,6 +70,11 @@ public class ChangeRenameCondition extends MatchCondition {
 		return true;
 	}
 
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
 	@Override
 	public String getAction() {
 		return SendableEntityCreator.UPDATE;

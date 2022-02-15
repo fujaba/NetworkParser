@@ -27,14 +27,29 @@ import java.util.Comparator;
 
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class SQLStatementList.
+ *
+ * @author Stefan
+ */
 public class SQLStatementList extends SimpleList<SQLStatement> {
 	private final static SQLStatementComparator comparator = new SQLStatementComparator();
 
+	/**
+	 * Comparator.
+	 *
+	 * @return the comparator
+	 */
 	@Override
 	public Comparator<Object> comparator() {
 		return comparator;
 	}
 
+	/**
+	 * Checks if is comparator.
+	 *
+	 * @return true, if is comparator
+	 */
 	@Override
 	public boolean isComparator() {
 		return true;

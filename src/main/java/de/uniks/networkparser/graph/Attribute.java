@@ -26,21 +26,43 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class Attribute.
+ *
+ * @author Stefan
+ */
 public class Attribute extends Value {
 	Attribute() {
 	}
 
+	/**
+	 * Instantiates a new attribute.
+	 *
+	 * @param name the name
+	 * @param datatyp the datatyp
+	 */
 	public Attribute(String name, DataType datatyp) {
 		this.with(name);
 		this.with(datatyp);
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param value the value
+	 * @return the attribute
+	 */
 	@Override
 	public Attribute withValue(String value) {
 		super.withValue(value);
 		return this;
 	}
 
+	/**
+	 * Gets the modifier.
+	 *
+	 * @return the modifier
+	 */
 	@Override
 	public Modifier getModifier() {
 		Modifier modifier = super.getModifier();
@@ -51,11 +73,23 @@ public class Attribute extends Value {
 		return modifier;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param modifier the modifier
+	 * @return the attribute
+	 */
 	public Attribute with(Modifier... modifier) {
 		super.withModifier(modifier);
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param value the value
+	 * @return the attribute
+	 */
 	/* Redirect */
 	@Override
 	public Attribute with(String value) {
@@ -63,18 +97,38 @@ public class Attribute extends Value {
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param value the value
+	 * @return the attribute
+	 */
 	@Override
 	public Attribute with(DataType value) {
 		super.with(value);
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param name the name
+	 * @param typ the typ
+	 * @return the attribute
+	 */
 	public Attribute with(String name, DataType typ) {
 		this.with(typ);
 		this.with(name);
 		return this;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param typ the typ
+	 * @param shortName the short name
+	 * @return the value
+	 */
 	public String getValue(String typ, boolean shortName) {
 		if (GraphTokener.OBJECTDIAGRAM.equals(typ)) {
 			if (DataType.STRING == this.type && this.value != null && this.value.startsWith("\"") == false) {
@@ -88,15 +142,31 @@ public class Attribute extends Value {
 		return null;
 	}
 
+	/**
+	 * Gets the annotation.
+	 *
+	 * @return the annotation
+	 */
 	public Annotation getAnnotation() {
 		return super.getAnnotation();
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param value the value
+	 * @return the attribute
+	 */
 	public Attribute with(Annotation value) {
 		super.withAnnotation(value);
 		return this;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		CharacterBuffer sb = new CharacterBuffer();
@@ -112,6 +182,12 @@ public class Attribute extends Value {
 		return sb.toString();
 	}
 
+	/**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Attribute) {

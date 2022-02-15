@@ -30,19 +30,44 @@ import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.logic.CustomCondition;
 
+/**
+ * The Class JavaMethodBodyCondition.
+ *
+ * @author Stefan
+ */
 public class JavaMethodBodyCondition extends CustomCondition<Method> {
+	
+	/** The Constant TAG. */
 	public static final String TAG = "methodbody";
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return TAG;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public ParserCondition getSendableInstance(boolean prototyp) {
 		return new JavaMethodBodyCondition();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param creator the creator
+	 * @param method the method
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(SendableEntityCreator creator, Method method) {
 		String result = "";

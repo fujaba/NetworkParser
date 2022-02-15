@@ -30,11 +30,22 @@ public final class BitMatrix implements Cloneable {
   private final int rowSize;
   private final int[] bits;
 
+  /**
+   * Instantiates a new bit matrix.
+   *
+   * @param dimension the dimension
+   */
   /* A helper to construct a square matrix. */
   public BitMatrix(int dimension) {
     this(dimension, dimension);
   }
 
+  /**
+   * Instantiates a new bit matrix.
+   *
+   * @param width the width
+   * @param height the height
+   */
   public BitMatrix(int width, int height) {
     this.width = width;
     this.height = height;
@@ -54,6 +65,14 @@ public final class BitMatrix implements Cloneable {
     this.bits = bits;
   }
 
+  /**
+   * Parses the.
+   *
+   * @param stringRepresentation the string representation
+   * @param setString the set string
+   * @param unsetString the unset string
+   * @return the bit matrix
+   */
   public static BitMatrix parse(String stringRepresentation, String setString, String unsetString) {
     if (stringRepresentation == null) {
       return null;
@@ -142,6 +161,12 @@ public final class BitMatrix implements Cloneable {
     }
   }
 
+  /**
+   * Unset.
+   *
+   * @param x the x
+   * @param y the y
+   */
   public void unset(int x, int y) {
     int offset = y * rowSize + (x / 32);
     if (bits != null) {
@@ -229,6 +254,8 @@ public final class BitMatrix implements Cloneable {
   }
 
   /**
+   * Sets the row.
+   *
    * @param y row to set
    * @param row {@link BitArray} to copy from
    */
@@ -239,7 +266,7 @@ public final class BitMatrix implements Cloneable {
   }
 
   /**
-   * Modifies this {@code BitMatrix} to represent the same but rotated 180 degrees
+   * Modifies this {@code BitMatrix} to represent the same but rotated 180 degrees.
    */
   public void rotate180() {
     int width = getWidth();
@@ -337,6 +364,11 @@ public final class BitMatrix implements Cloneable {
     return new int[] {x, y};
   }
 
+  /**
+   * Gets the bottom right on bit.
+   *
+   * @return the bottom right on bit
+   */
   public int[] getBottomRightOnBit() {
     if (bits == null) {
       return null;
@@ -362,6 +394,8 @@ public final class BitMatrix implements Cloneable {
   }
 
   /**
+   * Gets the width.
+   *
    * @return The width of the matrix
    */
   public int getWidth() {
@@ -369,6 +403,8 @@ public final class BitMatrix implements Cloneable {
   }
 
   /**
+   * Gets the height.
+   *
    * @return The height of the matrix
    */
   public int getHeight() {
@@ -376,12 +412,20 @@ public final class BitMatrix implements Cloneable {
   }
 
   /**
+   * Gets the row size.
+   *
    * @return The row size of the matrix
    */
   public int getRowSize() {
     return rowSize;
   }
 
+  /**
+   * Equals.
+   *
+   * @param o the o
+   * @return true, if successful
+   */
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof BitMatrix)) {
@@ -392,6 +436,11 @@ public final class BitMatrix implements Cloneable {
         && Arrays.equals(bits, other.bits);
   }
 
+  /**
+   * Hash code.
+   *
+   * @return the int
+   */
   @Override
   public int hashCode() {
     int hash = width;
@@ -402,13 +451,19 @@ public final class BitMatrix implements Cloneable {
     return hash;
   }
 
-  /** @return string representation using "X" for set and " " for unset bits */
+  /**
+   * To string.
+   *
+   * @return string representation using "X" for set and " " for unset bits
+   */
   @Override
   public String toString() {
     return toString('#', ' ');
   }
 
   /**
+   * To string.
+   *
    * @param setString representation of a set bit
    * @param unsetString representation of an unset bit
    * @return string representation of entire matrix utilizing given strings
@@ -424,6 +479,11 @@ public final class BitMatrix implements Cloneable {
     return result.toString();
   }
 
+  /**
+   * Clone.
+   *
+   * @return the bit matrix
+   */
   @Override
   public BitMatrix clone() {
     if (bits == null) {

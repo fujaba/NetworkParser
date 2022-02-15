@@ -37,16 +37,31 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleSet;
 
 /**
- * Simple Message
+ * Simple Message.
+ *
  * @author Stefan Lindel
  */
 public class Message implements SendableEntityCreator, SendableEntityCreatorNoIndex {
+	
+	/** The Constant PROPERTY_HISTORYID. */
 	public static final String PROPERTY_HISTORYID = "id";
+	
+	/** The Constant PROPERTY_PREVIOUSCHANGE. */
 	public static final String PROPERTY_PREVIOUSCHANGE = "prevChange";
+	
+	/** The Constant PROPERTY_MSG. */
 	public static final String PROPERTY_MSG = "msg";
+	
+	/** The Constant PROPERTY_RECEIVED. */
 	public static final String PROPERTY_RECEIVED = "received";
+	
+	/** The Constant PROPERTY_PARENT. */
 	public static final String PROPERTY_PARENT = "parent";
+	
+	/** The Constant PROPERTY_TYPE. */
 	public static final String PROPERTY_TYPE = "type";
+	
+	/** The Constant TIMEOUTDEFAULT. */
 	public static final int TIMEOUTDEFAULT = 0;
 	protected final static PropertyList props = PropertyList.create(PROPERTY_TYPE, PROPERTY_HISTORYID, PROPERTY_MSG,
 			PROPERTY_RECEIVED, PROPERTY_PREVIOUSCHANGE);
@@ -60,15 +75,33 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	protected Object session;
 	protected Space space;
 
+	/**
+	 * With space.
+	 *
+	 * @param space the space
+	 * @return the message
+	 */
 	public Message withSpace(Space space) {
 		this.space = space;
 		return this;
 	}
 
+	/**
+	 * Gets the space.
+	 *
+	 * @return the space
+	 */
 	public Space getSpace() {
 		return space;
 	}
 
+	/**
+	 * Gets the message id.
+	 *
+	 * @param space the space
+	 * @param proxy the proxy
+	 * @return the message id
+	 */
 	public String getMessageId(Space space, NodeProxy proxy) {
 		if (this.historyId == null) {
 			this.historyId = SHA1.value(getBlob()).toString();
@@ -76,11 +109,22 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return historyId;
 	}
 
+	/**
+	 * With type.
+	 *
+	 * @param value the value
+	 * @return the message
+	 */
 	public Message withType(String value) {
 		this.type = value;
 		return this;
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public String getType() {
 		/* Inkluisive FallBack */
 		if (type != null) {
@@ -89,11 +133,22 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return this.getClass().getName();
 	}
 
+	/**
+	 * With history id.
+	 *
+	 * @param id the id
+	 * @return the message
+	 */
 	public Message withHistoryId(String id) {
 		this.historyId = id;
 		return this;
 	}
 
+	/**
+	 * Gets the received.
+	 *
+	 * @return the received
+	 */
 	@SuppressWarnings("unchecked")
 	public SimpleSet<NodeProxy> getReceived() {
 		if (received instanceof SimpleSet<?>) {
@@ -106,6 +161,13 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return result;
 	}
 
+	/**
+	 * With add to received.
+	 *
+	 * @param <ST> the generic type
+	 * @param value the value
+	 * @return the st
+	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends Message> ST withAddToReceived(NodeProxy value) {
 		if (this.received == null) {
@@ -124,55 +186,120 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return (ST) this;
 	}
 
+	/**
+	 * Gets the blob.
+	 *
+	 * @return the blob
+	 */
 	public CharacterBuffer getBlob() {
 		CharacterBuffer list = new CharacterBuffer();
 		list.withObjects(getPrevChange(), getMessage(), getReceiver());
 		return list;
 	}
 
+	/**
+	 * Handle.
+	 *
+	 * @param space the space
+	 * @return true, if successful
+	 */
 	public boolean handle(Space space) {
 		return false;
 	}
 
+	/**
+	 * Checks if is sending to peers.
+	 *
+	 * @return true, if is sending to peers
+	 */
 	public boolean isSendingToPeers() {
 		return true;
 	}
 
+	/**
+	 * With message.
+	 *
+	 * @param value the value
+	 * @return the message
+	 */
 	public Message withMessage(BaseItem value) {
 		this.msg = value;
 		return this;
 	}
 
+	/**
+	 * Gets the prev change.
+	 *
+	 * @return the prev change
+	 */
 	public String getPrevChange() {
 		return prevChange;
 	}
 
+	/**
+	 * With prev change.
+	 *
+	 * @param prevChange the prev change
+	 * @return the message
+	 */
 	public Message withPrevChange(String prevChange) {
 		this.prevChange = prevChange;
 		return this;
 	}
 
+	/**
+	 * Gets the receiver.
+	 *
+	 * @return the receiver
+	 */
 	public NodeProxy getReceiver() {
 		return getReceived().first();
 	}
 
+	/**
+	 * Gets the message.
+	 *
+	 * @return the message
+	 */
 	public BaseItem getMessage() {
 		return msg;
 	}
 
+	/**
+	 * Gets the time out.
+	 *
+	 * @return the time out
+	 */
 	public int getTimeOut() {
 		return timeOut;
 	}
 
+	/**
+	 * With time out.
+	 *
+	 * @param timeOut the time out
+	 * @return the message
+	 */
 	public Message withTimeOut(int timeOut) {
 		this.timeOut = timeOut;
 		return this;
 	}
 
+	/**
+	 * Checks if is send any how.
+	 *
+	 * @return true, if is send any how
+	 */
 	public boolean isSendAnyHow() {
 		return sendAnyHow;
 	}
 
+	/**
+	 * With send any how.
+	 *
+	 * @param sendAnyHow the send any how
+	 * @return the message
+	 */
 	public Message withSendAnyHow(boolean sendAnyHow) {
 		this.sendAnyHow = sendAnyHow;
 		return this;
@@ -182,6 +309,12 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return space.getMap();
 	}
 
+	/**
+	 * Creates the simple string.
+	 *
+	 * @param text the text
+	 * @return the message
+	 */
 	public static Message createSimpleString(String text) {
 		StringEntity stringEntity = new StringEntity();
 		stringEntity.add(text);
@@ -189,6 +322,11 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return message;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		BaseItem message = getMessage();
@@ -198,6 +336,12 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return super.toString();
 	}
 
+	/**
+	 * Write.
+	 *
+	 * @param answer the answer
+	 * @return true, if successful
+	 */
 	public boolean write(String answer) {
 		OutputStream stream = getOutputStream();
 		if (stream == null) {
@@ -212,6 +356,11 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return true;
 	}
 
+	/**
+	 * Gets the output stream.
+	 *
+	 * @return the output stream
+	 */
 	public OutputStream getOutputStream() {
 		if (this.session instanceof Socket) {
 			try {
@@ -222,21 +371,45 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return null;
 	}
 
+	/**
+	 * With session.
+	 *
+	 * @param session the session
+	 * @return the message
+	 */
 	public Message withSession(Object session) {
 		this.session = session;
 		return this;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return props.getList();
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new Message();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (attribute == null || entity instanceof Message == false) {
@@ -261,6 +434,15 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (attribute == null || entity instanceof Message == false) {
@@ -293,10 +475,21 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return false;
 	}
 
+	/**
+	 * Gets the session.
+	 *
+	 * @return the session
+	 */
 	public Object getSession() {
 		return session;
 	}
 
+	/**
+	 * Sending.
+	 *
+	 * @param space the space
+	 * @return true, if successful
+	 */
 	public boolean sending(Space space) {
 		return false;
 	}

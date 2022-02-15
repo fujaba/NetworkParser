@@ -29,39 +29,76 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
-/** Simple one Dimension List 
+/**
+ * Simple one Dimension List.
+ *
  * @author Stefan Lindel
  * @param <V> Type of Elements
  */
 public class SimpleList<V> extends AbstractList<V> implements List<V> {
+	
+	/** The Constant PROPERTY. */
 	public static final String PROPERTY = "items";
 	private ObjectCondition listener;
 
+	/**
+	 * Instantiates a new simple list.
+	 */
 	public SimpleList() {
 		withFlag(SimpleList.ALLOWDUPLICATE);
 	}
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new SimpleList<V>();
 	}
 
+	/**
+	 * Sub list.
+	 *
+	 * @param fromIndex the from index
+	 * @param toIndex the to index
+	 * @return the simple list
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public SimpleList<V> subList(int fromIndex, int toIndex) {
 		return (SimpleList<V>) super.subList(fromIndex, toIndex);
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param e the e
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean add(V e) {
 		return super.add(e);
 	}
 
+	/**
+	 * With listener.
+	 *
+	 * @param listener the listener
+	 * @return the simple list
+	 */
 	public SimpleList<V> withListener(ObjectCondition listener) {
 		this.listener = listener;
 		return this;
 	}
 
+	/**
+	 * Clone.
+	 *
+	 * @return the abstract list
+	 */
 	@SuppressWarnings("unchecked")
 	public AbstractList<V> clone() {
 		return ((AbstractList<V>) getNewList(false)).init(this);
@@ -77,6 +114,12 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 		return super.fireProperty(type, oldElement, newElement, beforeElement, index, value);
 	}
 	
+	/**
+	 * Contains key.
+	 *
+	 * @param key the key
+	 * @return true, if successful
+	 */
 	public boolean containsKey(String key) {
 	    if(key == null) {
 	        return false;

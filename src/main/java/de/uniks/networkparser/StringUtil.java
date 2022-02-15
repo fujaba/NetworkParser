@@ -38,14 +38,25 @@ import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class StringUtil.
+ *
+ * @author Stefan
+ */
 public class StringUtil {
+	
+	/** The Constant CLASS. */
 	public static final String CLASS = "class";
+	
+	/** The Constant NON_FILE_CHARSSIMPLE. */
 	public static final String NON_FILE_CHARSSIMPLE = "[\\\\/\\:\\;\\*\\?\"<>\\|!&', \u001F\u0084\u0093\u0094\u0096\u2013\u201E\u201C\u03B1 ]";
 	private static final String primitiveTypes = " java.util.Date void String char Char boolean Boolean byte Byte Object ";
 	private static final String numericTypes = " long Long short Short int Integer byte Byte float Float double Double ";
 	private static final String types = "         long    Long    short   Short   int     Integer byte    Byte    float   Float   double  Double  boolean Boolean char    Char ";
 	private static final String javaLang = "java.lang.";
 	private static final String modifier = " public protected private static abstract final native synchronized transient volatile strictfp default ";
+	
+	/** The Constant javaKeyWords. */
 	public static final String javaKeyWords = " assert break case catch class const continue do else enum extends finally for goto if implements import instanceof interface native new package return super switch this throw throws try while true false null ";
 
 	/**
@@ -79,6 +90,12 @@ public class StringUtil {
 		return string;
 	}
 
+	/**
+	 * Checks if is numeric.
+	 *
+	 * @param strNum the str num
+	 * @return true, if is numeric
+	 */
 	public static final boolean isNumeric(String strNum) {
 		if (strNum == null) {
 			return false;
@@ -92,6 +109,12 @@ public class StringUtil {
 	}
 
 
+	/**
+	 * Gets the integer.
+	 *
+	 * @param strNum the str num
+	 * @return the integer
+	 */
 	public static final int getInteger(String strNum) {
 		if (strNum == null) {
 			return -1;
@@ -127,6 +150,12 @@ public class StringUtil {
 		return string;
 	}
 
+	/**
+	 * Un quote.
+	 *
+	 * @param value the value
+	 * @return the string
+	 */
 	public static final String unQuote(CharSequence value) {
 		if (value == null || value.length() == 0) {
 			return "";
@@ -162,6 +191,12 @@ public class StringUtil {
 		return sb.toString();
 	}
 
+	/**
+	 * Basic un quote.
+	 *
+	 * @param value the value
+	 * @return the string
+	 */
 	public static final String basicUnQuote(String value) {
 		if (value == null || value.length() == 0) {
 			return "";
@@ -334,7 +369,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * Repeat a Char and return a simple String
+	 * Repeat a Char and return a simple String.
 	 *
 	 * @param ch     Char
 	 * @param repeat Number of Repeat
@@ -363,7 +398,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * format a String with 0
+	 * format a String with 0.
 	 *
 	 * @param value  the numericvalue
 	 * @param length the length of Value
@@ -374,7 +409,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * format a String with 0
+	 * format a String with 0.
 	 *
 	 * @param value  the numericvalue
 	 * @param length the length of Value
@@ -385,7 +420,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * format a String with 0
+	 * format a String with 0.
 	 *
 	 * @param value  the numericvalue
 	 * @param length the length of Value
@@ -397,7 +432,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * Format a date with 0
+	 * Format a date with 0.
 	 *
 	 * @param value  the numericvalue
 	 * @param length the length of Value
@@ -408,6 +443,14 @@ public class StringUtil {
 		return strZero(String.valueOf(value), length, max);
 	}
 
+	/**
+	 * Str zero.
+	 *
+	 * @param value the value
+	 * @param length the length
+	 * @param max the max
+	 * @return the string
+	 */
 	public static final String strZero(String value, int length, int max) {
 		if (max > 0 && max < length) {
 			length = max;
@@ -428,6 +471,13 @@ public class StringUtil {
 		return sb.toString();
 	}
 
+	/**
+	 * Gets the valid chars.
+	 *
+	 * @param source the source
+	 * @param maxLen the max len
+	 * @return the valid chars
+	 */
 	public static final String getValidChars(String source, int maxLen) {
 		if (source == null) {
 			return null;
@@ -460,6 +510,12 @@ public class StringUtil {
 		return sb.toString();
 	}
 
+	/**
+	 * Gets the default value.
+	 *
+	 * @param datatype the datatype
+	 * @return the default value
+	 */
 	public static final String getDefaultValue(String datatype) {
 		if (StringUtil.isNumericType(datatype)) {
 			if ("Long".equals(datatype)) {
@@ -485,6 +541,12 @@ public class StringUtil {
 		return "null";
 	}
 
+	/**
+	 * Checks if is valid java id.
+	 *
+	 * @param myRoleName the my role name
+	 * @return true, if is valid java id
+	 */
 	public static boolean isValidJavaId(String myRoleName) {
 		if (myRoleName == null || isModifier(myRoleName)) {
 			return false;
@@ -497,7 +559,7 @@ public class StringUtil {
 		}
 		if (myRoleName.indexOf('.') >= 0) {
 			for (String s : myRoleName.split("\\.")) {
-				if (isValidJavaId(s) == false) {
+				if (!isValidJavaId(s)) {
 					return false;
 				}
 			}
@@ -512,13 +574,25 @@ public class StringUtil {
 		return true;
 	}
 
+	/**
+	 * To valid java id.
+	 *
+	 * @param tag the tag
+	 * @return the string
+	 */
 	public static final String toValidJavaId(String tag) {
-		if (isValidJavaId(tag) == false) {
+		if (!isValidJavaId(tag)) {
 			tag = "_" + tag;
 		}
 		return tag;
 	}
 
+	/**
+	 * Checks if is modifier.
+	 *
+	 * @param type the type
+	 * @return true, if is modifier
+	 */
 	public static final boolean isModifier(String type) {
 		if (type == null) {
 			return false;
@@ -526,6 +600,12 @@ public class StringUtil {
 		return modifier.indexOf(type) >= 0;
 	}
 
+	/**
+	 * Checks if is primitive type.
+	 *
+	 * @param type the type
+	 * @return true, if is primitive type
+	 */
 	public static final boolean isPrimitiveType(String type) {
 		if (type == null) {
 			return false;
@@ -542,6 +622,12 @@ public class StringUtil {
 		return numericTypes.indexOf(type) >= 0 || primitiveTypes.indexOf(type) >= 0;
 	}
 
+	/**
+	 * Gets the object type.
+	 *
+	 * @param type the type
+	 * @return the object type
+	 */
 	public static final String getObjectType(String type) {
 		int pos = types.indexOf(" " + type + " ") / 8;
 		if (pos % 2 == 1 && pos > 0) {
@@ -553,10 +639,22 @@ public class StringUtil {
 		return type;
 	}
 
+	/**
+	 * Checks if is date.
+	 *
+	 * @param type the type
+	 * @return true, if is date
+	 */
 	public static final boolean isDate(String type) {
 		return primitiveTypes.indexOf(" " + type + " ") == 0;
 	}
 
+	/**
+	 * Checks if is numeric type.
+	 *
+	 * @param type the type
+	 * @return true, if is numeric type
+	 */
 	public static final boolean isNumericType(String type) {
 		if (type == null)
 			return false;
@@ -566,6 +664,13 @@ public class StringUtil {
 		return numericTypes.indexOf(" " + type + " ") >= 0;
 	}
 
+	/**
+	 * Checks if is numeric type container.
+	 *
+	 * @param typeA the type A
+	 * @param typeB the type B
+	 * @return true, if is numeric type container
+	 */
 	public static final boolean isNumericTypeContainer(String typeA, String typeB) {
 		if (typeA == null || typeB == null) {
 			return typeA == typeB;
@@ -588,6 +693,12 @@ public class StringUtil {
 		return posB + 1 == posA;
 	}
 
+	/**
+	 * Convert primitive to object type.
+	 *
+	 * @param type the type
+	 * @return the string
+	 */
 	public static final String convertPrimitiveToObjectType(String type) {
 		int pos = transferMap.indexOf(type);
 		if (pos < 0) {
@@ -601,6 +712,12 @@ public class StringUtil {
 					"long:Long,int:Integer,char:Character,boolean:Boolean,byte:Byte,float:Float,double:Double",
 					String.class);
 
+	/**
+	 * Gets the id.
+	 *
+	 * @param name the name
+	 * @return the id
+	 */
 	public static final String getId(String name) {
 		if (name == null) {
 			return "";
@@ -614,6 +731,12 @@ public class StringUtil {
 		return name;
 	}
 
+	/**
+	 * Short class name.
+	 *
+	 * @param name the name
+	 * @return the string
+	 */
 	public static final String shortClassName(String name) {
 		if (name == null) {
 			return "";
@@ -627,6 +750,12 @@ public class StringUtil {
 		return name;
 	}
 
+	/**
+	 * Up first char.
+	 *
+	 * @param name the name
+	 * @return the string
+	 */
 	public static final String upFirstChar(String name) {
 		if (name == null || name.length() < 1) {
 			return name;
@@ -639,6 +768,12 @@ public class StringUtil {
 		return name.substring(0, 1).toUpperCase() + name.substring(1);
 	}
 
+	/**
+	 * Down first char.
+	 *
+	 * @param name the name
+	 * @return the string
+	 */
 	public static final String downFirstChar(String name) {
 		if (name == null || name.length() < 1) {
 			return name;
@@ -731,6 +866,12 @@ public class StringUtil {
 		return buf.toString();
 	}
 
+	/**
+	 * Clone.
+	 *
+	 * @param entity the entity
+	 * @return the byte[]
+	 */
 	public static final byte[] clone(byte[] entity) {
 		if (entity == null) {
 			return null;
@@ -744,8 +885,8 @@ public class StringUtil {
 
 
 	/**
-	 * Convert String to ByteArray
-	 * 
+	 * Convert String to ByteArray.
+	 *
 	 * @param string The String
 	 * @return the ByteArray
 	 */
@@ -810,7 +951,7 @@ public class StringUtil {
 		}
 
 		for (int i = 0; i < strs.length; i++) {
-			if (cs.equals(strs[i]) == false) {
+			if (!cs.equals(strs[i])) {
 				return true;
 			}
 		}
@@ -956,6 +1097,13 @@ public class StringUtil {
 		return randomNum;
 	}
 
+	/**
+	 * Gets the path.
+	 *
+	 * @param path the path
+	 * @param separator the separator
+	 * @return the path
+	 */
 	public static String getPath(String path, String separator) {
 		if (path == null) {
 			return null;
@@ -1040,6 +1188,13 @@ public class StringUtil {
 		return relative.toString();
 	}
 
+	/**
+	 * Replace all.
+	 *
+	 * @param text the text
+	 * @param args the args
+	 * @return the character buffer
+	 */
 	public static final CharacterBuffer replaceAll(String text, Object... args) {
 		CharacterBuffer value = new CharacterBuffer().with(text);
 		if (args == null || args[0] == null) {
@@ -1074,6 +1229,13 @@ public class StringUtil {
 		}
 		return value;
 	}
+	
+	/**
+	 * Encode umlaute.
+	 *
+	 * @param value the value
+	 * @return the string
+	 */
 	public static String encodeUmlaute(String value) {
 		CharacterBuffer sb = new CharacterBuffer().withBufferLength(value.length());
 		for (int i=0;i<value.length();i++) {
@@ -1099,6 +1261,13 @@ public class StringUtil {
 		return sb.toString(); 
 	}
 	
+	/**
+	 * Encode parameter.
+	 *
+	 * @param value the value
+	 * @param charset the charset
+	 * @return the string
+	 */
 	public static String encodeParameter(String value, Charset... charset) {
 		if(value == null) {
 			return null;
@@ -1133,6 +1302,12 @@ public class StringUtil {
 		return sb.toString();
 	}
 
+    /**
+     * Checks if is text.
+     *
+     * @param name the name
+     * @return true, if is text
+     */
     public static boolean isText(String name) {
         if(name == null || name.isEmpty()) {
             return true;

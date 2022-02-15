@@ -30,11 +30,25 @@ import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class YUMLConverter.
+ *
+ * @author Stefan
+ */
 public class YUMLConverter implements Converter {
 	/** The Constant URL. */
 	public static final String URL = "http://www.yuml.me/diagram/class/";
+	
+	/** The default show package. */
 	public boolean defaultShowPackage;
 
+	/**
+	 * Convert.
+	 *
+	 * @param root the root
+	 * @param removePackage the remove package
+	 * @return the string
+	 */
 	public String convert(GraphModel root, boolean removePackage) {
 		String type = GraphTokener.CLASSDIAGRAM;
 		if (root instanceof GraphList) {
@@ -58,6 +72,15 @@ public class YUMLConverter implements Converter {
 		return null;
 	}
 
+	/**
+	 * Parses the.
+	 *
+	 * @param type the type
+	 * @param item the item
+	 * @param sb the sb
+	 * @param visited the visited
+	 * @param shortName the short name
+	 */
 	public void parse(String type, GraphMember item, StringBuilder sb, SimpleList<GraphMember> visited,
 			boolean shortName) {
 		if (item instanceof GraphEntity) {
@@ -65,6 +88,16 @@ public class YUMLConverter implements Converter {
 		}
 	}
 
+	/**
+	 * Parses the.
+	 *
+	 * @param type the type
+	 * @param item the item
+	 * @param sb the sb
+	 * @param visited the visited
+	 * @param shortName the short name
+	 * @return true, if successful
+	 */
 	public boolean parse(String type, GraphEntity item, StringBuilder sb, SimpleList<GraphMember> visited,
 			boolean shortName) {
 		if (item == null) {
@@ -124,8 +157,8 @@ public class YUMLConverter implements Converter {
 	}
 
 	/**
-	 * Method for Parsing Entity
-	 * 
+	 * Method for Parsing Entity.
+	 *
 	 * @param entity    Entity to Parse
 	 * @param visited   Visited elements
 	 * @param shortName ShortName
@@ -135,6 +168,15 @@ public class YUMLConverter implements Converter {
 		return parseEntity(entity, visited, null, shortName);
 	}
 
+	/**
+	 * Parses the entity.
+	 *
+	 * @param entity the entity
+	 * @param visited the visited
+	 * @param type the type
+	 * @param shortName the short name
+	 * @return the string
+	 */
 	public String parseEntity(GraphEntity entity, SimpleList<GraphMember> visited, String type, boolean shortName) {
 		if (entity instanceof Clazz == false) {
 			return "";
@@ -164,6 +206,14 @@ public class YUMLConverter implements Converter {
 		return sb.toString();
 	}
 
+	/**
+	 * Parses the entity values.
+	 *
+	 * @param entity the entity
+	 * @param type the type
+	 * @param shortName the short name
+	 * @return the string
+	 */
 	public String parseEntityValues(GraphEntity entity, String type, boolean shortName) {
 		StringBuilder sb = new StringBuilder();
 		GraphSimpleSet children = GraphUtil.getChildren(entity);
@@ -202,6 +252,12 @@ public class YUMLConverter implements Converter {
 		return sb.toString();
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @return the string
+	 */
 	@Override
 	public String encode(BaseItem entity) {
 		if (entity instanceof GraphModel) {

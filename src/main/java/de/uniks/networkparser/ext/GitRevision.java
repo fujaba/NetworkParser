@@ -38,15 +38,38 @@ import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
+/**
+ * The Class GitRevision.
+ *
+ * @author Stefan
+ */
 public class GitRevision {
+	
+	/** The Constant MAINTAG. */
 	public static final String MAINTAG = "GIT";
+	
+	/** The Constant MAYOR. */
 	public static final String MAYOR = "mayor";
+	
+	/** The Constant MINOR. */
 	public static final String MINOR = "minor";
+	
+	/** The Constant HASH. */
 	public static final String HASH = "hash";
+	
+	/** The Constant TAG. */
 	public static final String TAG = "tag";
+	
+	/** The Constant BRANCHNAME. */
 	public static final String BRANCHNAME = "branchname";
+	
+	/** The Constant LASTCOMMIT. */
 	public static final String LASTCOMMIT = "lastcommit";
+	
+	/** The Constant REVISIONNUMBER. */
 	public static final String REVISIONNUMBER = "revisionnumber";
+	
+	/** The Constant COMMITS. */
 	public static final String COMMITS = "commits";
 
 	private boolean full = false;
@@ -55,11 +78,23 @@ public class GitRevision {
 	private String username;
 	private String password;
 
+	/**
+	 * With path.
+	 *
+	 * @param path the path
+	 * @return the git revision
+	 */
 	public GitRevision withPath(String path) {
 		this.path = path;
 		return this;
 	}
 
+	/**
+	 * Execute.
+	 *
+	 * @return the json object
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public JsonObject execute() throws IOException {
 		JsonObject json = execute(max);
 		if (json != null) {
@@ -70,6 +105,11 @@ public class GitRevision {
 		return json;
 	}
 
+	/**
+	 * Gets the repository.
+	 *
+	 * @return the repository
+	 */
 	public Object getRepository() {
 		if (ReflectionLoader.FILEREPOSITORYBUILDER == null) {
 			return null;
@@ -108,10 +148,21 @@ public class GitRevision {
 		return repository;
 	}
 	
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		new GitRevision().execute(3);
 	}
 
+	/**
+	 * Execute.
+	 *
+	 * @param maxCommit the max commit
+	 * @return the json object
+	 */
 	@SuppressWarnings("unchecked")
 	public JsonObject execute(int maxCommit) {
 		Object repository = getRepository();
@@ -197,11 +248,23 @@ public class GitRevision {
 		return info;
 	}
 
+	/**
+	 * With max commit.
+	 *
+	 * @param value the value
+	 * @return the git revision
+	 */
 	public GitRevision withMaxCommit(int value) {
 		this.max = value;
 		return this;
 	}
 
+	/**
+	 * Sets the full.
+	 *
+	 * @param full the full
+	 * @return true, if successful
+	 */
 	public boolean setFull(boolean full) {
 		if (full != this.full) {
 			this.full = full;
@@ -210,10 +273,22 @@ public class GitRevision {
 		return false;
 	}
 
+	/**
+	 * Checks if is full.
+	 *
+	 * @return true, if is full
+	 */
 	public boolean isFull() {
 		return full;
 	}
 
+	/**
+	 * Calc git tag.
+	 *
+	 * @param repository the repository
+	 * @param info the info
+	 * @return the int
+	 */
 	@SuppressWarnings("unchecked")
 	public int calcGitTag(Object repository, JsonObject info) {
 		if (ReflectionLoader.REPOSITORY == null || repository == null
@@ -408,6 +483,12 @@ public class GitRevision {
 		}
 	}
 
+	/**
+	 * Inits the.
+	 *
+	 * @param remoteURL the remote URL
+	 * @return true, if successful
+	 */
 	public boolean init(String remoteURL) {
 		if (ReflectionLoader.GIT == null) {
 			return false;
@@ -444,6 +525,13 @@ public class GitRevision {
 		return true;
 	}
 
+	/**
+	 * With authentification.
+	 *
+	 * @param username the username
+	 * @param password the password
+	 * @return the git revision
+	 */
 	public GitRevision withAuthentification(String username, String password) {
 		if (username == null || password == null) {
 			return this;
@@ -460,6 +548,12 @@ public class GitRevision {
 		return this;
 	}
 
+	/**
+	 * Pull.
+	 *
+	 * @param commitId the commit id
+	 * @return true, if successful
+	 */
 	public boolean pull(String... commitId) {
 		Object repository = getRepository();
 		if (repository == null) {

@@ -30,6 +30,11 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLTokener;
 
+/**
+ * The Class EntityCreator.
+ *
+ * @author Stefan
+ */
 public class EntityCreator implements SendableEntityCreator, SendableEntityCreatorNoIndex, SendableEntityCreatorTag {
   private static final String VALUE = "VALUE";
   private BaseItem factory;
@@ -39,6 +44,12 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
   /** NameSpace of XML. */
   private String nameSpace = "";
 
+  /**
+   * Creates the json.
+   *
+   * @param keyValue the key value
+   * @return the entity creator
+   */
   public static final EntityCreator createJson(boolean keyValue) {
     EntityCreator entity = new EntityCreator();
     entity.factory = new JsonArray();
@@ -46,6 +57,11 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
     return entity;
   }
 
+  /**
+   * Creates the XML.
+   *
+   * @return the entity creator
+   */
   public static final EntityCreator createXML() {
     EntityCreator entity = new EntityCreator();
     entity.factory = new XMLEntity();
@@ -53,13 +69,18 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
     return entity;
   }
 
+  /**
+   * Gets the properties.
+   *
+   * @return the properties
+   */
   @Override
   public String[] getProperties() {
     return this.properties;
   }
 
   /**
-   * Set a Namespace for XSD Element
+   * Set a Namespace for XSD Element.
    *
    * @param namespace the NameSpace for XSD-Element
    * @return Itself
@@ -69,6 +90,12 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
     return this;
   }
 
+  /**
+   * Gets the sendable instance.
+   *
+   * @param prototyp the prototyp
+   * @return the sendable instance
+   */
   @Override
   public Object getSendableInstance(boolean prototyp) {
     if (factory != null) {
@@ -77,6 +104,13 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
     return null;
   }
 
+  /**
+   * Gets the value.
+   *
+   * @param entity the entity
+   * @param attribute the attribute
+   * @return the value
+   */
   @Override
   public Object getValue(Object entity, String attribute) {
     if (entity == null) {
@@ -97,6 +131,15 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
     return entity.toString();
   }
 
+  /**
+   * Sets the value.
+   *
+   * @param entity the entity
+   * @param attribute the attribute
+   * @param value the value
+   * @param type the type
+   * @return true, if successful
+   */
   @Override
   public boolean setValue(Object entity, String attribute, Object value, String type) {
     if (SendableEntityCreator.REMOVE_YOU.equalsIgnoreCase(type) || entity == null) {
@@ -140,6 +183,11 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
     return false;
   }
 
+  /**
+   * Gets the tag.
+   *
+   * @return the tag
+   */
   @Override
   public String getTag() {
     if (nameSpace != null) {

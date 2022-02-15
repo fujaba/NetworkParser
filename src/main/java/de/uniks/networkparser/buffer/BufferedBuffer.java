@@ -28,8 +28,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-/** Buffered Buffer
- * @author Stefan Lindel */
+/**
+ * Buffered Buffer.
+ * @author Stefan Lindel
+ */
 public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	/** The count is the number of characters used. */
 	protected int length;
@@ -37,6 +39,11 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	/** The start is the number of characters started. */
 	int start;
 
+	/**
+	 * Back.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean back() {
 		if (this.position > 0) {
 			this.position--;
@@ -45,16 +52,32 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		return false;
 	}
 
+	/**
+	 * With position.
+	 *
+	 * @param value the value
+	 * @return the buffered buffer
+	 */
 	public BufferedBuffer withPosition(int value) {
 		this.position = value;
 		return this;
 	}
 
+	/**
+	 * Length.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int length() {
 		return length;
 	}
 
+	/**
+	 * Checks if is end.
+	 *
+	 * @return true, if is end
+	 */
 	@Override
 	public boolean isEnd() {
 		if (position() - start + 1 < 0) {
@@ -63,6 +86,11 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		return position() - start + 1 >= length();
 	}
 
+	/**
+	 * Checks if is end character.
+	 *
+	 * @return true, if is end character
+	 */
 	public boolean isEndCharacter() {
 		if (position() - start + 1 >= length()) {
 			return true;
@@ -70,18 +98,36 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		return nextClean(true) == 0;
 	}
 
+	/**
+	 * With length.
+	 *
+	 * @param value the value
+	 * @return the buffered buffer
+	 */
 	public BufferedBuffer withLength(int value) {
 		this.length = value;
 		return this;
 	}
 
+	/**
+	 * Byte at.
+	 *
+	 * @param index the index
+	 * @return the byte
+	 */
 	public abstract byte byteAt(int index);
 
+	/**
+	 * Char at.
+	 *
+	 * @param index the index
+	 * @return the char
+	 */
 	public abstract char charAt(int index);
 
 	/**
-	 * Get the Current Character
-	 * 
+	 * Get the Current Character.
+	 *
 	 * @return The currentChar
 	 */
 	public char getCurrentChar() {
@@ -89,14 +135,20 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	}
 
 	/**
-	 * Substring of Buffer
-	 * 
+	 * Substring of Buffer.
+	 *
 	 * @param start       startindex for parsing
 	 * @param endPosition the endPosition of Substring
 	 * @return the Substring
 	 */
 	public abstract CharacterBuffer subSequence(int start, int endPosition);
 
+	/**
+	 * With look A head.
+	 *
+	 * @param lookahead the lookahead
+	 * @return the buffered buffer
+	 */
 	@Override
 	public BufferedBuffer withLookAHead(CharSequence lookahead) {
 		if (lookahead == null) {
@@ -106,6 +158,12 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		return this;
 	}
 
+	/**
+	 * With look A head.
+	 *
+	 * @param lookahead the lookahead
+	 * @return the buffered buffer
+	 */
 	@Override
 	public BufferedBuffer withLookAHead(char lookahead) {
 		if (lookahead < 0) {
@@ -212,6 +270,12 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		return sb;
 	}
 
+	/**
+	 * Next string.
+	 *
+	 * @param count the count
+	 * @return the string
+	 */
 	public String nextString(int count) {
 		int start = position();
 		CharacterBuffer sb = subSequence(start, start + count).trim();
@@ -219,17 +283,18 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	}
 
 	/**
-	 * @param positions first is start Position, second is Endposition
+	 * Substring.
 	 *
+	 * @param positions first is start Position, second is Endposition
+	 * 
 	 *                  Absolut fix Start and End start&gt;0 StartPosition
 	 *                  end&gt;Start EndPosition
-	 *
+	 * 
 	 *                  Absolut from fix Position Start&gt;0 Position end NULL To
 	 *                  End end -1 To this.index
-	 *
+	 * 
 	 *                  Relativ from indexPosition Start Position from this.index +
 	 *                  (-Start) End = 0 current Position
-	 *
 	 * @return substring from buffer
 	 */
 	public String substring(int... positions) {
@@ -266,6 +331,12 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		return subSequence(start, end).toString();
 	}
 
+	/**
+	 * Next.
+	 *
+	 * @param positions the positions
+	 * @return the string
+	 */
 	public String next(int... positions) {
 		if (positions == null || positions.length != 1) {
 			return substring(positions);
@@ -273,6 +344,12 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		return subSequence(position(), position() + positions[0]).toString();
 	}
 
+	/**
+	 * To bytes.
+	 *
+	 * @param all the all
+	 * @return the byte[]
+	 */
 	public byte[] toBytes(boolean... all) {
 		byte[] result;
 		int i = start;
@@ -292,6 +369,12 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		return result;
 	}
 
+	/**
+	 * To array string.
+	 *
+	 * @param addString the add string
+	 * @return the string
+	 */
 	public String toArrayString(boolean... addString) {
 		CharacterBuffer sb = new CharacterBuffer();
 		sb.with('[');
@@ -310,19 +393,54 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		return sb.toString();
 	}
 
+	/**
+	 * Clear.
+	 */
 	public final void clear() {
 		this.length = 0;
 		this.start = 0;
 		this.position = 0;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param buffer the buffer
+	 * @param i the i
+	 * @param readed the readed
+	 * @return the buffered buffer
+	 */
 	public abstract BufferedBuffer with(char[] buffer, int i, int readed);
 
+	/**
+	 * With.
+	 *
+	 * @param items the items
+	 * @return the buffered buffer
+	 */
 	public abstract BufferedBuffer with(CharSequence... items);
 	
+	/**
+	 * With.
+	 *
+	 * @param items the items
+	 * @return the buffered buffer
+	 */
 	public abstract BufferedBuffer with(byte... items);
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @param list the list
+	 * @return the new list
+	 */
 	public abstract BufferedBuffer getNewList(boolean list);
 
+	/**
+	 * Adds the stream.
+	 *
+	 * @param stream the stream
+	 * @return true, if successful
+	 */
 	public abstract boolean addStream(InputStream stream);
 }

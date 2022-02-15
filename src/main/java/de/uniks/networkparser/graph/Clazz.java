@@ -28,24 +28,62 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class Clazz.
+ *
+ * @author Stefan
+ */
 public class Clazz extends GraphEntity {
+	
+	/** The Constant TYPE_CLASS. */
 	public static final String TYPE_CLASS = "class";
+	
+	/** The Constant TYPE_ENUMERATION. */
 	public static final String TYPE_ENUMERATION = "enum";
+	
+	/** The Constant TYPE_INTERFACE. */
 	public static final String TYPE_INTERFACE = "interface";
+	
+	/** The Constant TYPE_CREATOR. */
 	public static final String TYPE_CREATOR = "creator";
+	
+	/** The Constant TYPE_SET. */
 	public static final String TYPE_SET = "set";
+	
+	/** The Constant TYPE_PATTERNOBJECT. */
 	public static final String TYPE_PATTERNOBJECT = "pattern";
 
+	/** The Constant PROPERTY_FULLNAME. */
 	public static final String PROPERTY_FULLNAME = "fullName";
+	
+	/** The Constant PROPERTY_VISIBILITY. */
 	public static final String PROPERTY_VISIBILITY = "visibility";
+	
+	/** The Constant PROPERTY_MODIFIERS. */
 	public static final String PROPERTY_MODIFIERS = "modifiers";
+	
+	/** The Constant PROPERTY_TYPE. */
 	public static final String PROPERTY_TYPE = "type";
+	
+	/** The Constant PROPERTY_SUPERCLAZZ. */
 	public static final String PROPERTY_SUPERCLAZZ = "superclazz";
+	
+	/** The Constant PROPERTY_IMPLEMENTS. */
 	public static final String PROPERTY_IMPLEMENTS = "implements";
+	
+	/** The Constant PROPERTY_ATTRIBUTE. */
 	public static final String PROPERTY_ATTRIBUTE = "attribute";
+	
+	/** The Constant PROPERTY_ASSOCIATION. */
 	public static final String PROPERTY_ASSOCIATION = "association";
+	
+	/** The Constant PROPERTY_METHOD. */
 	public static final String PROPERTY_METHOD = "method";
+	
+	/** The Constant ONE. */
 	public static final int ONE = 1;
+	
+	/** The Constant MANY. */
 	public static final int MANY = 42;
 
 	private String type = TYPE_CLASS;
@@ -55,20 +93,31 @@ public class Clazz extends GraphEntity {
 	}
 
 	/**
-	 * Constructor with Name of Clazz
-	 * 
+	 * Constructor with Name of Clazz.
+	 *
 	 * @param name Name of Clazz
 	 */
 	public Clazz(String name) {
 		this.with(name);
 	}
 
+	/**
+	 * Instantiates a new clazz.
+	 *
+	 * @param name the name
+	 */
 	public Clazz(Class<?> name) {
 		if (name != null) {
 			with(name.getName().replace("$", "."));
 		}
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param name the name
+	 * @return the clazz
+	 */
 	@Override
 	public Clazz with(String name) {
 		super.with(name);
@@ -80,11 +129,22 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
+	/**
+	 * Enable interface.
+	 *
+	 * @return the clazz
+	 */
 	public Clazz enableInterface() {
 		this.withType(TYPE_INTERFACE);
 		return this;
 	}
 
+	/**
+	 * Enable enumeration.
+	 *
+	 * @param literals the literals
+	 * @return the clazz
+	 */
 	public Clazz enableEnumeration(Object... literals) {
 		this.withType(TYPE_ENUMERATION);
 		if (literals == null) {
@@ -103,6 +163,11 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public String getType() {
 		return type;
 	}
@@ -115,12 +180,23 @@ public class Clazz extends GraphEntity {
 		return super.getFullId();
 	}
 
+	/**
+	 * With external.
+	 *
+	 * @param value the value
+	 * @return the clazz
+	 */
 	@Override
 	public Clazz withExternal(boolean value) {
 		super.withExternal(value);
 		return this;
 	}
 
+	/**
+	 * Gets the modifier.
+	 *
+	 * @return the modifier
+	 */
 	@Override
 	public Modifier getModifier() {
 		Modifier modifier = super.getModifier();
@@ -131,6 +207,12 @@ public class Clazz extends GraphEntity {
 		return modifier;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param values the values
+	 * @return the clazz
+	 */
 	public Clazz with(Modifier... values) {
 		super.withModifier(values);
 		return this;
@@ -146,6 +228,12 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param value the value
+	 * @return the clazz
+	 */
 	public Clazz with(Annotation value) {
 		super.with(value);
 		return this;
@@ -161,6 +249,11 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
+	/**
+	 * Gets the values.
+	 *
+	 * @return the values
+	 */
 	public SimpleSet<Literal> getValues() {
 		SimpleSet<Literal> collection = new SimpleSet<Literal>();
 		if (this.children == null) {
@@ -185,12 +278,12 @@ public class Clazz extends GraphEntity {
 	 * ********************************************************************
 	 * 
 	 * <pre>
-	 *		%srcCardinality%		%tgtCardinality%
+	 * 		%srcCardinality%		%tgtCardinality%
 	 * Clazz -------------------------------------- %tgtClass%
-	 *		%srcRoleName%			%tgtRoleName%
+	 * 		%srcRoleName%			%tgtRoleName%
 	 * </pre>
-	 *
-	 * create a Bidirectional Association
+	 * 
+	 * create a Bidirectional Association.
 	 *
 	 * @param tgtClass       The target Clazz
 	 * @param tgtRoleName    The Targetrolename
@@ -221,8 +314,8 @@ public class Clazz extends GraphEntity {
 	 * Clazz -------------------------------------- %tgtClass%
 	 *    %srcRoleName%        %tgtRoleName%
 	 * </pre>
-	 *
-	 * create a Bidirectional Association
+	 * 
+	 * create a Bidirectional Association.
 	 *
 	 * @param tgtClass       The target Clazz
 	 * @param tgtRoleName    The Targetrolename
@@ -248,6 +341,16 @@ public class Clazz extends GraphEntity {
 		return assocSource;
 	}
 
+	/**
+	 * With assoc.
+	 *
+	 * @param tgtClass the tgt class
+	 * @param tgtRoleName the tgt role name
+	 * @param tgtCardinality the tgt cardinality
+	 * @param srcRoleName the src role name
+	 * @param srcCardinality the src cardinality
+	 * @return the clazz
+	 */
 	public Clazz withAssoc(Clazz tgtClass, String tgtRoleName, int tgtCardinality, String srcRoleName,
 			int srcCardinality) {
 		createBidirectional(tgtClass, tgtRoleName, tgtCardinality, srcRoleName, srcCardinality);
@@ -255,6 +358,8 @@ public class Clazz extends GraphEntity {
 	}
 
 	/**
+	 * With assoc.
+	 *
 	 * @param tgtClass    The Target Class
 	 * @param cardinality The Cardinality default is [1,1], May Be
 	 *                    [[1,1],[1,42],[42,1],[42,42],[1,0], [42,0]]
@@ -318,12 +423,12 @@ public class Clazz extends GraphEntity {
 	 * ********************************************************************
 	 * 
 	 * <pre>
-	 *								 %tgtCardinality%
+	 * 								 %tgtCardinality%
 	 * Clazz ----------------------------------- %tgtClass%
-	 *									%tgtRoleName%
+	 * 									%tgtRoleName%
 	 * </pre>
-	 *
-	 * create a Undirectional Association
+	 * 
+	 * create a Undirectional Association.
 	 *
 	 * @param tgtClass       The target Clazz
 	 * @param tgtRoleName    The Targetrolename
@@ -351,8 +456,8 @@ public class Clazz extends GraphEntity {
 	 * Clazz ----------------------------------- %tgtClass%
 	 *                         %tgtRoleName%
 	 * </pre>
-	 *
-	 * create a Undirectional Association
+	 * 
+	 * create a Undirectional Association.
 	 *
 	 * @param tgtClass       The target Clazz
 	 * @param tgtRoleName    The Targetrolename
@@ -377,15 +482,15 @@ public class Clazz extends GraphEntity {
 	}
 
 	/**
-	 * Get All Interfaces
-	 * 
+	 * Get All Interfaces.
+	 *
 	 * @param transitive Get all Interfaces or direct Interfaces
 	 * @return all Interfaces of a Clazz
 	 * 
 	 *         <pre>
-	 *			one						many
+	 * 			one						many
 	 * Clazz ----------------------------------- Clazz
-	 *			clazz					Interfaces
+	 * 			clazz					Interfaces
 	 *         </pre>
 	 */
 	public ClazzSet getInterfaces(boolean transitive) {
@@ -407,15 +512,15 @@ public class Clazz extends GraphEntity {
 	}
 
 	/**
-	 * Get All SuperClazzes
-	 * 
+	 * Get All SuperClazzes.
+	 *
 	 * @param transitive Get all SuperClasses or direct SuperClasses
 	 * @return all SuperClasses of a Clazz
 	 * 
 	 *         <pre>
-	 *			  one					   many
+	 * 			  one					   many
 	 * Clazz ----------------------------------- Clazz
-	 *			  clazz				   superClazzes
+	 * 			  clazz				   superClazzes
 	 *         </pre>
 	 */
 	public ClazzSet getSuperClazzes(boolean transitive) {
@@ -556,6 +661,12 @@ public class Clazz extends GraphEntity {
 		}
 	}
 
+	/**
+	 * With super clazz.
+	 *
+	 * @param values the values
+	 * @return the clazz
+	 */
 	public Clazz withSuperClazz(Clazz... values) {
 		AssociationTypes type = AssociationTypes.GENERALISATION;
 
@@ -594,15 +705,15 @@ public class Clazz extends GraphEntity {
 	}
 
 	/**
-	 * get All KidClazzes
-	 * 
+	 * get All KidClazzes.
+	 *
 	 * @param transitive Get all KidClasses or direct KidClasses
 	 * @return all KidClasses of a Clazz
 	 * 
 	 *         <pre>
-	 *			  one					   many
+	 * 			  one					   many
 	 * Clazz ----------------------------------- Clazz
-	 *			  superClass		   kidClazzes
+	 * 			  superClass		   kidClazzes
 	 *         </pre>
 	 */
 	public ClazzSet getKidClazzes(boolean transitive) {
@@ -618,14 +729,14 @@ public class Clazz extends GraphEntity {
 	}
 
 	/**
-	 * get All Implements Clazz
-	 * 
+	 * get All Implements Clazz.
+	 *
 	 * @return all implements of a Clazz
 	 * 
 	 *         <pre>
-	 *			  one					   many
+	 * 			  one					   many
 	 * Clazz ----------------------------------- Clazz
-	 *			  superClass		   kidClazzes
+	 * 			  superClass		   kidClazzes
 	 *         </pre>
 	 */
 	public ClazzSet getImplements() {
@@ -678,25 +789,42 @@ public class Clazz extends GraphEntity {
 		return true;
 	}
 
+	/**
+	 * With kid clazzes.
+	 *
+	 * @param values the values
+	 * @return the clazz
+	 */
 	public Clazz withKidClazzes(Clazz... values) {
 		createAssociation(AssociationTypes.EDGE, AssociationTypes.GENERALISATION, values);
 		return this;
 	}
 
+	/**
+	 * Gets the class model.
+	 *
+	 * @return the class model
+	 */
 	public GraphModel getClassModel() {
 		return (GraphModel) this.parentNode;
 	}
 
+	/**
+	 * Sets the class model.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setClassModel(GraphModel value) {
 		return super.setParentNode(value);
 	}
 
 	/**
-	 * get All Attributes
-	 * 
+	 * get All Attributes.
+	 *
 	 * @param filters Can Filter the List of Attributes
 	 * @return all Attributes of a Clazz
-	 *
+	 * 
 	 *         <pre>
 	 * Clazz  --------------------- Attributes
 	 * one                          many
@@ -753,11 +881,11 @@ public class Clazz extends GraphEntity {
 	}
 
 	/**
-	 * get All Methods
-	 * 
+	 * get All Methods.
+	 *
 	 * @param filters Can Filter the List of Methods
 	 * @return all Methods of a Clazz
-	 *
+	 * 
 	 *         <pre>
 	 * Clazz  --------------------- Methods
 	 * one                          many
@@ -814,6 +942,12 @@ public class Clazz extends GraphEntity {
 		return collection;
 	}
 
+	/**
+	 * Gets the associations.
+	 *
+	 * @param filters the filters
+	 * @return the associations
+	 */
 	@Override
 	public AssociationSet getAssociations(Condition<?>... filters) {
 		AssociationSet collection = super.getAssociations(filters);
@@ -921,6 +1055,12 @@ public class Clazz extends GraphEntity {
 		}
 	}
 
+	/**
+	 * Removes the.
+	 *
+	 * @param member the member
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean remove(GraphMember member) {
 		if (this.children == null || member == null) {
@@ -950,6 +1090,11 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
+	/**
+	 * Gets the imports.
+	 *
+	 * @return the imports
+	 */
 	public SimpleSet<Import> getImports() {
 		SimpleSet<Import> collection = new SimpleSet<Import>();
 		if (this.children == null) {
@@ -970,12 +1115,27 @@ public class Clazz extends GraphEntity {
 		return collection;
 	}
 
+	/**
+	 * Creates the method.
+	 *
+	 * @param name the name
+	 * @param returnValue the return value
+	 * @param parameters the parameters
+	 * @return the method
+	 */
 	public Method createMethod(String name, DataType returnValue, Parameter... parameters) {
 		Method method = createMethod(name, parameters);
 		method.with(returnValue);
 		return method;
 	}
 
+	/**
+	 * Creates the method.
+	 *
+	 * @param name the name
+	 * @param parameters the parameters
+	 * @return the method
+	 */
 	public Method createMethod(String name, Parameter... parameters) {
 		Method method = new Method().with(name);
 		method.with(parameters);
@@ -983,24 +1143,51 @@ public class Clazz extends GraphEntity {
 		return method;
 	}
 
+	/**
+	 * Creates the attribute.
+	 *
+	 * @param name the name
+	 * @param type the type
+	 * @return the attribute
+	 */
 	public Attribute createAttribute(String name, DataType type) {
 		Attribute attribute = new Attribute(name, type);
 		with(attribute);
 		return attribute;
 	}
 
+	/**
+	 * With attribute.
+	 *
+	 * @param name the name
+	 * @param type the type
+	 * @return the clazz
+	 */
 	public Clazz withAttribute(String name, DataType type) {
 		Attribute attribute = new Attribute(name, type);
 		with(attribute);
 		return this;
 	}
 
+	/**
+	 * With method.
+	 *
+	 * @param name the name
+	 * @param returnType the return type
+	 * @param parameters the parameters
+	 * @return the clazz
+	 */
 	public Clazz withMethod(String name, DataType returnType, Parameter... parameters) {
 		Method method = this.createMethod(name, parameters);
 		method.with(returnType);
 		return this;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		if (this.id != null) {
@@ -1009,6 +1196,12 @@ public class Clazz extends GraphEntity {
 		return getName();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(String attribute) {
 		if (attribute == null) {
@@ -1080,6 +1273,11 @@ public class Clazz extends GraphEntity {
 		return super.getValue(attribute);
 	}
 	
+	/**
+	 * To data type.
+	 *
+	 * @return the data type
+	 */
 	public DataType toDataType() {
 		return DataType.create(this);
 	}

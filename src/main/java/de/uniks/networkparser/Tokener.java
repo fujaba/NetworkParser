@@ -33,9 +33,20 @@ import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class Tokener.
+ *
+ * @author Stefan
+ */
 public class Tokener {
+	
+	/** The Constant PROPS. */
 	public static final String PROPS = "prop";
+	
+	/** The Constant ENTER. */
 	public static final char ENTER = '=';
+	
+	/** The Constant COLON. */
 	public static final char COLON = ':';
 	
 	/** The SPLITTER. */
@@ -43,6 +54,12 @@ public class Tokener {
 
 	protected SimpleMap map;
 
+	/**
+	 * Gets the creator class.
+	 *
+	 * @param reference the reference
+	 * @return the creator class
+	 */
 	public SendableEntityCreator getCreatorClass(Object reference) {
 		if (map == null) {
 			return null;
@@ -50,6 +67,14 @@ public class Tokener {
 		return map.getCreatorClass(reference);
 	}
 
+	/**
+	 * Gets the creator.
+	 *
+	 * @param className the class name
+	 * @param fullName the full name
+	 * @param creators the creators
+	 * @return the creator
+	 */
 	public SendableEntityCreator getCreator(String className, boolean fullName,
 			SimpleList<SendableEntityCreator> creators) {
 		if (map == null) {
@@ -58,6 +83,12 @@ public class Tokener {
 		return map.getCreator(className, fullName, true, null);
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @param reference the reference
+	 * @return the key
+	 */
 	public String getKey(Object reference) {
 		if (map == null) {
 			return null;
@@ -65,6 +96,12 @@ public class Tokener {
 		return map.getKey(reference);
 	}
 
+	/**
+	 * Gets the id.
+	 *
+	 * @param reference the reference
+	 * @return the id
+	 */
 	public String getId(Object reference) {
 		if (map == null) {
 			return null;
@@ -72,6 +109,12 @@ public class Tokener {
 		return map.getId(reference, true);
 	}
 
+	/**
+	 * Gets the object.
+	 *
+	 * @param key the key
+	 * @return the object
+	 */
 	public Object getObject(String key) {
 		if (map == null) {
 			return null;
@@ -79,6 +122,12 @@ public class Tokener {
 		return map.getObject(key);
 	}
 
+	/**
+	 * Notify.
+	 *
+	 * @param evt the evt
+	 * @return true, if successful
+	 */
 	public boolean notify(PropertyChangeEvent evt) {
 		if (map == null) {
 			return false;
@@ -86,15 +135,35 @@ public class Tokener {
 		return this.map.notify(evt);
 	}
 
+	/**
+	 * With map.
+	 *
+	 * @param map the map
+	 * @return the tokener
+	 */
 	public Tokener withMap(SimpleMap map) {
 		this.map = map;
 		return this;
 	}
 
+	/**
+	 * Gets the map.
+	 *
+	 * @return the map
+	 */
 	public SimpleMap getMap() {
 		return map;
 	}
 
+	/**
+	 * Checks if is error.
+	 *
+	 * @param owner the owner
+	 * @param method the method
+	 * @param type the type
+	 * @param entity the entity
+	 * @return true, if is error
+	 */
 	public boolean isError(Object owner, String method, String type, Object entity) {
 		if (map == null) {
 			return true;
@@ -102,10 +171,24 @@ public class Tokener {
 		return map.isError(owner, method, type, entity, null);
 	}
 
+	/**
+	 * Parses the to entity.
+	 *
+	 * @param entity the entity
+	 * @param buffer the buffer
+	 * @return the base item
+	 */
 	public BaseItem parseToEntity(BaseItem entity, Object buffer) {
 		return entity;
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @param map the map
+	 * @return the base item
+	 */
 	public BaseItem encode(Object entity, MapEntity map) {
 		SimpleMap idMap = this.map;
 		if (this.map == null) {
@@ -120,6 +203,16 @@ public class Tokener {
 		return idMap.encode(entity, map);
 	}
 
+	/**
+	 * Next value.
+	 *
+	 * @param buffer the buffer
+	 * @param creator the creator
+	 * @param allowQuote the allow quote
+	 * @param allowDuppleMark the allow dupple mark
+	 * @param c the c
+	 * @return the object
+	 */
 	public Object nextValue(Buffer buffer, BaseItem creator, boolean allowQuote, boolean allowDuppleMark, char c) {
 		if (buffer != null) {
 			return buffer.nextValue(creator, allowQuote, allowDuppleMark, c);
@@ -127,6 +220,13 @@ public class Tokener {
 		return null;
 	}
 
+	/**
+	 * Next string.
+	 *
+	 * @param buffer the buffer
+	 * @param quotes the quotes
+	 * @return the character buffer
+	 */
 	public CharacterBuffer nextString(Buffer buffer, char... quotes) {
 		if (buffer != null) {
 			return buffer.nextString(quotes);
@@ -134,6 +234,12 @@ public class Tokener {
 		return null;
 	}
 
+	/**
+	 * Next string.
+	 *
+	 * @param buffer the buffer
+	 * @return the character buffer
+	 */
 	public CharacterBuffer nextString(Buffer buffer) {
 		if (buffer != null) {
 			return buffer.nextString();
@@ -141,6 +247,16 @@ public class Tokener {
 		return null;
 	}
 
+	/**
+	 * Next string.
+	 *
+	 * @param buffer the buffer
+	 * @param sc the sc
+	 * @param allowCRLF the allow CRLF
+	 * @param nextStep the next step
+	 * @param quotes the quotes
+	 * @return the character buffer
+	 */
 	public CharacterBuffer nextString(Buffer buffer, CharacterBuffer sc, boolean allowCRLF, boolean nextStep,
 			char... quotes) {
 		if (buffer != null) {
@@ -149,6 +265,14 @@ public class Tokener {
 		return null;
 	}
 
+	/**
+	 * Next token.
+	 *
+	 * @param buffer the buffer
+	 * @param current the current
+	 * @param stopWords the stop words
+	 * @return the character buffer
+	 */
 	public CharacterBuffer nextToken(Buffer buffer, boolean current, char... stopWords) {
 		if (buffer != null) {
 			return buffer.nextToken(current, stopWords);
@@ -156,22 +280,54 @@ public class Tokener {
 		return null;
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @return the entity
+	 */
 	public Entity newInstance() {
 		return null;
 	}
 
+	/**
+	 * New instance list.
+	 *
+	 * @return the entity list
+	 */
 	public EntityList newInstanceList() {
 		return null;
 	}
 
+	/**
+	 * Transform value.
+	 *
+	 * @param value the value
+	 * @param reference the reference
+	 * @return the object
+	 */
 	public Object transformValue(Object value, BaseItem reference) {
 		return value;
 	}
 
+	/**
+	 * Creates the link.
+	 *
+	 * @param parent the parent
+	 * @param property the property
+	 * @param className the class name
+	 * @param id the id
+	 * @return the entity
+	 */
 	public Entity createLink(Entity parent, String property, String className, String id) {
 		return null;
 	}
 
+	/**
+	 * Checks if is child.
+	 *
+	 * @param writeValue the write value
+	 * @return true, if is child
+	 */
 	public boolean isChild(Object writeValue) {
 		return true;
 	}

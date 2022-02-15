@@ -27,16 +27,28 @@ import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 
 /**
- * Feature for Merge two Models
+ * Feature for Merge two Models.
+ *
  * @author Stefan Lindel
  */
 public class MergeFeature extends Feature {
+	
+	/** The Constant IGNORE. */
 	public static final String IGNORE = "ignore";
+	
+	/** The Constant OVERRIDE. */
 	public static final String OVERRIDE = "override";
+	
+	/** The Constant CONFLICT. */
 	public static final String CONFLICT = "conflict";
+	
+	/** The Constant CUSTOM. */
 	public static final String CUSTOM = "custom";
 	private SimpleEventCondition condition;
 
+	/**
+	 * Instantiates a new merge feature.
+	 */
 	public MergeFeature() {
 		super("");
 	}
@@ -51,6 +63,8 @@ public class MergeFeature extends Feature {
 	}
 
 	/**
+	 * Gets the condition.
+	 *
 	 * @return the condition
 	 */
 	public SimpleEventCondition getCondition() {
@@ -58,6 +72,8 @@ public class MergeFeature extends Feature {
 	}
 
 	/**
+	 * With condition.
+	 *
 	 * @param condition the condition to set
 	 * @return ThisComponent
 	 */
@@ -66,24 +82,50 @@ public class MergeFeature extends Feature {
 		return this;
 	}
 
+	/**
+	 * With string value.
+	 *
+	 * @param value the value
+	 * @return the merge feature
+	 */
 	@Override
 	public MergeFeature withStringValue(String value) {
 		super.withStringValue(value);
 		return this;
 	}
 
+	/**
+	 * Creates the ignore.
+	 *
+	 * @return the merge feature
+	 */
 	public static MergeFeature createIgnore() {
 		return new MergeFeature(Feature.DIFFERENCE_BEHAVIOUR).withStringValue(IGNORE);
 	}
 
+	/**
+	 * Creates the override.
+	 *
+	 * @return the merge feature
+	 */
 	public static MergeFeature createOverride() {
 		return new MergeFeature(Feature.DIFFERENCE_BEHAVIOUR).withStringValue(OVERRIDE);
 	}
 
+	/**
+	 * Creates the conflict.
+	 *
+	 * @return the merge feature
+	 */
 	public static MergeFeature createConflict() {
 		return new MergeFeature(Feature.DIFFERENCE_BEHAVIOUR).withStringValue(CONFLICT);
 	}
 
+	/**
+	 * Creates the custom.
+	 *
+	 * @return the merge feature
+	 */
 	public static MergeFeature createCustom() {
 		return new MergeFeature(Feature.DIFFERENCE_BEHAVIOUR).withStringValue(CUSTOM);
 	}

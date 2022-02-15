@@ -29,53 +29,113 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
+
 /**
-* Add so for Adding some Code for example getValue:Attribute or CreatorCreator
-* @author Stefan Lindel
-*/
+ * Add so for Adding some Code for example getValue:Attribute or CreatorCreator.
+ *
+ * @author Stefan Lindel
+ */
 public class MethodAddCondition implements ParserCondition, SendableEntityCreator {
+	
+	/** The Constant PROPERTY_CHILD. */
 	public static final String PROPERTY_CHILD = "child";
 	protected ObjectCondition child;
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		return false;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return null;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		return false;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param variables the variables
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(LocalisationInterface variables) {
 		return null;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param buffer the buffer
+	 * @param parser the parser
+	 * @param customTemplate the custom template
+	 */
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 	}
 
+	/**
+	 * Checks if is expression.
+	 *
+	 * @return true, if is expression
+	 */
 	@Override
 	public boolean isExpression() {
 		return false;
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return null;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param isExpression the is expression
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean isExpression) {
 		return null;

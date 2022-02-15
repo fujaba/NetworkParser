@@ -113,10 +113,21 @@ final class FormatInformation {
     return dataMask;
   }
 
+  /**
+   * Hash code.
+   *
+   * @return the int
+   */
   public int hashCode() {
     return (errorCorrectionLevel.ordinal() << 3) | (int) dataMask;
   }
 
+  /**
+   * Equals.
+   *
+   * @param o the o
+   * @return true, if successful
+   */
   public boolean equals(Object o) {
     if (!(o instanceof FormatInformation)) {
       return false;

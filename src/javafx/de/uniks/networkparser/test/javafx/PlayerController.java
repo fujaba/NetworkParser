@@ -16,7 +16,7 @@ public class PlayerController implements SendableEntityCreator {
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if(entity instanceof PlayerController == false) {
+		if(!entity instanceof PlayerController) {
 			return false;
 		}
 //		PlayerController controller = entity;

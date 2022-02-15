@@ -56,22 +56,30 @@ public class SimpleMap implements BaseItem, SendableEntityCreator, Iterable<Send
   /** The Constant MAINITEM. */
   public static final String MAINITEM = "main";
 
+  /** The Constant DOUBLEQUOTIONMARK. */
   public static final char DOUBLEQUOTIONMARK = '"';
 
+  /** The Constant FLAG_NONE. */
   public static final byte FLAG_NONE = 0x00;
 
+  /** The Constant FLAG_ID. */
   public static final byte FLAG_ID = 0x01;
 
+  /** The Constant FLAG_SEARCHFORSUPERCLASS. */
   public static final byte FLAG_SEARCHFORSUPERCLASS = 0x02;
 
+  /** The Constant FLAG_SIMPLEFORMAT. */
   public static final byte FLAG_SIMPLEFORMAT = 0x02;
 
   protected byte flag = FLAG_ID;
 
+  /** The Constant SESSION. */
   public static final String SESSION = "session";
 
+  /** The Constant TIMESTAMP. */
   public static final String TIMESTAMP = "timestamp";
 
+  /** The Constant TYPE. */
   public static final String TYPE = "type";
   
   /** The Constant ENTITYSPLITTER. */
@@ -138,6 +146,13 @@ public class SimpleMap implements BaseItem, SendableEntityCreator, Iterable<Send
     return creator;
   }
 
+  /**
+   * Gets the creator.
+   *
+   * @param clazz the clazz
+   * @param fullName the full name
+   * @return the creator
+   */
   public SendableEntityCreator getCreator(String clazz, boolean fullName) {
     return getCreator(clazz, fullName, true, null);
   }
@@ -147,8 +162,8 @@ public class SimpleMap implements BaseItem, SendableEntityCreator, Iterable<Send
    *
    * @param clazz Clazzname for search
    * @param fullName if the clazzName is the Fullname for search
-   * @param creators candidates creator list for result
    * @param caseSensitive ignore Case
+   * @param creators candidates creator list for result
    * @return return a Creator class for a clazz name
    */
   public SendableEntityCreator getCreator(String clazz, boolean fullName, boolean caseSensitive,
@@ -326,6 +341,13 @@ public class SimpleMap implements BaseItem, SendableEntityCreator, Iterable<Send
     return createId(obj, notificaton);
   }
 
+  /**
+   * Creates the id.
+   *
+   * @param obj the obj
+   * @param notification the notification
+   * @return the string
+   */
   public String createId(Object obj, boolean notification) {
     if (obj == null) {
       return null;
@@ -341,7 +363,7 @@ public class SimpleMap implements BaseItem, SendableEntityCreator, Iterable<Send
   }
 
   /**
-   * Put a Object to List
+   * Put a Object to List.
    *
    * @param id the unique ID of the Object
    * @param item the object
@@ -377,7 +399,7 @@ public class SimpleMap implements BaseItem, SendableEntityCreator, Iterable<Send
   }
 
   /**
-   * Removes the Entity from List or Destroy them
+   * Removes the Entity from List or Destroy them.
    *
    * @param oldValue the old Value
    * @param destroy destroy the missed Element
@@ -528,6 +550,12 @@ public int size() {
     return newObject;
   }
 
+  /**
+   * Gets the typ list.
+   *
+   * @param creator the creator
+   * @return the typ list
+   */
   public SimpleList<Object> getTypList(SendableEntityCreator creator) {
     if (creator == null) {
       return null;
@@ -544,6 +572,12 @@ public int size() {
     return result;
   }
 
+  /**
+   * Replace object.
+   *
+   * @param newObject the new object
+   * @return true, if successful
+   */
   public boolean replaceObject(Object newObject) {
     String key = getKey(newObject);
     if (key != null) {
@@ -574,16 +608,27 @@ public int size() {
     return result;
   }
 
+  /**
+   * Clear.
+   */
   public void clear() {
     this.keyValue.clear();
   }
 
+  /**
+   * With filter.
+   *
+   * @param filter the filter
+   * @return the simple map
+   */
   public SimpleMap withFilter(Filter filter) {
     this.filter = filter;
     return this;
   }
 
   /**
+   * Checks if is case sensitive.
+   *
    * @return the CaseSensitive Option
    */
   public boolean isCaseSensitive() {
@@ -591,7 +636,7 @@ public int size() {
   }
 
   /**
-   * For setting the Option of checking the CaseSensitive of the Properties
+   * For setting the Option of checking the CaseSensitive of the Properties.
    *
    * @param value the new Value of CaseSensitive
    * @return XMLGrammar Instance
@@ -601,11 +646,22 @@ public int size() {
     return this;
   }
 
+  /**
+   * Iterator.
+   *
+   * @return the iterator
+   */
   @Override
   public Iterator<SendableEntityCreator> iterator() {
     return this.creators.values().iterator();
   }
 
+  /**
+   * Notify.
+   *
+   * @param event the event
+   * @return true, if successful
+   */
   public boolean notify(PropertyChangeEvent event) {
     if (this.mapListener != null) {
       this.mapListener.propertyChange(event);
@@ -616,17 +672,21 @@ public int size() {
     return this.mapListener != null;
   }
 
+  /**
+   * To string.
+   *
+   * @return the string
+   */
   @Override
   public String toString() {
     return this.getClass().getName() + " (" + this.size() + ")";
   }
 
   /**
-   * Set the new Listener
+   * Set the new Listener.
    *
    * @param updateListener the new Listener
    * @return This Component
-   *
    * @see de.uniks.networkparser.logic.ChainCondition
    */
   public SimpleMap withListener(ObjectCondition updateListener) {
@@ -696,6 +756,8 @@ public int size() {
   }
 
   /**
+   * With grammar.
+   *
    * @param value Gammar value
    * @return Itself
    */
@@ -704,22 +766,40 @@ public int size() {
     return this;
   }
 
+  /**
+   * With map listener.
+   *
+   * @param listener the listener
+   * @return the simple map
+   */
   public SimpleMap withMapListener(MapListener listener) {
     this.mapListener = listener;
     return this;
   }
 
+  /**
+   * With session.
+   *
+   * @param value the value
+   * @return the simple map
+   */
   public SimpleMap withSession(String value) {
     this.session = value;
     return this;
   }
 
+  /**
+   * Checks for key.
+   *
+   * @param element the element
+   * @return true, if successful
+   */
   public boolean hasKey(Object element) {
     return this.keyValue.contains(element);
   }
 
   /**
-   * Special Case for EMF
+   * Special Case for EMF.
    *
    * @param value EMF-Value as String
    * @return the object
@@ -729,7 +809,7 @@ public int size() {
   }
 
   /**
-   * Special Case for EMF
+   * Special Case for EMF.
    *
    * @param value EMF-Value as String
    * @param root The Root Element for Result of ClassModel
@@ -763,7 +843,7 @@ public int size() {
   }
 
   /**
-   * Read Json Automatic create JsonArray or JsonObject
+   * Read Json Automatic create JsonArray or JsonObject.
    *
    * @param value Value for decoding as SubClasss from BaseItem
    * @return the object
@@ -974,7 +1054,7 @@ public int size() {
   }
 
   /**
-   * To XMLEntity
+   * To XMLEntity.
    *
    * @param entity the object
    * @return the XMLEntity
@@ -988,7 +1068,7 @@ public int size() {
   }
 
   /**
-   * To XMLEntity
+   * To XMLEntity.
    *
    * @param entity the object
    * @param filter Filter
@@ -1003,7 +1083,7 @@ public int size() {
   }
 
   /**
-   * To XMLEntity
+   * To XMLEntity.
    *
    * @param entity the object
    * @return the XMLEntity
@@ -1057,6 +1137,13 @@ public int size() {
     return toJsonArray(object, null);
   }
 
+  /**
+   * To json array.
+   *
+   * @param object the object
+   * @param filter the filter
+   * @return the json array
+   */
   public JsonArray toJsonArray(Object object, Filter filter) {
     if (filter == null) {
       filter = this.filter;
@@ -1066,6 +1153,14 @@ public int size() {
     return (JsonArray) encodeList(object, map);
   }
 
+  /**
+   * To json array.
+   *
+   * @param object the object
+   * @param target the target
+   * @param filter the filter
+   * @return the json array
+   */
   public JsonArray toJsonArray(Object object, JsonArray target, Filter filter) {
     if (filter == null) {
       filter = this.filter;
@@ -1137,7 +1232,7 @@ public int size() {
   }
 
   /**
-   * Convert a Model to Tokener
+   * Convert a Model to Tokener.
    *
    * @param model The Model to encode
    * @param tokener The Tokener For Syntax
@@ -1148,7 +1243,7 @@ public int size() {
   }
 
   /**
-   * Set the current flag
+   * Set the current flag.
    *
    * @param flag the new flag
    * @return ThisComponent
@@ -1159,7 +1254,7 @@ public int size() {
   }
 
   /**
-   * Convert a Model to Tokener
+   * Convert a Model to Tokener.
    *
    * @param model The Model to encode
    * @param tokener The Tokener For Syntax
@@ -1184,7 +1279,7 @@ public int size() {
   }
 
   /**
-   * Encode Model
+   * Encode Model.
    *
    * @param entity the entity to convert
    * @param map encoding runtimevalue
@@ -1198,6 +1293,16 @@ public int size() {
     return encode(entity, className, map, null);
   }
 
+  /**
+   * Checks if is error.
+   *
+   * @param owner the owner
+   * @param method the method
+   * @param type the type
+   * @param entity the entity
+   * @param className the class name
+   * @return true, if is error
+   */
   public boolean isError(Object owner, String method, String type, Object entity, String className) {
     return logger.error(owner, method, type, entity, className);
   }
@@ -1509,6 +1614,13 @@ public int size() {
     return true;
   }
   
+  /**
+   * Simple decoding.
+   *
+   * @param element the element
+   * @param creator the creator
+   * @return the object
+   */
   public Object simpleDecoding(Entity element, SendableEntityCreator creator) {
 	  Object entry = creator.getSendableInstance(true);
 	  for(String prop : creator.getProperties()) {
@@ -1518,23 +1630,50 @@ public int size() {
   }
 
 
+  /**
+   * Gets the map listener.
+   *
+   * @return the map listener
+   */
   public MapListener getMapListener() {
     return this.mapListener;
   }
 
+  /**
+   * Gets the key value.
+   *
+   * @return the key value
+   */
   public SimpleKeyValueList<String, Object> getKeyValue() {
     return keyValue;
   }
 
+  /**
+   * Gets the creators.
+   *
+   * @return the creators
+   */
   public SimpleKeyValueList<String, SendableEntityCreator> getCreators() {
     return this.creators;
   }
 
+  /**
+   * Gets the new list.
+   *
+   * @param keyValue the key value
+   * @return the new list
+   */
   @Override
   public BaseItem getNewList(boolean keyValue) {
     return new SimpleMap();
   }
 
+  /**
+   * To string.
+   *
+   * @param converter the converter
+   * @return the string
+   */
   @Override
   public String toString(Converter converter) {
     if (converter == null) {
@@ -1543,11 +1682,23 @@ public int size() {
     return converter.encode(this);
   }
 
+  /**
+   * With.
+   *
+   * @param values the values
+   * @return the simple map
+   */
   public SimpleMap with(Object... values) {
     add(values);
     return this;
   }
 
+  /**
+   * Adds the.
+   *
+   * @param values the values
+   * @return true, if successful
+   */
   @Override
   public boolean add(Object... values) {
     if (values == null) {
@@ -1602,49 +1753,109 @@ public int size() {
     return true;
   }
 
+  /**
+   * Gets the filter.
+   *
+   * @return the filter
+   */
   public Filter getFilter() {
     return filter;
   }
 
+  /**
+   * Gets the flag.
+   *
+   * @return the flag
+   */
   public byte getFlag() {
     return flag;
   }
 
+  /**
+   * Gets the update listener.
+   *
+   * @return the update listener
+   */
   public ObjectCondition getUpdateListener() {
     return updateListener;
   }
 
+  /**
+   * With time stamp.
+   *
+   * @param newValue the new value
+   * @return the simple map
+   */
   public SimpleMap withTimeStamp(long newValue) {
     this.timeStamp = newValue;
     return this;
   }
 
+  /**
+   * Gets the time stamp.
+   *
+   * @return the time stamp
+   */
   public long getTimeStamp() {
     return timeStamp;
   }
 
+  /**
+   * Gets the grammar.
+   *
+   * @return the grammar
+   */
   public Grammar getGrammar() {
     return grammar;
   }
 
+  /**
+   * Gets the session.
+   *
+   * @return the session
+   */
   public String getSession() {
     return session;
   }
 
+  /**
+   * Gets the id.
+   *
+   * @param obj the obj
+   * @return the id
+   */
   public String getId(Object obj) {
     return getId(obj, true);
   }
 
+  /**
+   * With model executor.
+   *
+   * @param modelExecutor the model executor
+   * @return the simple map
+   */
   public SimpleMap withModelExecutor(ObjectCondition modelExecutor) {
     this.modelExecutor = modelExecutor;
     return this;
   }
 
+  /**
+   * Gets the properties.
+   *
+   * @return the properties
+   */
   @Override
   public String[] getProperties() {
     return null;
   }
 
+  /**
+   * Gets the value.
+   *
+   * @param entity the entity
+   * @param attribute the attribute
+   * @return the value
+   */
   @Override
   public Object getValue(Object entity, String attribute) {
     SendableEntityCreator creator = getCreatorClass(entity);
@@ -1662,6 +1873,15 @@ public int size() {
     return getValue(entity, attribute);
   }
 
+  /**
+   * Sets the value.
+   *
+   * @param entity the entity
+   * @param attribute the attribute
+   * @param value the value
+   * @param type the type
+   * @return true, if successful
+   */
   @Override
   public boolean setValue(Object entity, String attribute, Object value, String type) {
     SendableEntityCreator creator = getCreatorClass(entity);
@@ -1679,11 +1899,22 @@ public int size() {
     return creator.setValue(entity, attribute, value, type);
   }
 
+  /**
+   * Gets the sendable instance.
+   *
+   * @param prototyp the prototyp
+   * @return the sendable instance
+   */
   @Override
   public Object getSendableInstance(boolean prototyp) {
     return new SimpleMap();
   }
 
+  /**
+   * Gets the json tokener.
+   *
+   * @return the json tokener
+   */
   public Tokener getJsonTokener() {
 	return jsonTokener;
   }

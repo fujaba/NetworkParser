@@ -6,14 +6,29 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.parser.GraphMatcher;
 
+/**
+ * The Class MatchCondition.
+ *
+ * @author Stefan
+ */
 public class MatchCondition implements ObjectCondition {
 	protected boolean isReverse;
 	protected SimpleList<MatchCondition> changeConditions;
 
+	/**
+	 * Instantiates a new match condition.
+	 *
+	 * @param isReverse the is reverse
+	 */
 	public MatchCondition(boolean isReverse) {
 		this.isReverse = isReverse;
 	}
 
+	/**
+	 * Instantiates a new match condition.
+	 *
+	 * @param conditions the conditions
+	 */
 	public MatchCondition(MatchCondition... conditions) {
 		if (conditions != null) {
 			this.changeConditions = new SimpleList<MatchCondition>();
@@ -53,6 +68,11 @@ public class MatchCondition implements ObjectCondition {
 		return false;
 	}
 
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
 	public String getAction() {
 		return null;
 	}
@@ -70,6 +90,12 @@ public class MatchCondition implements ObjectCondition {
 		return false;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof Match == false) {

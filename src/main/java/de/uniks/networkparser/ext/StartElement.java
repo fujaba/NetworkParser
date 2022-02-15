@@ -24,6 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class StartElement.
+ *
+ * @author Stefan
+ */
 public class StartElement {
 	private String key;
 	private String label;
@@ -31,12 +36,18 @@ public class StartElement {
 	private Object defaultValue;
 	private Object value;
 
-	/** @return the label */
+	/**
+	 * Gets the label.
+	 *
+	 * @return the label
+	 */
 	public String getLabel() {
 		return label;
 	}
 
 	/**
+	 * With label.
+	 *
 	 * @param label the label to set
 	 * @return ThisComponent
 	 */
@@ -45,12 +56,18 @@ public class StartElement {
 		return this;
 	}
 
-	/** @return the description */
+	/**
+	 * Gets the description.
+	 *
+	 * @return the description
+	 */
 	public String getDescription() {
 		return description;
 	}
 
 	/**
+	 * With description.
+	 *
 	 * @param description the description to set
 	 * @return ThisComponent
 	 */
@@ -59,12 +76,18 @@ public class StartElement {
 		return this;
 	}
 
-	/** @return the values */
+	/**
+	 * Gets the default values.
+	 *
+	 * @return the values
+	 */
 	public Object getDefaultValues() {
 		return defaultValue;
 	}
 
 	/**
+	 * With default values.
+	 *
 	 * @param values the values to set
 	 * @return ThisComponent
 	 */
@@ -73,12 +96,18 @@ public class StartElement {
 		return this;
 	}
 
-	/** @return the key */
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	public String getKey() {
 		return key;
 	}
 
 	/**
+	 * With key.
+	 *
 	 * @param key the key to set
 	 * @return ThisComponent
 	 */
@@ -87,12 +116,18 @@ public class StartElement {
 		return this;
 	}
 
-	/** @return the value */
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public Object getValue() {
 		return value;
 	}
 
 	/**
+	 * With value.
+	 *
 	 * @param value the value to set
 	 * @return ThisComponent
 	 */

@@ -34,9 +34,19 @@ import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
+/**
+ * The Class SimpleKeyValueList.
+ *
+ * @author Stefan
+ * @param <K> the key type
+ * @param <V> the value type
+ */
 public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, Iterable<Entry<K, V>> {
 	private Comparator<Object> cpr;
 
+	/**
+	 * Instantiates a new simple key value list.
+	 */
 	public SimpleKeyValueList() {
 		super();
 		withFlag(MAP);
@@ -44,7 +54,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 
 	/**
 	 * Set a Value to Entity With this Method it is possible to set a Value of a Set
-	 * by using a [Number] or [L] for Last
+	 * by using a [Number] or [L] for Last.
 	 *
 	 * @param key   the Key to add
 	 * @param value the Value to add
@@ -143,16 +153,34 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return this;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param pos the pos
+	 * @param value the value
+	 * @return the v
+	 */
 	@SuppressWarnings("unchecked")
 	public V setValue(int pos, V value) {
 		return (V) super.setValue(pos, value, SMALL_VALUE);
 	}
 
+	/**
+	 * Copy entity.
+	 *
+	 * @param target the target
+	 * @param pos the pos
+	 */
 	public void copyEntity(SimpleKeyValueList<K, V> target, int pos) {
 		if (target != null)
 			target.withKeyValue(this.get(pos), this.getValueByIndex(pos));
 	}
 
+	/**
+	 * Key set.
+	 *
+	 * @return the sets the
+	 */
 	@Override
 	public Set<K> keySet() {
 		SimpleSet<K> item = new SimpleSet<K>();
@@ -164,6 +192,11 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return item;
 	}
 
+	/**
+	 * Key iterator.
+	 *
+	 * @return the iterator
+	 */
 	public Iterator<K> keyIterator() {
 		return keySet().iterator();
 	}
@@ -239,6 +272,13 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 	}
 
+	/**
+	 * Gets the int.
+	 *
+	 * @param key the key
+	 * @param defaultValue the default value
+	 * @return the int
+	 */
 	public int getInt(K key, int defaultValue) {
 		Object object = get(key);
 		try {
@@ -343,17 +383,35 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return this;
 	}
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new SimpleKeyValueList<K, V>();
 	}
 
+	/**
+	 * With list.
+	 *
+	 * @param values the values
+	 * @return the simple key value list
+	 */
 	@Override
 	public SimpleKeyValueList<K, V> withList(Collection<?> values) {
 		super.withList(values);
 		return this;
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	public boolean add(Object... values) {
 		if (values == null) {
 			return false;
@@ -368,12 +426,28 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return true;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param <ST> the generic type
+	 * @param key the key
+	 * @param value the value
+	 * @return the st
+	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleKeyValueList<K, V>> ST with(K key, V value) {
 		add(key, value);
 		return (ST) this;
 	}
 
+	/**
+	 * With group.
+	 *
+	 * @param <ST> the generic type
+	 * @param value the value
+	 * @param keys the keys
+	 * @return the st
+	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleKeyValueList<K, V>> ST withGroup(V value, K... keys) {
 		if (keys != null && value != null) {
@@ -384,6 +458,14 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return (ST) this;
 	}
 
+	/**
+	 * With mult index.
+	 *
+	 * @param <ST> the generic type
+	 * @param keys the keys
+	 * @param value the value
+	 * @return the st
+	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleKeyValueList<K, V>> ST withMultIndex(K[] keys, V value) {
 		if (keys == null) {
@@ -395,6 +477,13 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return (ST) this;
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean add(K key, V value) {
 		int pos = hasKey(key);
 		if (pos >= 0) {
@@ -405,6 +494,14 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return false;
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param pos the pos
+	 * @param key the key
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean add(int pos, K key, V value) {
 		if (hasKey(key) >= 0) {
 			grow(size + 1);
@@ -414,6 +511,13 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return false;
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the v
+	 */
 	@Override
 	public V put(K key, V value) {
 		int pos = hasKeyAndPos(key);
@@ -431,15 +535,33 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return value;
 	}
 
+	/**
+	 * Contains key.
+	 *
+	 * @param key the key
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean containsKey(Object key) {
 		return super.contains(key);
 	}
 
+	/**
+	 * Gets the position value.
+	 *
+	 * @param o the o
+	 * @return the position value
+	 */
 	public int getPositionValue(Object o) {
 		return getPosition(o, SMALL_VALUE, false);
 	}
 
+	/**
+	 * Contains value.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean containsValue(Object value) {
 		if (value == null) {
@@ -455,6 +577,12 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return false;
 	}
 
+	/**
+	 * Index of value.
+	 *
+	 * @param value the value
+	 * @return the int
+	 */
 	public int indexOfValue(Object value) {
 		if (elements == null || value == null) {
 			return -1;
@@ -465,12 +593,24 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return getPositionValue(value);
 	}
 
+	/**
+	 * Gets the key by index.
+	 *
+	 * @param index the index
+	 * @return the key by index
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public K getKeyByIndex(int index) {
 		return (K) super.getKeyByIndex(index);
 	}
 
+	/**
+	 * Gets the value by index.
+	 *
+	 * @param index the index
+	 * @return the value by index
+	 */
 	@SuppressWarnings("unchecked")
 	public V getValueByIndex(int index) {
 		return (V) super.getByIndex(SMALL_VALUE, index + this.index, size);
@@ -485,17 +625,34 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return super.removeByIndex(index, SMALL_VALUE, oldIndex);
 	}
 
+	/**
+	 * Removes the.
+	 *
+	 * @param key the key
+	 * @return the v
+	 */
 	@SuppressWarnings("unchecked")
 	public V remove(Object key) {
 		int index = this.indexOf(key);
 		return (V) removeByIndex(index, SMALL_KEY, this.index);
 	}
 
+	/**
+	 * Removes the pos.
+	 *
+	 * @param pos the pos
+	 * @return the v
+	 */
 	@SuppressWarnings("unchecked")
 	public V removePos(int pos) {
 		return (V) removeByIndex(pos, SMALL_KEY, index);
 	}
 
+	/**
+	 * Put all.
+	 *
+	 * @param values the values
+	 */
 	@Override
 	public void putAll(Map<? extends K, ? extends V> values) {
 		if (values == null) {
@@ -506,6 +663,12 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 	}
 
+	/**
+	 * With map.
+	 *
+	 * @param value the value
+	 * @return the simple key value list
+	 */
 	public SimpleKeyValueList<K, V> withMap(Map<?, ?> value) {
 		if (value == null) {
 			return this;
@@ -516,6 +679,12 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return this;
 	}
 
+	/**
+	 * Gets the.
+	 *
+	 * @param key the key
+	 * @return the v
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public V get(Object key) {
@@ -526,6 +695,11 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return null;
 	}
 
+	/**
+	 * Values.
+	 *
+	 * @return the collection
+	 */
 	@Override
 	public Collection<V> values() {
 		SimpleList<V> item = new SimpleList<V>();
@@ -536,6 +710,11 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return item;
 	}
 
+	/**
+	 * Values array intern.
+	 *
+	 * @return the object[]
+	 */
 	public Object[] valuesArrayIntern() {
 		if (elements == null) {
 			return new Object[0];
@@ -543,6 +722,13 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return (Object[]) elements[SMALL_VALUE];
 	}
 
+	/**
+	 * With key value.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the simple key value list
+	 */
 	public SimpleKeyValueList<K, V> withKeyValue(Object key, Object value) {
 		int pos = hasKeyAndPos(key);
 		if (pos < 0) {
@@ -557,6 +743,13 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return this;
 	}
 
+	/**
+	 * Adds the to key value.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the simple key value list
+	 */
 	public SimpleKeyValueList<K, V> addToKeyValue(Object key, Number value) {
 		int pos = hasKeyAndPos(key);
 		if (pos < 0) {
@@ -574,11 +767,22 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return this;
 	}
 
+	/**
+	 * Entry set.
+	 *
+	 * @return the sets the
+	 */
 	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
 		return new SimpleEntrySet<K, V>(this);
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @param value the value
+	 * @return the key
+	 */
 	public K getKey(V value) {
 		int pos = indexOfValue(value);
 		if (pos < 0) {
@@ -588,8 +792,8 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	}
 
 	/**
-	 * Init The Colleciton with short String
-	 * 
+	 * Init The Colleciton with short String.
+	 *
 	 * @param keyValue  The init KeyValue String Key:Value,Key:Value ...
 	 * @param types Class from Value, Class from keys
 	 * @return This Component
@@ -646,11 +850,23 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return this;
 	}
 
+	/**
+	 * Iterator.
+	 *
+	 * @return the iterator
+	 */
 	@Override
 	public Iterator<Entry<K, V>> iterator() {
 		return new SimpleIteratorSet<K, V>(this);
 	}
 
+	/**
+	 * Replace all values.
+	 *
+	 * @param key the key
+	 * @param search the search
+	 * @param replace the replace
+	 */
 	@Override
 	public void replaceAllValues(Object key, String search, String replace) {
 		if (key == null) {
@@ -677,6 +893,12 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 	}
 
+	/**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof ObjectCondition) {
@@ -686,21 +908,42 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return super.equals(obj);
 	}
 
+	/**
+	 * With comparator.
+	 *
+	 * @param comparator the comparator
+	 * @return the simple key value list
+	 */
 	public SimpleKeyValueList<K, V> withComparator(Comparator<Object> comparator) {
 		this.cpr = comparator;
 		return this;
 	}
 
+	/**
+	 * Checks if is comparator.
+	 *
+	 * @return true, if is comparator
+	 */
 	@Override
 	public boolean isComparator() {
 		return (this.cpr != null);
 	}
 
+	/**
+	 * Comparator.
+	 *
+	 * @return the comparator
+	 */
 	@Override
 	public Comparator<Object> comparator() {
 		return cpr;
 	}
 
+	/**
+	 * To table.
+	 *
+	 * @return the object[][]
+	 */
 	public Object[][] toTable() {
 		Object[][] table = new Object[size()][2];
 		for (int i = 0; i < size(); i++) {

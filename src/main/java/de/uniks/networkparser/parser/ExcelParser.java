@@ -16,17 +16,41 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLTokener;
 
+/**
+ * The Class ExcelParser.
+ *
+ * @author Stefan
+ */
 public class ExcelParser {
     private final static String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n";
     private final static String APP = "<Properties xmlns=\"http://schemas.openxmlformats.org/officeDocument/2006/extended-properties\" xmlns:vt=\"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes\"><TotalTime>0</TotalTime><Application>NetworkParser</Application><DocSecurity>0</DocSecurity><ScaleCrop>false</ScaleCrop><AppVersion>1.42</AppVersion></Properties>";
     private final static String RELS = "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\"><Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/><Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties\" Target=\"docProps/core.xml\"/><Relationship Id=\"rId3\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties\" Target=\"docProps/app.xml\"/></Relationships>";
+	
+	/** The Constant ROW. */
 	public static final String ROW = "row";
+	
+	/** The Constant CELL. */
 	public static final String CELL = "c";
+	
+	/** The Constant CELL_TYPE. */
 	public static final String CELL_TYPE = "t";
+	
+	/** The Constant REF. */
 	public static final String REF = "ref";
+	
+	/** The Constant CELL_TYPE_REFERENCE. */
 	public static final String CELL_TYPE_REFERENCE = "s";
+	
+	/** The Constant SEMICOLON. */
 	public static final char SEMICOLON = ';';
 
+	/**
+	 * Parses the sheets.
+	 *
+	 * @param stringFile the string file
+	 * @param sheetFile the sheet file
+	 * @return the excel work book
+	 */
 	public ExcelWorkBook parseSheets(CharSequence stringFile, CharSequence... sheetFile) {
 		ExcelWorkBook excelWorkBook = new ExcelWorkBook();
 		if (sheetFile == null) {
@@ -38,6 +62,13 @@ public class ExcelParser {
 		return excelWorkBook;
 	}
 
+	/**
+	 * Parses the sheet.
+	 *
+	 * @param stringFile the string file
+	 * @param sheetFile the sheet file
+	 * @return the excel sheet
+	 */
 	public ExcelSheet parseSheet(CharSequence stringFile, CharSequence sheetFile) {
 		ExcelSheet data = new ExcelSheet();
 		SimpleKeyValueList<String, ExcelCell> cells = new SimpleKeyValueList<String, ExcelCell>();
@@ -130,6 +161,12 @@ public class ExcelParser {
 		return data;
 	}
 
+	/**
+	 * Write CSV.
+	 *
+	 * @param data the data
+	 * @return the character buffer
+	 */
 	public CharacterBuffer writeCSV(SimpleList<SimpleList<ExcelCell>> data) {
 		CharacterBuffer result = new CharacterBuffer();
 		if (data == null) {
@@ -149,6 +186,13 @@ public class ExcelParser {
 		return result;
 	}
 
+	/**
+	 * Read CSV.
+	 *
+	 * @param data the data
+	 * @param creator the creator
+	 * @return the simple list
+	 */
 	public SimpleList<Object> readCSV(Buffer data, SendableEntityCreator creator) {
 		SimpleList<Object> result = new SimpleList<Object>();
 		if (data == null || creator == null) {
@@ -191,6 +235,12 @@ public class ExcelParser {
 		return result;
 	}
 
+	/**
+	 * Creates the excel content.
+	 *
+	 * @param content the content
+	 * @return the simple key value list
+	 */
 	public SimpleKeyValueList<String, String> createExcelContent(ExcelWorkBook content) {
 		int id = 4;
 		SimpleKeyValueList<String, String> fileContent = new SimpleKeyValueList<String, String>();
@@ -296,7 +346,9 @@ public class ExcelParser {
 		return data.toString();
 	}
 
-	/** Parse WorkBook to Model
+	/**
+	 *  Parse WorkBook to Model.
+	 *
 	 * @return success
 	 */
 	public boolean parseModel() {

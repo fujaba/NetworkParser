@@ -25,10 +25,21 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
+/**
+ * The Class TemplateCondition.
+ *
+ * @author Stefan
+ */
 public class TemplateCondition implements ObjectCondition {
 	private ObjectCondition condition;
 	private ObjectCondition template;
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (condition == null) {
@@ -37,19 +48,41 @@ public class TemplateCondition implements ObjectCondition {
 		return condition.update(value);
 	}
 
+	/**
+	 * With condition.
+	 *
+	 * @param condition the condition
+	 * @return the template condition
+	 */
 	public TemplateCondition withCondition(ObjectCondition condition) {
 		this.condition = condition;
 		return this;
 	}
 
+	/**
+	 * Gets the condition.
+	 *
+	 * @return the condition
+	 */
 	public ObjectCondition getCondition() {
 		return condition;
 	}
 
+	/**
+	 * Gets the template.
+	 *
+	 * @return the template
+	 */
 	public ObjectCondition getTemplate() {
 		return template;
 	}
 
+	/**
+	 * With template.
+	 *
+	 * @param value the value
+	 * @return the template condition
+	 */
 	public TemplateCondition withTemplate(ObjectCondition value) {
 		this.template = value;
 		return this;

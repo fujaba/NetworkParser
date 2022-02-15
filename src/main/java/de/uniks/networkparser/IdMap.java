@@ -24,6 +24,9 @@ import de.uniks.networkparser.xml.EMFTokener;
 public class IdMap extends SimpleMap {
 	protected ByteTokener byteTokener = new ByteTokener().withMap(this);
 
+	/**
+	 * Instantiates a new id map.
+	 */
 	public IdMap() {
 		super();
 		this.add(new TextItems());
@@ -63,16 +66,35 @@ public class IdMap extends SimpleMap {
 		return super.decoding(value, map);
 	}
 
+	/**
+	 * To byte item.
+	 *
+	 * @param object the object
+	 * @return the byte item
+	 */
 	public ByteItem toByteItem(Object object) {
 		MapEntity map = new MapEntity(filter, flag, this, byteTokener);
 		return byteTokener.encode(object, map);
 	}
 
+	/**
+	 * To byte item.
+	 *
+	 * @param object the object
+	 * @param filter the filter
+	 * @return the byte item
+	 */
 	public ByteItem toByteItem(Object object, Filter filter) {
 		MapEntity map = new MapEntity(filter, flag, this, byteTokener);
 		return byteTokener.encode(object, map);
 	}
 
+	/**
+	 * To object diagram.
+	 *
+	 * @param object the object
+	 * @return the graph list
+	 */
 	public GraphList toObjectDiagram(Object object) {
 		GraphTokener tokener = new GraphTokener();
 		MapEntity map = new MapEntity(filter, flag, this, tokener);
@@ -80,6 +102,12 @@ public class IdMap extends SimpleMap {
 		return tokener.encode(object, map);
 	}
 
+	/**
+	 * To class diagram.
+	 *
+	 * @param object the object
+	 * @return the graph list
+	 */
 	//
 	public GraphList toClassDiagram(Object object) {
 		GraphTokener tokener = new GraphTokener();
@@ -89,6 +117,14 @@ public class IdMap extends SimpleMap {
 		return tokener.encode(object, map);
 	}
 
+	/**
+	 * Gets the diff.
+	 *
+	 * @param source the source
+	 * @param target the target
+	 * @param ordered the ordered
+	 * @return the diff
+	 */
 	public GraphPatternMatch getDiff(Object source, Object target, boolean ordered) {
 		byte value = GraphTokener.FLAG_UNORDERD;
 		if (ordered) {
@@ -101,6 +137,13 @@ public class IdMap extends SimpleMap {
 		return tokener.diffModel(source, target, map);
 	}
 
+	/**
+	 * Adds the I 18 N.
+	 *
+	 * @param root the root
+	 * @param i18n the i 18 n
+	 * @return true, if successful
+	 */
 	public boolean addI18N(Object root, TextItems i18n) {
 		return addI18N(root, i18n, new SimpleSet<>(), null, null);
 	}
@@ -219,24 +262,48 @@ public class IdMap extends SimpleMap {
 		return false;
 	}
 	
+	/**
+	 * With session.
+	 *
+	 * @param value the value
+	 * @return the id map
+	 */
 	@Override
 	public IdMap withSession(String value) {
 		super.withSession(value);
 		return this;
 	}
 	
+	/**
+	 * With.
+	 *
+	 * @param values the values
+	 * @return the id map
+	 */
 	@Override
 	public IdMap with(Object... values) {
 		super.with(values);
 		return this;
 	}
 	
+	/**
+	 * With creator.
+	 *
+	 * @param createrClass the creater class
+	 * @return the id map
+	 */
 	@Override
 	public IdMap withCreator(SendableEntityCreator... createrClass) {
 		super.withCreator(createrClass);
 		return this;
 	}
 	
+	/**
+	 * With time stamp.
+	 *
+	 * @param newValue the new value
+	 * @return the id map
+	 */
 	@Override
 	public IdMap withTimeStamp(long newValue) {
 		super.withTimeStamp(newValue);

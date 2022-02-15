@@ -5,7 +5,8 @@ import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 /**
- * Converter for Byte to HEX-Values
+ * Converter for Byte to HEX-Values.
+ *
  * @author Stefan Lindel
  */
 public class ByteConverterHex extends ByteConverter {
@@ -22,6 +23,13 @@ public class ByteConverterHex extends ByteConverter {
 		return toString(values, 0);
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param values the values
+	 * @param space the space
+	 * @return the string
+	 */
 	public String toString(BufferedBuffer values, int space) {
 		if (values == null) {
 			return null;
@@ -41,6 +49,13 @@ public class ByteConverterHex extends ByteConverter {
 		return returnValue.toString();
 	}
 	
+	/**
+	 * Convert.
+	 *
+	 * @param buffer the buffer
+	 * @param values the values
+	 * @return the character buffer
+	 */
 	public static CharacterBuffer convert(CharacterBuffer buffer, byte... values) {
 	    if(buffer == null) {
 	        return buffer;
@@ -65,6 +80,14 @@ public class ByteConverterHex extends ByteConverter {
 		return decoding(value, 0, value.length());
 	}
 
+	/**
+	 * Decoding.
+	 *
+	 * @param value the value
+	 * @param pos the pos
+	 * @param len the len
+	 * @return the byte[]
+	 */
 	public static byte[] decoding(CharSequence value, int pos, int len) {
 		if (value == null || len < value.length()) {
 			return null;
@@ -84,6 +107,14 @@ public class ByteConverterHex extends ByteConverter {
 		return out;
 	}
 
+	/**
+	 * From hex.
+	 *
+	 * @param value the value
+	 * @param pos the pos
+	 * @param len the len
+	 * @return the char
+	 */
 	public static char fromHex(CharSequence value, int pos, int len) {
 		byte[] bytes = decoding(value, pos, len);
 		if (bytes == null || bytes.length < 1) {
@@ -103,8 +134,15 @@ public class ByteConverterHex extends ByteConverter {
 		return (char) HEXVAL.indexOf(bytes[0]);
 	}
 
+	/** The controlcharacter. */
 	public static String CONTROLCHARACTER = "abtnvfr";
 
+	/**
+	 * Un quote control character.
+	 *
+	 * @param value the value
+	 * @return the string
+	 */
 	public static final String unQuoteControlCharacter(CharSequence value) {
 		if (value == null || value.length() == 0) {
 			return "";

@@ -25,10 +25,20 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedList;
+import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class RESTServiceTask.
+ *
+ * @author Stefan
+ */
 public class RESTServiceTask implements Condition<Socket> {
+	
+	/** The Constant PROPERTY_ERROR. */
 	public static final String PROPERTY_ERROR = "error";
+	
+	/** The Constant PROPERTY_ALLOW. */
 	public static final String PROPERTY_ALLOW = "allow";
 	private SendableEntityCreator creator;
 	private Space space;
@@ -37,7 +47,11 @@ public class RESTServiceTask implements Condition<Socket> {
 	private SimpleUpdateListener allowListener;
 	private SimpleUpdateListener loginController;
 	private SimpleUpdateListener executeController;
+	
+	/** The Constant JSON. */
 	public static final String JSON = "/json";
+	
+	/** The Constant XML. */
 	public static final String XML = "/xml";
 	private SimpleList<HTTPRequest> routing;
 	private NodeProxyTCP proxy;
@@ -45,6 +59,14 @@ public class RESTServiceTask implements Condition<Socket> {
 	private ConfigService configService;
     private ImpressumService impressumService;
 	
+	/**
+	 * Creates the server.
+	 *
+	 * @param config the config
+	 * @param map the map
+	 * @param root the root
+	 * @return the REST service task
+	 */
 	public RESTServiceTask createServer(Configuration config, IdMap map, Object root) {
 		this.proxy = NodeProxyTCP.createServer(config.getPort());
 		if (map != null) {
@@ -62,40 +84,65 @@ public class RESTServiceTask implements Condition<Socket> {
 		space = new Space();
 		space.withMap(map);
 		space.with(new NodeProxyModel(root));
-		
 		return this;
 	}
 	
+	/**
+	 * Start.
+	 */
 	public void start() {
 		if(space != null) {
 			space.with(proxy);
 		}
 	}
 	
+	/**
+	 * With proxy.
+	 *
+	 * @param proxy the proxy
+	 * @return the REST service task
+	 */
 	public RESTServiceTask withProxy(NodeProxyTCP proxy) {
 		this.proxy = proxy;
 		this.space = proxy.getSpace();
 		return this;
 	}
 
+	/**
+	 * With allow listener.
+	 *
+	 * @param listener the listener
+	 * @return the REST service task
+	 */
 	public RESTServiceTask withAllowListener(SimpleUpdateListener listener) {
 		this.allowListener = listener;
 		return this;
 	}
 	
+	/**
+	 * Gets the routings.
+	 *
+	 * @return the routings
+	 */
 	public SimpleList<HTTPRequest> getRoutings() {
 		return routing;
 	}
 	
+	/**
+	 * Update.
+	 *
+	 * @param socket the socket
+	 * @return true, if successful
+	 */
 	public boolean update(Socket socket) {
 		HTTPRequest clientSocket = HTTPRequest.create(socket);
 		clientSocket.readType();
 		clientSocket.readPath();
 		HTTPRequest match = null;
+		String path = clientSocket.getUrl();
 		if (routing != null && !routing.isEmpty()) {
 			/* Parsing Path */
 			HTTPRequest defaultMatch = null;
-			String path = clientSocket.getUrl();
 			SortedList<HTTPRequest> matches = new SortedList<HTTPRequest>(true);
 			for (int i = 0; i < routing.size(); i++) {
 				HTTPRequest key = routing.get(i);
@@ -129,6 +176,17 @@ public class RESTServiceTask implements Condition<Socket> {
 				return false;
 			}
 		}
+	    if(match == null && routing.size()>0 && (path == null || path.isEmpty())) {
+            // ROOT AND DEFAULT PAGE
+            HTMLEntity entity = new HTMLEntity();
+            XMLEntity menueItem = entity.createChild("div", "class", "menue");
+            for(HTTPRequest item : routing) {
+                if(item.getTag() != null) {
+                    entity.createChild("a", menueItem, "class", "button", "target", "_self", "href", item.getUrl(), item.getTag());
+                }
+            }
+            clientSocket.withContent(entity);
+        }
 		if(this.executeController != null) {
 			boolean success = executeController.update(event);
 			if(success) {
@@ -136,7 +194,6 @@ public class RESTServiceTask implements Condition<Socket> {
 				return success;
 			}
 		}
-		
 		/* So Valid and Execute Match or default CHECK FOR NEXT VALID OR BEST */
 		if (match != null) {
 			boolean success = match.update(clientSocket);
@@ -149,19 +206,41 @@ public class RESTServiceTask implements Condition<Socket> {
 		return true;
 	}
 
+	/**
+	 * Close.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean close() {
 		return this.proxy.close();
 	}
 
+	/**
+	 * Checks if is run.
+	 *
+	 * @return true, if is run
+	 */
 	public boolean isRun() {
 		return this.proxy.isRun();
 	}
 
+	/**
+	 * Execute request.
+	 *
+	 * @param request the request
+	 * @return the string
+	 */
 	public String executeRequest(String request) {
 		SimpleEvent event = new SimpleEvent(this, request);
 		return executeRequest(event);
 	}
 
+	/**
+	 * Execute request.
+	 *
+	 * @param socketRequest the socket request
+	 * @return the string
+	 */
 	public String executeRequest(SimpleEvent socketRequest) {
 		if (socketRequest == null) {
 			return null;
@@ -190,6 +269,9 @@ public class RESTServiceTask implements Condition<Socket> {
 			boolean lastElement) {
 		int pos = 0;
 		SendableEntityCreator creator = this.creator;
+		if(creator == null) {
+		    return null;
+		}
 
 		if (request.startsWith(JSON, 0, false)) {
 			pos = 6;
@@ -410,15 +492,30 @@ public class RESTServiceTask implements Condition<Socket> {
 		return HTTPRequest.HTTP_STATE_NOTFOUND;
 	}
 
+	/**
+	 * Stop.
+	 */
 	public void stop() {
 		proxy.stop();
 	}
 
+	/**
+	 * With login service.
+	 *
+	 * @param loginService the login service
+	 * @return the REST service task
+	 */
 	public RESTServiceTask withLoginService(LoginService loginService) {
 		this.loginController = loginService;
 		return this;
 	}
 	
+	/**
+	 * With routing.
+	 *
+	 * @param routing the routing
+	 * @return the REST service task
+	 */
 	public RESTServiceTask withRouting(HTTPRequest routing) {
 		if (this.routing == null) {
 			this.routing = new SimpleList<HTTPRequest>();
@@ -427,6 +524,13 @@ public class RESTServiceTask implements Condition<Socket> {
 		return this;
 	}
 
+	/**
+	 * With rooting.
+	 *
+	 * @param string the string
+	 * @param webContent the web content
+	 * @return the REST service task
+	 */
 	public RESTServiceTask withRooting(String string, Condition<HTTPRequest> webContent) {
 		HTTPRequest route = HTTPRequest.createRouting(string);
 		route.withUpdateCondition(webContent);
@@ -434,15 +538,31 @@ public class RESTServiceTask implements Condition<Socket> {
 		return this;
 	}
 
+	/**
+	 * Gets the configuration service.
+	 *
+	 * @return the configuration service
+	 */
 	public ConfigService getConfigurationService() {
 		return this.configService;
 	}
 
+	/**
+	 * With execute listener.
+	 *
+	 * @param executeController the execute controller
+	 * @return the REST service task
+	 */
 	public RESTServiceTask withExecuteListener(SimpleUpdateListener executeController) {
 		this.executeController = executeController;
 		return this;
 	}
 
+    /**
+     * Gets the impressum service.
+     *
+     * @return the impressum service
+     */
     public ImpressumService getImpressumService() {
         return impressumService;
     }

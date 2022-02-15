@@ -3,82 +3,110 @@ package de.uniks.networkparser.interfaces;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.list.SimpleList;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface BufferItem.
+ *
+ * @author Stefan
+ */
 public interface BufferItem {
+	
+	/** The Constant SPACE. */
 	public static final char SPACE = ' ';
+	
+	/** The Constant QUOTES. */
 	public static final char QUOTES = '"';
 
-	/** @return the length of the buffer */
-	public int length();
-
-	/** @return The next Char */
-	public abstract char getChar();
-
-	public abstract byte getByte();
-
-	/** @return The currentChar */
-	public abstract char getCurrentChar();
+	/**
+	 * Length.
+	 *
+	 * @return the length of the buffer
+	 */
+	int length();
 
 	/**
-	 * Return a new Array of Elements
+	 * Gets the char.
+	 *
+	 * @return The next Char
+	 */
+	char getChar();
+
+	/**
+	 * Gets the byte.
+	 *
+	 * @return the byte
+	 */
+	byte getByte();
+
+	/**
+	 * Gets the current char.
+	 *
+	 * @return The currentChar
+	 */
+	char getCurrentChar();
+
+	/**
+	 * Return a new Array of Elements.
 	 *
 	 * @param len     len of next values -1 remaining length -2 all size (Only for
 	 *                BufferedBuffer)
 	 * @param current Add Current Byte to Array
-	 *
 	 * @return The Buffer as byte Array
 	 */
-	public byte[] array(int len, boolean current);
+	byte[] array(int len, boolean current);
 
 	/**
 	 * Gets the index.
 	 *
 	 * @return the index
 	 */
-	public int position();
+	int position();
 
 	/**
-	 * count of Remaining Size of Buffer
+	 * count of Remaining Size of Buffer.
 	 *
 	 * @return the remaining Count of bytes of the Buffer
 	 */
-	public int remaining();
+	int remaining();
 
 	/**
+	 * Checks if is empty.
+	 *
 	 * @return Is Buffer is Empty
 	 */
-	public boolean isEmpty();
+	boolean isEmpty();
 
 	/**
-	 * Is the Buffer is on End
-	 * 
+	 * Is the Buffer is on End.
+	 *
 	 * @return boolean for is Position of Buffer on End
 	 */
-	public boolean isEnd();
+	boolean isEnd();
 
 	/**
-	 * Add lookAHead to Buffer
-	 * 
+	 * Add lookAHead to Buffer.
+	 *
 	 * @param lookahead The String for look A Head String. For Simple Buffer change
 	 *                  position back to the length of String or Save the String.
 	 * @return Self Instance
 	 */
-	public BufferItem withLookAHead(CharSequence lookahead);
+	BufferItem withLookAHead(CharSequence lookahead);
 
 	/**
-	 * Add lookAHead to Buffer
-	 * 
+	 * Add lookAHead to Buffer.
+	 *
 	 * @param lookahead The next Character
 	 * @return Self Instance
 	 */
-	public BufferItem withLookAHead(char lookahead);
+	BufferItem withLookAHead(char lookahead);
 
 	/**
-	 * Get the next String
-	 * 
+	 * Get the next String.
+	 *
 	 * @param len is the Length of the new String
 	 * @return the next StringPart
 	 */
-	public CharacterBuffer getString(int len);
+	CharacterBuffer getString(int len);
 
 	/**
 	 * Get the next char in the string, skipping whitespace.
@@ -87,7 +115,7 @@ public interface BufferItem {
 	 *
 	 * @return A character, or 0 if there are no more characters.
 	 */
-	public char nextClean(boolean currentValid);
+	char nextClean(boolean currentValid);
 
 	/**
 	 * Return the characters up to the next close quote character. Backslash
@@ -97,14 +125,14 @@ public interface BufferItem {
 	 * @param quotes for End
 	 * @return the StringContainer with the new Value
 	 */
-	public CharacterBuffer nextString(char... quotes);
+	CharacterBuffer nextString(char... quotes);
 
 	/**
 	 * Return the characters up to the next close quote character. Remove QUOTES
 	 * 
 	 * @return the StringContainer with the new Value
 	 */
-	public CharacterBuffer nextString();
+	CharacterBuffer nextString();
 
 	/**
 	 * Return the characters up to the next close quote character. Backslash
@@ -119,27 +147,27 @@ public interface BufferItem {
 	 *                   &nbsp;<small>(single quote)</small>.
 	 * @return the StringContainer with the new Value
 	 */
-	public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes);
+	CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes);
 
 	/**
-	 * Get the NextVlaue
-	 * 
+	 * Get the NextVlaue.
+	 *
 	 * @param creator         Creator for creating Child Item
 	 * @param allowQuote      Is it allow Quote in NextValue
-	 * @param c               CurrentChar
 	 * @param allowDuppleMark Is allow DuppleMarks
+	 * @param c               CurrentChar
 	 * @return The NextValue
 	 */
-	public Object nextValue(BaseItem creator, boolean allowQuote, boolean allowDuppleMark, char c);
+	Object nextValue(BaseItem creator, boolean allowQuote, boolean allowDuppleMark, char c);
 
 	/**
-	 * Get the next Token
-	 * 
+	 * Get the next Token.
+	 *
 	 * @param current   switch for add the current Character
 	 * @param stopWords may be at Simple Space
 	 * @return The next Token
 	 */
-	public CharacterBuffer nextToken(boolean current, char... stopWords);
+	CharacterBuffer nextToken(boolean current, char... stopWords);
 
 	/**
 	 * Skip.
@@ -149,7 +177,7 @@ public interface BufferItem {
 	 * @param notEscape Boolean if escaping the text
 	 * @return true, if successful
 	 */
-	public boolean skipTo(String search, boolean order, boolean notEscape);
+	boolean skipTo(String search, boolean order, boolean notEscape);
 
 	/**
 	 * Skip.
@@ -158,43 +186,43 @@ public interface BufferItem {
 	 * @param notEscape Boolean if escaping the text
 	 * @return true, if successful
 	 */
-	public boolean skipTo(char search, boolean notEscape);
+	boolean skipTo(char search, boolean notEscape);
 
 	/**
-	 * Skip number of chars
+	 * Skip number of chars.
 	 *
 	 * @param pos the pos
 	 * @return true, if successful
 	 */
-	public boolean skip(int pos);
+	boolean skip(int pos);
 
 	/**
-	 * Skip
+	 * Skip.
 	 *
 	 * @return true, if successful
 	 */
-	public boolean skip();
+	boolean skip();
 
 	/**
-	 * Check values of the Current Char
+	 * Check values of the Current Char.
 	 *
 	 * @param items the items
 	 * @return true, if successful
 	 */
-	public boolean checkValues(char... items);
+	boolean checkValues(char... items);
 
 	/**
-	 * Method for parsing String Elements
+	 * Method for parsing String Elements.
 	 *
 	 * @return A List of String
 	 */
-	public SimpleList<String> getStringList();
+	SimpleList<String> getStringList();
 
 	/**
-	 * Skip The quotes if the CurrentChar is it
-	 * 
+	 * Skip The quotes if the CurrentChar is it.
+	 *
 	 * @param quotes Quotes to Skip
 	 * @return the Current Char
 	 */
-	public char skipChar(char... quotes);
+	char skipChar(char... quotes);
 }

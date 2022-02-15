@@ -24,20 +24,37 @@ THE SOFTWARE.
 */
 
 /**
- * StringList for List of String
- * 
+ * StringList for List of String.
+ *
  * @author Stefan Lindel
  */
 public class StringList extends SimpleList<String> {
+	
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return "(" + this.concat(", ") + ")";
 	}
 
+	/**
+	 * Concat.
+	 *
+	 * @return the string
+	 */
 	public String concat() {
 		return concat("");
 	}
 
+	/**
+	 * Concat.
+	 *
+	 * @param seperator the seperator
+	 * @return the string
+	 */
 	public String concat(String seperator) {
 		StringBuffer buf = new StringBuffer();
 

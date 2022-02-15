@@ -31,21 +31,46 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class TemplateResultModel.
+ *
+ * @author Stefan
+ */
 public class TemplateResultModel extends SimpleList<TemplateResultFile>
 		implements SendableEntityCreator, LocalisationInterface {
+	
+	/** The Constant PROPERTY_FEATURE. */
 	public static final String PROPERTY_FEATURE = "features";
+	
+	/** The Constant PROPERTY_TEMPLATE. */
 	public static final String PROPERTY_TEMPLATE = "templates";
+	
+	/** The Constant PROPERTY_TEXT. */
 	public static final String PROPERTY_TEXT = "text";
+	
+	/** The Constant PROPERTY_CHILD. */
 	public static final String PROPERTY_CHILD = "child";
 	private SimpleSet<Feature> features;
 	private SimpleKeyValueList<String, ParserCondition> customTemplate;
 	private LocalisationInterface language;
 
+	/**
+	 * With template.
+	 *
+	 * @param templates the templates
+	 * @return the template result model
+	 */
 	public TemplateResultModel withTemplate(SimpleKeyValueList<String, ParserCondition> templates) {
 		this.customTemplate = templates;
 		return this;
 	}
 
+	/**
+	 * With template.
+	 *
+	 * @param templates the templates
+	 * @return the template result model
+	 */
 	public TemplateResultModel withTemplate(ParserCondition... templates) {
 		if (templates == null) {
 			return this;
@@ -61,15 +86,34 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile>
 		return this;
 	}
 
+	/**
+	 * Gets the custom template.
+	 *
+	 * @return the custom template
+	 */
 	public SimpleKeyValueList<String, ParserCondition> getCustomTemplate() {
 		return customTemplate;
 	}
 
+	/**
+	 * With language.
+	 *
+	 * @param customLanguage the custom language
+	 * @return the template result model
+	 */
 	public TemplateResultModel withLanguage(LocalisationInterface customLanguage) {
 		this.language = customLanguage;
 		return this;
 	}
 
+	/**
+	 * Gets the text.
+	 *
+	 * @param label the label
+	 * @param model the model
+	 * @param gui the gui
+	 * @return the text
+	 */
 	@Override
 	public String getText(CharSequence label, Object model, Object gui) {
 		if (this.language != null) {
@@ -82,6 +126,13 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile>
 		return null;
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param label the label
+	 * @param object the object
+	 * @return the string
+	 */
 	@Override
 	public String put(String label, Object object) {
 		if (this.language != null) {
@@ -90,6 +141,12 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile>
 		return null;
 	}
 
+	/**
+	 * Gets the template.
+	 *
+	 * @param tag the tag
+	 * @return the template
+	 */
 	public ParserCondition getTemplate(String tag) {
 		if (customTemplate == null || tag == null) {
 			return null;
@@ -97,23 +154,46 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile>
 		return customTemplate.get(tag.toLowerCase());
 	}
 
+	/**
+	 * Gets the language.
+	 *
+	 * @return the language
+	 */
 	public LocalisationInterface getLanguage() {
 		return language;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new TemplateResultModel();
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { PROPERTY_TEMPLATE, PROPERTY_TEXT };
 	}
 
+	/**
+	 * Get Value from ResultModel.
+	 *
+	 * @param entity TemplateResultModel
+	 * @param attribute like FEATURE
+	 * @return value of Attribute
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (entity instanceof TemplateResultModel == false) {
+		if (!(entity instanceof TemplateResultModel)) {
 			return null;
 		}
 		TemplateResultModel model = (TemplateResultModel) entity;
@@ -144,6 +224,15 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile>
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (value instanceof TemplateResultFile) {
@@ -152,10 +241,21 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile>
 		return false;
 	}
 
+	/**
+	 * Gets the features.
+	 *
+	 * @return the features
+	 */
 	public SimpleSet<Feature> getFeatures() {
 		return features;
 	}
 
+	/**
+	 * Gets the feature.
+	 *
+	 * @param name the name
+	 * @return the feature
+	 */
 	public Feature getFeature(String name) {
 		if (features == null || name == null) {
 			return null;
@@ -168,6 +268,12 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile>
 		return null;
 	}
 
+	/**
+	 * With features.
+	 *
+	 * @param features the features
+	 * @return the template result model
+	 */
 	public TemplateResultModel withFeatures(SimpleSet<Feature> features) {
 		this.features = features;
 		return this;

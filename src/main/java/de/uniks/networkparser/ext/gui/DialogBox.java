@@ -41,10 +41,23 @@ import de.uniks.networkparser.gui.controls.TextField;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class DialogBox.
+ *
+ * @author Stefan
+ */
 public class DialogBox implements ObjectCondition {
+	
+	/** The Constant TOOLKIT_JAVAFX. */
 	public static final String TOOLKIT_JAVAFX= "JAVAFX";
+	
+	/** The Constant TOOLKIT_WEB. */
 	public static final String TOOLKIT_WEB= "WEB";
+	
+	/** The Constant TOOLKIT_AWT. */
 	public static final String TOOLKIT_AWT= "AWT";
+	
+	/** The Constant TimedWindowEvent. */
 	public static final String TimedWindowEvent = "sun.awt.TimedWindowEvent";
 
 	
@@ -77,6 +90,9 @@ public class DialogBox implements ObjectCondition {
 	private boolean iconified;
 	private Object center;
 
+	/**
+	 * Instantiates a new dialog box.
+	 */
 	public DialogBox() {
 		titleElements.add(titleElement);
 		titleElements.add(new Label().withType(Label.SPACER));
@@ -89,6 +105,12 @@ public class DialogBox implements ObjectCondition {
 		 */
 	}
 
+	/**
+	 * With title.
+	 *
+	 * @param value the value
+	 * @return the dialog box
+	 */
 	public DialogBox withTitle(String value) {
 		if (value != null) {
 			titleElement.setValue(value);
@@ -96,6 +118,12 @@ public class DialogBox implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * Show.
+	 *
+	 * @param owner the owner
+	 * @return the button
+	 */
 	public Button show(Object owner) {
 		if (titleElement.length() < 1) {
 			Object title = ReflectionLoader.call(owner, "getTitle");
@@ -146,12 +174,22 @@ public class DialogBox implements ObjectCondition {
 		return null;
 	}
 
+	/**
+	 * Hide.
+	 *
+	 * @param value the value
+	 */
 	public void hide(Button value) {
 		if (this.action == null) {
 			this.setAction(value);
 		}
 	}
 
+	/**
+	 * Sets the action.
+	 *
+	 * @param value the new action
+	 */
 	public void setAction(Button value) {
 		this.action = value;
 		if (isInline) {
@@ -171,12 +209,18 @@ public class DialogBox implements ObjectCondition {
 		}
 	}
 
+	/**
+	 * Minimize.
+	 */
 	public void minimize() {
 		if (stage != null) {
 			ReflectionLoader.call(stage, "setIconified", this.iconified);
 		}
 	}
 
+	/**
+	 * Maximize.
+	 */
 	public void maximize() {
 		if (stage != null) {
 			ReflectionLoader.call(stage, "setFullScreen", true);
@@ -251,11 +295,23 @@ public class DialogBox implements ObjectCondition {
 		return action;
 	}
 
+	/**
+	 * With inline.
+	 *
+	 * @param value the value
+	 * @return the dialog box
+	 */
 	public DialogBox withInline(boolean value) {
 		this.isInline = value;
 		return this;
 	}
 
+	/**
+	 * With modal.
+	 *
+	 * @param modal the modal
+	 * @return the dialog box
+	 */
 	public DialogBox withModal(boolean modal) {
 		this.modal = modal;
 		return this;
@@ -286,6 +342,11 @@ public class DialogBox implements ObjectCondition {
 		}
 	}
 
+	/**
+	 * Creates the content.
+	 *
+	 * @return the dialog box
+	 */
 	public DialogBox createContent() {
 		if (Os.isReflectionTest()) {
 			return this;
@@ -327,11 +388,24 @@ public class DialogBox implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * With center.
+	 *
+	 * @param node the node
+	 * @return the dialog box
+	 */
 	public DialogBox withCenter(Object node) {
 		this.center = node;
 		return this;
 	}
 
+	/**
+	 * With title button.
+	 *
+	 * @param index the index
+	 * @param value the value
+	 * @return the dialog box
+	 */
 	public DialogBox withTitleButton(int index, Control... value) {
 		if (value == null) {
 			return this;
@@ -345,6 +419,12 @@ public class DialogBox implements ObjectCondition {
 
 	}
 
+	/**
+	 * With title button.
+	 *
+	 * @param value the value
+	 * @return the dialog box
+	 */
 	public DialogBox withTitleButton(Control... value) {
 		if (value == null) {
 			return this;
@@ -355,6 +435,13 @@ public class DialogBox implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * With action button.
+	 *
+	 * @param index the index
+	 * @param value the value
+	 * @return the dialog box
+	 */
 	public DialogBox withActionButton(int index, Control... value) {
 		if (value == null) {
 			return this;
@@ -368,6 +455,12 @@ public class DialogBox implements ObjectCondition {
 
 	}
 
+	/**
+	 * With action button.
+	 *
+	 * @param value the value
+	 * @return the dialog box
+	 */
 	public DialogBox withActionButton(Control... value) {
 		if (value == null) {
 			return this;
@@ -378,16 +471,35 @@ public class DialogBox implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * With center info.
+	 *
+	 * @param value the value
+	 * @return the dialog box
+	 */
 	public DialogBox withCenterInfo(String value) {
 		withCenterText("information.png", value);
 		return this;
 	}
 
+	/**
+	 * With center question.
+	 *
+	 * @param value the value
+	 * @return the dialog box
+	 */
 	public DialogBox withCenterQuestion(String value) {
 		withCenterText("confirm.png", value);
 		return this;
 	}
 
+	/**
+	 * With center text.
+	 *
+	 * @param image the image
+	 * @param value the value
+	 * @return the dialog box
+	 */
 	public DialogBox withCenterText(String image, String value) {
 		if (value == null) {
 			return this;
@@ -416,24 +528,57 @@ public class DialogBox implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * Show info.
+	 *
+	 * @param parent the parent
+	 * @param title the title
+	 * @param text the text
+	 * @param inLine the in line
+	 * @return the button
+	 */
 	public static Button showInfo(Object parent, String title, String text, boolean inLine) {
 		DialogBox dialogBox = new DialogBox().withTitle(title).withCenterInfo(text).withInline(inLine);
 		return dialogBox.withActionButton(new Button().withActionType(Button.CLOSE, dialogBox).withValue("OK"))
 				.show(parent);
 	}
 
+	/**
+	 * Show info.
+	 *
+	 * @param title the title
+	 * @param text the text
+	 * @return the button
+	 */
 	public static Button showInfo(String title, String text) {
 		DialogBox dialogBox = new DialogBox().withTitle(title).withCenterInfo(text);
 		return dialogBox.withActionButton(new Button().withValue("OK").withActionType(Button.CLOSE, dialogBox))
 				.show(null);
 	}
 
+	/**
+	 * Show question.
+	 *
+	 * @param parent the parent
+	 * @param title the title
+	 * @param text the text
+	 * @return the button
+	 */
 	public static Button showQuestion(Object parent, String title, String text) {
 		DialogBox dialogBox = new DialogBox().withTitle(title).withCenterInfo(text);
 		return dialogBox.withActionButton(new Button().withValue("Yes").withActionType(Button.CLOSE, dialogBox),
 				new Button().withValue("No").withActionType(Button.CLOSE, dialogBox)).show(parent);
 	}
 
+	/**
+	 * Show question check.
+	 *
+	 * @param parent the parent
+	 * @param title the title
+	 * @param text the text
+	 * @param check the check
+	 * @return true, if successful
+	 */
 	public static boolean showQuestionCheck(Object parent, String title, String text, String... check) {
 		Button action = showQuestion(parent, title, text);
 		if (action == null) {
@@ -449,10 +594,21 @@ public class DialogBox implements ObjectCondition {
 		return false;
 	}
 
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
 	public Button getAction() {
 		return action;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param event the event
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object event) {
 		if (event == null) {
@@ -535,6 +691,12 @@ public class DialogBox implements ObjectCondition {
 		return false;
 	}
 	
+	/**
+	 * Pref width.
+	 *
+	 * @param value the value
+	 * @return the double
+	 */
 	public double prefWidth(double value) {
 		if (root != null) {
 			return (Double) ReflectionLoader.call(root, "prefWidth", double.class, -1);
@@ -542,6 +704,12 @@ public class DialogBox implements ObjectCondition {
 		return -1;
 	}
 
+	/**
+	 * Pref height.
+	 *
+	 * @param value the value
+	 * @return the double
+	 */
 	public double prefHeight(double value) {
 		if (root != null) {
 			return (Double) ReflectionLoader.call(root, "prefHeight", double.class, -1);
@@ -549,27 +717,68 @@ public class DialogBox implements ObjectCondition {
 		return -1;
 	}
 
+	/**
+	 * Sets the stage.
+	 *
+	 * @param newStage the new stage
+	 */
 	public void setStage(Object newStage) {
 		this.stage = newStage;
 	}
 
+	/**
+	 * Gets the root.
+	 *
+	 * @return the root
+	 */
 	public Object getRoot() {
 		return root;
 	}
 
+	/**
+	 * Checks if is model.
+	 *
+	 * @return true, if is model
+	 */
 	public boolean isModel() {
 		return this.modal;
 	}
 
+	/**
+	 * Gets the scene.
+	 *
+	 * @return the scene
+	 */
 	public Object getScene() {
 		return ReflectionLoader.call(stage, "getScene");
 	}
 
+	/**
+	 * Show file save chooser.
+	 *
+	 * @param caption the caption
+	 * @param defaultValue the default value
+	 * @param typeName the type name
+	 * @param typeExtension the type extension
+	 * @param parent the parent
+	 * @return the string
+	 */
 	public static String showFileSaveChooser(String caption, String defaultValue, String typeName, String typeExtension,
 			Object... parent) {
 		return showFileChooser("save", caption, defaultValue, typeName, typeExtension, parent);
 	}
 
+	/**
+	 * Show file chooser.
+	 *
+	 * @param art the art
+	 * @param caption the caption
+	 * @param defaultValue the default value
+	 * @param typeName the type name
+	 * @param extensions the extensions
+	 * @param parent the parent
+	 * @return the string
+	 */
 	@SuppressWarnings("unchecked")
 	public static String showFileChooser(String art, String caption, String defaultValue, String typeName,
 			String extensions, Object... parent) {
@@ -644,6 +853,12 @@ public class DialogBox implements ObjectCondition {
 		return null;
 	}
 
+	/**
+	 * Gets the input string.
+	 *
+	 * @param param the param
+	 * @return the input string
+	 */
 	public static String getInputString(String... param) {
 		String title = "Eingabe";
 		String info = null;
@@ -667,6 +882,11 @@ public class DialogBox implements ObjectCondition {
 		return null;
 	}
 	
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		DialogBox.getInputString();
 	}

@@ -1,7 +1,8 @@
 package de.uniks.networkparser.bytes;
 
 /**
- * Secure Hash Algorithm Version 2
+ * Secure Hash Algorithm Version 2.
+ *
  * @author Stefan Lindel
  */
 public class SHA2 {
@@ -18,6 +19,16 @@ public class SHA2 {
       0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa,
       0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
 
+  /**
+   * Hash blocks.
+   *
+   * @param w the w
+   * @param v the v
+   * @param p the p
+   * @param pos the pos
+   * @param len the len
+   * @return the int
+   */
   public int hashBlocks(int[] w, int[] v, byte[] p, int pos, int len) {
     if (w == null || v == null || p == null) {
       return -1;
@@ -90,6 +101,9 @@ public class SHA2 {
 
   boolean finished; /* indicates whether the hash was finalized */
 
+  /**
+   * Instantiates a new sha2.
+   */
   public SHA2() {
     this.reset();
   }
@@ -125,6 +139,12 @@ public class SHA2 {
     this.reset();
   }
 
+  /**
+   * Update.
+   *
+   * @param data the data
+   * @return the sha2
+   */
   public SHA2 update(String data) {
     if (data != null) {
       byte[] bytes = data.getBytes();

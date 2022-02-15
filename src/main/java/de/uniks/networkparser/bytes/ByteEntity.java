@@ -36,9 +36,14 @@ import de.uniks.networkparser.interfaces.Converter;
 public class ByteEntity implements ByteItem {
   /** The Constant BIT OF A BYTE. */
   public static final int BITOFBYTE = 8;
+  
+  /** The Constant TYPEBYTE. */
   public static final int TYPEBYTE = 1;
 
+  /** The Constant TYPE. */
   public static final String TYPE = "TYPE";
+  
+  /** The Constant VALUE. */
   public static final String VALUE = "VALUE";
 
   /** The Byte Type. */
@@ -47,6 +52,11 @@ public class ByteEntity implements ByteItem {
   /** The values. */
   protected byte[] values;
 
+  /**
+   * To binary string.
+   *
+   * @return the string
+   */
   public String toBinaryString() {
     if (values == null || values.length < 1) {
       return "";
@@ -104,11 +114,24 @@ public class ByteEntity implements ByteItem {
     return this;
   }
 
+  /**
+   * With type.
+   *
+   * @param type the type
+   * @return the byte entity
+   */
   public ByteEntity withType(byte type) {
     this.type = type;
     return this;
   }
 
+  /**
+   * With value.
+   *
+   * @param type the type
+   * @param value the value
+   * @return the byte entity
+   */
   public ByteEntity withValue(byte type, int value) {
     this.type = type;
     ByteBuffer msgValue = new ByteBuffer().withBufferLength(4);
@@ -129,6 +152,11 @@ public class ByteEntity implements ByteItem {
     return (byte) (n - 256);
   }
 
+  /**
+   * To string.
+   *
+   * @return the string
+   */
   /*
    * @see de.uni.kassel.peermessage.Entity#toString()
    */
@@ -138,7 +166,7 @@ public class ByteEntity implements ByteItem {
   }
 
   /**
-   * Convert the bytes to a String
+   * Convert the bytes to a String.
    *
    * @param converter Grammar
    * @return converted bytes as String
@@ -152,7 +180,7 @@ public class ByteEntity implements ByteItem {
   }
 
   /**
-   * Convert the bytes to a String
+   * Convert the bytes to a String.
    *
    * @param converter Grammar
    * @param dynamic if byte is dynamic
@@ -213,6 +241,12 @@ public class ByteEntity implements ByteItem {
     buffer.put(value);
   }
 
+  /**
+   * Gets the bytes.
+   *
+   * @param isDynamic the is dynamic
+   * @return the bytes
+   */
   @Override
   public ByteBuffer getBytes(boolean isDynamic) {
     int len = calcLength(isDynamic, true);
@@ -222,6 +256,12 @@ public class ByteEntity implements ByteItem {
     return buffer;
   }
 
+  /**
+   * Sets the values.
+   *
+   * @param value the value
+   * @return true, if successful
+   */
   public boolean setValues(Object value) {
     byte type = 0;
     ByteBuffer msgValue = new ByteBuffer();
@@ -298,8 +338,10 @@ public class ByteEntity implements ByteItem {
   }
 
   /**
-   * calculate the length of value
+   * calculate the length of value.
    *
+   * @param isDynamic the is dynamic
+   * @param isLast the is last
    * @return the length
    */
   @Override
@@ -326,6 +368,12 @@ public class ByteEntity implements ByteItem {
     return TYPEBYTE + EntityUtil.getTypeLen(type, values.length, isLast) + this.values.length;
   }
 
+  /**
+   * Gets the new list.
+   *
+   * @param keyValue the key value
+   * @return the new list
+   */
   @Override
   public BaseItem getNewList(boolean keyValue) {
     if (keyValue) {
@@ -334,11 +382,21 @@ public class ByteEntity implements ByteItem {
     return new ByteList();
   }
 
+  /**
+   * Checks if is empty.
+   *
+   * @return true, if is empty
+   */
   @Override
   public boolean isEmpty() {
     return getType() == ByteTokener.DATATYPE_NULL;
   }
 
+  /**
+   * Size.
+   *
+   * @return the int
+   */
   @Override
   public int size() {
     if (values == null) {
@@ -347,12 +405,25 @@ public class ByteEntity implements ByteItem {
     return values.length;
   }
 
+  /**
+   * Creates the.
+   *
+   * @param value the value
+   * @return the byte entity
+   */
   public static ByteEntity create(Object value) {
     ByteEntity item = new ByteEntity();
     item.setValues(value);
     return item;
   }
 
+  /**
+   * Creates the.
+   *
+   * @param type the type
+   * @param value the value
+   * @return the byte entity
+   */
   public static ByteEntity create(int type, Object value) {
     ByteEntity item = new ByteEntity();
     item.setValues(value);
@@ -360,6 +431,12 @@ public class ByteEntity implements ByteItem {
     return item;
   }
 
+  /**
+   * Adds the.
+   *
+   * @param values the values
+   * @return true, if successful
+   */
   @Override
   public boolean add(Object... values) {
     if (values == null) {
@@ -375,6 +452,12 @@ public class ByteEntity implements ByteItem {
     return true;
   }
 
+  /**
+   * With value.
+   *
+   * @param values the values
+   * @return the byte entity
+   */
   public ByteEntity withValue(byte[] values) {
     if (values == null) {
       return this;
@@ -390,6 +473,12 @@ public class ByteEntity implements ByteItem {
     return this;
   }
 
+  /**
+   * Gets the value.
+   *
+   * @param key the key
+   * @return the value
+   */
   public Object getValue(Object key) {
     if (TYPE.equals(key)) {
       return type;

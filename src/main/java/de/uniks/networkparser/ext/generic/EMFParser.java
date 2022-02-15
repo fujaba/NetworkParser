@@ -35,13 +35,29 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class EMFParser.
+ *
+ * @author Stefan
+ */
 public class EMFParser {
 	protected Object value;
 
+	/**
+	 * Instantiates a new EMF parser.
+	 *
+	 * @param value the value
+	 */
 	public EMFParser(Object value) {
 		this.value = value;
 	}
 
+	/**
+	 * Adds the attributes.
+	 *
+	 * @param eclass the eclass
+	 * @param sdmClass the sdm class
+	 */
 	public static final void addAttributes(EMFParser eclass, Clazz sdmClass) {
 		List<Object> callList = getEAttributes(eclass);
 		if (callList != null) {
@@ -56,6 +72,14 @@ public class EMFParser {
 		}
 	}
 
+	/**
+	 * Gets the class model from E package.
+	 *
+	 * @param epackage the epackage
+	 * @param packageName the package name
+	 * @param withImpl the with impl
+	 * @return the class model from E package
+	 */
 	public static final ClassModel getClassModelFromEPackage(Object epackage, String packageName, boolean withImpl) {
 		/* get class model from epackage */
 		ClassModel model = new ClassModel(packageName);
@@ -135,6 +159,12 @@ public class EMFParser {
 		return model;
 	}
 
+	/**
+	 * Gets the e attributes.
+	 *
+	 * @param eref the eref
+	 * @return the e attributes
+	 */
 	/* REFACTORING */
 	public static final List<Object> getEAttributes(Object eref) {
 		if (eref instanceof EMFParser) {
@@ -147,6 +177,12 @@ public class EMFParser {
 		return callList;
 	}
 
+	/**
+	 * Gets the e references.
+	 *
+	 * @param eref the eref
+	 * @return the e references
+	 */
 	public static final List<Object> getEReferences(Object eref) {
 		if (eref instanceof EMFParser) {
 			return getEReferences(((EMFParser) eref).getValue());
@@ -158,6 +194,12 @@ public class EMFParser {
 		return callList;
 	}
 
+	/**
+	 * Gets the e super types.
+	 *
+	 * @param eref the eref
+	 * @return the e super types
+	 */
 	public static final SimpleList<EMFParser> getESuperTypes(Object eref) {
 		if (eref instanceof EMFParser) {
 			return getESuperTypes(((EMFParser) eref).getValue());
@@ -175,6 +217,12 @@ public class EMFParser {
 		return list;
 	}
 
+	/**
+	 * Gets the e classes.
+	 *
+	 * @param eref the eref
+	 * @return the e classes
+	 */
 	public static final List<EMFParser> getEClasses(Object eref) {
 		if (eref instanceof EMFParser) {
 			return getEClasses(((EMFParser) eref).getValue());
@@ -192,6 +240,12 @@ public class EMFParser {
 		return items;
 	}
 
+	/**
+	 * Gets the instance class name.
+	 *
+	 * @param eref the eref
+	 * @return the instance class name
+	 */
 	public static final String getInstanceClassName(Object eref) {
 		if (eref instanceof EMFParser) {
 			return getInstanceClassName(((EMFParser) eref).getValue());
@@ -202,6 +256,12 @@ public class EMFParser {
 		return "" + ReflectionLoader.call(eref, "getInstanceClassName");
 	}
 
+	/**
+	 * Gets the e type.
+	 *
+	 * @param eref the eref
+	 * @return the e type
+	 */
 	public static final EMFParser getEType(Object eref) {
 		if (eref instanceof EMFParser) {
 			return getEType(((EMFParser) eref).getValue());
@@ -212,6 +272,12 @@ public class EMFParser {
 		return new EMFParser(ReflectionLoader.call(eref, "getEType"));
 	}
 
+	/**
+	 * Gets the upper bound.
+	 *
+	 * @param eref the eref
+	 * @return the upper bound
+	 */
 	public static final Integer getUpperBound(Object eref) {
 		if (eref instanceof EMFParser) {
 			return getUpperBound(((EMFParser) eref).getValue());
@@ -227,6 +293,12 @@ public class EMFParser {
 
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @param eref the eref
+	 * @return the name
+	 */
 	public static final String getName(Object eref) {
 		if (eref instanceof EMFParser) {
 			return getName(((EMFParser) eref).getValue());
@@ -237,6 +309,12 @@ public class EMFParser {
 		return "" + ReflectionLoader.call(eref, "getName");
 	}
 
+	/**
+	 * Checks if is emf.
+	 *
+	 * @param eref the eref
+	 * @return true, if is emf
+	 */
 	public static final boolean isEMF(Object eref) {
 		if (ReflectionLoader.EOBJECT == null || eref == null) {
 			return false;
@@ -247,6 +325,12 @@ public class EMFParser {
 		return true;
 	}
 
+	/**
+	 * Gets the e opposite.
+	 *
+	 * @param eref the eref
+	 * @return the e opposite
+	 */
 	public static final Object getEOpposite(Object eref) {
 		if (eref instanceof EMFParser) {
 			return getEOpposite(((EMFParser) eref).getValue());
@@ -257,6 +341,12 @@ public class EMFParser {
 		return ReflectionLoader.call(eref, "getEOpposite");
 	}
 
+	/**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
 	public boolean equals(Object obj) {
 		if (super.equals(obj)) {
 			return true;
@@ -268,6 +358,11 @@ public class EMFParser {
 		return this.value.equals(other.getValue());
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public Object getValue() {
 		return this.value;
 	}

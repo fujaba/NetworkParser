@@ -55,18 +55,26 @@ class NioZipEncoding {
 		this.useReplacement = useReplacement;
 	}
 
+	/**
+	 * Instantiates a new nio zip encoding.
+	 */
 	public NioZipEncoding() {
 		this.charset = null;
 		this.useReplacement = false;
 	}
 
+	/**
+	 * Gets the charset.
+	 *
+	 * @return the charset
+	 */
 	public Charset getCharset() {
 		return charset;
 	}
 
 	/**
-	 * Encode Stream
-	 * 
+	 * Encode Stream.
+	 *
 	 * @param name of Encoding
 	 * @return ByteBuffer
 	 */
@@ -132,8 +140,8 @@ class NioZipEncoding {
 	}
 
 	/**
-	 * Decode Stream
-	 * 
+	 * Decode Stream.
+	 *
 	 * @param data for Decoding
 	 * @return decoded String
 	 */

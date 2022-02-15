@@ -29,34 +29,70 @@ import de.uniks.networkparser.gui.Event;
 import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
+/**
+ * The Class GUIEvent.
+ *
+ * @author Stefan
+ */
 public class GUIEvent extends Event {
+	
+	/** The Constant ESCAPE. */
 	public static final int ESCAPE = 27;
 	/* The jsObject for BackupPurposes */
 	private ObjectCondition listerner;
 	
 	
+	/**
+	 * Sets the event.
+	 *
+	 * @param event the event
+	 * @return the GUI event
+	 */
 	public GUIEvent setEvent(Object event) {
 		this.event = event;
 		return this;
 	}
 
+	/**
+	 * With listener.
+	 *
+	 * @param value the value
+	 * @return the GUI event
+	 */
 	public GUIEvent withListener(ObjectCondition value) {
 		this.listerner = value;
 		return this;
 	}
 
+	/**
+	 * Handle.
+	 *
+	 * @param event the event
+	 */
 	public void handle(Object event) {
 		if (this.listerner != null) {
 			this.listerner.update(event);
 		}
 	}
 
+	/**
+	 * Invalidated.
+	 *
+	 * @param event the event
+	 */
 	public void invalidated(Object event) {
 		if (this.listerner != null) {
 			this.listerner.update(event);
 		}
 	}
 
+	/**
+	 * Changed.
+	 *
+	 * @param observable the observable
+	 * @param oldValue the old value
+	 * @param newValue the new value
+	 */
 	public void changed(Object observable, Object oldValue, Object newValue) {
 		if (this.listerner != null) {
 			this.listerner.update(new SimpleEvent(observable, "State", oldValue, newValue));
@@ -70,6 +106,12 @@ public class GUIEvent extends Event {
 		return ReflectionLoader.call(obj, "getMember", String.class, value);
 	}
 
+	/**
+	 * Checks if is sub event name.
+	 *
+	 * @param name the name
+	 * @return true, if is sub event name
+	 */
 	public boolean isSubEventName(String name) {
 		if (name == null || this.event == null) {
 			return false;
@@ -78,6 +120,12 @@ public class GUIEvent extends Event {
 		return subName.equals(name);
 	}
 
+	/**
+	 * Match.
+	 *
+	 * @param other the other
+	 * @return the object condition
+	 */
 	public ObjectCondition match(Object other) {
 		if (other == null) {
 			return null;
@@ -96,6 +144,12 @@ public class GUIEvent extends Event {
 		return null;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param obj the obj
+	 * @return the GUI event
+	 */
 	public static GUIEvent create(Object obj) {
 		GUIEvent event = new GUIEvent();
 		if (obj == null) {
@@ -171,15 +225,31 @@ public class GUIEvent extends Event {
 		return event;
 	}
 
+	/**
+	 * Gets the listener.
+	 *
+	 * @return the listener
+	 */
 	public ObjectCondition getListener() {
 		return this.listerner;
 	}
 
+	/**
+	 * With code.
+	 *
+	 * @param value the value
+	 * @return the GUI event
+	 */
 	public GUIEvent withCode(int value) {
 		this.put(CODE, value);
 		return this;
 	}
 
+	/**
+	 * Gets the code.
+	 *
+	 * @return the code
+	 */
 	public int getCode() {
 		Object object = this.get(CODE);
 		if (object == null) {
@@ -189,6 +259,11 @@ public class GUIEvent extends Event {
 	}
 	
 
+    /**
+     * Window opened.
+     *
+     * @param event the event
+     */
     public void windowOpened(Object event) {
     	if (this.listerner != null) {
     		this.listerner.update(event);
@@ -196,6 +271,11 @@ public class GUIEvent extends Event {
     	}
     }
     
+    /**
+     * Window activated.
+     *
+     * @param event the event
+     */
     public void windowActivated(Object event) {
     	if (this.listerner != null) {
     		this.listerner.update(event);
@@ -203,6 +283,11 @@ public class GUIEvent extends Event {
     	}	
     }
 
+    /**
+     * Window deactivated.
+     *
+     * @param event the event
+     */
     public void windowDeactivated(Object event) {
     	if (this.listerner != null) {
     		this.listerner.update(event);
@@ -210,6 +295,11 @@ public class GUIEvent extends Event {
     	}	
     }
     
+    /**
+     * Window closed.
+     *
+     * @param event the event
+     */
     public void windowClosed(Object event) {
     	if (this.listerner != null) {
     		this.listerner.update(event);
@@ -217,6 +307,11 @@ public class GUIEvent extends Event {
     	}
     }
 
+    /**
+     * Window closing.
+     *
+     * @param event the event
+     */
     public void windowClosing(Object event)
     {
     	if (this.listerner != null) {
@@ -225,6 +320,11 @@ public class GUIEvent extends Event {
     	}
     }
     
+    /**
+     * Action performed.
+     *
+     * @param event the event
+     */
     public void actionPerformed(Object event)
     {
     	if (this.listerner != null) {

@@ -50,11 +50,26 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class ParserEntity.
+ *
+ * @author Stefan
+ */
 public class ParserEntity implements SendableEntityCreator {
+	
+	/** The Constant NAME_TOKEN. */
 	public static final String NAME_TOKEN = "nameToken";
+	
+	/** The Constant CLASS_BODY. */
 	public static final String CLASS_BODY = "classBody";
+	
+	/** The Constant CLASS_END. */
 	public static final String CLASS_END = "classEnd";
+	
+	/** The Constant ERROR. */
 	public static final String ERROR = "ERROR";
+	
+	/** The Constant PROPERTY_FILENAME. */
 	public static final String PROPERTY_FILENAME = "FILENAME";
 
 	private ObjectCondition update;
@@ -72,6 +87,12 @@ public class ParserEntity implements SendableEntityCreator {
 	private int parsePos;
 	private long line = 1;
 
+	/**
+	 * With condition.
+	 *
+	 * @param update the update
+	 * @return the parser entity
+	 */
 	public ParserEntity withCondition(ObjectCondition update) {
 		if (update != null) {
 			this.update = update;
@@ -79,10 +100,21 @@ public class ParserEntity implements SendableEntityCreator {
 		return this;
 	}
 
+	/**
+	 * Gets the line.
+	 *
+	 * @return the line
+	 */
 	public long getLine() {
 		return line;
 	}
 	
+	/**
+	 * With file.
+	 *
+	 * @param fileName the file name
+	 * @return the parser entity
+	 */
 	public ParserEntity withFile(String fileName) {
 		this.code = new SourceCode();
 		this.code.withFileName(fileName);
@@ -97,6 +129,13 @@ public class ParserEntity implements SendableEntityCreator {
 		return this;
 	}
 
+	/**
+	 * With file.
+	 *
+	 * @param fileName the file name
+	 * @param clazz the clazz
+	 * @return the parser entity
+	 */
 	public ParserEntity withFile(String fileName, Clazz clazz) {
 		this.code = new SourceCode();
 		this.code.withFileName(fileName);
@@ -104,6 +143,11 @@ public class ParserEntity implements SendableEntityCreator {
 		return this;
 	}
 
+	/**
+	 * Gets the file name.
+	 *
+	 * @return the file name
+	 */
 	public String getFileName() {
 		if (code != null) {
 			return code.getFileName();
@@ -111,6 +155,11 @@ public class ParserEntity implements SendableEntityCreator {
 		return null;
 	}
 
+	/**
+	 * Gets the clazz.
+	 *
+	 * @return the clazz
+	 */
 	public Clazz getClazz() {
 		if (code != null) {
 			return this.code.getClazz();
@@ -118,11 +167,23 @@ public class ParserEntity implements SendableEntityCreator {
 		return null;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param content the content
+	 * @return the clazz
+	 */
 	public static Clazz create(CharacterBuffer content) {
 		ParserEntity parser = new ParserEntity();
 		return parser.parse(content);
 	}
 
+	/**
+	 * Parses the.
+	 *
+	 * @param sequence the sequence
+	 * @return the clazz
+	 */
 	public Clazz parse(CharacterBuffer sequence) {
 		if (this.code == null) {
 			/* FIX IT */
@@ -170,14 +231,30 @@ public class ParserEntity implements SendableEntityCreator {
 		return getClazz();
 	}
 
+	/**
+	 * Current word.
+	 *
+	 * @return the string
+	 */
 	public String currentWord() {
 		return currentToken.text.toString();
 	}
 
+	/**
+	 * Current kind equals.
+	 *
+	 * @param c the c
+	 * @return true, if successful
+	 */
 	public boolean currentKindEquals(char c) {
 		return currentToken.kind == c;
 	}
 
+	/**
+	 * Gets the current start.
+	 *
+	 * @return the current start
+	 */
 	public int getCurrentStart() {
 		return currentToken.startPos;
 	}
@@ -188,30 +265,73 @@ public class ParserEntity implements SendableEntityCreator {
 		}
 	}
 
+	/**
+	 * Gets the current end.
+	 *
+	 * @return the current end
+	 */
 	public int getCurrentEnd() {
 		return currentToken.endPos;
 	}
 
+	/**
+	 * Look ahead kind equals.
+	 *
+	 * @param c the c
+	 * @return true, if successful
+	 */
 	public boolean lookAheadKindEquals(char c) {
 		return lookAheadToken.kind == c;
 	}
 
+	/**
+	 * Previous token kind equals.
+	 *
+	 * @param c the c
+	 * @return true, if successful
+	 */
 	public boolean previousTokenKindEquals(char c) {
 		return previousToken.kind == c;
 	}
 
+	/**
+	 * Current token equals.
+	 *
+	 * @param word the word
+	 * @return true, if successful
+	 */
 	public boolean currentTokenEquals(String word) {
 		return stringEquals(currentWord(), word);
 	}
 
+	/**
+	 * Current token equals.
+	 *
+	 * @param word the word
+	 * @return true, if successful
+	 */
 	public boolean currentTokenEquals(char word) {
 		return (currentToken.text.length() == 1 && currentToken.text.charAt(0) == word);
 	}
 
+	/**
+	 * String equals.
+	 *
+	 * @param s1 the s 1
+	 * @param s2 the s 2
+	 * @return true, if successful
+	 */
 	public static boolean stringEquals(String s1, String s2) {
 		return s1 == null ? s2 == null : s1.equals(s2);
 	}
 
+	/**
+	 * Skip.
+	 *
+	 * @param character the character
+	 * @param skipCRLF the skip CRLF
+	 * @return true, if successful
+	 */
 	public boolean skip(char character, boolean skipCRLF) {
 		if (currentKindEquals(character)) {
 			if (skipCRLF) {
@@ -226,6 +346,14 @@ public class ParserEntity implements SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * Skip.
+	 *
+	 * @param string the string
+	 * @param skipCRLF the skip CRLF
+	 * @param body the body
+	 * @return true, if successful
+	 */
 	public boolean skip(char string, boolean skipCRLF, CharacterBuffer body) {
 		if (currentTokenEquals(string)) {
 			if (skipCRLF) {
@@ -252,6 +380,13 @@ public class ParserEntity implements SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * Skip.
+	 *
+	 * @param string the string
+	 * @param skipCRLF the skip CRLF
+	 * @return true, if successful
+	 */
 	public boolean skip(String string, boolean skipCRLF) {
 		if (currentTokenEquals(string)) {
 			if (skipCRLF) {
@@ -266,6 +401,12 @@ public class ParserEntity implements SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * Error.
+	 *
+	 * @param info the info
+	 * @return true, if successful
+	 */
 	public boolean error(CharSequence info) {
 		CharacterBuffer buffer = new CharacterBuffer().with("Parser Error:");
 		if (this.code != null) {
@@ -284,6 +425,9 @@ public class ParserEntity implements SendableEntityCreator {
 		throw new SimpleException("parse error", this, buffer); 
 	}
 
+	/**
+	 * Next real token.
+	 */
 	public void nextRealToken() {
 		nextToken();
 		while (currentToken.kind == Token.NEWLINE) {
@@ -291,6 +435,9 @@ public class ParserEntity implements SendableEntityCreator {
 		}
 	}
 
+	/**
+	 * Next token.
+	 */
 	public void nextToken() {
 		Token tmp = previousToken;
 		previousToken = currentToken;
@@ -433,10 +580,21 @@ public class ParserEntity implements SendableEntityCreator {
 		}
 	}
 
+	/**
+	 * Gets the root.
+	 *
+	 * @return the root
+	 */
 	public SymTabEntry getRoot() {
 		return symTabEntry;
 	}
 
+	/**
+	 * Start next sym tab.
+	 *
+	 * @param type the type
+	 * @return the sym tab entry
+	 */
 	public SymTabEntry startNextSymTab(String type) {
 		SymTabEntry nextEntity = new SymTabEntry(null).withParent(code);
 		nextEntity.setType(type);
@@ -452,12 +610,25 @@ public class ParserEntity implements SendableEntityCreator {
 		return nextEntity;
 	}
 
+	/**
+	 * Start next sym tab.
+	 *
+	 * @param type the type
+	 * @param name the name
+	 * @return the sym tab entry
+	 */
 	public SymTabEntry startNextSymTab(String type, String name) {
 		SymTabEntry nextEntity = startNextSymTab(type);
 		nextEntity.withName(name);
 		return nextEntity;
 	}
 
+	/**
+	 * Finish parse.
+	 *
+	 * @param nextEntity the next entity
+	 * @return the char sequence
+	 */
 	public CharSequence finishParse(SymTabEntry nextEntity) {
 		int endPos = getCurrentEnd();
 		CharSequence sequence = code.subString(this.parsePos, endPos);
@@ -467,6 +638,12 @@ public class ParserEntity implements SendableEntityCreator {
 		return sequence;
 	}
 
+	/**
+	 * Adds the current character.
+	 *
+	 * @param checkCharacter the check character
+	 * @param nextEntity the next entity
+	 */
 	public void addCurrentCharacter(char checkCharacter, SymTabEntry nextEntity) {
 		if (currentKindEquals(checkCharacter) && nextEntity != null) {
 			nextEntity.add(this.currentToken.text.toString());
@@ -474,6 +651,11 @@ public class ParserEntity implements SendableEntityCreator {
 		}
 	}
 
+	/**
+	 * Adds the new line.
+	 *
+	 * @param nextEntity the next entity
+	 */
 	public void addNewLine(SymTabEntry nextEntity) {
 		if (currentKindEquals(Token.NEWLINE) && nextEntity != null) {
 			nextEntity.add(this.currentToken.text.toString());
@@ -481,6 +663,11 @@ public class ParserEntity implements SendableEntityCreator {
 		}
 	}
 
+	/**
+	 * Adds the current token.
+	 *
+	 * @param nextEntity the next entity
+	 */
 	public void addCurrentToken(SymTabEntry nextEntity) {
 		if (nextEntity != null) {
 			nextEntity.add(this.currentToken.text.toString());
@@ -501,6 +688,11 @@ public class ParserEntity implements SendableEntityCreator {
 		return count;
 	}
 
+	/**
+	 * Gets the current line.
+	 *
+	 * @return the current line
+	 */
 	public long getCurrentLine() {
 		if (this.code != null && currentToken != null) {
 			return getLineIndexOf(currentToken.startPos, code.getContent());
@@ -525,7 +717,7 @@ public class ParserEntity implements SendableEntityCreator {
 	}
 
 	private CharacterBuffer parseComment(boolean newBlock) {
-		if (isComment() == false) {
+		if (!isComment()) {
 			return null;
 		}
 		SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_COMMENT);
@@ -534,11 +726,11 @@ public class ParserEntity implements SendableEntityCreator {
 			/* Simple Comment only one Line */
 			buffer.add(currentToken.originalText);
 			nextToken();
-			while (currentKindEquals(Token.NEWLINE) == false && currentKindEquals(Token.EOF) == false) {
+			while (!currentKindEquals(Token.NEWLINE) && !currentKindEquals(Token.EOF)) {
 				buffer.add(currentToken.originalText);
 				nextToken();
 			}
-			if (currentKindEquals(Token.EOF) == false) {
+			if (!currentKindEquals(Token.EOF)) {
 				buffer.add(currentToken.originalText);
 				skipNewLine();
 			}
@@ -547,11 +739,11 @@ public class ParserEntity implements SendableEntityCreator {
 		}
 		buffer.add(currentToken.originalText);
 		nextToken();
-		while (currentKindEquals(Token.LONG_COMMENT_END) == false && currentKindEquals(Token.EOF) == false) {
+		while (!currentKindEquals(Token.LONG_COMMENT_END) && !currentKindEquals(Token.EOF)) {
 			buffer.add(currentToken.originalText);
 			nextToken();
 		}
-		if (currentKindEquals(Token.EOF) == false) {
+		if (!currentKindEquals(Token.EOF)) {
 			buffer.add(currentToken.originalText);
 			nextToken();
 		}
@@ -666,7 +858,7 @@ public class ParserEntity implements SendableEntityCreator {
 		if (SymTabEntry.TYPE_IMPLEMENTS.equals(currentWord())) {
 			skip(SymTabEntry.TYPE_IMPLEMENTS, true);
 
-			while (currentKindEquals(Token.EOF) == false && currentKindEquals('{') == false) {
+			while (!currentKindEquals(Token.EOF) && !currentKindEquals('{')) {
 				nextEntity = startNextSymTab(SymTabEntry.TYPE_IMPLEMENTS, currentWord());
 				nextEntity.withPosition(currentToken.startPos, currentToken.endPos, getLine(), getLine());
 
@@ -714,7 +906,7 @@ public class ParserEntity implements SendableEntityCreator {
 		while (currentKindEquals('[')) {
 			typeString.with("[]");
 			skip("[", true);
-			while ("]".equals(currentWord()) == false && currentKindEquals(Token.EOF) == false) {
+			while (!"]".equals(currentWord()) && !currentKindEquals(Token.EOF)) {
 				nextToken();
 			}
 			skip("]", true);
@@ -749,7 +941,7 @@ public class ParserEntity implements SendableEntityCreator {
 		skip("<", false);
 		typeString.with('<');
 
-		while (currentKindEquals('>') == false && currentKindEquals(Token.EOF) == false) {
+		while (!currentKindEquals('>') && !currentKindEquals(Token.EOF)) {
 			if (currentKindEquals('<')) {
 				parseGenericTypeDefPart(typeString);
 			} else {
@@ -786,7 +978,7 @@ public class ParserEntity implements SendableEntityCreator {
 			code.withEndBody(previousToken.startPos, getLine());
 		}
 
-		if (currentKindEquals(Token.EOF) == false) {
+		if (!currentKindEquals(Token.EOF)) {
 			skip("}", true);
 		}
 	}
@@ -815,8 +1007,8 @@ public class ParserEntity implements SendableEntityCreator {
 			skip("<", true);
 			/* FIX MULTI GENERIC */
 			int count = 1;
-			while (currentTokenEquals(Token.EOF) == false && count > 0) {
-				while (currentTokenEquals(">") == false) {
+			while (!currentTokenEquals(Token.EOF) && count > 0) {
+				while (!currentTokenEquals(">")) {
 					if (currentTokenEquals("<")) {
 						count++;
 					}
@@ -828,7 +1020,7 @@ public class ParserEntity implements SendableEntityCreator {
 		}
 
 		if (currentTokenEquals(SymTabEntry.TYPE_CLASS) || currentTokenEquals(SymTabEntry.TYPE_INTERFACE)) {
-			while (currentTokenEquals("{") == false && currentKindEquals(Token.EOF) == false) {
+			while (!currentTokenEquals("{") && !currentKindEquals(Token.EOF)) {
 				nextToken();
 			}
 			skipBody();
@@ -952,9 +1144,9 @@ public class ParserEntity implements SendableEntityCreator {
 
 			} else if (SymTabEntry.TYPE_ENUM.equals(getClazz().getType())) {
 				if (",".equalsIgnoreCase(memberName) || ";".equalsIgnoreCase(memberName)
-						|| ";".equals(type) == false && currentKindEquals(Token.EOF)) {
+						|| !";".equals(type) && currentKindEquals(Token.EOF)) {
 					/* String enumSignature = SDMLibParser.ENUMVALUE + ":" + type; */
-					if ("}".equals(type) == false) {
+					if (!"}".equals(type)) {
 						SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_ENUMVALUE, type);
 						nextEntity.withPosition(startPos, previousToken.startPos, startLine, getLine());
 						nextEntity.withModifiers(modifiers).withBodyStartPos(code.getStartBody());
@@ -985,8 +1177,8 @@ public class ParserEntity implements SendableEntityCreator {
 		}
 		char prevprevTokenKind;
 		/* { stat ... } */
-		while (currentKindEquals(Token.EOF) == false && currentKindEquals(stopChar) == false) {
-			while (currentKindEquals(Token.EOF) == false && isComment()) {
+		while (!currentKindEquals(Token.EOF) && !currentKindEquals(stopChar)) {
+			while (!currentKindEquals(Token.EOF) && isComment()) {
 				body.add(parseComment(false));
 			}
 			if (currentKindEquals(stopChar)) {
@@ -1000,14 +1192,12 @@ public class ParserEntity implements SendableEntityCreator {
 				search = '\"';
 			}
 			if (search != 0) {
-				while (currentKindEquals(Token.EOF) == false) {
+				while (!currentKindEquals(Token.EOF)) {
 					body.add(currentToken.originalText);
 					prevprevTokenKind = previousToken.kind;
 					nextToken();
-					if (currentKindEquals(search)) {
-						if (previousTokenKindEquals('\\') == false || prevprevTokenKind == '\\') {
-							break;
-						}
+					if (currentKindEquals(search) && (!previousTokenKindEquals('\\') || prevprevTokenKind == '\\')) {
+						break;
 					}
 				}
 				skip(search, true, body);
@@ -1035,7 +1225,7 @@ public class ParserEntity implements SendableEntityCreator {
 		/* '(' (type name[,] )* ') [throws type , (type,)*] */
 		skip("(", true);
 
-		while (currentKindEquals(Token.EOF) == false && currentKindEquals(')') == false) {
+		while (!currentKindEquals(Token.EOF) && !currentKindEquals(')')) {
 			int typeStartPos = currentToken.startPos;
 			parseTypeRef();
 			int typeEndPos = currentToken.startPos - 1;
@@ -1074,7 +1264,7 @@ public class ParserEntity implements SendableEntityCreator {
 	}
 
 	private void skipTo(char c) {
-		while (currentKindEquals(c) == false && currentKindEquals(Token.EOF) == false) {
+		while (!currentKindEquals(c) && !currentKindEquals(Token.EOF)) {
 			nextToken();
 		}
 	}
@@ -1115,8 +1305,8 @@ public class ParserEntity implements SendableEntityCreator {
 			buffer = new CharacterBuffer();
 		}
 		if (currentKindEquals('\'')) {
-			while (currentKindEquals(Token.EOF) == false && currentKindEquals(';') == false) {
-				while (currentKindEquals(Token.EOF) == false && currentKindEquals('\'') == false) {
+			while (!currentKindEquals(Token.EOF) && !currentKindEquals(';')) {
+				while (!currentKindEquals(Token.EOF) && !currentKindEquals('\'')) {
 					nextToken();
 					buffer.add(currentToken.originalText);
 				}
@@ -1128,8 +1318,8 @@ public class ParserEntity implements SendableEntityCreator {
 			return buffer;
 		}
 		if (currentKindEquals('"')) {
-			while (currentKindEquals(Token.EOF) == false && currentKindEquals(';') == false) {
-				while (currentKindEquals(Token.EOF) == false && currentKindEquals('"') == false) {
+			while (!currentKindEquals(Token.EOF) && !currentKindEquals(';')) {
+				while (!currentKindEquals(Token.EOF) && !currentKindEquals('"')) {
 					nextToken();
 					buffer.add(currentToken.originalText);
 				}
@@ -1170,12 +1360,17 @@ public class ParserEntity implements SendableEntityCreator {
 		} else if (SymTabEntry.TYPE_ENUM.equals(currentWord())) {
 			classType = SymTabEntry.TYPE_ENUM;
 		}
-		if (classType.isEmpty() == false) {
+		if (!classType.isEmpty()) {
 			skip(classType, true);
 		}
 		return classType;
 	}
 
+	/**
+	 * Adds the member to model.
+	 *
+	 * @param addStaticAttribute the add static attribute
+	 */
 	public void addMemberToModel(boolean addStaticAttribute) {
 		if (code == null) {
 			return;
@@ -1291,7 +1486,7 @@ public class ParserEntity implements SendableEntityCreator {
 			return;
 		}
 		String modifiers = symTabEntry.getModifiers();
-		if (addStaticAttribute == false && ((modifiers.indexOf("public") >= 0 || modifiers.indexOf("private") >= 0)
+		if (!addStaticAttribute && ((modifiers.indexOf("public") >= 0 || modifiers.indexOf("private") >= 0)
 				&& modifiers.indexOf("static") >= 0 && modifiers.indexOf("final") >= 0)) {
 			/* ignore */
 			return;
@@ -1304,12 +1499,12 @@ public class ParserEntity implements SendableEntityCreator {
 
 		String attrName = symTabEntry.getName();
 		if (StringUtil.isPrimitiveType(type)) {
-			if (classContainsAttribut(attrName, symTabEntry.getType()) == false) {
+			if (!classContainsAttribut(attrName, symTabEntry.getType())) {
 				this.getClazz().withAttribute(attrName, DataType.create(symTabEntry.getDataType()));
 			}
 		} else {
 			/* handle complex attributes */
-			if (handleComplexAttr(attrName, symTabEntry, symbolTab) == false) {
+			if (!handleComplexAttr(attrName, symTabEntry, symbolTab)) {
 				/* Not Found so simple Attribute */
 				this.getClazz().withAttribute(attrName, DataType.create(symTabEntry.getDataType()));
 			}
@@ -1401,7 +1596,7 @@ public class ParserEntity implements SendableEntityCreator {
 				done = true;
 			}
 		}
-		if (done == false) {
+		if (!done) {
 			/* did not find reverse role, add as attribute */
 			boolean found = false;
 
@@ -1459,7 +1654,7 @@ public class ParserEntity implements SendableEntityCreator {
 					break;
 				}
 
-				if (foundAssoc == false) {
+				if (!foundAssoc) {
 					srcRoleName = potentialCode.substring(0, potentialCode.indexOf("(")).toLowerCase();
 
 					SourceCode partnerCode = (SourceCode) partnerClass.getChildByName("SourceCode", SourceCode.class);
@@ -1485,6 +1680,12 @@ public class ParserEntity implements SendableEntityCreator {
 		return true;
 	}
 
+	/**
+	 * Find partner class name.
+	 *
+	 * @param partnerTypeName the partner type name
+	 * @return the string
+	 */
 	public String findPartnerClassName(String partnerTypeName) {
 		String partnerClassName;
 		if (partnerTypeName == null) {
@@ -1538,7 +1739,7 @@ public class ParserEntity implements SendableEntityCreator {
 		String signature = symTabEntry.getName();
 
 		/* filter internal generated methods */
-		if (SymTabEntry.TYPE_METHOD.equals(fullSignature) == false) {
+		if (!SymTabEntry.TYPE_METHOD.equals(fullSignature)) {
 			return;
 		}
 		String sign = signature + symTabEntry.getParams();
@@ -1575,7 +1776,7 @@ public class ParserEntity implements SendableEntityCreator {
 
 			method.withParent(this.getClazz());
 
-			if (symTabEntry.getAnnotations().isEmpty() == false) {
+			if (!symTabEntry.getAnnotations().isEmpty()) {
 				method.with(new Annotation(symTabEntry.getAnnotations()));
 			}
 			method.with(new Throws(symTabEntry.getThrowsTags()));
@@ -1600,7 +1801,7 @@ public class ParserEntity implements SendableEntityCreator {
 					if (searchParam.size() == param.size()) {
 						boolean found = true;
 						for (int i = 0; i < param.size(); i++) {
-							if (param.get(i).getType().equals(searchParam.get(i).getType()) == false) {
+							if (!param.get(i).getType().equals(searchParam.get(i).getType())) {
 								found = false;
 								break;
 							}
@@ -1690,10 +1891,22 @@ public class ParserEntity implements SendableEntityCreator {
 		return null;
 	}
 
+	/**
+	 * Gets the code.
+	 *
+	 * @return the code
+	 */
 	public SourceCode getCode() {
 		return code;
 	}
 
+	/**
+	 * Gets the symbol entry.
+	 *
+	 * @param type the type
+	 * @param name the name
+	 * @return the symbol entry
+	 */
 	public SymTabEntry getSymbolEntry(String type, String name) {
 		if (this.code != null) {
 			return this.code.getSymbolEntry(type, name);
@@ -1701,6 +1914,12 @@ public class ParserEntity implements SendableEntityCreator {
 		return null;
 	}
 
+	/**
+	 * Gets the symbol entries.
+	 *
+	 * @param type the type
+	 * @return the symbol entries
+	 */
 	public SimpleList<SymTabEntry> getSymbolEntries(String type) {
 		if (this.code != null) {
 			return this.code.getSymbolEntries(type);
@@ -1708,6 +1927,11 @@ public class ParserEntity implements SendableEntityCreator {
 		return null;
 	}
 	
+	/**
+	 * Checks if is content.
+	 *
+	 * @return true, if is content
+	 */
 	public boolean isContent() {
 	    if(code != null) {
 	        return !code.getContent().isEmpty();
@@ -1715,11 +1939,23 @@ public class ParserEntity implements SendableEntityCreator {
 	    return false;
 	}
 
+    /**
+     * Gets the properties.
+     *
+     * @return the properties
+     */
     @Override
     public String[] getProperties() {
         return new String[] {PROPERTY_FILENAME};
     }
 
+    /**
+     * Gets the value.
+     *
+     * @param entity the entity
+     * @param attribute the attribute
+     * @return the value
+     */
     @Override
     public Object getValue(Object entity, String attribute) {
         if(entity instanceof ParserEntity && PROPERTY_FILENAME.equalsIgnoreCase(attribute)) {
@@ -1728,6 +1964,15 @@ public class ParserEntity implements SendableEntityCreator {
         return null;
     }
 
+    /**
+     * Sets the value.
+     *
+     * @param entity the entity
+     * @param attribute the attribute
+     * @param value the value
+     * @param type the type
+     * @return true, if successful
+     */
     @Override
     public boolean setValue(Object entity, String attribute, Object value, String type) {
         if(entity instanceof ParserEntity && PROPERTY_FILENAME.equalsIgnoreCase(attribute)) {
@@ -1737,6 +1982,12 @@ public class ParserEntity implements SendableEntityCreator {
         return false;
     }
 
+    /**
+     * Gets the sendable instance.
+     *
+     * @param prototyp the prototyp
+     * @return the sendable instance
+     */
     @Override
     public Object getSendableInstance(boolean prototyp) {
         return new ParserEntity();

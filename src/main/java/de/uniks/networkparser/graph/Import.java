@@ -24,19 +24,49 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class Import.
+ *
+ * @author Stefan
+ */
 public class Import extends GraphMember {
+	
+	/**
+	 * Creates the.
+	 *
+	 * @param value the value
+	 * @return the import
+	 */
 	public static Import create(Clazz value) {
 		return new Import().withChildren(value);
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param value the value
+	 * @return the import
+	 */
 	public static Import create(String value) {
 		return new Import().withChildren(new Clazz(value));
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param type the type
+	 * @return the import
+	 */
 	public static Import create(Class<?> type) {
 		return new Import().withChildren(new Clazz(type));
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param name the name
+	 * @return the import
+	 */
 	@Override
 	public Import with(String name) {
 		super.with(name);
@@ -48,6 +78,11 @@ public class Import extends GraphMember {
 		return this;
 	}
 
+	/**
+	 * Gets the clazz.
+	 *
+	 * @return the clazz
+	 */
 	public Clazz getClazz() {
 		if (this.children != null && this.children instanceof Clazz) {
 			return (Clazz) this.children;

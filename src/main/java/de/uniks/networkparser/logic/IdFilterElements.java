@@ -28,17 +28,38 @@ import java.beans.PropertyChangeEvent;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class IdFilterElements.
+ *
+ * @author Stefan
+ */
 public class IdFilterElements extends SimpleSet<Object> implements ObjectCondition {
 	private ObjectCondition condition;
 
+	/**
+	 * Instantiates a new id filter elements.
+	 *
+	 * @param condition the condition
+	 */
 	public IdFilterElements(ObjectCondition condition) {
 		this.condition = condition;
 	}
 
+	/**
+	 * Instantiates a new id filter elements.
+	 *
+	 * @param clazzConditon the clazz conditon
+	 */
 	public IdFilterElements(Class<?> clazzConditon) {
 		this.condition = InstanceOf.create(clazzConditon);
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param evt the evt
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object evt) {
 		if (condition != null) {

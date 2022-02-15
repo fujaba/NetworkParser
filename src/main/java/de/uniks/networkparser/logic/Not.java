@@ -37,12 +37,20 @@ import de.uniks.networkparser.interfaces.TemplateParser;
  */
 
 public class Not implements ParserCondition, SendableEntityCreator {
+	
+	/** The Constant TAG. */
 	public static final String TAG = "not";
 	/** Constant for ITEM. */
 	public static final String ITEM = "item";
 	/** Varibale for Condition. */
 	private ObjectCondition item;
 
+	/**
+	 * Update.
+	 *
+	 * @param evt the evt
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object evt) {
 		if (item != null) {
@@ -52,6 +60,8 @@ public class Not implements ParserCondition, SendableEntityCreator {
 	}
 
 	/**
+	 * Gets the item.
+	 *
 	 * @return Not Condition
 	 */
 	public ObjectCondition getItem() {
@@ -59,6 +69,8 @@ public class Not implements ParserCondition, SendableEntityCreator {
 	}
 
 	/**
+	 * With.
+	 *
 	 * @param value for new Condition
 	 * @return Not Instance
 	 */
@@ -67,16 +79,34 @@ public class Not implements ParserCondition, SendableEntityCreator {
 		return this;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { ITEM };
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new Not();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (ITEM.equalsIgnoreCase(attribute)) {
@@ -85,6 +115,15 @@ public class Not implements ParserCondition, SendableEntityCreator {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (ITEM.equalsIgnoreCase(attribute)) {
@@ -105,6 +144,11 @@ public class Not implements ParserCondition, SendableEntityCreator {
 		return new Not().with(condition);
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		if (this.item != null) {
@@ -113,21 +157,44 @@ public class Not implements ParserCondition, SendableEntityCreator {
 		return "!";
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return TAG;
 	}
 
+	/**
+	 * Checks if is expression.
+	 *
+	 * @return true, if is expression
+	 */
 	@Override
 	public boolean isExpression() {
 		return true;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param variables the variables
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(LocalisationInterface variables) {
 		return null;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param buffer the buffer
+	 * @param parser the parser
+	 * @param customTemplate the custom template
+	 */
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		if(buffer == null) {

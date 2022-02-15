@@ -28,38 +28,130 @@ import java.beans.PropertyChangeListener;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.Condition;
 
+/**
+ * The Interface ModelListenerInterface.
+ *
+ * @author Stefan
+ */
 public interface ModelListenerInterface extends PropertyChangeListener {
+	
+	/**
+	 * Gets the bean.
+	 *
+	 * @return the bean
+	 */
 	public Object getBean();
 
+	/**
+	 * Sets the bean.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setBean(Object value);
 
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
 	public String getName();
 
+	/**
+	 * Adds the listener.
+	 *
+	 * @param listener the listener
+	 */
 	public void addListener(Object listener);
 
+	/**
+	 * Removes the listener.
+	 *
+	 * @param listener the listener
+	 */
 	public void removeListener(Object listener);
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param value the new value
+	 */
 	public void setValue(Object value);
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public Object getValue();
 
+	/**
+	 * Gets the item value.
+	 *
+	 * @return the item value
+	 */
 	public Object getItemValue();
 
+	/**
+	 * Execute call back.
+	 */
 	public void executeCallBack();
 
+	/**
+	 * Bind.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean bind(Object value);
 
+	/**
+	 * Unbind.
+	 */
 	public void unbind();
 
+	/**
+	 * Checks if is bound.
+	 *
+	 * @return true, if is bound
+	 */
 	public boolean isBound();
 
+	/**
+	 * Bind bidirectional.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean bindBidirectional(Object value);
 
+	/**
+	 * Unbind bidirectional.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean unbindBidirectional(Object value);
 
+	/**
+	 * With call back.
+	 *
+	 * @param listener the listener
+	 * @return the model listener interface
+	 */
 	public ModelListenerInterface withCallBack(Condition<SimpleEvent> listener);
 
+	/**
+	 * Invalidated.
+	 *
+	 * @param observable the observable
+	 */
 	public void invalidated(Object observable);
 
+	/**
+	 * Gets the proxy.
+	 *
+	 * @return the proxy
+	 */
 	public Object getProxy();
 }

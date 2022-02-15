@@ -8,16 +8,31 @@ import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphMember;
 
-/** JAXBEntity 
- * @author Stefan Lindel */
+/**
+ * JAXBEntity .
+ *
+ * @author Stefan Lindel
+ */
 public class JAXBEntity extends XSDEntity {
 	private Clazz superClazz = new Clazz(SendableItem.class).withExternal(true);
 
+	/**
+	 * With super clazz.
+	 *
+	 * @param clazz the clazz
+	 * @return the JAXB entity
+	 */
 	public JAXBEntity withSuperClazz(Clazz clazz) {
 		this.superClazz = clazz;
 		return this;
 	}
 
+	/**
+	 * With container clazz.
+	 *
+	 * @param clazz the clazz
+	 * @return the JAXB entity
+	 */
 	public JAXBEntity withContainerClazz(Clazz clazz) {
 		this.container = clazz;
 		return this;
@@ -91,6 +106,12 @@ public class JAXBEntity extends XSDEntity {
 		return super.callBack(member, value);
 	}
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
 	@Override
 	public JAXBEntity getNewList(boolean keyValue) {
 		return new JAXBEntity();

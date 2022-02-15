@@ -28,7 +28,8 @@ import java.util.Timer;
 import de.uniks.networkparser.DateTimeEntity;
 
 /**
- * Executor for Timer
+ * Executor for Timer.
+ *
  * @author Stefan Lindel
  */
 public class TimerExecutor extends Timer implements TaskExecutor {
@@ -36,30 +37,62 @@ public class TimerExecutor extends Timer implements TaskExecutor {
 	private Space space;
 	private DateTimeEntity lastRun = new DateTimeEntity();
 
+	/**
+	 * With space.
+	 *
+	 * @param space the space
+	 * @return the timer executor
+	 */
 	public TimerExecutor withSpace(Space space) {
 		this.space = space;
 		return this;
 	}
 
+	/**
+	 * Gets the space.
+	 *
+	 * @return the space
+	 */
 	@Override
 	public Space getSpace() {
 		return space;
 	}
 
+	/**
+	 * Instantiates a new timer executor.
+	 *
+	 * @param value the value
+	 */
 	public TimerExecutor(String value) {
 		super(value != null ? value : "TimerExecutor");
 	}
 
+	/**
+	 * Cancel.
+	 */
 	@Override
 	public void cancel() {
 		this.isCancel = true;
 		super.cancel();
 	}
 
+	/**
+	 * Checks if is cancel.
+	 *
+	 * @return true, if is cancel
+	 */
 	public boolean isCancel() {
 		return isCancel;
 	}
 
+	/**
+	 * Execute task.
+	 *
+	 * @param task the task
+	 * @param delay the delay
+	 * @param interval the interval
+	 * @return the object
+	 */
 	@Override
 	public Object executeTask(Runnable task, int delay, int interval) {
 		if (isCancel()) {
@@ -80,6 +113,13 @@ public class TimerExecutor extends Timer implements TaskExecutor {
 		return null;
 	}
 
+	/**
+	 * Execute task.
+	 *
+	 * @param task the task
+	 * @param delay the delay
+	 * @return the object
+	 */
 	@Override
 	public Object executeTask(Runnable task, int delay) {
 		if (isCancel()) {
@@ -96,17 +136,31 @@ public class TimerExecutor extends Timer implements TaskExecutor {
 		return null;
 	}
 
+	/**
+	 * Shutdown.
+	 */
 	@Override
 	public void shutdown() {
 		this.isCancel = true;
 		this.cancel();
 	}
 
+	/**
+	 * Gets the last run.
+	 *
+	 * @return the last run
+	 */
 	@Override
 	public DateTimeEntity getLastRun() {
 		return lastRun;
 	}
 
+	/**
+	 * Handle msg.
+	 *
+	 * @param message the message
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean handleMsg(Message message) {
 		if (space != null) {

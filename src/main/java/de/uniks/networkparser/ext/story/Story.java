@@ -45,6 +45,11 @@ import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class Story.
+ *
+ * @author Stefan
+ */
 public class Story extends StoryElement implements Comparable<Story> {
 	private String outputFile;
 	private SimpleList<ObjectCondition> steps = new SimpleList<ObjectCondition>();
@@ -54,10 +59,21 @@ public class Story extends StoryElement implements Comparable<Story> {
 	private String path = "doc/";
 	private HTMLEntity elements;
 
+	/**
+	 * Instantiates a new story.
+	 */
 	public Story() {
 		this.add(new StoryStepTitle());
 	}
 
+	/**
+	 * Adds the resource.
+	 *
+	 * @param entity the entity
+	 * @param name the name
+	 * @param include the include
+	 * @return the string
+	 */
 	public static String addResource(HTMLEntity entity, String name, boolean include) {
 		name = name.replace('\\', '/');
 		if (!name.toLowerCase().endsWith(".html")) {
@@ -91,10 +107,21 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return name;
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param step the step
+	 */
 	public void add(ObjectCondition step) {
 		this.steps.add(step);
 	}
 
+	/**
+	 * With path.
+	 *
+	 * @param value the value
+	 * @return the story
+	 */
 	public Story withPath(String value) {
 		if (value == null) {
 			this.path = "";
@@ -108,6 +135,11 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return this;
 	}
 
+	/**
+	 * Gets the title.
+	 *
+	 * @return the title
+	 */
 	public StoryStepTitle getTitle() {
 		for(ObjectCondition element : steps) {
 			if (element instanceof StoryStepTitle) {
@@ -117,6 +149,11 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return null;
 	}
 
+	/**
+	 * Gets the label.
+	 *
+	 * @return the label
+	 */
 	@Override
    public String getLabel() {
 		StoryStepTitle title = getTitle();
@@ -144,6 +181,12 @@ public class Story extends StoryElement implements Comparable<Story> {
 	}
 
 
+	/**
+	 * With title.
+	 *
+	 * @param text the text
+	 * @return the story
+	 */
 	public Story withTitle(String text) {
 		StoryStepTitle title = getTitle();
 		if(title != null) {
@@ -155,7 +198,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 	}
 
 	/**
-	 * Add JavaCode to Story board
+	 * Add JavaCode to Story board.
 	 *
 	 * @param className ClassName of SourceCOde
 	 * @param position  Position of Code StartPosition, Endposition
@@ -183,7 +226,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 	}
 
 	/**
-	 * Add JavaCode to Story board
+	 * Add JavaCode to Story board.
 	 *
 	 * @param position Position of Code StartPosition, Endposition
 	 *                 if positon == null Full Method
@@ -209,6 +252,14 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return step;
 	}
 
+	/**
+	 * Adds the source code.
+	 *
+	 * @param rootDir the root dir
+	 * @param className the class name
+	 * @param methodSignature the method signature
+	 * @return the story step source code
+	 */
 	public StoryStepSourceCode addSourceCode(String rootDir, Class<?> className, String methodSignature) {
 		StoryStepSourceCode step = new StoryStepSourceCode();
 		step.withMethodSignature(methodSignature);
@@ -231,6 +282,12 @@ public class Story extends StoryElement implements Comparable<Story> {
 		}
 	}
 
+	/**
+	 * Adds the diagram.
+	 *
+	 * @param model the model
+	 * @return the story step diagram
+	 */
 	public StoryStepDiagram addDiagram(GraphModel model) {
 		StoryStepDiagram step = new StoryStepDiagram();
 		step.withModel(model);
@@ -238,6 +295,12 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return step;
 	}
 
+	/**
+	 * Adds the diagram.
+	 *
+	 * @param filter the filter
+	 * @return the story step diagram
+	 */
 	public StoryStepDiagram addDiagram(StoryObjectFilter filter) {
 		StoryStepDiagram step = new StoryStepDiagram();
 		step.withFilter(filter);
@@ -245,6 +308,12 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return step;
 	}
 
+	/**
+	 * With name.
+	 *
+	 * @param name the name
+	 * @return the story
+	 */
 	public Story withName(String name) {
 		if (name == null || name.length() < 1) {
 			return this;
@@ -257,10 +326,21 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return this;
 	}
 
+	/**
+	 * Adds the image.
+	 *
+	 * @param imageFile the image file
+	 */
 	public void addImage(String imageFile) {
 		add(new StoryStepImage().withFile(imageFile));
 	}
 
+	/**
+	 * Write to file.
+	 *
+	 * @param fileName the file name
+	 * @return true, if successful
+	 */
 	@Override
    public boolean writeToFile(String... fileName) {
 		String file = null;
@@ -315,6 +395,14 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return FileBuffer.writeFile(path + file, output.toString(converter)) >= 0;
 	}
 
+	/**
+	 * Adds the script.
+	 *
+	 * @param path the path
+	 * @param name the name
+	 * @param entry the entry
+	 * @return true, if successful
+	 */
 	public static boolean addScript(String path, String name, HTMLEntity entry) {
 		if (path == null || name == null) {
 			return false;
@@ -333,10 +421,22 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return len > 0;
 	}
 
+	/**
+	 * Gets the path.
+	 *
+	 * @return the path
+	 */
 	public String getPath() {
 		return path;
 	}
 
+	/**
+	 * Adds the description.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean addDescription(String key, String value) {
 		StoryStepSourceCode source = null;
 		for (int i = this.steps.size() - 1; i >= 0; i--) {
@@ -353,11 +453,22 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return false;
 	}
 
+	/**
+	 * With counter.
+	 *
+	 * @param counter the counter
+	 * @return the story
+	 */
 	public Story withCounter(int counter) {
 		this.counter = counter;
 		return this;
 	}
 
+	/**
+	 * Gets the counter.
+	 *
+	 * @return the counter
+	 */
 	public int getCounter() {
 		int value = this.counter;
 		if (value >= 0) {
@@ -371,11 +482,22 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return this;
 	}
 
+	/**
+	 * With map.
+	 *
+	 * @param map the map
+	 * @return the story
+	 */
 	public Story withMap(IdMap map) {
 		this.map = map;
 		return this;
 	}
 
+	/**
+	 * Gets the map.
+	 *
+	 * @return the map
+	 */
 	public IdMap getMap() {
 		if (map == null) {
 			map = new IdMap();
@@ -383,6 +505,11 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return map;
 	}
 
+	/**
+	 * Finish.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean finish() {
 		for (ObjectCondition step : steps) {
 			if (step instanceof StoryStepSourceCode) {
@@ -416,36 +543,78 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return true;
 	}
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param message the message
+	 * @param expected the expected
+	 * @param actual the actual
+	 * @param delta the delta
+	 */
 	public void assertEquals(String message, double expected, double actual, double delta) {
 		StoryStepCondition step = new StoryStepCondition();
 		step.withCondition(message, actual, new Equals().withValue(expected, delta));
 		this.addCondition(step);
 	}
 
+	/**
+	 * Assert fail.
+	 *
+	 * @param message the message
+	 */
 	public void assertFail(String message) {
 		StoryStepCondition step = new StoryStepCondition();
 		step.withCondition(message, true, new BooleanCondition());
 		this.addCondition(step);
 	}
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param message the message
+	 * @param expected the expected
+	 * @param actual the actual
+	 */
 	public void assertEquals(String message, int expected, int actual) {
 		StoryStepCondition step = new StoryStepCondition();
 		step.withCondition(message, actual, new Equals().withValue(expected));
 		this.addCondition(step);
 	}
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param message the message
+	 * @param expected the expected
+	 * @param actual the actual
+	 */
 	public void assertEquals(String message, long expected, long actual) {
 		StoryStepCondition step = new StoryStepCondition();
 		step.withCondition(message, actual, new Equals().withValue(expected));
 		this.addCondition(step);
 	}
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param message the message
+	 * @param expected the expected
+	 * @param actual the actual
+	 */
 	public void assertEquals(String message, Object expected, Object actual) {
 		StoryStepCondition step = new StoryStepCondition();
 		step.withCondition(message, actual, new Equals().withValue(expected));
 		this.addCondition(step);
 	}
 
+	/**
+	 * Show debug infos.
+	 *
+	 * @param entity the entity
+	 * @param len the len
+	 * @param stream the stream
+	 * @return true, if successful
+	 */
 	public boolean showDebugInfos(BaseItem entity, int len, PrintStream stream) {
 		if (entity == null) {
 			return false;
@@ -453,6 +622,15 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return showDebugInfos(entity.toString(new EntityStringConverter(2)), len, stream);
 	}
 
+	/**
+	 * Show debug infos.
+	 *
+	 * @param value the value
+	 * @param len the len
+	 * @param stream the stream
+	 * @param messages the messages
+	 * @return true, if successful
+	 */
 	public boolean showDebugInfos(String value, int len, PrintStream stream, String... messages) {
 		if (stream != null) {
 			stream.println("###############################");
@@ -469,30 +647,60 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return step.checkCondition();
 	}
 
+	/**
+	 * Assert true.
+	 *
+	 * @param message the message
+	 * @param actual the actual
+	 */
 	public void assertTrue(String message, boolean actual) {
 		StoryStepCondition step = new StoryStepCondition();
 		step.withCondition(message, actual, new BooleanCondition().withValue(true));
 		this.addCondition(step);
 	}
 
+	/**
+	 * Assert false.
+	 *
+	 * @param message the message
+	 * @param actual the actual
+	 */
 	public void assertFalse(String message, boolean actual) {
 		StoryStepCondition step = new StoryStepCondition();
 		step.withCondition(message, actual, new BooleanCondition().withValue(false));
 		this.addCondition(step);
 	}
 
+	/**
+	 * Assert null.
+	 *
+	 * @param message the message
+	 * @param actual the actual
+	 */
 	public void assertNull(String message, Object actual) {
 		StoryStepCondition step = new StoryStepCondition();
 		step.withCondition(message, actual, Equals.createNullCondition());
 		this.addCondition(step);
 	}
 
+	/**
+	 * Assert not null.
+	 *
+	 * @param message the message
+	 * @param actual the actual
+	 */
 	public void assertNotNull(String message, Object actual) {
 		StoryStepCondition step = new StoryStepCondition();
 		step.withCondition(message, actual, new Not().with(Equals.createNullCondition()));
 		this.addCondition(step);
 	}
 
+	/**
+	 * Gets the output file.
+	 *
+	 * @param calculate the calculate
+	 * @return the output file
+	 */
 	@Override
    public String getOutputFile(boolean calculate) {
 		if(!calculate || outputFile != null) {
@@ -506,11 +714,14 @@ public class Story extends StoryElement implements Comparable<Story> {
 	}
 
 	/**
-	* CompareTo Story
-	* o1.compareTo( o2 ) &lt; 0 o1 &lt; o2
-	* o1.compareTo( o2 ) == 0 o1 == o2
-	* o1.compareTo( o2 ) &gt; 0 o1 &gt; o2
-	*/
+	 * CompareTo Story
+	 * o1.compareTo( o2 ) &lt; 0 o1 &lt; o2
+	 * o1.compareTo( o2 ) == 0 o1 == o2
+	 * o1.compareTo( o2 ) &gt; 0 o1 &gt; o2
+	 *
+	 * @param story the story
+	 * @return the int
+	 */
 	@Override
 	public int compareTo(Story story) {
 		String label = this.getLabel();
@@ -527,18 +738,45 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return label.compareTo(otherLabel);
 	}
 
+	/**
+	 * Adds the text.
+	 *
+	 * @param text the text
+	 * @return the story step text
+	 */
 	public StoryStepText addText(String text) {
 		return addText(text, true, false);
 	}
 
+	/**
+	 * Adds the step.
+	 *
+	 * @param text the text
+	 * @return the story step text
+	 */
 	public StoryStepText addStep(String text) {
 		return addText(text, true, false);
 	}
 
+	/**
+	 * Adds the text.
+	 *
+	 * @param text the text
+	 * @param isStep the is step
+	 * @return the story step text
+	 */
 	public StoryStepText addText(String text, boolean isStep) {
 		return addText(text, isStep, false);
 	}
 
+	/**
+	 * Adds the text.
+	 *
+	 * @param text the text
+	 * @param isStep the is step
+	 * @param html the html
+	 * @return the story step text
+	 */
 	public StoryStepText addText(String text, boolean isStep, boolean html) {
 		StoryStepText step = new StoryStepText();
 		if (html) {
@@ -554,7 +792,8 @@ public class Story extends StoryElement implements Comparable<Story> {
 	}
 
 	/**
-	 * Create a new Scenario with caption
+	 * Create a new Scenario with caption.
+	 *
 	 * @param caption The Title of the new Scenario
 	 * @return a new Cucumber Scenario
 	 */
@@ -572,16 +811,26 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return cucumber;
 	}
 
+	/**
+	 * Adds the refresh button.
+	 *
+	 * @return the story
+	 */
 	public Story addRefreshButton() {
 		if(this.elements == null) {
 			this.elements = new HTMLEntity();
 		}
-		XMLEntity btn = this.elements.createTag("button");
+		XMLEntity btn = this.elements.createChild("button");
 		btn.with("onclick", "window.location.reload();", "style", "position:absolute;right:20px;");
 		btn.withValueItem("&#8635;");
 		return this;
 	}
 
+	/**
+	 * Gets the steps.
+	 *
+	 * @return the steps
+	 */
 	public SimpleList<ObjectCondition> getSteps() {
 		return steps;
 	}

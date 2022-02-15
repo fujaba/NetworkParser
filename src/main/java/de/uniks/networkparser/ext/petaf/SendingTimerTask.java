@@ -25,29 +25,57 @@ THE SOFTWARE.
 */
 
 /**
- * Task for Sending Message
+ * Task for Sending Message.
+ *
  * @author Stefan Lindel
  */
 public class SendingTimerTask extends SimpleTimerTask {
 	private NodeProxy sender;
 
+	/**
+	 * Instantiates a new sending timer task.
+	 *
+	 * @param space the space
+	 */
 	public SendingTimerTask(Space space) {
 		super(space);
 	}
 
+	/**
+	 * With sender.
+	 *
+	 * @param sender the sender
+	 * @return the sending timer task
+	 */
 	public SendingTimerTask withSender(NodeProxy sender) {
 		this.sender = sender;
 		return this;
 	}
 
+	/**
+	 * Gets the sender.
+	 *
+	 * @return the sender
+	 */
 	public NodeProxy getSender() {
 		return sender;
 	}
 
+	/**
+	 * Gets the message.
+	 *
+	 * @return the message
+	 */
 	public Message getMessage() {
 		return null;
 	}
 
+	/**
+	 * Run task.
+	 *
+	 * @return true, if successful
+	 * @throws Exception the exception
+	 */
 	@Override
 	public boolean runTask() throws Exception {
 		if (super.runTask()) {

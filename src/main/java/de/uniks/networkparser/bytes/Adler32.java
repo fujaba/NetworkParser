@@ -32,6 +32,12 @@ THE SOFTWARE.
 public class Adler32 extends Checksum {
 	private static final int BASE = 65521;
 
+	/**
+	 * Update.
+	 *
+	 * @param b the b
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(int b) {
 		super.update(b);
@@ -44,6 +50,11 @@ public class Adler32 extends Checksum {
 		return true;
 	}
 
+	/**
+	 * Gets the order.
+	 *
+	 * @return the order
+	 */
 	@Override
 	public int getOrder() {
 		return 32;

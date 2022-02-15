@@ -56,16 +56,34 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 	/** Variable of Item. */
 	private Object item;
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { CLAZZNAME, PROPERTY, VALUE };
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new InstanceOf();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (CLAZZNAME.equalsIgnoreCase(attribute)) {
@@ -80,6 +98,15 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (CLAZZNAME.equalsIgnoreCase(attribute)) {
@@ -107,6 +134,12 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 		return new InstanceOf().withClazzName(clazzName);
 	}
 	
+	/**
+	 * Creates the.
+	 *
+	 * @param clazzName the clazz name
+	 * @return the instance of
+	 */
 	public static InstanceOf create(Object clazzName) {
 		InstanceOf result = new InstanceOf();
 		if(clazzName instanceof Class<?>) {
@@ -148,7 +181,11 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 		return new InstanceOf().withProperty(property);
 	}
 
-	/** @return The ClazzName */
+	/**
+	 * Gets the clazz name.
+	 *
+	 * @return The ClazzName
+	 */
 	public Class<?> getClazzName() {
 		if(clazzName instanceof Class<?>) {
 			return (Class<?>) clazzName;
@@ -157,6 +194,8 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 	}
 
 	/**
+	 * With clazz name.
+	 *
 	 * @param value The new ClazzName
 	 * @return InstacneOf Instance
 	 */
@@ -165,12 +204,18 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 		return this;
 	}
 
-	/** @return The Property */
+	/**
+	 * Gets the property.
+	 *
+	 * @return The Property
+	 */
 	public String getProperty() {
 		return property;
 	}
 
 	/**
+	 * With property.
+	 *
 	 * @param value The new Property
 	 * @return InstanceOf Instance
 	 */
@@ -179,12 +224,18 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 		return this;
 	}
 
-	/** @return The Value of InstanceOf */
+	/**
+	 * Gets the value.
+	 *
+	 * @return The Value of InstanceOf
+	 */
 	public Object getValue() {
 		return item;
 	}
 
 	/**
+	 * With value.
+	 *
 	 * @param value The new Value
 	 * @return InstanceOf Instance
 	 */
@@ -207,6 +258,12 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 		return false;
 	}
 	
+	/**
+	 * Update.
+	 *
+	 * @param evt the evt
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object evt) {
 		/* Filter for ClazzTyp */
@@ -240,11 +297,22 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 		return (this.item == null || this.item != event.getNewValue());
 	}
 
+	/**
+	 * With white list.
+	 *
+	 * @param whiteList the white list
+	 * @return the instance of
+	 */
 	public InstanceOf withWhiteList(boolean whiteList) {
 		this.whiteList = whiteList;
 		return this;
 	}
  	
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		if(clazzName != null) {

@@ -13,7 +13,19 @@ import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 
+/**
+ * The Class ModelExecutor.
+ *
+ * @author Stefan
+ */
 public class ModelExecutor extends SimpleEventCondition {
+	
+	/**
+	 * Execute.
+	 *
+	 * @param event the event
+	 * @return the object
+	 */
 	public Object execute(SimpleEvent event) {
 		final IdMap map = (IdMap) event.getSource();
 		final JsonObject change = (JsonObject) event.getEntity();
@@ -30,6 +42,12 @@ public class ModelExecutor extends SimpleEventCondition {
 		return jsonTokener.decoding(change, mapEntry, false);
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param event the event
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(final SimpleEvent event) {
 		Object thread = ReflectionLoader.callChain(ReflectionLoader.TOOLKITFX, "getFxUserThread", "getFxUserThread");

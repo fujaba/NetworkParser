@@ -34,49 +34,109 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLTokener;
 
+/**
+ * The Class TileMap.
+ *
+ * @author Stefan
+ */
 public class TileMap implements SendableEntityCreatorTag {
+	
+	/** The Constant ENCODING. */
 	public static final String ENCODING = "encoding";
+	
+	/** The Constant TAG. */
 	public static final String TAG = "map";
+	
+	/** The Constant VERSION. */
 	public static final String VERSION = "version";
+	
+	/** The Constant ORIENTATION. */
 	public static final String ORIENTATION = "orientation";
+	
+	/** The Constant RENDERORDER. */
 	public static final String RENDERORDER = "renderorder";
+	
+	/** The Constant WIDTH. */
 	public static final String WIDTH = "width";
+	
+	/** The Constant HEIGHT. */
 	public static final String HEIGHT = "height";
+	
+	/** The Constant TILEWIDTH. */
 	public static final String TILEWIDTH = "tilewidth";
+	
+	/** The Constant TILEHEIGHT. */
 	public static final String TILEHEIGHT = "tileheight";
 
+	/** The Constant TILESET_TILE. */
 	public static final String TILESET_TILE = "tileset";
+	
+	/** The Constant TILESET_LAYER. */
 	public static final String TILESET_LAYER = "layer";
 
+	/** The Constant TILESET_OBJECTGROUP. */
 	public static final String TILESET_OBJECTGROUP = "objectgroup";
 
+	/** The version. */
 	public String version;
+	
+	/** The orientation. */
 	public String orientation;
+	
+	/** The renderorder. */
 	public String renderorder;
+	
+	/** The width. */
 	public int width;
+	
+	/** The height. */
 	public int height;
+	
+	/** The tilewidth. */
 	public int tilewidth;
+	
+	/** The tileheight. */
 	public int tileheight;
 
 	private SimpleList<TileObject> images = new SimpleList<TileObject>();
 
+	/** The objects. */
 	public SimpleKeyValueList<String, SimpleList<TileObject>> objects = new SimpleKeyValueList<String, SimpleList<TileObject>>();
 
+	/** The background. */
 	public int[] background;
+	
+	/** The background names. */
 	public SimpleList<String> backgroundNames = new SimpleList<String>();
 
 	private String path = "";
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new TileMap();
 	}
 
+	/**
+	 * Gets the tag.
+	 *
+	 * @return the tag
+	 */
 	@Override
 	public String getTag() {
 		return TAG;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { VERSION, ORIENTATION, RENDERORDER, WIDTH, HEIGHT, TILEWIDTH, TILEHEIGHT, TILESET_TILE,
@@ -84,8 +144,8 @@ public class TileMap implements SendableEntityCreatorTag {
 	}
 
 	/**
-	 * Return the Position of the Background Sprite
-	 * 
+	 * Return the Position of the Background Sprite.
+	 *
 	 * @param ebene         Ebene of background
 	 * @param backgroundPos Background Positoin 0..n
 	 * @return Position of Background Pos
@@ -99,8 +159,8 @@ public class TileMap implements SendableEntityCreatorTag {
 	}
 
 	/**
-	 * Return the Position of Sprite
-	 * 
+	 * Return the Position of Sprite.
+	 *
 	 * @param ebene Ebene of background
 	 * @param pos   The Position 00..n
 	 * @return The Position
@@ -117,6 +177,12 @@ public class TileMap implements SendableEntityCreatorTag {
 		return result;
 	}
 
+	/**
+	 * Gets the background.
+	 *
+	 * @param sprite the sprite
+	 * @return the background
+	 */
 	public int getBackground(int sprite) {
 		if (sprite < 0 || background == null || sprite >= background.length) {
 			return 0;
@@ -125,8 +191,8 @@ public class TileMap implements SendableEntityCreatorTag {
 	}
 
 	/**
-	 * Return the Position of a Sprite
-	 * 
+	 * Return the Position of a Sprite.
+	 *
 	 * @param sprite the SpriteNumber
 	 * @return the Position of Sprite
 	 */
@@ -139,6 +205,11 @@ public class TileMap implements SendableEntityCreatorTag {
 		return pos;
 	}
 
+	/**
+	 * Length.
+	 *
+	 * @return the int
+	 */
 	public int length() {
 		if (background == null) {
 			return 0;
@@ -146,10 +217,23 @@ public class TileMap implements SendableEntityCreatorTag {
 		return background.length;
 	}
 
+	/**
+	 * Gets the by name.
+	 *
+	 * @param element the element
+	 * @return the by name
+	 */
 	public SimpleList<TileObject> getByName(String element) {
 		return this.objects.get(element);
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (!(entity instanceof TileMap)) {
@@ -242,6 +326,15 @@ public class TileMap implements SendableEntityCreatorTag {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (!(entity instanceof TileMap)) {
@@ -339,6 +432,12 @@ public class TileMap implements SendableEntityCreatorTag {
 		return false;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param value the value
+	 * @return the tile map
+	 */
 	public static TileMap create(String value) {
 		TileMap entity = new TileMap();
 		String tag = entity.getTag();
@@ -353,6 +452,11 @@ public class TileMap implements SendableEntityCreatorTag {
 		return entity;
 	}
 
+	/**
+	 * Gets the source.
+	 *
+	 * @return the source
+	 */
 	public String getSource() {
 		if (images.size() > 0) {
 			return images.first().name;
@@ -360,11 +464,22 @@ public class TileMap implements SendableEntityCreatorTag {
 		return null;
 	}
 
+	/**
+	 * With path.
+	 *
+	 * @param value the value
+	 * @return the tile map
+	 */
 	public TileMap withPath(String value) {
 		this.path = value;
 		return this;
 	}
 
+	/**
+	 * Gets the path.
+	 *
+	 * @return the path
+	 */
 	public String getPath() {
 		return path;
 	}

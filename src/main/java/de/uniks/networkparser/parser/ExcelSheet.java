@@ -6,18 +6,31 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleList;
 
 /**
- * Metamodell for Excel-Sheet
- * 
+ * Metamodell for Excel-Sheet.
+ *
  * @author Stefan Lindel
  */
 public class ExcelSheet extends SimpleList<ExcelRow> {
+	
+	/** The Constant PROPERTY_NAME. */
 	public static final String PROPERTY_NAME = "name";
 	private String name;
 
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Sets the name.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setName(String value) {
 		if ((this.name == null && value != null) || (this.name != null && this.name.equals(value) == false)) {
 			this.name = value;
@@ -26,11 +39,23 @@ public class ExcelSheet extends SimpleList<ExcelRow> {
 		return false;
 	}
 
+	/**
+	 * With name.
+	 *
+	 * @param value the value
+	 * @return the excel sheet
+	 */
 	public ExcelSheet withName(String value) {
 		setName(value);
 		return this;
 	}
 
+	/**
+	 * Gets the item.
+	 *
+	 * @param pos the pos
+	 * @return the item
+	 */
 	public ExcelCell getItem(Pos pos) {
 		for (int i = 0; i < this.size(); i++) {
 			ExcelRow row = this.get(i);
@@ -41,6 +66,12 @@ public class ExcelSheet extends SimpleList<ExcelRow> {
 		return new ExcelCell();
 	}
 
+	/**
+	 * Creates the row.
+	 *
+	 * @param parent the parent
+	 * @return the excel row
+	 */
 	public ExcelRow createRow(Object parent) {
 		ExcelRow excelRow = new ExcelRow();
 		Pos pos = Pos.create(this.size(), 0);
@@ -50,6 +81,12 @@ public class ExcelSheet extends SimpleList<ExcelRow> {
 		return excelRow;
 	}
 
+	/**
+	 * Gets the row.
+	 *
+	 * @param source the source
+	 * @return the row
+	 */
 	public ExcelRow getRow(Object source) {
 		for (ExcelRow row : this) {
 			if (row.getParent() == source) {
@@ -59,6 +96,11 @@ public class ExcelSheet extends SimpleList<ExcelRow> {
 		return null;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	public String toString() {
 		CharacterBuffer buffer = new CharacterBuffer();
 		int i;
@@ -108,6 +150,12 @@ public class ExcelSheet extends SimpleList<ExcelRow> {
 		return buffer.toString();
 	}
 
+	/**
+	 * Gets the row index.
+	 *
+	 * @param row the row
+	 * @return the row index
+	 */
 	public int getRowIndex(ExcelRow row) {
 		int index = 0;
 		for (; index < this.size(); index++) {
@@ -118,6 +166,11 @@ public class ExcelSheet extends SimpleList<ExcelRow> {
 		return -1;
 	}
 
+	/**
+	 * Gets the last.
+	 *
+	 * @return the last
+	 */
 	public ExcelRow getLast() {
 		if (size() == 0) {
 			return null;

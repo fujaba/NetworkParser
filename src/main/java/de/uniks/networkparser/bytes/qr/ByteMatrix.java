@@ -11,20 +11,43 @@ public final class ByteMatrix {
 	private final int width;
 	private final int height;
 
+	/**
+	 * Instantiates a new byte matrix.
+	 *
+	 * @param width the width
+	 * @param height the height
+	 */
 	public ByteMatrix(int width, int height) {
 		bytes = new byte[height][width];
 		this.width = width;
 		this.height = height;
 	}
 
+	/**
+	 * Gets the height.
+	 *
+	 * @return the height
+	 */
 	public int getHeight() {
 		return height;
 	}
 
+	/**
+	 * Gets the width.
+	 *
+	 * @return the width
+	 */
 	public int getWidth() {
 		return width;
 	}
 
+	/**
+	 * Gets the.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @return the byte
+	 */
 	public byte get(int x, int y) {
 		if (y >= 0 && x >= 0 && bytes.length > y && bytes[y].length > x) {
 			return bytes[y][x];
@@ -33,6 +56,8 @@ public final class ByteMatrix {
 	}
 
 	/**
+	 * Gets the array.
+	 *
 	 * @return an internal representation as bytes, in row-major order. array[y][x]
 	 *         represents point (x,y)
 	 */
@@ -40,6 +65,14 @@ public final class ByteMatrix {
 		return bytes;
 	}
 
+	/**
+	 * Sets the.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean set(int x, int y, byte value) {
 		if (y >= 0 && x >= 0 && bytes.length > y && bytes[y].length > x) {
 			bytes[y][x] = value;
@@ -48,6 +81,14 @@ public final class ByteMatrix {
 		return false;
 	}
 
+	/**
+	 * Sets the.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean set(int x, int y, int value) {
 		if (y >= 0 && x >= 0 && bytes.length > y && bytes[y].length > x) {
 			bytes[y][x] = (byte) value;
@@ -56,6 +97,14 @@ public final class ByteMatrix {
 		return false;
 	}
 
+	/**
+	 * Sets the.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean set(int x, int y, boolean value) {
 		if (y >= 0 && x >= 0 && bytes.length > y && bytes[y].length > x) {
 			bytes[y][x] = (byte) (value ? 1 : 0);
@@ -64,6 +113,11 @@ public final class ByteMatrix {
 		return false;
 	}
 
+	/**
+	 * Clear.
+	 *
+	 * @param value the value
+	 */
 	public void clear(byte value) {
 		for (int y = 0; y < height; ++y) {
 			for (int x = 0; x < width; ++x) {
@@ -72,6 +126,11 @@ public final class ByteMatrix {
 		}
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder(2 * width * height + 2);

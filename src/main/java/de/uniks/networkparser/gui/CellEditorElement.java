@@ -24,26 +24,83 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Interface CellEditorElement.
+ *
+ * @author Stefan
+ */
 public interface CellEditorElement {
+	
+	/**
+	 * The Enum APPLYACTION.
+	 *
+	 * @author Stefan
+	 */
 	public enum APPLYACTION {
 		SAVE, TAB, ENTER, FOCUS
 	};
 
+	/**
+	 * With column.
+	 *
+	 * @param column the column
+	 * @return the cell editor element
+	 */
 	public CellEditorElement withColumn(Column column);
 
+	/**
+	 * Cancel.
+	 */
 	public void cancel();
 
+	/**
+	 * Sets the focus.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setFocus(boolean value);
 
+	/**
+	 * On active.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean onActive(boolean value);
 
+	/**
+	 * Next focus.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean nextFocus();
 
+	/**
+	 * Apply.
+	 *
+	 * @param action the action
+	 */
 	public void apply(APPLYACTION action);
 
+	/**
+	 * Dispose.
+	 */
 	public void dispose();
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param convert the convert
+	 * @return the value
+	 */
 	public Object getValue(boolean convert);
 
+	/**
+	 * With value.
+	 *
+	 * @param value the value
+	 * @return the cell editor element
+	 */
 	public CellEditorElement withValue(Object value);
 }

@@ -37,7 +37,8 @@ import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.Server;
 
 /**
- * Server Time
+ * Server Time.
+ *
  * @author Stefan Lindel
  */
 public class Server_Time extends Thread implements Server {
@@ -46,6 +47,12 @@ public class Server_Time extends Thread implements Server {
 	private NodeProxyTCP proxy;
 	private DatagramChannel channel;
 
+	/**
+	 * Instantiates a new server time.
+	 *
+	 * @param proxy the proxy
+	 * @param asyn the asyn
+	 */
 	public Server_Time(NodeProxyTCP proxy, boolean asyn) {
 		this.proxy = proxy;
 		if (init() && asyn) {
@@ -53,12 +60,22 @@ public class Server_Time extends Thread implements Server {
 		}
 	}
 
+	/**
+	 * Instantiates a new server time.
+	 *
+	 * @param asyn the asyn
+	 */
 	public Server_Time(boolean asyn) {
 		if (init() && asyn) {
 			start();
 		}
 	}
 
+	/**
+	 * Close.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean close() {
 		this.run = false;
 		if (channel != null) {
@@ -71,16 +88,27 @@ public class Server_Time extends Thread implements Server {
 		return true;
 	}
 
+	/**
+	 * Checks if is run.
+	 *
+	 * @return true, if is run
+	 */
 	@Override
 	public boolean isRun() {
 		return run;
 	}
 
+	/**
+	 * Run.
+	 */
 	@Override
 	public void run() {
 		runServer();
 	}
 
+	/**
+	 * Run server.
+	 */
 	public void runServer() {
 		Thread.currentThread().setName(this.port + " time server");
 		ByteBuffer in = ByteBuffer.allocate(8192);
@@ -104,6 +132,12 @@ public class Server_Time extends Thread implements Server {
 		}
 	}
 
+	/**
+	 * With port.
+	 *
+	 * @param value the value
+	 * @return the server time
+	 */
 	public Server_Time withPort(int value) {
 		this.port = value;
 		return this;

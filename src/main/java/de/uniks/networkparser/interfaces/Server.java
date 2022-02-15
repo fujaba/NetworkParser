@@ -1,5 +1,6 @@
 package de.uniks.networkparser.interfaces;
 
+// TODO: Auto-generated Javadoc
 /*
 The MIT License
 
@@ -24,17 +25,46 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Interface Server.
+ *
+ * @author Stefan
+ */
 public interface Server {
+	
+	/** The Constant BROADCAST. */
 	public static final String BROADCAST = "BROADCAST";
+	
+	/** The Constant TIME. */
 	public static final String TIME = "Time";
+	
+	/** The Constant TCP. */
 	public static final String TCP = "TCP";
+	
+	/** The Constant REST. */
 	public static final String REST = "REST";
 
+	/**
+	 * Close.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean close();
 
+	/**
+	 * Run.
+	 */
 	public void run();
 
+	/**
+	 * Checks if is run.
+	 *
+	 * @return true, if is run
+	 */
 	public boolean isRun();
 
+	/**
+	 * Stop.
+	 */
 	public void stop();
 }

@@ -24,5 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Interface ObjectCondition.
+ *
+ * @author Stefan
+ */
 public interface ObjectCondition extends Condition<Object> {
 }

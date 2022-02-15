@@ -37,14 +37,32 @@ import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleIteratorSet;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
+/**
+ * The Class HTMLGrammar.
+ *
+ * @author Stefan
+ */
 public class HTMLGrammar extends SimpleGrammar {
+	
+	/** The Constant CLASSNAME. */
 	public static final String CLASSNAME = "%CLASSNAME";
+	
+	/** The Constant PROPERTY. */
 	public static final String PROPERTY = "%PROPERTY";
+	
+	/** The Constant DEEP. */
 	public static final String DEEP = "%DEEP";
 
 	private SimpleKeyValueList<String, String> transformValue = new SimpleKeyValueList<String, String>();
 	private SimpleIteratorSet<String, String> iterator = new SimpleIteratorSet<String, String>(transformValue);
 
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @param map the map
+	 * @return the base item
+	 */
 	@Override
 	public BaseItem encode(Object entity, MapEntity map) {
 		if (entity == null || map == null) {
@@ -79,6 +97,16 @@ public class HTMLGrammar extends SimpleGrammar {
 		return false;
 	}
 
+	/**
+	 * Write basic value.
+	 *
+	 * @param entity the entity
+	 * @param className the class name
+	 * @param id the id
+	 * @param type the type
+	 * @param map the map
+	 * @return the entity
+	 */
 	@Override
 	public Entity writeBasicValue(Entity entity, String className, String id, String type, SimpleMap map) {
 		CharacterBuffer value = new CharacterBuffer().with(className);
@@ -103,6 +131,16 @@ public class HTMLGrammar extends SimpleGrammar {
 		return entity;
 	}
 
+	/**
+	 * Write value.
+	 *
+	 * @param parent the parent
+	 * @param property the property
+	 * @param value the value
+	 * @param map the map
+	 * @param tokener the tokener
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean writeValue(BaseItem parent, String property, Object value, MapEntity map, Tokener tokener) {
 		if (parent instanceof EntityList && tokener.isChild(value)) {
@@ -125,8 +163,8 @@ public class HTMLGrammar extends SimpleGrammar {
 	}
 
 	/**
-	 * Variables: %CLASSNAME ClassName %PROPERTY Property %DEEP Property
-	 * 
+	 * Variables: %CLASSNAME ClassName %PROPERTY Property %DEEP Property.
+	 *
 	 * @param key   the Key for transform
 	 * @param value the Value for transform
 	 */

@@ -26,14 +26,29 @@ THE SOFTWARE.
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.json.JsonArray;
 
+/**
+ * The Class JsonArrayLazy.
+ *
+ * @author Stefan
+ */
 public class JsonArrayLazy extends JsonArray {
 	private Object ref = null;
 	private boolean loaded;
 
+	/**
+	 * Instantiates a new json array lazy.
+	 *
+	 * @param element the element
+	 */
 	public JsonArrayLazy(Object element) {
 		this.ref = element;
 	}
 
+	/**
+	 * Lazy load.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean lazyLoad() {
 		if (this.ref == null) {
 			return false;

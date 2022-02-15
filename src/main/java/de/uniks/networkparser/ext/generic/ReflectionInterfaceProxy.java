@@ -26,13 +26,32 @@ THE SOFTWARE.
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+/**
+ * The Class ReflectionInterfaceProxy.
+ *
+ * @author Stefan
+ */
 public class ReflectionInterfaceProxy implements InvocationHandler {
 	private Object obj;
 
+	/**
+	 * Instantiates a new reflection interface proxy.
+	 *
+	 * @param obj the obj
+	 */
 	public ReflectionInterfaceProxy(Object obj) {
 		this.obj = obj;
 	}
 
+	/**
+	 * Invoke.
+	 *
+	 * @param proxy the proxy
+	 * @param method the method
+	 * @param args the args
+	 * @return the object
+	 * @throws Throwable the throwable
+	 */
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		if (proxy == null || method == null) {
@@ -83,10 +102,20 @@ public class ReflectionInterfaceProxy implements InvocationHandler {
 		return newTypes;
 	}
 
+	/**
+	 * Gets the proxy object.
+	 *
+	 * @return the proxy object
+	 */
 	public Object getProxyObject() {
 		return obj;
 	}
 
+	/**
+	 * Sets the proxy object.
+	 *
+	 * @param obj the new proxy object
+	 */
 	public void setProxyObject(Object obj) {
 		this.obj = obj;
 	}

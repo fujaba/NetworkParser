@@ -27,8 +27,11 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
-/** ReaderComm 
- * @author Stefan Lindel */
+/**
+ * ReaderCommunication.
+ *
+ * @author Stefan Lindel
+ */
 public class ReaderComm implements Runnable {
 	private boolean running = false;
 	private String threadName;
@@ -37,6 +40,12 @@ public class ReaderComm implements Runnable {
 	private NodeProxyBroker broker;
 	private ObjectCondition condition;
 
+	/**
+	 * Start.
+	 *
+	 * @param broker the broker
+	 * @param threadName the thread name
+	 */
 	public void start(NodeProxyBroker broker, String threadName) {
 		this.threadName = threadName;
 		this.broker = broker;
@@ -45,6 +54,12 @@ public class ReaderComm implements Runnable {
 		}
 	}
 
+	/**
+	 * With session.
+	 *
+	 * @param session the session
+	 * @return the reader comm
+	 */
 	public ReaderComm withSession(MessageSession session) {
 		this.session = session;
 		return this;
@@ -63,6 +78,9 @@ public class ReaderComm implements Runnable {
 		return false;
 	}
 
+	/**
+	 * Run.
+	 */
 	@Override
 	public void run() {
 		Thread recThread = Thread.currentThread();
@@ -103,11 +121,23 @@ public class ReaderComm implements Runnable {
 		}
 	}
 
+	/**
+	 * With condition.
+	 *
+	 * @param condition the condition
+	 * @return the reader comm
+	 */
 	public ReaderComm withCondition(ObjectCondition condition) {
 		this.condition = condition;
 		return this;
 	}
 
+	/**
+	 * With channel.
+	 *
+	 * @param name the name
+	 * @return the reader comm
+	 */
 	public ReaderComm withChannel(String name) {
 		this.channel = name;
 		return this;

@@ -49,7 +49,11 @@ public enum SortingDirection {
 		this.setDirection(value);
 	}
 
-	/** @return The Sortdirection. */
+	/**
+	 * Gets the direction.
+	 *
+	 * @return The Sortdirection.
+	 */
 	public int getDirection() {
 		return direction;
 	}

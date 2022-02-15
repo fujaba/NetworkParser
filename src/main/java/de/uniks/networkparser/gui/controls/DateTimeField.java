@@ -24,6 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class DateTimeField.
+ *
+ * @author Stefan
+ */
 public class DateTimeField extends Input<String> {
 	/*
 	 * Constants
@@ -31,24 +36,47 @@ public class DateTimeField extends Input<String> {
 	protected static final String TIME = "time";
 	protected static final String DATE = "date";
 
+	/**
+	 * Instantiates a new date time field.
+	 */
 	public DateTimeField() {
 		super();
 		this.type = DATE;
 	}
 
+	/**
+	 * Instantiates a new date time field.
+	 *
+	 * @param type the type
+	 */
 	public DateTimeField(String type) {
 		super();
 		this.type = type;
 	}
 
+	/**
+	 * Creates the date field.
+	 *
+	 * @return the date time field
+	 */
 	public static DateTimeField createDateField() {
 		return new DateTimeField();
 	}
 
+	/**
+	 * Creates the time field.
+	 *
+	 * @return the date time field
+	 */
 	public static DateTimeField createTimeField() {
 		return new DateTimeField(TIME);
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @return the date time field
+	 */
 	@Override
 	public DateTimeField newInstance() {
 		return new DateTimeField();

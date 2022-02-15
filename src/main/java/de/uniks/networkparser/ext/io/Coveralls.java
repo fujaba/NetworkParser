@@ -14,33 +14,89 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class Coveralls.
+ *
+ * @author Stefan
+ */
 public class Coveralls implements SendableEntityCreator{
+	
+	/** The jacoco report path. */
 	public String jacocoReportPath = "build/test-results/jacoco.xml";
+    
+    /** The token. */
     public String token;
+    
+    /** The project dir. */
     public String projectDir;
+    
+    /** The source dir. */
     public String sourceDir = "src/main/java/";
+    
+    /** The service. */
     public String service = "GitLab";;
+    
+    /** The url. */
     public String url = "https://coveralls.io/api/v1/jobs";
+    
+    /** The report file. */
     public String reportFile;
+    
+    /** The git. */
     public Object git;
     private FileClassModel model;
 	    
+    /** The Constant REPORTPATH. */
     public static final String REPORTPATH="jacocoReportPath";
+    
+    /** The Constant TOKEN. */
     public static final String TOKEN="token";
+    
+    /** The Constant PROJECTDIR. */
     public static final String PROJECTDIR="projectDir";
+    
+    /** The Constant SOURCEDIR. */
     public static final String SOURCEDIR="sourceDir";
+    
+    /** The Constant SERVICE. */
     public static final String SERVICE="servcie";
+    
+    /** The Constant REPORTFILE. */
     public static final String REPORTFILE="reportFile";
+    
+    /** The Constant GIT. */
     public static final String GIT="GIT";
+    
+    /** The Constant URL. */
     public static final String URL="url";
+    
+    /** The Constant properties. */
     public static final String[] properties = new String[] {REPORTPATH, TOKEN,PROJECTDIR, SOURCEDIR, SERVICE, REPORTFILE, GIT};
 	
+    /**
+     * Gets the sendable instance.
+     *
+     * @param prototyp the prototyp
+     * @return the sendable instance
+     */
     @Override
     public Object getSendableInstance(boolean prototyp) {return new Coveralls();}
     
+    /**
+     * Gets the properties.
+     *
+     * @return the properties
+     */
     @Override
     public String[] getProperties() {return properties;}
 
+    /**
+     * Gets the value.
+     *
+     * @param entity the entity
+     * @param attribute the attribute
+     * @return the value
+     */
     @Override
     public Object getValue(Object entity, String attribute) {
         if(!(entity instanceof Coveralls)) {
@@ -58,6 +114,15 @@ public class Coveralls implements SendableEntityCreator{
         return null;
     }
 
+    /**
+     * Sets the value.
+     *
+     * @param entity the entity
+     * @param attribute the attribute
+     * @param value the value
+     * @param type the type
+     * @return true, if successful
+     */
     @Override
     public boolean setValue(Object entity, String attribute, Object value, String type) {
         if(!(entity instanceof Coveralls)) {
@@ -100,6 +165,12 @@ public class Coveralls implements SendableEntityCreator{
     }
 
     
+    /**
+     * With map.
+     *
+     * @param params the params
+     * @return the coveralls
+     */
     public Coveralls withMap(Map<?, ?> params) {
         if(params == null) {
             return this;
@@ -111,6 +182,11 @@ public class Coveralls implements SendableEntityCreator{
         return this;
     }
 	
+    /**
+     * Execute.
+     *
+     * @param param the param
+     */
     public void execute(Object param) {
     	withMap((Map<?, ?>) param);
         JsonObject jsonObject = new JsonObject();
@@ -165,6 +241,13 @@ public class Coveralls implements SendableEntityCreator{
     	}
     }
     
+    /**
+     * Parses the source element.
+     *
+     * @param name the name
+     * @param sourceFile the source file
+     * @return the json object
+     */
     public JsonObject parseSourceElement(String name, XMLEntity sourceFile) {
     	if (name == null) {
 			return null;

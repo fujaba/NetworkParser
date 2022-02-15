@@ -30,21 +30,46 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
+/**
+ * The Class SimpleSet.
+ *
+ * @author Stefan
+ * @param <V> the value type
+ */
 public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
+	
+	/** The Constant PROPERTY. */
 	public static final String PROPERTY = "items";
 	protected ObjectCondition listener;
 
+	/**
+	 * Instantiates a new simple set.
+	 *
+	 * @param objects the objects
+	 */
 	public SimpleSet(Object... objects) {
 		if (objects != null && objects.length > 0) {
 			init(objects);
 		}
 	}
 	
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
 	@Override
 	public SimpleSet<V> getNewList(boolean keyValue) {
 		return new SimpleSet<V>();
 	}
 
+	/**
+	 * Removes the by object.
+	 *
+	 * @param key the key
+	 * @return the int
+	 */
 	@Override
 	public int removeByObject(Object key) {
 		if (isReadOnly() || isVisible() == false) {
@@ -53,6 +78,12 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return super.removeByObject(key);
 	}
 
+	/**
+	 * Retain all.
+	 *
+	 * @param c the c
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean retainAll(Collection<?> c) {
 		if (isReadOnly() || isVisible() == false) {
@@ -61,16 +92,33 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return super.retainAll(c);
 	}
 
+	/**
+	 * Clone.
+	 *
+	 * @return the simple set
+	 */
 	@Override
 	public SimpleSet<V> clone() {
 		return getNewList(false).init(this);
 	}
 
+	/**
+	 * Sub list.
+	 *
+	 * @param fromIndex the from index
+	 * @param toIndex the to index
+	 * @return the simple set
+	 */
 	@SuppressWarnings("unchecked")
 	public SimpleSet<V> subList(int fromIndex, int toIndex) {
 		return (SimpleSet<V>) super.subList(fromIndex, toIndex);
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	/* Add Methods from SDMLib */
 	@Override
 	public String toString() {
@@ -79,6 +127,12 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return toBuffer(buffer, ", ").with(')').toString();
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param separator the separator
+	 * @return the string
+	 */
 	public String toString(String separator) {
 		CharacterBuffer buffer = new CharacterBuffer();
 		return toBuffer(buffer, separator).toString();
@@ -96,6 +150,13 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return buffer;
 	}
 
+	/**
+	 * Sets the.
+	 *
+	 * @param index the index
+	 * @param element the element
+	 * @return the v
+	 */
 	/* ReadOnly Add all */
 	@Override
 	public V set(int index, V element) {
@@ -105,6 +166,12 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return super.set(index, element);
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param index the index
+	 * @param element the element
+	 */
 	@Override
 	public void add(int index, V element) {
 		if (isReadOnly() || isVisible() == false) {
@@ -113,6 +180,9 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		super.add(index, element);
 	}
 
+	/**
+	 * Clear.
+	 */
 	@Override
 	public void clear() {
 		if (isReadOnly() || isVisible() == false) {
@@ -121,6 +191,12 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		super.clear();
 	}
 
+	/**
+	 * Removes the.
+	 *
+	 * @param index the index
+	 * @return the v
+	 */
 	@Override
 	public V remove(int index) {
 		if (isReadOnly() || isVisible() == false) {
@@ -129,6 +205,12 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return super.remove(index);
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param newValue the new value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean add(V newValue) {
 		if (isReadOnly() || isVisible() == false) {
@@ -137,6 +219,13 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return super.add(newValue);
 	}
 
+	/**
+	 * Union.
+	 *
+	 * @param <ST> the generic type
+	 * @param other the other
+	 * @return the st
+	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleSet<V>> ST union(Collection<? extends V> other) {
 		ST result = (ST) this.getNewList(false);
@@ -145,6 +234,13 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return result;
 	}
 
+	/**
+	 * Intersection.
+	 *
+	 * @param <ST> the generic type
+	 * @param other the other
+	 * @return the st
+	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleSet<V>> ST intersection(Collection<? extends V> other) {
 		ST result = (ST) this.getNewList(false);
@@ -153,6 +249,13 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return result;
 	}
 
+	/**
+	 * Instance of.
+	 *
+	 * @param <ST> the generic type
+	 * @param target the target
+	 * @return the st
+	 */
 	public <ST extends AbstractList<?>> ST instanceOf(ST target) {
 		for (Object obj : this) {
 			if (obj != null && obj.getClass() == target.getTypClass()) {
@@ -162,6 +265,13 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return target;
 	}
 
+	/**
+	 * Minus.
+	 *
+	 * @param <ST> the generic type
+	 * @param other the other
+	 * @return the st
+	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleSet<V>> ST minus(Object other) {
 		ST result = (ST) this.getNewList(false);
@@ -174,6 +284,12 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return result;
 	}
 
+	/**
+	 * With listener.
+	 *
+	 * @param listener the listener
+	 * @return the simple set
+	 */
 	public SimpleSet<V> withListener(ObjectCondition listener) {
 		this.listener = listener;
 		return this;
@@ -189,6 +305,12 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return super.fireProperty(type, oldElement, newElement, beforeElement, index, value);
 	}
 
+	/**
+	 * With list.
+	 *
+	 * @param values the values
+	 * @return the simple set
+	 */
 	@Override
 	public SimpleSet<V> withList(Collection<?> values) {
 		super.withList(values);

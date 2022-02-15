@@ -28,7 +28,8 @@ import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 /**
- * Converter for converting String in BYTE64
+ * Converter for converting String in BYTE64.
+ *
  * @author Stefan Lindel
  */
 public class ByteConverter64 extends ByteConverter {
@@ -39,6 +40,12 @@ public class ByteConverter64 extends ByteConverter {
 			'5', '6', '7', '8', '9', '+', '/', '=' };
 	private static final byte PADDING = 127;
 
+	/**
+	 * To string.
+	 *
+	 * @param values the values
+	 * @return the string
+	 */
 	/* ENCODE */
 	@Override
 	public String toString(BufferedBuffer values) {
@@ -48,7 +55,7 @@ public class ByteConverter64 extends ByteConverter {
 		int i, j, k;
 		CharacterBuffer buffer = new CharacterBuffer();
 		values.back();
-		while (values.isEnd() == false) {
+		while (!values.isEnd()) {
 			i = values.getByte();
 			j = values.getByte();
 			k = values.getByte();
@@ -115,8 +122,8 @@ public class ByteConverter64 extends ByteConverter {
 	}
 
 	/**
-	 * Convert a simpleString to Base64
-	 * 
+	 * Convert a simpleString to Base64.
+	 *
 	 * @param values Input String
 	 * @return a Base64 String
 	 */
@@ -126,8 +133,8 @@ public class ByteConverter64 extends ByteConverter {
 	}
 
 	/**
-	 * Convert a simpleString to Base64
-	 * 
+	 * Convert a simpleString to Base64.
+	 *
 	 * @param values      Input String
 	 * @param finishToken boolean for Finish Token
 	 * @return a Base64 String
@@ -138,8 +145,8 @@ public class ByteConverter64 extends ByteConverter {
 	}
 
 	/**
-	 * Convert a simpleString from Base64
-	 * 
+	 * Convert a simpleString from Base64.
+	 *
 	 * @param values Input String(CharSequence) or byte[]
 	 * @return a decoded String
 	 */
@@ -176,7 +183,7 @@ public class ByteConverter64 extends ByteConverter {
 			return null;
 		}
 		int len = getStaticSize(size);
-		if (finishToken == false) {
+		if (!finishToken) {
 			if (size % 3 == 1) {
 				len -= 2;
 			} else if (size % 3 == 2) {
@@ -243,9 +250,15 @@ public class ByteConverter64 extends ByteConverter {
 		pem_convert_array['='] = PADDING;
 	}
 
+	/**
+	 * Decode.
+	 *
+	 * @param value the value
+	 * @return the byte[]
+	 */
 	@Override
 	public byte[] decode(CharSequence value) {
-		if (value == null || value instanceof String == false) {
+		if (value == null || !(value instanceof String)) {
 			return new byte[0];
 		}
 		byte[] bytes = ((String) value).getBytes();

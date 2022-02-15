@@ -10,26 +10,71 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * The Class GXLTokener.
+ *
+ * @author Stefan
+ */
 public class GXLTokener extends Tokener {
+	
+	/** The Constant GXL. */
 	public static final String GXL = "gxl";
+	
+	/** The Constant GRAPH. */
 	public static final String GRAPH = "graph";
+	
+	/** The Constant NODE. */
 	public static final String NODE = "node";
+	
+	/** The Constant EDGE. */
 	public static final String EDGE = "edge";
+	
+	/** The Constant BOOL. */
 	public static final String BOOL = "bool";
+	
+	/** The Constant INT. */
 	public static final String INT = "int";
+	
+	/** The Constant FLOAT. */
 	public static final String FLOAT = "float";
+	
+	/** The Constant STRING. */
 	public static final String STRING = "string";
+	
+	/** The Constant BAG. */
 	public static final String BAG = "bag";
 
+	/** The Constant EDGEIDS. */
 	public static final String EDGEIDS = "edgeids";
+	
+	/** The Constant EDGEMODE. */
 	public static final String EDGEMODE = "edgemode";
+	
+	/** The Constant HYPERGRAPH. */
 	public static final String HYPERGRAPH = "hypergraph";
+	
+	/** The Constant ISDIRECTED. */
 	public static final String ISDIRECTED = "isdirected";
+	
+	/** The Constant ATTRIBUTE. */
 	public static final String ATTRIBUTE = "attr";
+	
+	/** The Constant NAME. */
 	public static final String NAME = "name";
+	
+	/** The Constant FROM. */
 	public static final String FROM = "from";
+	
+	/** The Constant TO. */
 	public static final String TO = "to";
 
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @param map the map
+	 * @return the base item
+	 */
 	@Override
 	public BaseItem encode(Object entity, MapEntity map) {
 		XMLEntity instance = new XMLEntity();
@@ -127,6 +172,11 @@ public class GXLTokener extends Tokener {
 		}
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @return the XML entity
+	 */
 	@Override
 	public XMLEntity newInstance() {
 		return new XMLEntity();

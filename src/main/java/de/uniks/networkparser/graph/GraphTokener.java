@@ -45,10 +45,19 @@ public class GraphTokener extends Tokener {
 	/** The Constant for CLASS Diagramms. */
 	public static final String CLASSDIAGRAM = "classdiagram";
 
+	/** The Constant FLAG_CLASS. */
 	public static final byte FLAG_CLASS = 0x01;
+	
+	/** The Constant FLAG_CARDINALITY. */
 	public static final byte FLAG_CARDINALITY = 0x02;
+	
+	/** The Constant FLAG_SHOWLINE. */
 	public static final byte FLAG_SHOWLINE = 0x04;
+	
+	/** The Constant FLAG_ORDERD. */
 	public static final byte FLAG_ORDERD = 0x08;
+	
+	/** The Constant FLAG_UNORDERD. */
 	public static final byte FLAG_UNORDERD = 0x00;
 
 	/** The Constant for OBJECT Diagramms. */
@@ -61,6 +70,13 @@ public class GraphTokener extends Tokener {
 		return OBJECTDIAGRAM;
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param object the object
+	 * @param map the map
+	 * @return the graph list
+	 */
 	@Override
 	public GraphList encode(Object object, MapEntity map) {
 		GraphList newElement = new GraphList();
@@ -154,11 +170,24 @@ public class GraphTokener extends Tokener {
 		return;
 	}
 
+	/**
+	 * Highlight model.
+	 *
+	 * @param clazzDiagram the clazz diagram
+	 * @param objectDiagram the object diagram
+	 */
 	public void highlightModel(JsonArray clazzDiagram, GraphList objectDiagram) {
 		GraphList list = new GraphConverter().convertGraphList(GraphTokener.CLASSDIAGRAM, clazzDiagram);
 		this.highlightModel(list, objectDiagram);
 	}
 
+	/**
+	 * Highlight model.
+	 *
+	 * @param clazzDiagram the clazz diagram
+	 * @param objectDiagram the object diagram
+	 * @return the graph list
+	 */
 	public GraphList highlightModel(GraphList clazzDiagram, GraphList objectDiagram) {
 		if (clazzDiagram == null || objectDiagram == null) {
 			return clazzDiagram;
@@ -201,6 +230,14 @@ public class GraphTokener extends Tokener {
 		return clazzDiagram;
 	}
 
+	/**
+	 * Diff model.
+	 *
+	 * @param master the master
+	 * @param slave the slave
+	 * @param map the map
+	 * @return the graph pattern match
+	 */
 	public GraphPatternMatch diffModel(Object master, Object slave, MapEntity map) {
 		if (map == null || map.add(master) == false) {
 			return null;
@@ -327,12 +364,25 @@ public class GraphTokener extends Tokener {
 		return result;
 	}
 
+	/**
+	 * With map.
+	 *
+	 * @param map the map
+	 * @return the graph tokener
+	 */
 	@Override
 	public GraphTokener withMap(SimpleMap map) {
 		super.withMap(map);
 		return this;
 	}
 
+	/**
+	 * Diff.
+	 *
+	 * @param oldModel the old model
+	 * @param newModel the new model
+	 * @param metaModel the meta model
+	 */
 	public void diff(GraphModel oldModel, GraphModel newModel, GraphModel metaModel) {
 
 	}

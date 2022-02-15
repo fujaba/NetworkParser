@@ -36,17 +36,36 @@ import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class ListCondition.
+ *
+ * @author Stefan
+ */
 public abstract class ListCondition implements ParserCondition, SendableEntityCreator {
+	
+	/** The Constant CHILD. */
 	public static final String CHILD = "childs";
 	protected Object list;
 	protected Object staticEvent;
 	protected boolean chain = true;
 
+	/**
+	 * With static event.
+	 *
+	 * @param event the event
+	 * @return the list condition
+	 */
 	public ListCondition withStaticEvent(Object event) {
 		this.staticEvent = event;
 		return this;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param evt the evt
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object evt) {
 		if (this.staticEvent != null) {
@@ -58,6 +77,12 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		return updateSet(evt);
 	}
 
+	/**
+	 * Update set.
+	 *
+	 * @param evt the evt
+	 * @return true, if successful
+	 */
 	public boolean updateSet(Object evt) {
 		Set<ObjectCondition> list = getList();
 		boolean result = true;
@@ -72,6 +97,12 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		return result;
 	}
 
+	/**
+	 * Update PCE.
+	 *
+	 * @param evt the evt
+	 * @return true, if successful
+	 */
 	public boolean updatePCE(PropertyChangeEvent evt) {
 		if (list instanceof PropertyChangeListener) {
 			((PropertyChangeListener) list).propertyChange(evt);
@@ -96,16 +127,34 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		return true;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param values the values
+	 * @return the list condition
+	 */
 	public ListCondition with(ObjectCondition... values) {
 		add((Object[]) values);
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param values the values
+	 * @return the list condition
+	 */
 	public ListCondition with(PropertyChangeListener... values) {
 		add((Object[]) values);
 		return this;
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	public boolean add(Object... values) {
 		if (values == null || values.length < 1) {
 			return false;
@@ -155,6 +204,11 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		return list.add(values);
 	}
 
+	/**
+	 * Gets the list.
+	 *
+	 * @return the list
+	 */
 	public ConditionSet getList() {
 		if (this.list instanceof ConditionSet) {
 			return (ConditionSet) this.list;
@@ -164,10 +218,18 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		return result;
 	}
 
+	/**
+	 * Clear.
+	 */
 	public void clear() {
 		this.list = null;
 	}
 
+	/**
+	 * First.
+	 *
+	 * @return the object condition
+	 */
 	public ObjectCondition first() {
 		if (this.list instanceof ObjectCondition) {
 			return (ObjectCondition) this.list;
@@ -180,6 +242,11 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		return null;
 	}
 
+	/**
+	 * Size.
+	 *
+	 * @return the int
+	 */
 	public int size() {
 		if (this.list == null) {
 			return 0;
@@ -189,6 +256,11 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		return 1;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		Set<ObjectCondition> templates = getList();
@@ -202,11 +274,23 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		return super.toString();
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { CHILD };
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (entity instanceof ChainCondition == false) {
@@ -219,6 +303,15 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (entity instanceof ChainCondition == false) {
@@ -232,6 +325,12 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		return false;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param variables the variables
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(LocalisationInterface variables) {
 		return getList().getAllValue(variables);

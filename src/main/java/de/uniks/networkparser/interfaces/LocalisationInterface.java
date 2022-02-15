@@ -1,5 +1,6 @@
 package de.uniks.networkparser.interfaces;
 
+// TODO: Auto-generated Javadoc
 /*
 NetworkParser
 The MIT License
@@ -24,8 +25,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Interface LocalisationInterface.
+ *
+ * @author Stefan
+ */
 public interface LocalisationInterface {
+	
+	/**
+	 * Gets the text.
+	 *
+	 * @param label the label
+	 * @param model the model
+	 * @param gui the gui
+	 * @return the text
+	 */
 	public String getText(CharSequence label, Object model, Object gui);
 
+	/**
+	 * Put.
+	 *
+	 * @param label the label
+	 * @param object the object
+	 * @return the string
+	 */
 	public String put(String label, Object object);
 }

@@ -2,7 +2,16 @@ package de.uniks.networkparser.parser.java;
 
 import de.uniks.networkparser.parser.Template;
 
+/**
+ * The Class JavaMethod.
+ *
+ * @author Stefan
+ */
 public class JavaMethod extends Template {
+	
+	/**
+	 * Instantiates a new java method.
+	 */
 	public JavaMethod() {
 		this.id = "method";
 		this.type = METHOD;

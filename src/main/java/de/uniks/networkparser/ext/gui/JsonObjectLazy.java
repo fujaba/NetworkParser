@@ -26,16 +26,33 @@ THE SOFTWARE.
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.json.JsonObject;
 
+/**
+ * The Class JsonObjectLazy.
+ *
+ * @author Stefan
+ */
 public class JsonObjectLazy extends JsonObject {
+	
+	/** The Constant FILTERPROP. */
 	public static final String FILTERPROP = "$";
 
 	private Object ref = null;
 	private boolean loaded;
 
+	/**
+	 * Instantiates a new json object lazy.
+	 *
+	 * @param element the element
+	 */
 	public JsonObjectLazy(Object element) {
 		this.ref = element;
 	}
 
+	/**
+	 * Lazy load.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean lazyLoad() {
 		if (this.ref == null) {
 			return false;
@@ -92,6 +109,11 @@ public class JsonObjectLazy extends JsonObject {
 		return result;
 	}
 
+	/**
+	 * Gets the reference.
+	 *
+	 * @return the reference
+	 */
 	public Object getReference() {
 		return this.ref;
 	}

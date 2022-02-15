@@ -25,6 +25,11 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.IdMap;
 
+/**
+ * The Class AutoCompletionList.
+ *
+ * @author Stefan
+ */
 public class AutoCompletionList extends Control {
 	private boolean caseSensitive = false;
 	private boolean sort = false;
@@ -35,38 +40,82 @@ public class AutoCompletionList extends Control {
 
 	/* COLLECTION with PROPERTY example: PersonSet or SimpleValue like Strings */
 
+	/**
+	 * With map.
+	 *
+	 * @param map the map
+	 * @param property the property
+	 * @return the auto completion list
+	 */
 	public AutoCompletionList withMap(IdMap map, String property) {
 		this.map = map;
 		this.property = property;
 		return this;
 	}
 
+	/**
+	 * Gets the map.
+	 *
+	 * @return the map
+	 */
 	public IdMap getMap() {
 		return map;
 	}
 
+	/**
+	 * Gets the property.
+	 *
+	 * @return the property
+	 */
 	public String getProperty() {
 		return property;
 	}
 
+	/**
+	 * With case sensitive.
+	 *
+	 * @param value the value
+	 * @return the auto completion list
+	 */
 	public AutoCompletionList withCaseSensitive(boolean value) {
 		this.caseSensitive = value;
 		return this;
 	}
 
+	/**
+	 * Checks if is case sensitive.
+	 *
+	 * @return true, if is case sensitive
+	 */
 	public boolean isCaseSensitive() {
 		return caseSensitive;
 	}
 
+	/**
+	 * With sorted.
+	 *
+	 * @param value the value
+	 * @return the auto completion list
+	 */
 	public AutoCompletionList withSorted(boolean value) {
 		this.sort = value;
 		return this;
 	}
 
+	/**
+	 * Checks if is sorted.
+	 *
+	 * @return true, if is sorted
+	 */
 	public boolean isSorted() {
 		return sort;
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @return the auto completion list
+	 */
 	@Override
 	public AutoCompletionList newInstance() {
 		return new AutoCompletionList();

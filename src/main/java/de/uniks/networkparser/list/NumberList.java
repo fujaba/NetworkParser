@@ -26,12 +26,17 @@ THE SOFTWARE.
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 /**
- * Class for List of Numbers
- * 
- * @author Stefan Lindel NumberList for List of Numbers (Integer Double etc.)
+ * Class for List of Numbers.
  *
+ * @author Stefan Lindel NumberList for List of Numbers (Integer Double etc.)
  */
 public class NumberList extends SimpleList<Number> {
+	
+	/**
+	 * Sum.
+	 *
+	 * @return the double
+	 */
 	public double sum() {
 		double result = 0;
 
@@ -42,6 +47,11 @@ public class NumberList extends SimpleList<Number> {
 		return result;
 	}
 
+	/**
+	 * Max.
+	 *
+	 * @return the double
+	 */
 	public double max() {
 		double max = Double.MIN_VALUE;
 
@@ -54,6 +64,11 @@ public class NumberList extends SimpleList<Number> {
 		return max;
 	}
 
+	/**
+	 * Min.
+	 *
+	 * @return the double
+	 */
 	public double min() {
 		double min = Double.MAX_VALUE;
 
@@ -65,6 +80,11 @@ public class NumberList extends SimpleList<Number> {
 		return min;
 	}
 
+	/**
+	 * Middle.
+	 *
+	 * @return the double
+	 */
 	public double middle() {
 		double middleValue = 0;
 		for (Number x : this) {
@@ -76,6 +96,12 @@ public class NumberList extends SimpleList<Number> {
 		return middleValue;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param seperator the seperator
+	 * @return the string
+	 */
 	public String toString(String seperator) {
 		if (this.size < 1) {
 			return "";

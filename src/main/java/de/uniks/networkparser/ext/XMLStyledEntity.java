@@ -68,14 +68,18 @@ public class XMLStyledEntity extends XMLEntity {
 		return super.get(key);
 	}
 
-	/** @return Is XML is Bold */
+	/**
+	 * Checks if is bold.
+	 *
+	 * @return Is XML is Bold
+	 */
 	public boolean isBold() {
 		return style.isBold();
 	}
 
 	/**
-	 * Add Switch for bold Text
-	 * 
+	 * Add Switch for bold Text.
+	 *
 	 * @param value The new Option of Bold
 	 */
 	public void setBold(boolean value) {

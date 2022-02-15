@@ -32,25 +32,53 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class WhiteListCondition.
+ *
+ * @author Stefan
+ */
 public class WhiteListCondition implements ObjectCondition, SendableEntityCreator {
 	private SimpleKeyValueList<String, SimpleList<String>> whiteList = new SimpleKeyValueList<String, SimpleList<String>>();
 	private boolean primitive = true;
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return null;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new WhiteListCondition();
 	}
 
+	/**
+	 * With primititve.
+	 *
+	 * @param value the value
+	 * @return the white list condition
+	 */
 	public WhiteListCondition withPrimititve(boolean value) {
 		this.primitive = value;
 		return this;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof SimpleEvent == false) {
@@ -78,6 +106,13 @@ public class WhiteListCondition implements ObjectCondition, SendableEntityCreato
 		return this.primitive;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param className the class name
+	 * @param attributes the attributes
+	 * @return the white list condition
+	 */
 	public WhiteListCondition with(Class<?> className, String... attributes) {
 		if (className != null) {
 			with(className.getSimpleName(), attributes);
@@ -85,6 +120,13 @@ public class WhiteListCondition implements ObjectCondition, SendableEntityCreato
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param className the class name
+	 * @param attributes the attributes
+	 * @return the white list condition
+	 */
 	public WhiteListCondition with(String className, String... attributes) {
 		SimpleList<String> simpleList = whiteList.get(className);
 		if (simpleList == null) {
@@ -100,11 +142,27 @@ public class WhiteListCondition implements ObjectCondition, SendableEntityCreato
 		return this;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		return false;

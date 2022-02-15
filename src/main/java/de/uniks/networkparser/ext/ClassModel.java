@@ -45,14 +45,23 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import java.util.Collection;
 
+/**
+ * The Class ClassModel.
+ *
+ * @author Stefan
+ */
 public class ClassModel extends GraphModel {
+	
+	/** The Constant ONE. */
 	public static final int ONE = 1;
+	
+	/** The Constant MANY. */
 	public static final int MANY = 42;
 
 	private ModelGenerator generator = new ModelGenerator().withDefaultModel(this);
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @param packageName PackageName of ClassModel
 	 */
@@ -61,35 +70,71 @@ public class ClassModel extends GraphModel {
 		with(packageName);
 	}
 
+	/**
+	 * Instantiates a new class model.
+	 */
 	public ClassModel() {
 		name = getDefaultPackage();
 		setAuthorName(System.getProperty("user.name"));
 	}
 
+	/**
+	 * Reset generator.
+	 */
 	public void resetGenerator() {
 		this.generator = new ModelGenerator().withDefaultModel(this);
 	}
 
+	/**
+	 * With feature.
+	 *
+	 * @param feature the feature
+	 * @return the class model
+	 */
 	public ClassModel withFeature(Feature... feature) {
 		this.generator.withFeature(feature);
 		return this;
 	}
 
+	/**
+	 * With feature.
+	 *
+	 * @param feature the feature
+	 * @return the class model
+	 */
 	public ClassModel withFeature(FeatureSet feature) {
 		this.generator.withFeature(feature);
 		return this;
 	}
 
+	/**
+	 * Without feature.
+	 *
+	 * @param feature the feature
+	 * @return the class model
+	 */
 	public ClassModel withoutFeature(Feature feature) {
 		this.generator.withoutFeature(feature);
 		return this;
 	}
 
+	/**
+	 * Removes the.
+	 *
+	 * @param member the member
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean remove(GraphMember member) {
 		return super.remove(member);
 	}
 
+	/**
+	 * Gets the generator.
+	 *
+	 * @param params the params
+	 * @return the generator
+	 */
 	public ModelGenerator getGenerator(String... params) {
 		if (params != null) {
 			if (params.length >0 && params[0] != null) {
@@ -102,10 +147,24 @@ public class ClassModel extends GraphModel {
 		return generator;
 	}
 
+	/**
+	 * Gets the feature.
+	 *
+	 * @param feature the feature
+	 * @param clazzes the clazzes
+	 * @return the feature
+	 */
 	public Feature getFeature(Feature feature, Clazz... clazzes) {
 		return this.generator.getFeature(feature, clazzes);
 	}
 
+	/**
+	 * Dump HTML.
+	 *
+	 * @param diagramName the diagram name
+	 * @param write the write
+	 * @return the HTML entity
+	 */
 	@Override
 	public HTMLEntity dumpHTML(String diagramName, boolean... write) {
 		if (diagramName == null || diagramName.length() < 1) {
@@ -136,6 +195,12 @@ public class ClassModel extends GraphModel {
 		return null;
 	}
 
+	/**
+	 * Generate.
+	 *
+	 * @param rootDir the root dir
+	 * @return the class model
+	 */
 	@Override
 	public ClassModel generate(String... rootDir) {
 		String path = null;
@@ -146,6 +211,12 @@ public class ClassModel extends GraphModel {
 		return this;
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean add(Object... values) {
 		if (values == null) {
@@ -232,11 +303,23 @@ public class ClassModel extends GraphModel {
 		return add;
 	}
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new ClassModel();
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param name the name
+	 * @return the class model
+	 */
 	/* Override some Method because change ReturnValue */
 	@Override
 	public ClassModel with(String name) {
@@ -244,6 +327,12 @@ public class ClassModel extends GraphModel {
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param value the value
+	 * @return the class model
+	 */
 	@Override
 	public ClassModel with(Annotation value) {
 		super.with(value);

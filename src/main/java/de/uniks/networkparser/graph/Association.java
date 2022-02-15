@@ -26,31 +26,68 @@ THE SOFTWARE.
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class Association.
+ *
+ * @author Stefan
+ */
 public class Association extends GraphMember {
+	
+	/** The Constant PROPERTY_NODE. */
 	public static final String PROPERTY_NODE = "node";
+	
+	/** The Constant PROPERTY_CARDINALITY. */
 	public static final String PROPERTY_CARDINALITY = "cardinality";
+	
+	/** The Constant PROPERTY_PROPERTY. */
 	public static final String PROPERTY_PROPERTY = "property";
+	
+	/** The Constant PROPERTY_OTHER. */
 	public static final String PROPERTY_OTHER = "other";
+	
+	/** The Constant PROPERTY_CLAZZ. */
 	public static final String PROPERTY_CLAZZ = "clazz";
+	
+	/** The Constant PROPERTY_TYPE. */
 	public static final String PROPERTY_TYPE = "type";
+	
+	/** The Constant PROPERTY_ISEDGE. */
 	public static final String PROPERTY_ISEDGE = "isEdge";
+	
+	/** The Constant PROPERTY_ISGENERATE. */
 	public static final String PROPERTY_ISGENERATE = "isGenerate";
+	
+	/** The Constant PROPERTY_ISIMPLEMENTS. */
 	public static final String PROPERTY_ISIMPLEMENTS = "isImplements";
 	private int cardinality;
 	/* The Complete Edge Info */
 	private Association other;
 	private AssociationTypes type = AssociationTypes.ASSOCIATION;
 
+	/** The Constant ONE. */
 	public static final int ONE = 1;
+	
+	/** The Constant MANY. */
 	public static final int MANY = 42;
 
 	Association() {
 	}
 
+	/**
+	 * Instantiates a new association.
+	 *
+	 * @param node the node
+	 */
 	public Association(GraphEntity node) {
 		this.parentNode = node;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(String attribute) {
 		if(attribute == null) {
@@ -101,6 +138,11 @@ public class Association extends GraphMember {
 		return super.getValue(attribute);
 	}
 
+	/**
+	 * Checks if is self assoc.
+	 *
+	 * @return true, if is self assoc
+	 */
 	public boolean isSelfAssoc() {
 		GraphSimpleSet collection = getParents();
 		if (collection.size() > 0) {
@@ -116,6 +158,11 @@ public class Association extends GraphMember {
 		return false;
 	}
 
+	/**
+	 * Gets the cardinality.
+	 *
+	 * @return the cardinality
+	 */
 	public int getCardinality() {
 		if (cardinality > 0) {
 			return cardinality;
@@ -135,6 +182,11 @@ public class Association extends GraphMember {
 		return ONE;
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
 	@Override
 	public String getName() {
 		if (name != null) {
@@ -245,11 +297,22 @@ public class Association extends GraphMember {
 		return parents;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param label the label
+	 * @return the association
+	 */
 	public Association with(GraphCustomItem label) {
 		super.withChildren(label);
 		return this;
 	}
 
+	/**
+	 * Gets the info.
+	 *
+	 * @return the info
+	 */
 	public GraphCustomItem getInfo() {
 		if (children == null || this.other == null || this.other.getChildren() == null) {
 			return null;
@@ -267,11 +330,23 @@ public class Association extends GraphMember {
 		return null;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param value the value
+	 * @return the association
+	 */
 	public Association with(GraphEntity value) {
 		super.setParentNode(value);
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param name the name
+	 * @return the association
+	 */
 	public Association with(String name) {
 		super.with(name);
 		return this;
@@ -282,6 +357,12 @@ public class Association extends GraphMember {
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param value the value
+	 * @return the association
+	 */
 	public Association with(Association value) {
 		if (this.getOther() == value) {
 			return this;
@@ -296,21 +377,44 @@ public class Association extends GraphMember {
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param cardinality the cardinality
+	 * @return the association
+	 */
 	public Association with(int cardinality) {
 		this.cardinality = cardinality;
 		return this;
 	}
 
+	/**
+	 * Gets the other.
+	 *
+	 * @return the other
+	 */
 	public Association getOther() {
 		return other;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param source the source
+	 * @param target the target
+	 * @return the association
+	 */
 	public static Association create(GraphEntity source, GraphEntity target) {
 		Association edge = new Association(source);
 		edge.with(new Association(target));
 		return edge;
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public AssociationTypes getType() {
 		return type;
 	}
@@ -341,11 +445,22 @@ public class Association extends GraphMember {
 		return name + "<br>0.." + this.cardinality;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param typ the typ
+	 * @return the association
+	 */
 	public Association with(AssociationTypes typ) {
 		this.type = typ;
 		return this;
 	}
 
+	/**
+	 * Gets the other clazz.
+	 *
+	 * @return the other clazz
+	 */
 	public Clazz getOtherClazz() {
 		if (other != null) {
 			return other.getClazz();
@@ -360,6 +475,11 @@ public class Association extends GraphMember {
 		return null;
 	}
 
+	/**
+	 * Gets the clazz.
+	 *
+	 * @return the clazz
+	 */
 	@Override
 	public Clazz getClazz() {
 		GraphSimpleSet collection = getParents();
@@ -372,6 +492,11 @@ public class Association extends GraphMember {
 		return null;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		CharacterBuffer charList = new CharacterBuffer();
@@ -448,6 +573,12 @@ public class Association extends GraphMember {
 		return true;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param value the value
+	 * @return the association
+	 */
 	public Association with(Annotation value) {
 		withAnnotation(value);
 		return this;

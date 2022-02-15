@@ -1,8 +1,8 @@
 package de.uniks.networkparser.bytes.qr;
 
 /**
- * BitMatrixParser for Parsing QR-Code
- * 
+ * BitMatrixParser for Parsing QR-Code.
+ *
  * @author Sean Owen
  */
 public final class BitMatrixParser {
@@ -11,6 +11,9 @@ public final class BitMatrixParser {
   private FormatInformation parsedFormatInfo;
   private boolean mirror;
 
+  /**
+   * Instantiates a new bit matrix parser.
+   */
   public BitMatrixParser() {
 
   }

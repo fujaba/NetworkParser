@@ -16,7 +16,8 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
- * Clazz of EqualsCondition
+ * Clazz of EqualsCondition.
+ *
  * @author Stefan
  */
 public class Equals implements ParserCondition, SendableEntityCreator {
@@ -46,8 +47,14 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	 * Variable of Position. Position of the Byte or -1 for currentPosition
 	 */
 	private int position = 0;
+	
+	/** The Constant POS_GREATER. */
 	public static final int POS_GREATER = 1;
+	
+	/** The Constant POS_LOWER. */
 	public static final int POS_LOWER = -1;
+	
+	/** The Constant POS_EQUALS. */
 	public static final int POS_EQUALS = 0;
 
 	private Object getValue(ObjectCondition condition, Object evt) {
@@ -85,6 +92,12 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		return null;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param evt the evt
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object evt) {
 		if (evt == null) {
@@ -191,6 +204,8 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	}
 
 	/**
+	 * With position.
+	 *
 	 * @param value The new Position
 	 * @return Equals Instance
 	 */
@@ -200,6 +215,8 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	}
 
 	/**
+	 * Gets the position.
+	 *
 	 * @return The Position
 	 */
 	public int getPosition() {
@@ -207,6 +224,8 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	}
 
 	/**
+	 * With value.
+	 *
 	 * @param value The new StringValue
 	 * @return Equals Instance
 	 */
@@ -215,17 +234,33 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		return this;
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param value the value
+	 * @param delta the delta
+	 * @return the equals
+	 */
 	public Equals withValue(Object value, Object delta) {
 		this.withValue(value);
 		this.withDelta(delta);
 		return this;
 	}
 
-	/** @return The StringVlaue */
+	/**
+	 * Gets the value.
+	 *
+	 * @return The StringVlaue
+	 */
 	public Object getValue() {
 		return value;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		String equals = "==";
@@ -241,25 +276,54 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		return equals + value + " ";
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { PROPERTY_KEY, PROPERTY_VALUE, PROPERTY_POSITION };
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public ParserCondition getSendableInstance(boolean prototyp) {
 		return new Equals();
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	public String getKey() {
 		return key;
 	}
 
+	/**
+	 * With key.
+	 *
+	 * @param key the key
+	 * @return the equals
+	 */
 	public Equals withKey(String key) {
 		this.key = key;
 		return this;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (PROPERTY_KEY.equalsIgnoreCase(attribute)) {
@@ -274,6 +338,15 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (entity instanceof Equals == false) {
@@ -295,15 +368,33 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * Gets the delta.
+	 *
+	 * @return the delta
+	 */
 	public Object getDelta() {
 		return delta;
 	}
 
+	/**
+	 * With delta.
+	 *
+	 * @param delta the delta
+	 * @return the equals
+	 */
 	public Equals withDelta(Object delta) {
 		this.delta = delta;
 		return this;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the equals
+	 */
 	public static Equals create(String key, Object value) {
 		Equals condition = new Equals();
 		condition.withKey(key);
@@ -311,25 +402,53 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		return condition;
 	}
 
+	/**
+	 * Creates the null condition.
+	 *
+	 * @return the equals
+	 */
 	public static Equals createNullCondition() {
 		return new Equals().withValue(null);
 	}
 
+	/**
+	 * With left.
+	 *
+	 * @param expression the expression
+	 * @return the equals
+	 */
 	public Equals withLeft(ObjectCondition expression) {
 		this.left = expression;
 		return this;
 	}
 
+	/**
+	 * With right.
+	 *
+	 * @param expression the expression
+	 * @return the equals
+	 */
 	public Equals withRight(ObjectCondition expression) {
 		this.right = expression;
 		return this;
 	}
 
+	/**
+	 * Checks if is expression.
+	 *
+	 * @return true, if is expression
+	 */
 	@Override
 	public boolean isExpression() {
 		return false;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param value the value
+	 * @return the value
+	 */
 	/* KEY LEFTVALUE
 	   VALUE RIGHTVALUE */
 	@Override
@@ -351,6 +470,13 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		return null;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param buffer the buffer
+	 * @param parser the parser
+	 * @param customTemplate the custom template
+	 */
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		/* CHECK IF CURRENT = */

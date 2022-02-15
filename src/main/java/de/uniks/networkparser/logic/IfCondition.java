@@ -34,11 +34,16 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.parser.TemplateResultFragment;
 
 /**
- * IfCondition Clazz
+ * IfCondition Clazz.
+ *
  * @author Stefan
  */
 public class IfCondition implements ParserCondition, SendableEntityCreator {
+	
+	/** The Constant TAG. */
 	public static final String TAG = "if";
+	
+	/** The Constant IFNOT. */
 	public static final String IFNOT = "ifnot";
 	/** Constant for Expression. */
 	public static final String EXPRESSION = "expression";
@@ -59,6 +64,8 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	private CharacterBuffer notifyBuffer = null;
 
 	/**
+	 * With expression.
+	 *
 	 * @param value Set the new Expression
 	 * @return IfCondition Instance
 	 */
@@ -67,12 +74,18 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 		return this;
 	}
 
-	/** @return The Expression */
+	/**
+	 * Gets the expression.
+	 *
+	 * @return The Expression
+	 */
 	public ObjectCondition getExpression() {
 		return expression;
 	}
 
 	/**
+	 * With true.
+	 *
 	 * @param condition Set The True Case
 	 * @return InstanceOf Instance
 	 */
@@ -81,12 +94,18 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 		return this;
 	}
 
-	/** @return The True Case */
+	/**
+	 * Gets the true.
+	 *
+	 * @return The True Case
+	 */
 	public ObjectCondition getTrue() {
 		return trueCondition;
 	}
 
 	/**
+	 * With false.
+	 *
 	 * @param condition Set the False Case
 	 * @return IfCondition Instance
 	 */
@@ -95,11 +114,21 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 		return this;
 	}
 
-	/** @return The False Case */
+	/**
+	 * Gets the false.
+	 *
+	 * @return The False Case
+	 */
 	public ObjectCondition getFalse() {
 		return falseCondition;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param evt the evt
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object evt) {
 		if (expression != null && expression.update(evt)) {
@@ -153,16 +182,34 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { EXPRESSION, TRUECONDITION, FALSECONDITION };
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public ParserCondition getSendableInstance(boolean prototyp) {
 		return new IfCondition().withKey(this.tag);
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (EXPRESSION.equalsIgnoreCase(attribute)) {
@@ -177,6 +224,15 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (ParserCondition.NOTIFY.equalsIgnoreCase(attribute)) {
@@ -198,27 +254,49 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param variables the variables
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(LocalisationInterface variables) {
 		return null;
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return tag;
 	}
 
+	/**
+	 * With key.
+	 *
+	 * @param key the key
+	 * @return the if condition
+	 */
 	public IfCondition withKey(String key) {
 		this.tag = key;
 		return this;
 	}
 
-	/** Create Condition
-	*  Switch for If IfNot
-	*  {{#if {{Variable}}}}
-	*  {{#if Variable}}
-	*  {{#if {{#feature}}}}
-	*/
+	/**
+	 *  Create Condition
+	 *  Switch for If IfNot
+	 *  {{#if {{Variable}}}}
+	 *  {{#if Variable}}
+	 *  {{#if {{#feature}}}}.
+	 *
+	 * @param buffer the buffer
+	 * @param parser the parser
+	 * @param customTemplate the custom template
+	 */
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		if(buffer == null) {
@@ -264,11 +342,21 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 		buffer.skipChar(SPLITEND);
 	}
 
+	/**
+	 * Checks if is expression.
+	 *
+	 * @return true, if is expression
+	 */
 	@Override
 	public boolean isExpression() {
 		return false;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return "{{IF " + expression + "}}" + trueCondition + "{{#else}}" + falseCondition + "{{#ENDIF}}";

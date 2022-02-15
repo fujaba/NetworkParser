@@ -27,16 +27,33 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * The Class SimpleIteratorSet.
+ *
+ * @author Stefan
+ * @param <K> the key type
+ * @param <V> the value type
+ */
 public class SimpleIteratorSet<K, V> implements ListIterator<Entry<K, V>> {
 	private SimpleKeyValueList<K, V> list;
 	private SimpleEntity<K, V> currentEntry;
 	private int cursor = -1;
 
+	/**
+	 * Instantiates a new simple iterator set.
+	 *
+	 * @param list the list
+	 */
 	public SimpleIteratorSet(SimpleKeyValueList<K, V> list) {
 		this.list = list;
 		this.currentEntry = new SimpleEntity<K, V>();
 	}
 
+	/**
+	 * Instantiates a new simple iterator set.
+	 *
+	 * @param collection the collection
+	 */
 	@SuppressWarnings("unchecked")
 	public SimpleIteratorSet(Object collection) {
 		if (collection instanceof SimpleKeyValueList<?, ?>) {
@@ -48,15 +65,28 @@ public class SimpleIteratorSet<K, V> implements ListIterator<Entry<K, V>> {
 		this.currentEntry = new SimpleEntity<K, V>();
 	}
 
+	/**
+	 * Checks for next.
+	 *
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean hasNext() {
 		return cursor < (this.list.size() - 1);
 	}
 
+	/**
+	 * Reset.
+	 */
 	public void reset() {
 		this.cursor = -1;
 	}
 
+	/**
+	 * Next.
+	 *
+	 * @return the entry
+	 */
 	@Override
 	public Entry<K, V> next() {
 		if (hasNext() == false) {
@@ -69,11 +99,21 @@ public class SimpleIteratorSet<K, V> implements ListIterator<Entry<K, V>> {
 		return this.currentEntry;
 	}
 
+	/**
+	 * Checks for previous.
+	 *
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean hasPrevious() {
 		return cursor > 0;
 	}
 
+	/**
+	 * Previous.
+	 *
+	 * @return the entry
+	 */
 	@Override
 	public Entry<K, V> previous() {
 		cursor--;
@@ -83,21 +123,39 @@ public class SimpleIteratorSet<K, V> implements ListIterator<Entry<K, V>> {
 		return this.currentEntry;
 	}
 
+	/**
+	 * Next index.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int nextIndex() {
 		return cursor + 1;
 	}
 
+	/**
+	 * Previous index.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int previousIndex() {
 		return cursor - 1;
 	}
 
+	/**
+	 * Removes the.
+	 */
 	@Override
 	public void remove() {
 		this.list.removePos(cursor);
 	}
 
+	/**
+	 * Sets the.
+	 *
+	 * @param e the e
+	 */
 	@Override
 	public void set(Entry<K, V> e) {
 		cursor = this.list.getPositionKey(e.getKey(), false);
@@ -106,6 +164,11 @@ public class SimpleIteratorSet<K, V> implements ListIterator<Entry<K, V>> {
 		this.currentEntry.setValue(e.getValue());
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param e the e
+	 */
 	@Override
 	public void add(Entry<K, V> e) {
 		this.list.add(e.getKey(), e.getValue());

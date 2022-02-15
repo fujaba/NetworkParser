@@ -67,9 +67,16 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  * @version 2011-11-24
  */
 public class JsonObject extends SimpleKeyValueList<String, Object> implements Entity {
+	
+	/** The Constant START. */
 	public static final char START = '{';
+	
+	/** The Constant END. */
 	public static final char END = '}';
 
+	/**
+	 * Instantiates a new json object.
+	 */
 	public JsonObject() {
 		this.withAllowDuplicate(false);
 	}
@@ -155,7 +162,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 			return "{}";
 		}
 
-		if (isVisible() == false) {
+		if (!isVisible()) {
 			return "{" + size() + " values}";
 		}
 		converter.add();
@@ -183,7 +190,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	}
 
 	/**
-	 * Set the value to Tokener or pairs of values
+	 * Set the value to Tokener or pairs of values.
 	 *
 	 * @param values a simple String of Value or pairs of key-values
 	 * @return Itself
@@ -211,7 +218,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	}
 
 	/**
-	 * Set the value to Tokener or pairs of values
+	 * Set the value to Tokener or pairs of values.
 	 *
 	 * @param values a simple String of Value or pairs of key-values
 	 * @return Itself
@@ -222,7 +229,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	}
 
 	/**
-	 * Tokener to init the JsonObject
+	 * Tokener to init the JsonObject.
 	 *
 	 * @param entity entity to add values with the tokener
 	 * @return Itself
@@ -233,7 +240,10 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	}
 
 	/**
-	 * Get a new Instance of JsonArray, JsonObject
+	 * Get a new Instance of JsonArray, JsonObject.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
 	 */
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
@@ -243,10 +253,23 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		return new JsonArray();
 	}
 
+	/**
+	 * Checks for.
+	 *
+	 * @param key the key
+	 * @return true, if successful
+	 */
 	public boolean has(String key) {
 		return containsKey(key);
 	}
 
+	/**
+	 * With key value.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the json object
+	 */
 	@Override
 	public JsonObject withKeyValue(Object key, Object value) {
 		super.withKeyValue(key, value);
@@ -288,6 +311,13 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		return this;
 	}
 
+	/**
+	 * With key value.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the json object
+	 */
 	public JsonObject withKeyValue(String key, Object value) {
 		if (value != null) {
 			/* Only add value != null */
@@ -301,20 +331,46 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		return this;
 	}
 
+	/**
+	 * Without.
+	 *
+	 * @param key the key
+	 * @return the entity
+	 */
 	public Entity without(String key) {
 		remove(key);
 		return this;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param value the value
+	 * @return the json object
+	 */
 	public static JsonObject create(String value) {
 		return new JsonObject().withValue(value);
 	}
+	
+	/**
+	 * Creates the child.
+	 *
+	 * @param key the key
+	 * @return the json object
+	 */
 	public JsonObject createChild(String key) {
 		JsonObject child = new JsonObject();
 		this.put(key, child);
 		return child;
 	}
 
+	/**
+	 * Gets the element by.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the element by
+	 */
 	@Override
 	public Entity getElementBy(String key, String value) {
 		if (value == null || this.size() < 1) {
@@ -331,12 +387,24 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		return child;
 	}
 
+	/**
+	 * With type.
+	 *
+	 * @param type the type
+	 * @return the json object
+	 */
 	@Override
 	public JsonObject withType(String type) {
 		this.add(Entity.CLASS, type);
 		return this;
 	}
 
+	/**
+	 * Adds the comment.
+	 *
+	 * @param comment the comment
+	 * @return the json object
+	 */
 	public JsonObject addComment(String comment) {
 		if (comment == null) {
 			return this;
@@ -347,6 +415,12 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		return this;
 	}
 
+	/**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof JsonObject) {
@@ -355,14 +429,14 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 				return false;
 			}
 			for (int i = 0; i < this.size(); i++) {
-				if (this.getKeyByIndex(i).equals(other.getKeyByIndex(i)) == false) {
+				if (!this.getKeyByIndex(i).equals(other.getKeyByIndex(i))) {
 					return false;
 				}
 				Object value = this.getValueByIndex(i);
 				Object otherValue = other.getValueByIndex(i);
 				if (value == null && otherValue != null) {
 					return false;
-				} else if (value != null && value.equals(otherValue) == false) {
+				} else if (value != null && !value.equals(otherValue)) {
 					return false;
 				}
 			}

@@ -26,15 +26,38 @@ THE SOFTWARE.
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
+/**
+ * The listener interface for receiving methodCallback events.
+ * The class that is interested in processing a methodCallback
+ * event implements this interface, and the object created
+ * with that class is registered with a component using the
+ * component's <code>addMethodCallbackListener<code> method. When
+ * the methodCallback event occurs, that object's appropriate
+ * method is invoked.
+ *
+ * @author Stefan
+ */
 public class MethodCallbackListener implements ObjectCondition {
 	private Object element;
 	private String methodName;
 
+	/**
+	 * Instantiates a new method callback listener.
+	 *
+	 * @param element the element
+	 * @param methodName the method name
+	 */
 	public MethodCallbackListener(Object element, String methodName) {
 		this.element = element;
 		this.methodName = methodName;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		ReflectionLoader.call(element, this.methodName, value);

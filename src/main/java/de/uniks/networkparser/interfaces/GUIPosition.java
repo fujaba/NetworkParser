@@ -1,5 +1,6 @@
 package de.uniks.networkparser.interfaces;
 
+// TODO: Auto-generated Javadoc
 /*
 NetworkParser
 The MIT License
@@ -24,19 +25,61 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Enum GUIPosition.
+ *
+ * @author Stefan
+ */
 public enum GUIPosition {
-	CENTER("Center"), EAST("East"), NORTH("North"), NORTHWEST("NorthWest"), NORTHEAST("NorthEast"), SOUTH("South"),
-	SOUTHWEST("SouthWest"), SOUTHEAST("SouthEast"), WEST("West"), ALL("All");
+	
+	/** The center. */
+	CENTER("Center"), 
+ /** The east. */
+ EAST("East"), 
+ /** The north. */
+ NORTH("North"), 
+ /** The northwest. */
+ NORTHWEST("NorthWest"), 
+ /** The northeast. */
+ NORTHEAST("NorthEast"), 
+ /** The south. */
+ SOUTH("South"),
+	
+	/** The southwest. */
+	SOUTHWEST("SouthWest"), 
+ /** The southeast. */
+ SOUTHEAST("SouthEast"), 
+ /** The west. */
+ WEST("West"), 
+ /** The all. */
+ ALL("All");
+	
+	/** The value. */
 	private String value;
 
+	/**
+	 * Instantiates a new GUI position.
+	 *
+	 * @param value the value
+	 */
 	GUIPosition(String value) {
 		this.setValue(value);
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public String getValue() {
 		return value;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param value the new value
+	 */
 	public void setValue(String value) {
 		this.value = value;
 	}

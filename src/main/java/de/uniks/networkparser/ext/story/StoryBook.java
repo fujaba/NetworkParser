@@ -13,15 +13,32 @@ import de.uniks.networkparser.list.SortedSet;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class StoryBook.
+ *
+ * @author Stefan
+ */
 public class StoryBook extends SendableItem implements SendableEntityCreator {
+	
+	/** The Constant PROPERTY_STORIES. */
 	public static final String PROPERTY_STORIES = "stories";
+	
+	/** The Constant PROPERTY_PART. */
 	public static final String PROPERTY_PART = "part";
+	
+	/** The Constant properties. */
 	public static final String[] properties = new String[] { PROPERTY_PART, PROPERTY_STORIES };
 
 	private ModelSet<Line> part = null;
 	private String outputFile;
 	private SortedSet<StoryElement> children = new SortedSet<StoryElement>(true);
 
+	/**
+	 * Write to file.
+	 *
+	 * @param directory the directory
+	 * @return true, if successful
+	 */
 	public boolean writeToFile(String... directory) {
 		String subDir  = "";
 		if(directory != null) {
@@ -56,7 +73,7 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 				if(subFile != null) {
 					
 					refHtml.createChild("p");
-					XMLEntity link = refHtml.createTag("A", refHtml.getBody());
+					XMLEntity link = refHtml.createChild("A", refHtml.getBody());
 					if(subFile.endsWith(".html")) {
 						link.add("href", subFile);
 					}else {
@@ -77,17 +94,17 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		String[] lines = licence.toString().split("\n");
 		if(lines.length>0) {
 			String[] words = lines[0].split(" ");
-			titleHtml.createBodyTag("h1", words[words.length-1]);
-			titleHtml.createBodyTag("h2", "created "+words[words.length-2]);
+			titleHtml.createChild("h1", words[words.length-1]);
+			titleHtml.createChild("h2", "created "+words[words.length-2]);
 			if(licence.indexOf("Permission is hereby granted, free of charge,")>0) {
 				
 				String logoImage="<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M3,1V21M12,1V15M21,1V21M30,1v4m9,2V21\" stroke=\"#a31f34\" stroke-width=\"4\"/><path d=\"M30,7V21\" stroke=\"#8a8b8c\" stroke-width=\"4\"/><path d=\"M37,3H51\" stroke=\"#a31f34\" stroke-width=\"4\"/></svg>";
-				titleHtml.createBodyTag("div", logoImage);
+				titleHtml.createChild("div", logoImage);
 			}
 			
 			HTMLEntity licenceHTML =new HTMLEntity();
 			licenceHTML.withEncoding(HTMLEntity.ENCODING);
-			licenceHTML.createBodyTag("div", licence.toString().replaceAll("\r\n", "<br/>"));
+			licenceHTML.createChild("div", licence.toString().replaceAll("\r\n", "<br/>"));
 			body.createChild("p", "<a href='licence.html' target=\"Main\">Licence</a>");
 			FileBuffer.writeFile(fileName + "licence.html", licenceHTML.toString());
 		}
@@ -108,6 +125,12 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		return result;
 	}
 
+	/**
+	 * With task.
+	 *
+	 * @param value the value
+	 * @return the story book
+	 */
 	public StoryBook withTask(Task... value) {
 		if (value == null) {
 			return this;
@@ -123,6 +146,12 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		return this;
 	}
 
+	/**
+	 * Without task.
+	 *
+	 * @param values the values
+	 * @return the story book
+	 */
 	public StoryBook withoutTask(Task... values) {
 		if (values != null) {
 			for (Task item : values) {
@@ -134,12 +163,24 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		return this;
 	}
 
+	/**
+	 * Creates the task.
+	 *
+	 * @param description the description
+	 * @return the task
+	 */
 	public Task createTask(String description) {
 		Task value = new Task().withDescription(description);
 		withTask(value);
 		return value;
 	}
 
+	/**
+	 * With story.
+	 *
+	 * @param value the value
+	 * @return the story book
+	 */
 	public StoryBook withStory(Story... value) {
 		if (value == null) {
 			return this;
@@ -155,6 +196,12 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		return this;
 	}
 
+	/**
+	 * Without story.
+	 *
+	 * @param values the values
+	 * @return the story book
+	 */
 	public StoryBook withoutStory(Story... values) {
 		if (values == null) {
 			return this;
@@ -167,6 +214,12 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		return this;
 	}
 	
+	/**
+	 * Creates the story step J unit.
+	 *
+	 * @param packageName the package name
+	 * @return the story step J unit
+	 */
 	public StoryStepJUnit createStoryStepJUnit(String... packageName) {
 		StoryStepJUnit storyElement = new StoryStepJUnit();
 		if(packageName != null && packageName.length>0) {
@@ -176,6 +229,12 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		return storyElement;
 	}
 
+	/**
+	 * Creates the story.
+	 *
+	 * @param title the title
+	 * @return the story
+	 */
 	public Story createStory(String... title) {
 		Story story = new Story();
 		if(title != null && title.length>0) {
@@ -184,6 +243,13 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		withStory(story);
 		return story;
 	}
+	
+	/**
+	 * Creates the scenario.
+	 *
+	 * @param title the title
+	 * @return the cucumber
+	 */
 	public Cucumber createScenario(String title) {
 		Story value = new Story().withTitle(title);
 		withStory(value);
@@ -191,10 +257,21 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		return scenario;
 	}
 
+	/**
+	 * Gets the part.
+	 *
+	 * @return the part
+	 */
 	public ModelSet<Line> getPart() {
 		return this.part;
 	}
 
+	/**
+	 * With part.
+	 *
+	 * @param value the value
+	 * @return the story book
+	 */
 	public StoryBook withPart(Line... value) {
 		if (value == null) {
 			return this;
@@ -213,6 +290,12 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		return this;
 	}
 
+	/**
+	 * Without part.
+	 *
+	 * @param values the values
+	 * @return the story book
+	 */
 	public StoryBook withoutPart(Line... values) {
 		if (values != null) {
 			for (Line item : values) {
@@ -224,32 +307,69 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		return this;
 	}
 
+	/**
+	 * Creates the part.
+	 *
+	 * @return the line
+	 */
 	public Line createPart() {
 		Line value = new Line();
 		withPart(value);
 		return value;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return properties;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new StoryBook();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		return false;
 	}
 
+	/**
+	 * Creates the kanban board.
+	 *
+	 * @return the HTML entity
+	 */
 	public HTMLEntity createKanbanBoard() {
 		HTMLEntity element = new HTMLEntity();
 		if (part == null) {
@@ -257,18 +377,18 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		}
 		XMLEntity parent = element.getBody();
 		for (Line child : this.part) {
-			XMLEntity swimLine = element.createTag("div", parent);
-			XMLEntity header = element.createTag("div", swimLine).with("style", "width:100px");
-			XMLEntity button = element.createTag("button", header).with("style",
+			XMLEntity swimLine = element.createChild("div", parent);
+			XMLEntity header = element.createChild("div", swimLine).with("style", "width:100px");
+			XMLEntity button = element.createChild("button", header).with("style",
 					"width:15px;height:15px;margin:0;padding:0;border: none;");
 			button.withValue("-");
-			XMLEntity tag = element.createTag("div", header).with("style", "margin-left:5px;float:right;");
+			XMLEntity tag = element.createChild("div", header).with("style", "margin-left:5px;float:right;");
 			tag.withValue(child.getCaption());
 
 			for (Task task : child.getChildren()) {
-				XMLEntity taskContent = element.createTag("div", swimLine).with("style",
+				XMLEntity taskContent = element.createChild("div", swimLine).with("style",
 						"width:100px;height: 200px;background-color:#ccc;");
-				XMLEntity taskBody = element.createTag("div", taskContent).with("style",
+				XMLEntity taskBody = element.createChild("div", taskContent).with("style",
 						"width:100px;height: 200px;background-color:#ccc;");
 				element.createTable(taskBody, "border:1px solid black", "background-color:#f00;width:10px", "", "",
 						task.getName());
@@ -277,6 +397,12 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		return element;
 	}
 
+	/**
+	 * Creates the from file.
+	 *
+	 * @param fileName the file name
+	 * @return the story book
+	 */
 	public StoryBook createFromFile(String fileName) {
 		CharacterBuffer readFile = FileBuffer.readFile(fileName);
 		SimpleList<String> lines = readFile.splitStrings('\n');
@@ -327,11 +453,23 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		return this;
 	}
 
+	/**
+	 * With path.
+	 *
+	 * @param string the string
+	 * @return the story book
+	 */
 	public StoryBook withPath(String string) {
 		this.outputFile = string;
 		return this;
 	}
 
+	/**
+	 * Gets the class model.
+	 *
+	 * @param packageName the package name
+	 * @return the class model
+	 */
 	public ClassModel getClassModel(String packageName) {
 		ClassModel classModel = new ClassModel(packageName);
 		for(StoryElement element :this.children) {

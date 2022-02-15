@@ -30,7 +30,8 @@ import java.util.zip.GZIPInputStream;
 import de.uniks.networkparser.NetworkParserLog;
 
 /**
- * Simple Class for Tar-Files s InputStream
+ * Simple Class for Tar-Files s InputStream.
+ *
  * @author Stefan Lindel
  */
 public class TarArchiveInputStream extends InputStream {
@@ -73,7 +74,7 @@ public class TarArchiveInputStream extends InputStream {
   private NetworkParserLog logger;
 
   /**
-   * Method to decompress a gzip file
+   * Method to decompress a gzip file.
    *
    * @param gZippedFile mFileName
    * @return a TarArchiveInputStream
@@ -621,7 +622,7 @@ public class TarArchiveInputStream extends InputStream {
   }
 
   /**
-   * Get the current TAR Archive Entry that this input stream is processing
+   * Get the current TAR Archive Entry that this input stream is processing.
    *
    * @return The current Archive Entry
    */

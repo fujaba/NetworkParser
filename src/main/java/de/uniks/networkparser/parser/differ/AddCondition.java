@@ -9,8 +9,16 @@ import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.GraphMatcher;
 
+/**
+ * The Class AddCondition.
+ *
+ * @author Stefan
+ */
 public class AddCondition extends MatchCondition {
 
+	/**
+	 * Instantiates a new adds the condition.
+	 */
 	public AddCondition() {
 		super(true);
 	}
@@ -150,6 +158,11 @@ public class AddCondition extends MatchCondition {
 		return super.checkCondition(matches, match);
 	}
 
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
 	@Override
 	public String getAction() {
 		return SendableEntityCreator.NEW;

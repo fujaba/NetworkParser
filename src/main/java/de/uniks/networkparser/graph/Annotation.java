@@ -7,18 +7,22 @@ import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.list.SimpleList;
 
 /**
- * Annotation of Methods or Attributes or Classes
+ * Annotation of Methods or Attributes or Classes.
  *
  * @author Stefan Lindel
- *
  */
 public class Annotation extends GraphMember {
+	
+	/** The Constant DEPRECATED. */
 	public static final Annotation DEPRECATED = new Annotation("Deprecated");
 
+	/** The Constant OVERRIDE. */
 	public static final Annotation OVERRIDE = new Annotation("Override");
 
+	/** The Constant SAFE_VARGARGS. */
 	public static final Annotation SAFE_VARGARGS = new Annotation("SafeVarargs");
 
+	/** The Constant SUPPRESS_WARNINGS. */
 	public static final Annotation SUPPRESS_WARNINGS = new Annotation("SuppressWarnings");
 
 	private boolean keyValue;
@@ -28,10 +32,22 @@ public class Annotation extends GraphMember {
 	Annotation() {
 	}
 
+	/**
+	 * Instantiates a new annotation.
+	 *
+	 * @param name the name
+	 */
 	public Annotation(String name) {
 		super.with(name);
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param value the value
+	 * @param values the values
+	 * @return the annotation
+	 */
 	public static Annotation create(String value, String... values) {
 		Annotation annotation = new Annotation();
 		if (values == null || values.length < 1) {
@@ -47,6 +63,13 @@ public class Annotation extends GraphMember {
 		return annotation;
 	}
 
+	/**
+	 * With key value.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the annotation
+	 */
 	public Annotation withKeyValue(String key, String value) {
 		this.name = key;
 		this.keyValue = true;
@@ -62,12 +85,23 @@ public class Annotation extends GraphMember {
 		return this;
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @return the annotation
+	 */
 	public Annotation newInstance() {
 		Annotation annotation = new Annotation();
 		annotation.decode(this.name);
 		return annotation;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param name the name
+	 * @return the annotation
+	 */
 	/* Redirect */
 	@Override
 	public Annotation with(String name) {
@@ -75,6 +109,12 @@ public class Annotation extends GraphMember {
 		return this;
 	}
 
+	/**
+	 * Decode.
+	 *
+	 * @param value the value
+	 * @return the annotation
+	 */
 	public Annotation decode(String value) {
 		CharacterBuffer tokener = new CharacterBuffer();
 		tokener.with(value);
@@ -82,6 +122,12 @@ public class Annotation extends GraphMember {
 		return this;
 	}
 
+	/**
+	 * With next.
+	 *
+	 * @param annotation the annotation
+	 * @return the annotation
+	 */
 	public Annotation withNext(Annotation annotation) {
 		this.nextAnnotaton = annotation;
 		return this;
@@ -183,6 +229,11 @@ public class Annotation extends GraphMember {
 		return this;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public SimpleList<Annotation> getValue() {
 		SimpleList<Annotation> list = new SimpleList<Annotation>();
 		if (children != null) {
@@ -200,6 +251,12 @@ public class Annotation extends GraphMember {
 		return list;
 	}
 
+	/**
+	 * With import.
+	 *
+	 * @param item the item
+	 * @return the annotation
+	 */
 	public Annotation withImport(String item) {
 		Import importItem = Import.create(item);
 		if (this.children == null) {
@@ -216,6 +273,11 @@ public class Annotation extends GraphMember {
 		return this;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -246,14 +308,30 @@ public class Annotation extends GraphMember {
 		return sb.toString();
 	}
 
+	/**
+	 * Checks for next.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean hasNext() {
 		return nextAnnotaton != null;
 	}
 
+	/**
+	 * Next.
+	 *
+	 * @return the annotation
+	 */
 	public Annotation next() {
 		return nextAnnotaton;
 	}
 
+	/**
+	 * Gets the annotation.
+	 *
+	 * @param key the key
+	 * @return the annotation
+	 */
 	public Annotation getAnnotation(String key) {
 		if (key == null) {
 			return null;
@@ -267,14 +345,30 @@ public class Annotation extends GraphMember {
 		return nextAnnotaton.getAnnotation(key);
 	}
 
+	/**
+	 * Gets the parent.
+	 *
+	 * @return the parent
+	 */
 	public GraphMember getParent() {
 		return (GraphMember) parentNode;
 	}
 
+	/**
+	 * Gets the scope.
+	 *
+	 * @return the scope
+	 */
 	public String getScope() {
 		return scope;
 	}
 
+	/**
+	 * With scope.
+	 *
+	 * @param scope the scope
+	 * @return the annotation
+	 */
 	public Annotation withScope(String scope) {
 		this.scope = scope;
 		return this;

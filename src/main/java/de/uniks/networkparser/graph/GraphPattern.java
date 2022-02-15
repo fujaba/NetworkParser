@@ -24,19 +24,41 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class GraphPattern.
+ *
+ * @author Stefan
+ */
 public class GraphPattern extends GraphEntity {
 	private String bounds;
 
+	/**
+	 * With.
+	 *
+	 * @param id the id
+	 * @return the graph pattern
+	 */
 	/* GETTER AND SETTER */
 	public GraphPattern with(String id) {
 		super.with(id);
 		return this;
 	}
 
+	/**
+	 * Gets the bounds.
+	 *
+	 * @return the bounds
+	 */
 	public String getBounds() {
 		return bounds;
 	}
 
+	/**
+	 * With bounds.
+	 *
+	 * @param bounds the bounds
+	 * @return the graph pattern
+	 */
 	public GraphPattern withBounds(String bounds) {
 		this.bounds = bounds;
 		return this;

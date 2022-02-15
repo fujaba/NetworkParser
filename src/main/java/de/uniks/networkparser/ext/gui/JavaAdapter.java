@@ -46,16 +46,31 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class JavaAdapter.
+ *
+ * @author Stefan
+ */
 public class JavaAdapter implements JavaViewAdapter, Runnable {
 	private SimpleKeyValueList<Object, String> callBack = new SimpleKeyValueList<Object, String>();
 	protected JavaBridge owner;
 	protected Object webView;
 	protected Object webEngine;
 	private SimpleList<String> queue = new SimpleList<String>();
+	
+	/** The Constant TYPE_EXPORT. */
 	public static final String TYPE_EXPORT = "EXPORT";
+	
+	/** The Constant TYPE_EDITOR. */
 	public static final String TYPE_EDITOR = "EDITOR";
+	
+	/** The Constant TYPE_EXPORTALL. */
 	public static final String TYPE_EXPORTALL = "EXPORTALL";
+	
+	/** The Constant TYPE_CONTENT. */
 	public static final String TYPE_CONTENT = "CONTENT";
+	
+	/** The Constant TYPE_EDOBS. */
 	public static final String TYPE_EDOBS = "EDOBS";
 	protected String type = TYPE_EXPORT;
 	private HTMLEntity entity;
@@ -63,11 +78,23 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	private Runnable newTask;
 	private NetworkParserLog logger;
 
+	/**
+	 * With owner.
+	 *
+	 * @param owner the owner
+	 * @return the java adapter
+	 */
 	public JavaAdapter withOwner(JavaBridge owner) {
 		this.owner = owner;
 		return this;
 	}
 
+	/**
+	 * Load.
+	 *
+	 * @param item the item
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean load(Object item) {
 		if (item instanceof String) {
@@ -136,6 +163,9 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		return true;
 	}
 
+	/**
+	 * Run.
+	 */
 	@Override
 	public void run() {
 		if (doneLatch != null && newTask != null) {
@@ -154,6 +184,12 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		}
 	}
 
+	/**
+	 * Register listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean registerListener(ObjectCondition listener) {
 		Object engine = getWebEngine();
 		if (engine != null) {
@@ -174,6 +210,12 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		return true;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	/* CallBack Functions */
 	@Override
 	public boolean update(Object value) {
@@ -193,6 +235,12 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		return false;
 	}
 
+	/**
+	 * Changed.
+	 *
+	 * @param event the event
+	 * @return true, if successful
+	 */
 	public boolean changed(SimpleEvent event) {
 		if (event != null) {
 			if (SUCCEEDED.equals("" + event.getNewValue())) {
@@ -204,6 +252,11 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		return false;
 	}
 
+	/**
+	 * Show alert.
+	 *
+	 * @param value the value
+	 */
 	public void showAlert(String value) {
 		if (value != null && value.length() > 0) {
 			if (logger != null) {
@@ -212,6 +265,12 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		}
 	}
 
+	/**
+	 * Execute change.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean executeChange(String value) {
 		owner.setApplyingChangeMSG(true);
 		JsonObject json = JsonObject.create(value);
@@ -308,6 +367,11 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		return result;
 	}
 
+	/**
+	 * Gets the web view.
+	 *
+	 * @return the web view
+	 */
 	@Override
 	public Object getWebView() {
 		if (webView == null) {
@@ -323,6 +387,11 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		return webView;
 	}
 
+	/**
+	 * Gets the web engine.
+	 *
+	 * @return the web engine
+	 */
 	@Override
 	public Object getWebEngine() {
 		if (webEngine == null) {
@@ -342,6 +411,9 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		}
 	}
 
+	/**
+	 * Load finish.
+	 */
 	@Override
 	public void loadFinish() {
 		addAdapter(this);
@@ -355,6 +427,15 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		this.queue = null; /* Disable QUEUE */
 	}
 
+	/**
+	 * Adds the listener.
+	 *
+	 * @param control the control
+	 * @param type the type
+	 * @param functionName the function name
+	 * @param callBackClazz the call back clazz
+	 * @return true, if successful
+	 */
 	public boolean addListener(Control control, EventTypes type, String functionName, Object callBackClazz) {
 		if(this.owner == null) {
 			return false;
@@ -372,6 +453,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	}
 
 	/**
+	 * Gets the call back name.
 	 *
 	 * @param clazz Class for CallBack
 	 * @return return JavascriptCallbackname
@@ -387,12 +469,23 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		return callBackName;
 	}
 
+	/**
+	 * Execute.
+	 *
+	 * @param runnable the runnable
+	 */
 	public static void execute(final Runnable runnable) {
 		if (Os.isReflectionTest() == false) {
 			ReflectionLoader.call(ReflectionLoader.PLATFORMIMPL, "startup", Runnable.class, runnable);
 		}
 	}
 
+	/**
+	 * Execute and wait.
+	 *
+	 * @param runnable the runnable
+	 * @return the java adapter
+	 */
 	public static JavaAdapter executeAndWait(final Runnable runnable) {
 		if (runnable == null) {
 			return null;

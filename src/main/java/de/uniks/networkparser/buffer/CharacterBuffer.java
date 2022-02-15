@@ -49,6 +49,12 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return buffer[index];
   }
 
+  /**
+   * Byte at.
+   *
+   * @param index the index
+   * @return the byte
+   */
   @Override
   public byte byteAt(int index) {
     if ((index < 0) || (index + start >= length())) {
@@ -84,7 +90,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * Set the currentVlaue to Buffer
+   * Set the currentVlaue to Buffer.
+   *
    * @param value String of Value
    * @return the CharacterBuffer
    */
@@ -98,6 +105,11 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return this;
   }
 
+  /**
+   * To char array.
+   *
+   * @return the char[]
+   */
   public char[] toCharArray() {
     char[] result = new char[this.length];
     for (int i = start; i < this.length; i++) {
@@ -106,6 +118,14 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return result;
   }
 
+  /**
+   * Replace.
+   *
+   * @param start the start
+   * @param end the end
+   * @param replace the replace
+   * @return true, if successful
+   */
   public boolean replace(int start, int end, String replace) {
     int pos = 0;
     if (replace == null || buffer == null || start > end || start > buffer.length) {
@@ -162,6 +182,12 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return true;
   }
 
+  /**
+   * Replace.
+   *
+   * @param search the search
+   * @param replace the replace
+   */
   public void replace(char search, char replace) {
     int len = this.length + start;
     int pos = position + start;
@@ -186,6 +212,13 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     }
   }
 
+  /**
+   * Replace.
+   *
+   * @param search the search
+   * @param replace the replace
+   * @return true, if successful
+   */
   public boolean replace(String search, String replace) {
     if (search == null || search.length() < 1) {
       return false;
@@ -274,7 +307,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * Init the new CharacterBuffer
+   * Init the new CharacterBuffer.
+   *
    * @param values the reference CharArray
    * @return the new CharacterBuffer
    */
@@ -292,12 +326,24 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return this;
   }
 
+  /**
+   * With line.
+   *
+   * @param value the value
+   * @return the character buffer
+   */
   public CharacterBuffer withLine(CharSequence value) {
     with(value);
     with(BaseItem.CRLF);
     return this;
   }
 
+  /**
+   * With length.
+   *
+   * @param len the len
+   * @return the character buffer
+   */
   @Override
   public CharacterBuffer withLength(int len) {
     withBufferLength(len);
@@ -305,6 +351,12 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return this;
   }
 
+  /**
+   * With buffer length.
+   *
+   * @param len the len
+   * @return the character buffer
+   */
   public CharacterBuffer withBufferLength(int len) {
     if (this.buffer == null) {
       this.buffer = new char[len];
@@ -321,7 +373,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * Set the Current Startposition
+   * Set the Current Startposition.
+   *
    * @param pos The new Startposition
    * @return This Component
    */
@@ -340,7 +393,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * Init the new CharList
+   * Init the new CharList.
+   *
    * @param values the reference CharArray
    * @param start the Startposition for the new CharacterBuffer
    * @param end the Endposition for the new CharacterBuffer
@@ -368,7 +422,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * Init the new CharList
+   * Init the new CharList.
+   *
    * @param values the reference CharArray
    * @param start the Startposition for the new CharacterBuffer
    * @param length the Endposition for the new CharacterBuffer
@@ -398,7 +453,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * Init the new CharList
+   * Init the new CharList.
+   *
    * @param values the reference CharArray
    * @param start the Startposition for the new CharacterBuffer
    * @param length the Endposition for the new CharacterBuffer
@@ -432,6 +488,13 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return this;
   }
 
+  /**
+   * Write.
+   *
+   * @param values the values
+   * @param length the length
+   * @return the character buffer
+   */
   public CharacterBuffer write(byte[] values, int length) {
     if (values == null) {
       return this;
@@ -461,7 +524,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * Init the new CharacterBuffer
+   * Init the new CharacterBuffer.
+   *
    * @param values the reference CharSequence
    * @param start the Startposition for the new CharacterBuffer
    * @param end the Endposition for the new CharacterBuffer
@@ -506,7 +570,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * Init the new CharacterBuffer
+   * Init the new CharacterBuffer.
+   *
    * @param items the reference CharSequence
    * @return the new CharacterBuffer
    */
@@ -545,18 +610,37 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return this;
   }
 
+  /**
+   * With.
+   *
+   * @param value the value
+   * @return the character buffer
+   */
   public CharacterBuffer with(int value) {
     String bytes = "" + value;
     this.with(bytes);
     return this;
   }
 
+  /**
+   * With.
+   *
+   * @param value the value
+   * @return the character buffer
+   */
   public CharacterBuffer with(long value) {
     String bytes = "" + value;
     this.with(bytes);
     return this;
   }
 
+  /**
+   * With collection.
+   *
+   * @param splitter the splitter
+   * @param values the values
+   * @return the character buffer
+   */
   public CharacterBuffer withCollection(String splitter, Object... values) {
     if (values == null) {
       return this;
@@ -584,7 +668,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * Append a new Character to CharacterBuffer
+   * Append a new Character to CharacterBuffer.
+   *
    * @param item a new StartItem
    * @return CharacterBuffer Instance
    */
@@ -611,7 +696,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * Append a new Character to CharacterBuffer
+   * Append a new Character to CharacterBuffer.
+   *
    * @param item a new StartItem
    * @param newLine add newLine to Buffer at the end
    * @return CharacterBuffer Instance
@@ -659,7 +745,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * Init the new CharList
+   * Init the new CharList.
+   *
    * @param value the reference CharSequence
    * @return the new CharList
    */
@@ -681,7 +768,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * Init the new CharacterBuffer
+   * Init the new CharacterBuffer.
+   *
    * @param value the reference CharSequence
    * @return the new CharacterBuffer
    */
@@ -698,10 +786,22 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return this;
   }
 
+  /**
+   * Starts with.
+   *
+   * @param prefix the prefix
+   * @return true, if successful
+   */
   public boolean startsWith(CharSequence prefix) {
     return this.startsWith(prefix, 0, false);
   }
   
+  /**
+   * Skip.
+   *
+   * @param values the values
+   * @return true, if successful
+   */
   public boolean skip(CharSequence... values) {
       if(values == null || values.length<1) {
           return true;
@@ -722,6 +822,14 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
       return found;
   }
 
+  /**
+   * Starts with.
+   *
+   * @param prefix the prefix
+   * @param toffset the toffset
+   * @param ignoreCase the ignore case
+   * @return true, if successful
+   */
   public boolean startsWith(CharSequence prefix, int toffset, boolean ignoreCase) {
     if (buffer == null) {
       return false;
@@ -760,6 +868,12 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return buffer.length - start;
   }
 
+  /**
+   * Removes the.
+   *
+   * @param position the position
+   * @return the char
+   */
   public char remove(int position) {
     if (position < 0 || this.buffer == null || position > this.buffer.length) {
       return 0;
@@ -780,12 +894,24 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return oldChar;
   }
 
+  /**
+   * Trim start.
+   *
+   * @param pos the pos
+   * @return the character buffer
+   */
   public CharacterBuffer trimStart(int pos) {
     this.start += pos;
     this.length -= pos;
     return this;
   }
 
+  /**
+   * Trim end.
+   *
+   * @param pos the pos
+   * @return the character buffer
+   */
   public CharacterBuffer trimEnd(int pos) {
     this.length -= pos;
     return this;
@@ -815,6 +941,12 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return change;
   }
 
+  /**
+   * Rtrim.
+   *
+   * @param items the items
+   * @return the character buffer
+   */
   public CharacterBuffer rtrim(char... items) {
     validateValue();
     if (items != null) {
@@ -845,6 +977,11 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return this;
   }
 
+  /**
+   * Trim.
+   *
+   * @return the character buffer
+   */
   public CharacterBuffer trim() {
     if (buffer == null) {
       return this;
@@ -865,6 +1002,12 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return this;
   }
 
+  /**
+   * Equals text.
+   *
+   * @param other the other
+   * @return true, if successful
+   */
   public boolean equalsText(char... other) {
     if (other == null) {
       return true;
@@ -902,8 +1045,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * Get Levenstein distance
-   * 
+   * Get Levenstein distance.
+   *
    * @param t the other String
    * @return Levenstein distance 0 both String are equals pro Case difference ( + 0.01 ) pro
    *         difference ( + 1 ) if this contains t Levenstein is negativ
@@ -986,6 +1129,11 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return item;
   }
 
+  /**
+   * Checks if is empty character.
+   *
+   * @return true, if is empty character
+   */
   public boolean isEmptyCharacter() {
     if (super.isEmpty() || start > length || start < 0) {
       return true;
@@ -1005,6 +1153,13 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return len == 0;
   }
 
+  /**
+   * With repeat.
+   *
+   * @param string the string
+   * @param rest the rest
+   * @return true, if successful
+   */
   public boolean withRepeat(String string, int rest) {
     if (string == null) {
       return false;
@@ -1033,8 +1188,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * Init the new CharacterBuffer
-   * 
+   * Init the new CharacterBuffer.
+   *
    * @param items the reference CharSequence
    * @return the new CharacterBuffer
    */
@@ -1082,8 +1237,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * Init the new CharList
-   * 
+   * Init the new CharList.
+   *
    * @param src the reference CharSequence
    * @return the new CharList
    */
@@ -1108,6 +1263,9 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return this;
   }
 
+  /**
+   * Trim size.
+   */
   public void trimSize() {
     if (length() >= 0) {
       char[] array = new char[length];
@@ -1120,6 +1278,11 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     }
   }
 
+  /**
+   * To string.
+   *
+   * @return the string
+   */
   @Override
   public String toString() {
     if (length < 1) {
@@ -1128,6 +1291,12 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return new String(buffer, start, length);
   }
 
+  /**
+   * Equals.
+   *
+   * @param other the other
+   * @return true, if successful
+   */
   public boolean equals(CharSequence other) {
     if (other == null || other.length() != length) {
       return false;
@@ -1135,6 +1304,12 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return startsWith(other, 0, false);
   }
 
+  /**
+   * Equals ignore case.
+   *
+   * @param other the other
+   * @return true, if successful
+   */
   public boolean equalsIgnoreCase(CharSequence other) {
     if (other == null || other.length() != length) {
       return false;
@@ -1142,14 +1317,33 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return startsWith(other, 0, true);
   }
 
+  /**
+   * Index of.
+   *
+   * @param ch the ch
+   * @return the int
+   */
   public int indexOf(int ch) {
     return indexOf(ch, 0);
   }
 
+  /**
+   * Index of.
+   *
+   * @param value the value
+   * @return the int
+   */
   public int indexOf(CharSequence value) {
     return indexOf(value, 0);
   }
 
+  /**
+   * Index of.
+   *
+   * @param ch the ch
+   * @param fromIndex the from index
+   * @return the int
+   */
   public int indexOf(int ch, int fromIndex) {
     final int max = length();
     if (fromIndex < 0) {
@@ -1166,6 +1360,13 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return -1;
   }
 
+  /**
+   * Index of.
+   *
+   * @param str the str
+   * @param fromIndex the from index
+   * @return the int
+   */
   public int indexOf(CharSequence str, int fromIndex) {
     final int max = length();
     if (fromIndex < 0) {
@@ -1192,6 +1393,12 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return -1;
   }
 
+  /**
+   * Last index of.
+   *
+   * @param ch the ch
+   * @return the int
+   */
   public int lastIndexOf(char ch) {
     for (int i = length - 1; i >= start; i--) {
       if (buffer[i] == ch) {
@@ -1202,7 +1409,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * get the () values
+   * get the () values.
    *
    * @param start Startcharacter
    * @param end Endcharacter
@@ -1237,6 +1444,13 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return null;
   }
 
+  /**
+   * Ends with.
+   *
+   * @param string the string
+   * @param ignoreCase the ignore case
+   * @return true, if successful
+   */
   public boolean endsWith(CharSequence string, boolean ignoreCase) {
     if (string == null) {
       return true;
@@ -1248,12 +1462,24 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return startsWith(string, pos, ignoreCase);
   }
 
+  /**
+   * Sets the next string.
+   *
+   * @param property the property
+   * @param pos the pos
+   */
   public void setNextString(CharSequence property, int pos) {
     this.withLength(pos);
     this.start = 0;
     this.with(property);
   }
 
+  /**
+   * Creates the.
+   *
+   * @param value the value
+   * @return the character buffer
+   */
   public static CharacterBuffer create(CharSequence value) {
     if (value instanceof CharacterBuffer) {
       return (CharacterBuffer) value;
@@ -1265,6 +1491,11 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return buffer;
   }
 
+  /**
+   * To current string.
+   *
+   * @return the string
+   */
   public String toCurrentString() {
     if (validateValue() || position > length) {
       return "";
@@ -1273,6 +1504,13 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return new String(buffer, position, length - position);
   }
 
+  /**
+   * Insert.
+   *
+   * @param offset the offset
+   * @param values the values
+   * @return the character buffer
+   */
   public CharacterBuffer insert(int offset, String values) {
     if ((offset < 0) || (offset > length())) {
       return this;
@@ -1294,6 +1532,13 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return this;
   }
 
+  /**
+   * Adds the values.
+   *
+   * @param sep the sep
+   * @param values the values
+   * @return true, if successful
+   */
   public boolean addValues(char sep, String... values) {
     if (values == null) {
       return false;
@@ -1311,6 +1556,12 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return true;
   }
 
+  /**
+   * Adds the.
+   *
+   * @param values the values
+   * @return true, if successful
+   */
   public boolean add(Object... values) {
     if (values == null) {
       return true;
@@ -1328,6 +1579,11 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return addValues;
   }
 
+  /**
+   * Prints the error.
+   *
+   * @param msg the msg
+   */
   @Override
   public void printError(String msg) {
     int startPos = 0;
@@ -1344,26 +1600,54 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     }
   }
 
+  /**
+   * Gets the new list.
+   *
+   * @param keyValue the key value
+   * @return the new list
+   */
   @Override
   public CharacterBuffer getNewList(boolean keyValue) {
     return new CharacterBuffer();
   }
 
+  /**
+   * Size.
+   *
+   * @return the int
+   */
   @Override
   public int size() {
     return length();
   }
 
+  /**
+   * To string.
+   *
+   * @param converter the converter
+   * @return the string
+   */
   @Override
   public String toString(Converter converter) {
     return toString();
   }
 
+  /**
+   * New line.
+   *
+   * @return the character buffer
+   */
   public CharacterBuffer newLine() {
     this.with(BaseItem.CRLF);
     return this;
   }
 
+  /**
+   * Gets the line.
+   *
+   * @param pos the pos
+   * @return the line
+   */
   public CharacterBuffer getLine(int pos) {
     CharacterBuffer buffer = new CharacterBuffer();
     if (pos > 0 && pos < length()) {
@@ -1384,8 +1668,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   }
 
   /**
-   * Split Strings
-   * 
+   * Split Strings.
+   *
    * @param split Strng for Spliting
    * @return a List of String Parts
    */
@@ -1412,16 +1696,34 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     return result;
   }
 
+  /**
+   * Length.
+   *
+   * @return the int
+   */
   @Override
   public int length() {
     validateValue();
     return super.length();
   }
 
+  /**
+   * Append.
+   *
+   * @param value the value
+   * @return true, if successful
+   */
   public boolean append(CharSequence value) {
     return this.add(value);
   }
 
+  /**
+   * Sets the char at.
+   *
+   * @param pos the pos
+   * @param character the character
+   * @return true, if successful
+   */
   public boolean setCharAt(int pos, char character) {
     if (pos < 0 || pos > buffer.length) {
       return false;
@@ -1429,6 +1731,13 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     buffer[pos] = character;
     return true;
   }
+	
+	/**
+	 * Adds the stream.
+	 *
+	 * @param stream the stream
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean addStream(InputStream stream) {
 		return false;

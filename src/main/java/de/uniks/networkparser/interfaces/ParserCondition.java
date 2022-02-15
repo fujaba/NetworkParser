@@ -25,20 +25,64 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface ParserCondition.
+ * @author Stefan
+ */
 public interface ParserCondition extends ObjectCondition {
+	
+	/** The Constant SPLITEND. */
 	public static final char SPLITEND = '}';
+	
+	/** The Constant SPLITSTART. */
 	public static final char SPLITSTART = '{';
+	
+	/** The Constant ENTER. */
 	public static final char ENTER = '=';
+	
+	/** The Constant SPACE. */
 	public static final char SPACE = ' ';
+	
+	/** The Constant NOTIFY. */
 	public static final String NOTIFY = "notify";
 
-	public Object getValue(LocalisationInterface variables);
+	/**
+	 * Gets the value.
+	 *
+	 * @param variables the variables
+	 * @return the value
+	 */
+	Object getValue(LocalisationInterface variables);
 
-	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate);
+	/**
+	 * Creates the.
+	 *
+	 * @param buffer the buffer
+	 * @param parser the parser
+	 * @param customTemplate the custom template
+	 */
+	void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate);
 
-	public boolean isExpression();
+	/**
+	 * Checks if is expression.
+	 *
+	 * @return true, if is expression
+	 */
+	boolean isExpression();
 
-	public String getKey();
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
+	String getKey();
 
-	public Object getSendableInstance(boolean isExpression);
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param isExpression the is expression
+	 * @return the sendable instance
+	 */
+	Object getSendableInstance(boolean isExpression);
 }

@@ -6,10 +6,23 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 
+/**
+ * The Class DiagramEditorTask.
+ *
+ * @author Stefan
+ */
 public class DiagramEditorTask implements Runnable, UncaughtExceptionHandler {
+	
+	/** The Constant TYPE_OPEN. */
 	public static final String TYPE_OPEN = "open";
+	
+	/** The Constant TYPE_SCREENDUMP. */
 	public static final String TYPE_SCREENDUMP = "screendump";
+	
+	/** The Constant TYPE_EXIT. */
 	public static final String TYPE_EXIT = "exit";
+	
+	/** The Constant TYPE_EXCEPTION. */
 	public static final String TYPE_EXCEPTION = "exception";
 	private DiagramEditor editor;
 	private boolean wait;
@@ -20,6 +33,12 @@ public class DiagramEditorTask implements Runnable, UncaughtExceptionHandler {
 	private int value;
 	private String msg;
 
+	/**
+	 * Creates the exception.
+	 *
+	 * @param editor the editor
+	 * @return the diagram editor task
+	 */
 	public static DiagramEditorTask createException(DiagramEditor editor) {
 		DiagramEditorTask task = new DiagramEditorTask();
 		task.type = TYPE_EXCEPTION;
@@ -27,6 +46,13 @@ public class DiagramEditorTask implements Runnable, UncaughtExceptionHandler {
 		return task;
 	}
 
+	/**
+	 * Creates the exit.
+	 *
+	 * @param exitCode the exit code
+	 * @param msg the msg
+	 * @return the diagram editor task
+	 */
 	public static DiagramEditorTask createExit(int exitCode, String msg) {
 		DiagramEditorTask task = new DiagramEditorTask();
 		task.type = TYPE_EXIT;
@@ -35,6 +61,12 @@ public class DiagramEditorTask implements Runnable, UncaughtExceptionHandler {
 		return task;
 	}
 
+	/**
+	 * Creates the screen dump.
+	 *
+	 * @param editor the editor
+	 * @return the diagram editor task
+	 */
 	public static DiagramEditorTask createScreenDump(DiagramEditor editor) {
 		DiagramEditorTask task = new DiagramEditorTask();
 		task.type = TYPE_SCREENDUMP;
@@ -42,6 +74,16 @@ public class DiagramEditorTask implements Runnable, UncaughtExceptionHandler {
 		return task;
 	}
 
+	/**
+	 * Creates the open.
+	 *
+	 * @param editor the editor
+	 * @param wait the wait
+	 * @param entity the entity
+	 * @param width the width
+	 * @param height the height
+	 * @return the diagram editor task
+	 */
 	public static DiagramEditorTask createOpen(DiagramEditor editor, boolean wait, Object entity, int width,
 			int height) {
 		DiagramEditorTask task = new DiagramEditorTask();
@@ -54,6 +96,9 @@ public class DiagramEditorTask implements Runnable, UncaughtExceptionHandler {
 		return task;
 	}
 
+	/**
+	 * Run.
+	 */
 	@Override
 	public void run() {
 		if (TYPE_OPEN.equals(this.type)) {
@@ -80,6 +125,12 @@ public class DiagramEditorTask implements Runnable, UncaughtExceptionHandler {
 		}
 	}
 
+	/**
+	 * Uncaught exception.
+	 *
+	 * @param t the t
+	 * @param e the e
+	 */
 	@Override
 	public void uncaughtException(Thread t, Throwable e) {
 		if (this.editor != null) {

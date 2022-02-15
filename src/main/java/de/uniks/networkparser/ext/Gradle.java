@@ -33,30 +33,65 @@ import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLContainer;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class Gradle.
+ *
+ * @author Stefan
+ */
 public class Gradle implements ObjectCondition {
   private static final String GRADLE_PROPERTIES = "gradle-wrapper.properties";
   private boolean download = true;
+  
+  /** The Constant REFLECTIONTEST. */
   public static final String REFLECTIONTEST = "test";
+  
+  /** The Constant GIT. */
   public static final String GIT = "git";
+  
+  /** The Constant GRADLE. */
   public static final String GRADLE = "gradle";
   private String path;
   private String projectPath;
   private NetworkParserLog logger;
   private final static String ZIPNAME = "gradle.zip";
 
+  /**
+   * Gets the project path.
+   *
+   * @return the project path
+   */
   public String getProjectPath() {
     return projectPath;
   }
 
+  /**
+   * Gets the path.
+   *
+   * @return the path
+   */
   public String getPath() {
     return path;
   }
 
+  /**
+   * With path.
+   *
+   * @param value the value
+   * @return the gradle
+   */
   public Gradle withPath(String value) {
     this.path = value;
     return this;
   }
 
+  /**
+   * Inits the project.
+   *
+   * @param jarFile the jar file
+   * @param projectName the project name
+   * @param licence the licence
+   * @return true, if successful
+   */
   public boolean initProject(String jarFile, String projectName, String licence) {
     if (Os.isReflectionTest() || jarFile == null || projectName == null) {
       return false;
@@ -146,6 +181,12 @@ public class Gradle implements ObjectCondition {
     return this;
   }
 
+  /**
+   * Write project path.
+   *
+   * @param path the path
+   * @param name the name
+   */
   public void writeProjectPath(String path, String name) {
     if (Os.isReflectionTest() || path == null || name == null) {
       return;
@@ -200,6 +241,12 @@ public class Gradle implements ObjectCondition {
     FileBuffer.writeFile(path + ".settings\\org.eclipse.buildship.core.prefs", buffer.toString());
   }
 
+  /**
+   * Gets the type.
+   *
+   * @param type the type
+   * @return the type
+   */
   public static Object getType(String type) {
     if (REFLECTIONTEST.equals(type)) {
       return new ReflectionBlackBoxTester();
@@ -213,6 +260,13 @@ public class Gradle implements ObjectCondition {
     return null;
   }
 
+  /**
+   * Execute.
+   *
+   * @param item the item
+   * @param fileName the file name
+   * @return true, if successful
+   */
   public boolean execute(Object item, String... fileName) {
     if (item == null) {
       return false;
@@ -267,6 +321,13 @@ public class Gradle implements ObjectCondition {
     return name;
   }
 
+  /**
+   * Prints the graph.
+   *
+   * @param buffer the buffer
+   * @param entry the entry
+   * @param edges the edges
+   */
   public static void printGraph(CharacterBuffer buffer, Object entry, Set<String> edges) {
     LinkedList<Object> q = new LinkedList<Object>();
     q.add(entry);
@@ -314,6 +375,14 @@ public class Gradle implements ObjectCondition {
     }
   }
 
+  /**
+   * Write gradle.
+   *
+   * @param path the path
+   * @param projectName the project name
+   * @param licence the licence
+   * @return true, if successful
+   */
   public boolean writeGradle(String path, String projectName, String licence) {
     if (Os.isReflectionTest() || path == null) {
       return false;
@@ -393,6 +462,13 @@ public class Gradle implements ObjectCondition {
     return true;
   }
 
+  /**
+   * Extract gradle files.
+   *
+   * @param path the path
+   * @param file the file
+   * @return true, if successful
+   */
   public boolean extractGradleFiles(String path, File file) {
     if (path == null || file == null) {
       return false;
@@ -478,6 +554,11 @@ public class Gradle implements ObjectCondition {
     return result;
   }
 
+  /**
+   * Load NPM.
+   *
+   * @return true, if successful
+   */
   public boolean loadNPM() {
     if (Os.isReflectionTest()) {
       return true;
@@ -514,6 +595,12 @@ public class Gradle implements ObjectCondition {
     return true;
   }
 
+  /**
+   * Decompress.
+   *
+   * @param file the file
+   * @return true, if successful
+   */
   public boolean decompress(String file) {
     if (Os.isReflectionTest()) {
       return true;
@@ -554,11 +641,22 @@ public class Gradle implements ObjectCondition {
     return true;
   }
 
+  /**
+   * Update.
+   *
+   * @param value the value
+   * @return true, if successful
+   */
   @Override
   public boolean update(Object value) {
     return false;
   }
 
+  /**
+   * Gets the user E mail.
+   *
+   * @return the user E mail
+   */
   public static String getUserEMail() {
     CharacterBuffer userEMail = SimpleController.executeProcess("git config --global user.email");
     if (userEMail != null && !userEMail.startsWith("ERROR")) {
@@ -567,6 +665,11 @@ public class Gradle implements ObjectCondition {
     return "";
   }
 
+  /**
+   * Gets the user name.
+   *
+   * @return the user name
+   */
   public static String getUserName() {
     CharacterBuffer userName = SimpleController.executeProcess("git config --global user.name");
     if (userName != null && !userName.startsWith("ERROR")) {
@@ -575,6 +678,15 @@ public class Gradle implements ObjectCondition {
     return System.getProperty("user.name");
   }
 
+  /**
+   * Adds the atrifact.
+   *
+   * @param sb the sb
+   * @param path the path
+   * @param projectName the project name
+   * @param licence the licence
+   * @return the character buffer
+   */
   public CharacterBuffer addAtrifact(CharacterBuffer sb, String path, String projectName, String licence) {
     if (sb == null) {
       sb = new CharacterBuffer();
@@ -638,6 +750,14 @@ public class Gradle implements ObjectCondition {
     return sb;
   }
 
+  /**
+   * Gets the licence text.
+   *
+   * @param entity the entity
+   * @param buffer the buffer
+   * @param projectName the project name
+   * @return the licence text
+   */
   public static CharacterBuffer getLicenceText(XMLEntity entity, CharacterBuffer buffer, String projectName) {
     if (entity.sizeChildren() > 0) {
       for (int c = 0; c < entity.sizeChildren(); c++) {
@@ -657,11 +777,20 @@ public class Gradle implements ObjectCondition {
     return buffer;
   }
 
+  /**
+   * With logger.
+   *
+   * @param logger the logger
+   * @return the gradle
+   */
   public Gradle withLogger(NetworkParserLog logger) {
     this.logger = logger;
     return this;
   }
 
+  /**
+   * Inits the test.
+   */
   public void initTest() {
     CharacterBuffer buildGradle = FileBuffer.readFile(path + "build.gradle");
 

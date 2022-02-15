@@ -17,40 +17,93 @@ import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.MapEntry;
-import de.uniks.networkparser.list.SimpleEntity;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.list.StringEntry;
 import de.uniks.networkparser.xml.HTMLEntity;
 
+/**
+ * The Class HTTPRequest.
+ *
+ * @author Stefan
+ */
 public class HTTPRequest implements Comparable<HTTPRequest> {
+	
+	/** The Constant HTTP_STATE_NOTFOUND. */
 	public static final String HTTP_STATE_NOTFOUND = "HTTP 404";
+	
+	/** The Constant HTTP_STATE_OK. */
 	public static final String HTTP_STATE_OK = "HTTP/1.1 200 OK";
+	
+	/** The Constant HTTP_STATE_REDIRECT. */
 	public static final String HTTP_STATE_REDIRECT = "HTTP 302";
+	
+	/** The Constant HTTP_STATE_PERMISSION_DENIED. */
 	public static final String HTTP_STATE_PERMISSION_DENIED = "HTTP 403";
+	
+	/** The Constant HTTP_CONTENT. */
 	public static final String HTTP_CONTENT = "Content-Type";
+	
+	/** The Constant HTTP_LENGTH. */
 	public static final String HTTP_LENGTH = "Content-Length";
+	
+	/** The Constant HTTP_REFRESH. */
 	public static final String HTTP_REFRESH = "REFRESH";
+	
+	/** The Constant HTTP_CONTENT_HTML. */
 	public static final String HTTP_CONTENT_HTML = "text/html";
+	
+	/** The Constant HTTP_CONTENT_PLAIN. */
 	public static final String HTTP_CONTENT_PLAIN = "text/plain";
+	
+	/** The Constant HTTP_CONTENT_JSON. */
 	public static final String HTTP_CONTENT_JSON = "application/json";
+	
+	/** The Constant HTTP_CONTENT_CSS. */
 	public static final String HTTP_CONTENT_CSS = "text/css";
+	
+	/** The Constant HTTP_CONTENT_ICON. */
 	public static final String HTTP_CONTENT_ICON = "image/x-icon";
+	
+	/** The Constant HTTP_CONTENT_FORM. */
 	public static final String HTTP_CONTENT_FORM = "application/x-www-form-urlencoded";
+	
+	/** The Constant HTTP_CONTENT_MULTIFORM. */
 	public static final String HTTP_CONTENT_MULTIFORM = "multipart/form-data;";
+	
+	/** The Constant HTTP_CHARSET. */
 	public static final String HTTP_CHARSET = "charset=UTF-8";
+	
+	/** The Constant HTTP_DISPOSITION. */
 	public static final String HTTP_DISPOSITION = "Content-Disposition:";
+	
+	/** The Constant HTTP_CONTENT_HEADER. */
 	public static final String HTTP_CONTENT_HEADER = "plainHeader";
 
+    /** The Constant HTTP_TYPE_POST. */
     public static final String HTTP_TYPE_POST = "POST";
+    
+    /** The Constant HTTP_TYPE_GET. */
     public static final String HTTP_TYPE_GET = "GET";
+    
+    /** The Constant HTTP_TYPE_PUT. */
     public static final String HTTP_TYPE_PUT = "PUT";
+    
+    /** The Constant HTTP_TYPE_PATCH. */
     public static final String HTTP_TYPE_PATCH = "PATCH";
+    
+    /** The Constant HTTP_TYPE_DELETE. */
     public static final String HTTP_TYPE_DELETE = "DELETE";
 	
+	/** The Constant BEARER. */
 	public static final String BEARER = "Bearer";
+	
+	/** The Constant HTTP_AUTHENTIFICATION. */
 	public static final String HTTP_AUTHENTIFICATION = "Authentification";
+	
+	/** The Constant STATIC. */
 	public static final String STATIC = "S";
+	
+	/** The Constant VARIABLE. */
 	public static final String VARIABLE = "V";
 
 	private BufferedReader inputStream;
@@ -76,6 +129,11 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	private boolean matchValid = true;
 	private int matchOfRequestPath;
 
+	/**
+	 * Execute exeption.
+	 *
+	 * @param e the e
+	 */
 	public void executeExeption(Exception e) {
 		if (errorListener != null) {
 			errorListener.update(e);
@@ -84,6 +142,11 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		}
 	}
 
+	/**
+	 * Instantiates a new HTTP request.
+	 *
+	 * @param params the params
+	 */
 	public HTTPRequest(String... params) {
 	    if(params != null) {
 	        if(params.length>0) {
@@ -99,6 +162,11 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		this.socket = socket;
 	}
 
+	/**
+	 * Gets the input.
+	 *
+	 * @return the input
+	 */
 	public BufferedReader getInput() {
 		if (socket != null && this.inputStream == null) {
 			try {
@@ -110,11 +178,22 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return inputStream;
 	}
 
+	/**
+	 * Read type.
+	 *
+	 * @return the string
+	 */
 	public String readType() {
 		this.http_Type = readTo(' ');
 		return http_Type;
 	}
 
+	/**
+	 * Read to.
+	 *
+	 * @param splitStr the split str
+	 * @return the string
+	 */
 	public String readTo(char splitStr) {
 		int c;
 		CharacterBuffer buffer = new CharacterBuffer();
@@ -134,6 +213,11 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return buffer.toString();
 	}
 
+	/**
+	 * Gets the output.
+	 *
+	 * @return the output
+	 */
 	public PrintWriter getOutput() {
 		if (this.socket != null && this.outputStream == null) {
 			try {
@@ -145,11 +229,23 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return outputStream;
 	}
 	
+	/**
+	 * Write.
+	 *
+	 * @param value the value
+	 * @return the HTTP request
+	 */
 	public HTTPRequest write(CharSequence value) {
 		getOutput().append(value);
 		return this;
 	}
 	
+	/**
+	 * Redirect.
+	 *
+	 * @param url the url
+	 * @return true, if successful
+	 */
 	public boolean redirect(String url) {
 		PrintWriter writer = getOutput();
 		writer.println(HTTP_STATE_REDIRECT);
@@ -158,6 +254,13 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return true;
 	}
 	
+	/**
+	 * Write HTTP response.
+	 *
+	 * @param response the response
+	 * @param param the param
+	 * @return true, if successful
+	 */
 	public boolean writeHTTPResponse(String response, String... param) {
 		PrintWriter writer = getOutput();
 		String contentType = HTTP_CONTENT_HTML;
@@ -179,8 +282,13 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	
 	
 	
+	/**
+	 * Close.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean close() {
-		if (this.writeBody == false && this.content != null) {
+		if (!this.writeBody && this.content != null) {
 			if(this.content instanceof HTMLEntity) {
 				this.write((HTMLEntity)this.content);
 			}else {
@@ -201,10 +309,21 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return true;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param socket the socket
+	 * @return the HTTP request
+	 */
 	public static HTTPRequest create(Socket socket) {
 		return new HTTPRequest(socket);
 	}
 	
+	/**
+	 * Gets the content HTML.
+	 *
+	 * @return the content HTML
+	 */
 	public HTMLEntity getContentHTML() {
 		if(content instanceof HTMLEntity) {
 			return (HTMLEntity) content;
@@ -212,6 +331,12 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return null;
 	}
 
+	/**
+	 * Creates the routing.
+	 *
+	 * @param value the value
+	 * @return the HTTP request
+	 */
 	public static HTTPRequest createRouting(String value) {
 		HTTPRequest httpRequest = new HTTPRequest();
 		if (value != null) {
@@ -221,6 +346,9 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return httpRequest;
 	}
 
+	/**
+	 * Read path.
+	 */
 	public void readPath() {
 		BufferedReader input = getInput();
 		parsingPath(input, null);
@@ -259,7 +387,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 				if (c == ':' && part.length() == 0) {
 					isVariable = true;
 				}
-				if (c == '?' && isVariable == false) {
+				if (c == '?' && !isVariable) {
 					isVariable = true;
 				}
 				if (c == '&' && isVariable) {
@@ -269,7 +397,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 					part.clear();
 					continue;
 				}
-				if (c == '/' && isFirst == false) {
+				if (c == '/' && !isFirst) {
 					/* Split for / */
 					if (isVariable) {
 						if (part.startsWith(":")) {
@@ -316,14 +444,30 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return true;
 	}
 
+	/**
+	 * Gets the http type.
+	 *
+	 * @return the http type
+	 */
 	public String getHttp_Type() {
 		return http_Type;
 	}
 
+	/**
+	 * Gets the url.
+	 *
+	 * @return the url
+	 */
 	public String getUrl() {
 		return url;
 	}
 
+	/**
+	 * Gets the absolute path.
+	 *
+	 * @param sub the sub
+	 * @return the absolute path
+	 */
 	public String getAbsolutePath(String... sub) {
 		String result="";
 		if(url != null) {
@@ -342,11 +486,24 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		}
 		return result;
 	}
+	
+	/**
+	 * With URL.
+	 *
+	 * @param value the value
+	 * @return the HTTP request
+	 */
 	public HTTPRequest withURL(String value) {
 		this.url = value;
 		return this;
 	}
 
+	/**
+	 * Write.
+	 *
+	 * @param entity the entity
+	 * @return true, if successful
+	 */
 	public boolean write(HTMLEntity entity) {
 		if (entity == null) {
 			return false;
@@ -367,10 +524,16 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return false;
 	}
 
+	/**
+	 * Write header.
+	 *
+	 * @param header the header
+	 * @return true, if successful
+	 */
 	public boolean writeHeader(String... header) {
 		PrintWriter output = getOutput();
 		if (output != null) {
-			if (this.writeHeader == false) {
+			if (!this.writeHeader) {
 				output.println(HTTP_STATE_OK);
 				output.println(HTTP_CONTENT + ": " + HTTP_CONTENT_HTML + ";" + HTTP_CHARSET + ";");
 				this.writeHeader = true;
@@ -386,10 +549,16 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return true;
 	}
 
+	/**
+	 * Write body.
+	 *
+	 * @param body the body
+	 * @return true, if successful
+	 */
 	public boolean writeBody(String... body) {
 		PrintWriter output = getOutput();
 		if (output != null) {
-			if (this.writeHeader == false) {
+			if (!this.writeHeader) {
 				this.writeHeader();
 			}
 			if (body != null) {
@@ -410,6 +579,11 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return false;
 	}
 
+	/**
+	 * Read header.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean readHeader() {
 		BufferedReader input = getInput();
 		if (input == null) {
@@ -427,7 +601,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 				if (c == HTTP_LENGTH.charAt(pos)) {
 					pos++;
 					if (pos == HTTP_LENGTH.length()) {
-					    pos++; // SKIP ":"
+					    input.read();  // SKIP ":"
 						length = 1;
 						break;
 					}
@@ -462,10 +636,10 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 				}
 				this.withHeader(HTTP_LENGTH + ": " + length);
 				if (c == 13) {
-					c = input.read();
+					input.read();
 				}
 			}
-			if (isEnd == false) {
+			if (!isEnd) {
 				String line;
 				do {
 					line = input.readLine();
@@ -491,14 +665,29 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return true;
 	}
 
+	/**
+	 * Checks if is write body.
+	 *
+	 * @return true, if is write body
+	 */
 	public boolean isWriteBody() {
 		return writeBody;
 	}
 
+	/**
+	 * Checks if is write header.
+	 *
+	 * @return true, if is write header
+	 */
 	public boolean isWriteHeader() {
 		return writeHeader;
 	}
 
+	/**
+	 * Parses the form.
+	 *
+	 * @return the simple key value list
+	 */
 	public SimpleKeyValueList<String, Object> parseForm() {
 	    SimpleKeyValueList<String, Object> contentValueResult = new SimpleKeyValueList<String, Object>();
 		contentValues = contentValueResult;
@@ -528,10 +717,22 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return contentValueResult;
 	}
 	
+	/**
+	 * Gets the content value.
+	 *
+	 * @param key the key
+	 * @return the content value
+	 */
 	public String getContentValue(String key) {
 		return ""+contentValues.get(key);
 	}
 
+	/**
+	 * With header.
+	 *
+	 * @param value the value
+	 * @return the HTTP request
+	 */
 	public HTTPRequest withHeader(String value) {
 		if (value != null) {
 			value = value.trim();
@@ -545,6 +746,12 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return this;
 	}
 
+	/**
+	 * Gets the header.
+	 *
+	 * @param filter the filter
+	 * @return the header
+	 */
 	public String getHeader(String filter) {
 		if (filter == null) {
 			return null;
@@ -557,9 +764,20 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return null;
 	}
 
+	/**
+	 * Gets the content element.
+	 *
+	 * @return the content element
+	 */
 	public BaseItem getContentElement() {
         return content;
     }
+	
+	/**
+	 * Gets the content.
+	 *
+	 * @return the content
+	 */
 	public String getContent() {
 	    if(content == null) {
 	        return null;
@@ -567,17 +785,36 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return content.toString();
 	}
 	
+	/**
+	 * Parses the.
+	 *
+	 * @return the HTTP request
+	 */
 	public HTTPRequest parse() {
 		readHeader();
 		parseForm();
 		return this;
 	}
 
+	/**
+	 * With exception listener.
+	 *
+	 * @param value the value
+	 * @return the HTTP request
+	 */
 	public HTTPRequest withExceptionListener(Condition<Exception> value) {
 		this.errorListener = value;
 		return this;
 	}
 
+	/**
+	 * Write cookie.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @param expriration the expriration
+	 * @return true, if successful
+	 */
 	public boolean writeCookie(String key, String value, int expriration) {
 		PrintWriter output = getOutput();
 		if (output != null) {
@@ -587,23 +824,39 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return false;
 	}
 
+	/**
+	 * Gets the match of request path.
+	 *
+	 * @return the match of request path
+	 */
 	public int getMatchOfRequestPath() {
 		return matchOfRequestPath;
 	}
 
+	/**
+	 * Checks if is valid.
+	 *
+	 * @return true, if is valid
+	 */
 	public boolean isValid() {
 		return matchValid;
 	}
 
+	/**
+	 * Compare to.
+	 *
+	 * @param o the o
+	 * @return the int
+	 */
 	@Override
 	public int compareTo(HTTPRequest o) {
 		if (o == null) {
 			return 1;
 		}
-		if (isValid() && o.isValid() == false) {
+		if (isValid() && !o.isValid()) {
 			return 1;
 		}
-		if (isValid() == false && o.isValid()) {
+		if (!isValid() && o.isValid()) {
 			return -1;
 		}
 		if (o.getMatchOfRequestPath() < this.matchOfRequestPath) {
@@ -615,6 +868,12 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return 0;
 	}
 
+	/**
+	 * With content.
+	 *
+	 * @param values the values
+	 * @return the HTTP request
+	 */
 	public HTTPRequest withContent(String... values) {
 		if (content == null) {
 			content = new CharacterBuffer();
@@ -630,18 +889,37 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return this;
 	}
 	
+	/**
+	 * With content form.
+	 *
+	 * @param splitter the splitter
+	 * @param values the values
+	 * @return the HTTP request
+	 */
 	public HTTPRequest withContentForm(String splitter, Map<String, Object> values) {
 	    this.contentValues = values;
 	    this.contentType = HTTP_CONTENT_MULTIFORM+" boundary="+splitter;
 	    return this;
 	}
 	
+	/**
+	 * With content.
+	 *
+	 * @param entity the entity
+	 * @return the HTTP request
+	 */
 	public HTTPRequest withContent(BaseItem entity) {
 	    content = entity;
 		return this;
 	}
 
 
+	/**
+	 * Match.
+	 *
+	 * @param routing the routing
+	 * @return true, if successful
+	 */
 	public boolean match(HTTPRequest routing) {
 		this.matchOfRequestPath = 0;
 		this.matchValid = false;
@@ -676,11 +954,23 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
         return part;
     }
 
+    /**
+     * With update condition.
+     *
+     * @param condition the condition
+     * @return the HTTP request
+     */
     public HTTPRequest withUpdateCondition(Condition<HTTPRequest> condition) {
 		this.updateCondition = condition;
 		return this;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean update(HTTPRequest value) {
 		if (updateCondition != null) {
 			return updateCondition.update(value);
@@ -688,11 +978,22 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		return false;
 	}
 
+    /**
+     * With type.
+     *
+     * @param value the value
+     * @return the HTTP request
+     */
     public HTTPRequest withType(String value) {
         this.http_Type = value;
         return this;
     }
 
+    /**
+     * Gets the multi content.
+     *
+     * @return the multi content
+     */
     public CharacterBuffer getMultiContent() {
         if(contentValues == null || !(contentType != null && contentType.startsWith(HTTP_CONTENT_MULTIFORM))) {
             return null;
@@ -728,6 +1029,13 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
         return content;
     }
 
+    /**
+     * With content.
+     *
+     * @param bodyType the body type
+     * @param params the params
+     * @return the HTTP request
+     */
     public HTTPRequest withContent(String bodyType, Object[] params) {
         if(params == null || params.length % 2 == 1) {
             return this;
@@ -739,31 +1047,65 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
         }
         return this;
     }
+    
+    /**
+     * With content.
+     *
+     * @param bodyType the body type
+     * @param values the values
+     * @return the HTTP request
+     */
     public HTTPRequest withContent(String bodyType, Map<String, Object> values) {
     	this.contentType = bodyType;
     	this.contentValues = values;
     	return this;
     }
     
+    /**
+     * Checks if is valid content type.
+     *
+     * @return true, if is valid content type
+     */
     public boolean isValidContentType() {
         return (HTTP_CONTENT_PLAIN.equalsIgnoreCase(contentType) || 
         		HTTP_CONTENT_JSON.equalsIgnoreCase(contentType) ||
         		HTTP_CONTENT_HEADER.equalsIgnoreCase(contentType));
     }
 
+	/**
+	 * Gets the content type.
+	 *
+	 * @return the content type
+	 */
 	public String getContentType() {
 		return contentType;
 	}
 
+	/**
+	 * Gets the content values.
+	 *
+	 * @return the content values
+	 */
 	public Map<String, Object> getContentValues() {
 		return contentValues;
 	}
 
+	/**
+	 * With content type.
+	 *
+	 * @param value the value
+	 * @return the HTTP request
+	 */
 	public HTTPRequest withContentType(String value) {
 		this.contentType = value;
 		return this;
 	}
 	
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 	    if(this.url != null) {
@@ -772,11 +1114,22 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	    return super.toString();
 	}
 
+	/**
+	 * With tag.
+	 *
+	 * @param value the value
+	 * @return the HTTP request
+	 */
 	public HTTPRequest withTag(String value) {
 	    this.tag = value;
 	    return this;
 	}
 	
+	/**
+	 * Gets the tag.
+	 *
+	 * @return the tag
+	 */
 	public String getTag() {
         return tag;
     }

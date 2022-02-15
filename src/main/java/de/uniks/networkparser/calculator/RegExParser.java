@@ -24,7 +24,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class RegExParser.
+ *
+ * @author Stefan
+ */
 public class RegExParser {
+	
+	/**
+	 * Regex.
+	 *
+	 * @param str the str
+	 * @param pattern the pattern
+	 * @return the boolean
+	 */
 	public static Boolean regex(String str, String pattern) {
 		if (str == null || str.isEmpty() || pattern == null || pattern.isEmpty()) {
 			return false;

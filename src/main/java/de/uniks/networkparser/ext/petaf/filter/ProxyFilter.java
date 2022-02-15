@@ -29,7 +29,8 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
- * Filter for Proxy
+ * Filter for Proxy.
+ *
  * @author Stefan Lindel
  */
 public class ProxyFilter implements ObjectCondition {
@@ -50,6 +51,12 @@ public class ProxyFilter implements ObjectCondition {
 		return null;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param values the values
+	 * @return the proxy filter
+	 */
 	public ProxyFilter with(NodeProxy... values) {
 		if (values == null) {
 			return this;
@@ -63,6 +70,12 @@ public class ProxyFilter implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * Without.
+	 *
+	 * @param values the values
+	 * @return the proxy filter
+	 */
 	public ProxyFilter without(NodeProxy... values) {
 		if (values == null) {
 			return this;
@@ -90,6 +103,12 @@ public class ProxyFilter implements ObjectCondition {
 		return null;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		SimpleEvent evt = (SimpleEvent) value;

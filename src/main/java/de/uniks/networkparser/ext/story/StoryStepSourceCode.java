@@ -33,13 +33,32 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class StoryStepSourceCode.
+ *
+ * @author Stefan
+ */
 public class StoryStepSourceCode implements ObjectCondition {
+	
+	/** The Constant FULL. */
 	public static final int FULL = -1;
+	
+	/** The Constant CURRENTPOSITION. */
 	public static final int CURRENTPOSITION = 0;
+	
+	/** The Constant FORMAT_JAVA. */
 	public static final String FORMAT_JAVA = "java";
+	
+	/** The Constant FORMAT_XML. */
 	public static final String FORMAT_XML = "xml";
+	
+	/** The Constant FORMAT_JSON. */
 	public static final String FORMAT_JSON = "json";
+	
+	/** The Constant TEMPLATESTART. */
 	public static final String TEMPLATESTART = "<i class=\"conum\" data-value=\"";
+	
+	/** The Constant TEMPLATEEND. */
 	public static final String TEMPLATEEND = "\"></i>";
 	private String format = null;
 	private String contentFile;
@@ -55,6 +74,11 @@ public class StoryStepSourceCode implements ObjectCondition {
 	private String fileName;
 	private int stepOverPackageName;
 
+	/**
+	 * Gets the file name.
+	 *
+	 * @return the file name
+	 */
 	public String getFileName() {
 		return fileName;
 	}
@@ -120,10 +144,20 @@ public class StoryStepSourceCode implements ObjectCondition {
 		return "";
 	}
 
+	/**
+	 * Gets the method name.
+	 *
+	 * @return the method name
+	 */
 	public String getMethodName() {
 		return methodName;
 	}
 
+	/**
+	 * Finish.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean finish() {
 		getLineFromThrowable();
 		this.readFile();
@@ -166,6 +200,11 @@ public class StoryStepSourceCode implements ObjectCondition {
 		return fileBuffer.isEnd();
 	}
 
+	/**
+	 * Read file.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean readFile() {
 		FileBuffer fileBuffer = new FileBuffer();
 		fileBuffer.withFile(contentFile);
@@ -250,6 +289,12 @@ public class StoryStepSourceCode implements ObjectCondition {
 		return buffer.toString();
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value == null || value instanceof SimpleEvent == false) {
@@ -264,10 +309,23 @@ public class StoryStepSourceCode implements ObjectCondition {
 		return addToHTML(story, element);
 	}
 
+	/**
+	 * Adds the to HTML.
+	 *
+	 * @param element the element
+	 * @return true, if successful
+	 */
 	public boolean addToHTML(HTMLEntity element) {
 		return addToHTML(null, element);
 	}
 
+	/**
+	 * Adds the to HTML.
+	 *
+	 * @param story the story
+	 * @param element the element
+	 * @return true, if successful
+	 */
 	public boolean addToHTML(Story story, HTMLEntity element) {
 		if (element == null || element.getBody() == null) {
 			return false;
@@ -282,8 +340,8 @@ public class StoryStepSourceCode implements ObjectCondition {
 			element.withScript(element.getHeader(), "hljs.initHighlightingOnLoad();", "hljs.initLineNumbersOnLoad();");
 		}
 
-		XMLEntity pre = element.createTag("pre", element.getBody());
-		XMLEntity code = element.createTag("code", pre);
+		XMLEntity pre = element.createChild("pre", element.getBody());
+		XMLEntity code = element.createChild("code", pre);
 		if (this.endLine < 1 && this.currentLine > 0) {
 			/* Body is Empty add the full method */
 			readFile();
@@ -295,7 +353,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 		code.withKeyValue("class", this.format);
 		code.withKeyValue("data-lang", this.format);
 
-		XMLEntity undertitle = element.createTag("div", pre);
+		XMLEntity undertitle = element.createChild("div", pre);
 		String strValue;
 		String name;
 		if (this.methodName == null) {
@@ -313,7 +371,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 		undertitle.with(strValue);
 		undertitle.with("class", "title");
 
-		XMLEntity table = element.createTag("table", element.getBody());
+		XMLEntity table = element.createChild("table", element.getBody());
 		XMLEntity row;
 		String key;
 		for (int i = 0; i < this.variables.size(); i++) {
@@ -323,27 +381,34 @@ public class StoryStepSourceCode implements ObjectCondition {
 				System.err.println("Key: " + key + " has no value");
 				continue;
 			}
-			row = element.createTag("tr", table);
-			code = element.createTag("td", row);
+			row = element.createChild("tr", table);
+			code = element.createChild("td", row);
 			code.withValueItem(TEMPLATESTART + key + TEMPLATEEND);
 
 			char charAt = strValue.charAt(0);
 			if (charAt == '{' || charAt == '[') {
-				code = element.createTag("td.pre.code", row);
+				code = element.createChild("td.pre.code", row);
 				code.withKeyValue("class", FORMAT_JSON);
 				code.withKeyValue("data-lang", FORMAT_JSON);
 			} else if (charAt == '<') {
-				code = element.createTag("td.pre.code", row);
+				code = element.createChild("td.pre.code", row);
 				code.withKeyValue("class", FORMAT_XML);
 				code.withKeyValue("data-lang", FORMAT_XML);
 			} else {
-				code = element.createTag("td", row);
+				code = element.createChild("td", row);
 			}
 			code.withValue(strValue);
 		}
 		return true;
 	}
 
+	/**
+	 * With code.
+	 *
+	 * @param packageName the package name
+	 * @param stepOver the step over
+	 * @return the story step source code
+	 */
 	public StoryStepSourceCode withCode(Class<?> packageName, int stepOver) {
 		if (packageName == null) {
 			return this;
@@ -362,11 +427,24 @@ public class StoryStepSourceCode implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * With code.
+	 *
+	 * @param packageName the package name
+	 * @return the story step source code
+	 */
 	public StoryStepSourceCode withCode(Class<?> packageName) {
 		withCode(packageName, 0);
 		return this;
 	}
 
+	/**
+	 * With code.
+	 *
+	 * @param path the path
+	 * @param packageName the package name
+	 * @return the story step source code
+	 */
 	public StoryStepSourceCode withCode(String path, Class<?> packageName) {
 		if (packageName == null) {
 			return this;
@@ -378,6 +456,13 @@ public class StoryStepSourceCode implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * Adds the description.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean addDescription(String key, String value) {
 		int pos = this.variables.indexOf(key);
 		if (pos >= 0) {
@@ -388,6 +473,12 @@ public class StoryStepSourceCode implements ObjectCondition {
 
 	}
 
+	/**
+	 * With start.
+	 *
+	 * @param position the position
+	 * @return the story step source code
+	 */
 	public StoryStepSourceCode withStart(int position) {
 		if (position < -1) {
 			this.startLine = -1;
@@ -397,10 +488,21 @@ public class StoryStepSourceCode implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * With end.
+	 *
+	 * @return the story step source code
+	 */
 	public StoryStepSourceCode withEnd() {
 		return withEnd(0);
 	}
 
+	/**
+	 * With end.
+	 *
+	 * @param position the position
+	 * @return the story step source code
+	 */
 	public StoryStepSourceCode withEnd(int position) {
 		if (position < -1) {
 			this.endLine = -1;
@@ -416,10 +518,21 @@ public class StoryStepSourceCode implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * Gets the method signature.
+	 *
+	 * @return the method signature
+	 */
 	public String getMethodSignature() {
 		return methodSignature;
 	}
 
+	/**
+	 * With method signature.
+	 *
+	 * @param value the value
+	 * @return the story step source code
+	 */
 	public StoryStepSourceCode withMethodSignature(String value) {
 		this.methodSignature = value;
 		if (value != null) {
@@ -431,6 +544,12 @@ public class StoryStepSourceCode implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * With code.
+	 *
+	 * @param value the value
+	 * @return the story step source code
+	 */
 	public StoryStepSourceCode withCode(String value) {
 		this.body = new CharacterBuffer();
 		this.body.with(value);

@@ -34,7 +34,8 @@ import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 /**
- * Proxy for FileSystem
+ * Proxy for FileSystem.
+ *
  * @author Stefan Lindel
  */
 public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
@@ -42,6 +43,9 @@ public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 	private FileWatcher nodeProxyFileWatcher;
 	private boolean fullModell;
 
+	/**
+	 * Enable git filter.
+	 */
 	public void enableGitFilter() {
 		this.withFilter(this);
 	}
@@ -50,6 +54,11 @@ public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 		withOnline(true);
 	}
 
+	/**
+	 * Instantiates a new node proxy file system.
+	 *
+	 * @param fileName the file name
+	 */
 	public NodeProxyFileSystem(String fileName) {
 		if (fileName != null) {
 			this.fileName = fileName;
@@ -57,20 +66,41 @@ public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 		}
 	}
 
+	/**
+	 * Start model distribution.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean startModelDistribution() {
 		this.withFullModell(false);
 		return this.space.startModelDistribution(true);
 	}
 
+	/**
+	 * Checks if is full modell.
+	 *
+	 * @return true, if is full modell
+	 */
 	public boolean isFullModell() {
 		return fullModell;
 	}
 
+	/**
+	 * With full modell.
+	 *
+	 * @param value the value
+	 * @return the node proxy file system
+	 */
 	public NodeProxyFileSystem withFullModell(boolean value) {
 		this.fullModell = value;
 		return this;
 	}
 
+	/**
+	 * Gets the file name.
+	 *
+	 * @return the file name
+	 */
 	public String getFileName() {
 		return fileName;
 	}
@@ -109,6 +139,12 @@ public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 		return result;
 	}
 
+	/**
+	 * Load.
+	 *
+	 * @param root the root
+	 * @return the base item
+	 */
 	public BaseItem load(Object root) {
 		BaseItem readBaseFile = FileBuffer.readBaseFile(this.fileName);
 		if (this.space != null && readBaseFile != null) {
@@ -165,11 +201,21 @@ public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 		return readBaseFile;
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return fileName;
 	}
 
+	/**
+	 * Close.
+	 *
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean close() {
 		nodeProxyFileWatcher.close();
@@ -183,16 +229,33 @@ public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 		return true;
 	}
 
+	/**
+	 * Checks if is sendable.
+	 *
+	 * @return true, if is sendable
+	 */
 	@Override
 	public boolean isSendable() {
 		return false;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param reference the reference
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean reference) {
 		return new NodeProxyFileSystem(null);
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		return true;

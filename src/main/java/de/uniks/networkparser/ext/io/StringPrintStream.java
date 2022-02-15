@@ -33,50 +33,89 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 /**
- * StringPrintStream for Output
+ * StringPrintStream for Output.
+ *
  * @author Stefan Lindel
  */
 public class StringPrintStream extends PrintStream implements ObjectCondition {
 	private ErrorHandler handler;
 	private boolean error;
 
+	/**
+	 * Instantiates a new string print stream.
+	 */
 	public StringPrintStream() {
 		super(new StringOutputStream());
 	}
 
+	/**
+	 * Instantiates a new string print stream.
+	 *
+	 * @param handler the handler
+	 * @param error the error
+	 */
 	public StringPrintStream(ErrorHandler handler, boolean error) {
 		super(new StringOutputStream());
 		this.handler = handler;
 		this.error = error;
 	}
 
+	/**
+	 * Instantiates a new string print stream.
+	 *
+	 * @param out the out
+	 */
 	public StringPrintStream(OutputStream out) {
 		super(out);
 	}
 
+	/**
+	 * With listener.
+	 *
+	 * @param value the value
+	 * @return the string print stream
+	 */
 	public StringPrintStream withListener(ErrorHandler value) {
 		this.handler = value;
 		return this;
 	}
 
+	/**
+	 * Prints the.
+	 *
+	 * @param value the value
+	 */
 	public void print(Object value) {
 		if (handler != null && value != null) {
 			handler.writeOutput(value.toString(), error);
 		}
 	}
 
+	/**
+	 * Prints the.
+	 *
+	 * @param value the value
+	 */
 	public void print(String value) {
 		if (handler != null) {
 			handler.writeOutput(value, error);
 		}
 	}
 
+	/**
+	 * Println.
+	 */
 	public void println() {
 		if (handler != null) {
 			handler.writeOutput(BaseItem.CRLF, error);
 		}
 	}
 
+	/**
+	 * Println.
+	 *
+	 * @param value the value
+	 */
 	public void println(String value) {
 		if (handler != null) {
 			handler.writeOutput(value, error);
@@ -84,6 +123,11 @@ public class StringPrintStream extends PrintStream implements ObjectCondition {
 		}
 	}
 
+	/**
+	 * Println.
+	 *
+	 * @param value the value
+	 */
 	public void println(Object value) {
 		if (handler != null && value != null) {
 			handler.writeOutput(value.toString(), error);
@@ -91,6 +135,12 @@ public class StringPrintStream extends PrintStream implements ObjectCondition {
 		}
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof SimpleEvent == false) {

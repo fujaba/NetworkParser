@@ -53,95 +53,259 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class ReflectionLoader.
+ *
+ * @author Stefan
+ */
 public class ReflectionLoader {
+	
+	/** The logger. */
 	public static PrintStream logger = null;
 	private static int errorCount;
+	
+	/** The Constant CHANGELISTENER. */
 	public static final Class<?> CHANGELISTENER;
+	
+	/** The Constant NODE. */
 	public static final Class<?> NODE;
+	
+	/** The Constant OBSERVABLEVALUE. */
 	public static final Class<?> OBSERVABLEVALUE;
+	
+	/** The Constant INVALIDATIONLISTENER. */
 	public static final Class<?> INVALIDATIONLISTENER;
+	
+	/** The Constant BINDINGS. */
 	public static final Class<?> BINDINGS;
 
+	/** The Constant PROPERTY. */
 	public static final Class<?> PROPERTY;
+	
+	/** The Constant SIMPLEOBJECTPROPERTY. */
 	public static final Class<?> SIMPLEOBJECTPROPERTY;
+	
+	/** The Constant STRINGPROPERTY. */
 	public static final Class<?> STRINGPROPERTY;
+	
+	/** The Constant BOOLEANPROPERTY. */
 	public static final Class<?> BOOLEANPROPERTY;
+	
+	/** The Constant INTEGERPROPERTY. */
 	public static final Class<?> INTEGERPROPERTY;
+	
+	/** The Constant DOUBLEPROPERTY. */
 	public static final Class<?> DOUBLEPROPERTY;
 
+	/** The Constant DESKTOP. */
 	public static final Class<?> DESKTOP;
+	
+	/** The Constant COLOR. */
 	public static final Class<?> COLOR;
+	
+	/** The Constant COLORPICKER. */
 	public static final Class<?> COLORPICKER;
+	
+	/** The Constant PAINT. */
 	public static final Class<?> PAINT;
+	
+	/** The Constant TEXTFIELD. */
 	public static final Class<?> TEXTFIELD;
+	
+	/** The Constant COMBOBOX. */
 	public static final Class<?> COMBOBOX;
+	
+	/** The Constant LABEL. */
 	public static final Class<?> LABEL;
+	
+	/** The Constant CHECKBOX. */
 	public static final Class<?> CHECKBOX;
+	
+	/** The Constant RADIOBUTTON. */
 	public static final Class<?> RADIOBUTTON;
+	
+	/** The Constant SYSTEMTRAY. */
 	public static final Class<?> SYSTEMTRAY;
+	
+	/** The Constant WEBVIEW. */
 	public static final Class<?> WEBVIEW;
+	
+	/** The Constant JSOBJECT. */
 	public static final Class<?> JSOBJECT;
+	
+	/** The Constant PSEUDOCLASS. */
 	public static final Class<?> PSEUDOCLASS;
+	
+	/** The Constant TOOLBAR. */
 	public static final Class<?> TOOLBAR;
+	
+	/** The Constant BUTTON. */
 	public static final Class<?> BUTTON;
+	
+	/** The Constant EVENTHANDLER. */
 	public static final Class<?> EVENTHANDLER;
+	
+	/** The Constant STACKPANE. */
 	public static final Class<?> STACKPANE;
+	
+	/** The Constant REGION. */
 	public static final Class<?> REGION;
+	
+	/** The Constant HBOX. */
 	public static final Class<?> HBOX;
+	
+	/** The Constant VBOX. */
 	public static final Class<?> VBOX;
+	
+	/** The Constant PRIORITY. */
 	public static final Class<?> PRIORITY;
+	
+	/** The Constant PARENT. */
 	public static final Class<?> PARENT;
+	
+	/** The Constant PANE. */
 	public static final Class<?> PANE;
+	
+	/** The Constant SCENE. */
 	public static final Class<?> SCENE;
+	
+	/** The Constant PLATFORM. */
 	public static final Class<?> PLATFORM;
+	
+	/** The Constant PLATFORMIMPL. */
 	public static final Class<?> PLATFORMIMPL;
+	
+	/** The Constant STAGE. */
 	public static final Class<?> STAGE;
+	
+	/** The Constant SCREEN. */
 	public static final Class<?> SCREEN;
+	
+	/** The Constant MODALITY. */
 	public static final Class<?> MODALITY;
+	
+	/** The Constant STAGESTYLE. */
 	public static final Class<?> STAGESTYLE;
+	
+	/** The Constant POS. */
 	public static final Class<?> POS;
+	
+	/** The Constant IMAGEVIEW. */
 	public static final Class<?> IMAGEVIEW;
+	
+	/** The Constant IMAGE. */
 	public static final Class<?> IMAGE;
+	
+	/** The Constant BORDERPANE. */
 	public static final Class<?> BORDERPANE;
+	
+	/** The Constant PARAMETER. */
 	public static final Class<?> PARAMETER;
+	
+	/** The Constant TRANSFERMODE. */
 	public static final Class<?> TRANSFERMODE;
+	
+	/** The Constant FILECHOOSERFX. */
 	public static final Class<?> FILECHOOSERFX;
 
+	/** The Constant GIT. */
 	public static final Class<?> GIT;
+	
+	/** The Constant FILEREPOSITORYBUILDER. */
 	public static final Class<?> FILEREPOSITORYBUILDER;
+	
+	/** The Constant REVWALK. */
 	public static final Class<?> REVWALK;
+	
+	/** The Constant CANONICALTREEPARSER. */
 	public static final Class<?> CANONICALTREEPARSER;
+	
+	/** The Constant FILEMODE. */
 	public static final Class<?> FILEMODE;
+	
+	/** The Constant REPOSITORY. */
 	public static final Class<?> REPOSITORY;
+	
+	/** The Constant ANYOBJECTID. */
 	public static final Class<?> ANYOBJECTID;
+	
+	/** The Constant STOREDCONFIG. */
 	public static final Class<?> STOREDCONFIG;
 
+	/** The Constant RECTANGLE. */
 	public static final Class<?> RECTANGLE;
+	
+	/** The Constant ROBOT. */
 	public static final Class<?> ROBOT;
+	
+	/** The Constant TOOLKIT. */
 	public static final Class<?> TOOLKIT;
+	
+	/** The Constant TOOLKITFX. */
 	public static final Class<?> TOOLKITFX;
+	
+	/** The Constant DIMENSION. */
 	public static final Class<?> DIMENSION;
+	
+	/** The Constant RENDEREDIMAGE. */
 	public static final Class<?> RENDEREDIMAGE;
+	
+	/** The Constant IMAGEIO. */
 	public static final Class<?> IMAGEIO;
+	
+	/** The Constant ACTIONLISTENER. */
 	public static final Class<?> ACTIONLISTENER;
+	
+	/** The Constant MENUITEM. */
 	public static final Class<?> MENUITEM;
+	
+	/** The Constant POPUPMENU. */
 	public static final Class<?> POPUPMENU;
+	
+	/** The Constant TRAYICON. */
 	public static final Class<?> TRAYICON;
+	
+	/** The Constant AWTIMAGE. */
 	public static final Class<?> AWTIMAGE;
+	
+	/** The Constant PROCESSBUILDERREDIRECT. */
 	public static final Class<?> PROCESSBUILDERREDIRECT;
+	
+	/** The Constant MANAGEMENTFACTORY. */
 	public static final Class<?> MANAGEMENTFACTORY;
+	
+	/** The Constant JFILECHOOSER. */
 	public static final Class<?> JFILECHOOSER;
+	
+	/** The Constant JFRAME. */
 	public static final Class<?> JFRAME;
+	
+	/** The Constant ACTIONEVENT. */
 	public static final Class<?> ACTIONEVENT;
+	
+	/** The Constant AWTBUTTON. */
 	public static final Class<?> AWTBUTTON;
+	
+	/** The Constant AWTCOMPONENT. */
 	public static final Class<?> AWTCOMPONENT;
 
+	/** The Constant EATTRIBUTE. */
 	/* EMF */
 	public static final Class<?> EATTRIBUTE;
+	
+	/** The Constant ECLASS. */
 	public static final Class<?> ECLASS;
+	
+	/** The Constant ECLASSIFIER. */
 	public static final Class<?> ECLASSIFIER;
+	
+	/** The Constant EPACKAGE. */
 	public static final Class<?> EPACKAGE;
+	
+	/** The Constant EREFERENCE. */
 	public static final Class<?> EREFERENCE;
+	
+	/** The Constant EOBJECT. */
 	public static final Class<?> EOBJECT;
 
 	static {
@@ -337,6 +501,13 @@ public class ReflectionLoader {
 		}
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @param className the class name
+	 * @param arguments the arguments
+	 * @return the object
+	 */
 	public static Object newInstance(String className, Object... arguments) {
 		if (className == null) {
 			return null;
@@ -349,6 +520,13 @@ public class ReflectionLoader {
 		return null;
 	}
 
+	/**
+	 * New array.
+	 *
+	 * @param arrayClass the array class
+	 * @param values the values
+	 * @return the object
+	 */
 	public static Object newArray(Class<?> arrayClass, Object... values) {
 		if (arrayClass == null || values == null) {
 			return null;
@@ -360,6 +538,13 @@ public class ReflectionLoader {
 		return items;
 	}
 
+	/**
+	 * New instance str.
+	 *
+	 * @param className the class name
+	 * @param arguments the arguments
+	 * @return the object
+	 */
 	public static Object newInstanceStr(String className, Object... arguments) {
 		if (className == null) {
 			return null;
@@ -379,6 +564,13 @@ public class ReflectionLoader {
 		return null;
 	}
 
+	/**
+	 * New instance simple.
+	 *
+	 * @param instance the instance
+	 * @param ignoreCreateMethods the ignore create methods
+	 * @return the object
+	 */
 	public static Object newInstanceSimple(Class<?> instance, String... ignoreCreateMethods) {
 		if (instance == null) {
 			return null;
@@ -446,6 +638,12 @@ public class ReflectionLoader {
 		return null;
 	}
 
+	/**
+	 * Close threads.
+	 *
+	 * @param oldThreads the old threads
+	 * @return the sets the
+	 */
 	public static final Set<Thread> closeThreads(Set<Thread> oldThreads) {
 		Set<Thread> newThreads = Thread.getAllStackTraces().keySet();
 		if (oldThreads != null && oldThreads.size() != newThreads.size()) {
@@ -462,10 +660,25 @@ public class ReflectionLoader {
 		return newThreads;
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @param instance the instance
+	 * @param arguments the arguments
+	 * @return the object
+	 */
 	public static Object newInstance(Class<?> instance, Object... arguments) {
 		return newInstance(true, instance, arguments);
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @param showError the show error
+	 * @param instance the instance
+	 * @param arguments the arguments
+	 * @return the object
+	 */
 	public static Object newInstance(boolean showError, Class<?> instance, Object... arguments) {
 		if (instance == null) {
 			return null;
@@ -524,6 +737,12 @@ public class ReflectionLoader {
 		return null;
 	}
 
+	/**
+	 * Gets the class.
+	 *
+	 * @param name the name
+	 * @return the class
+	 */
 	public static Class<?> getClass(String name) {
 		try {
 			if (name == null) {
@@ -538,6 +757,12 @@ public class ReflectionLoader {
 		return null;
 	}
 
+	/**
+	 * Gets the simple class.
+	 *
+	 * @param name the name
+	 * @return the simple class
+	 */
 	public static Class<?> getSimpleClass(String name) {
 		if (name == null) {
 			return null;
@@ -549,6 +774,13 @@ public class ReflectionLoader {
 		return null;
 	}
 
+	/**
+	 * Creates the proxy.
+	 *
+	 * @param proxy the proxy
+	 * @param proxys the proxys
+	 * @return the object
+	 */
 	public static Object createProxy(Object proxy, Class<?>... proxys) {
 		if (proxy == null || proxys == null || proxys.length < 1 || proxys[0] == null) {
 			return null;
@@ -557,6 +789,14 @@ public class ReflectionLoader {
 				new ReflectionInterfaceProxy(proxy));
 	}
 	
+	/**
+	 * Creates the simple proxy.
+	 *
+	 * @param <T> the generic type
+	 * @param element the element
+	 * @param proxy the proxy
+	 * @return the t
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T createSimpleProxy(Object element, Class<T> proxy) {
 		if (proxy == null ) {
@@ -566,10 +806,24 @@ public class ReflectionLoader {
 				new ReflectionInterfaceProxy(element));
 	}
 
+	/**
+	 * Call chain.
+	 *
+	 * @param item the item
+	 * @param methodNames the method names
+	 * @return the object
+	 */
 	public static Object callChain(Object item, String... methodNames) {
 		return callChain(item, true, methodNames);
 	}
 
+	/**
+	 * Call chain ext.
+	 *
+	 * @param item the item
+	 * @param methodNames the method names
+	 * @return the object
+	 */
 	public static Object callChainExt(Object item, Object... methodNames) {
 		if (methodNames == null) {
 			return null;
@@ -604,6 +858,14 @@ public class ReflectionLoader {
 		return null;
 	}
 
+	/**
+	 * Call chain.
+	 *
+	 * @param item the item
+	 * @param notify the notify
+	 * @param methodNames the method names
+	 * @return the object
+	 */
 	public static Object callChain(Object item, boolean notify, String... methodNames) {
 		if (methodNames == null) {
 			return item;
@@ -615,6 +877,13 @@ public class ReflectionLoader {
 		return callObj;
 	}
 
+	/**
+	 * Checks if is access method.
+	 *
+	 * @param item the item
+	 * @param methodName the method name
+	 * @return true, if is access method
+	 */
 	public static boolean isAccessMethod(Object item, String methodName) {
 		if (item == null || methodName == null) {
 			return false;
@@ -635,6 +904,13 @@ public class ReflectionLoader {
 		return isAccess(method, item);
 	}
 
+	/**
+	 * Gets the field.
+	 *
+	 * @param item the item
+	 * @param fieldNames the field names
+	 * @return the field
+	 */
 	public static Object getField(Object item, String... fieldNames) {
 		if (item == null) {
 			return null;
@@ -649,6 +925,15 @@ public class ReflectionLoader {
 		}
 		return getField(itemObj, className, fieldNames);
 	}
+	
+	/**
+	 * Gets the field.
+	 *
+	 * @param itemObj the item obj
+	 * @param className the class name
+	 * @param fieldNames the field names
+	 * @return the field
+	 */
 	public static Object getField(Object itemObj, Class<?> className, String... fieldNames) {
 		if (className == null) {
 			return null;
@@ -693,6 +978,14 @@ public class ReflectionLoader {
 		return result;
 	}
 
+	/**
+	 * Sets the field.
+	 *
+	 * @param fieldName the field name
+	 * @param item the item
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public static boolean setField(String fieldName, Object item, Object value) {
 		if (item == null) {
 			return false;
@@ -726,10 +1019,24 @@ public class ReflectionLoader {
 		return false;
 	}
 
+	/**
+	 * Call.
+	 *
+	 * @param item the item
+	 * @param methodName the method name
+	 * @param arguments the arguments
+	 * @return the object
+	 */
 	public static Object call(Object item, String methodName, Object... arguments) {
 		return calling(item, methodName, true, null, arguments);
 	}
 
+	/**
+	 * Prints the API.
+	 *
+	 * @param item the item
+	 * @return the character buffer
+	 */
 	public static CharacterBuffer printAPI(Object item) {
 		CharacterBuffer sb = new CharacterBuffer();
 		if (item == null) {
@@ -759,6 +1066,14 @@ public class ReflectionLoader {
 		return sb;
 	}
 
+	/**
+	 * Call str.
+	 *
+	 * @param item the item
+	 * @param methodName the method name
+	 * @param arguments the arguments
+	 * @return the object
+	 */
 	public static Object callStr(Object item, String methodName, Object... arguments) {
 		try {
 			if (arguments != null && arguments.length % 2 == 0) {
@@ -774,6 +1089,14 @@ public class ReflectionLoader {
 		return calling(item, methodName, true, null, arguments);
 	}
 
+	/**
+	 * Call list.
+	 *
+	 * @param item the item
+	 * @param methodName the method name
+	 * @param arguments the arguments
+	 * @return the list
+	 */
 	@SuppressWarnings("unchecked")
 	public static List<Object> callList(Object item, String methodName, Object... arguments) {
 		Object returnValue = calling(item, methodName, true, null, arguments);
@@ -783,6 +1106,16 @@ public class ReflectionLoader {
 		return (List<Object>) returnValue;
 	}
 
+	/**
+	 * Calling.
+	 *
+	 * @param item the item
+	 * @param methodName the method name
+	 * @param notify the notify
+	 * @param notifyObject the notify object
+	 * @param arguments the arguments
+	 * @return the object
+	 */
 	public static Object calling(Object item, String methodName, boolean notify, Object notifyObject,
 			Object... arguments) {
 		if (methodName == null || item == null) {
@@ -935,6 +1268,13 @@ public class ReflectionLoader {
 
 	private static final JarClassLoader sysloader = new JarClassLoader(ClassLoader.getSystemClassLoader());
 
+	/**
+	 * Load SQL driver.
+	 *
+	 * @param driver the driver
+	 * @param database the database
+	 * @return the connection
+	 */
 	public static Connection loadSQLDriver(String driver, String database) {
 		int pos = 0;
 		if (driver == null || (pos = driver.lastIndexOf(':')) < 0) {
@@ -943,6 +1283,14 @@ public class ReflectionLoader {
 		return loadSQLDriver(driver.substring(0, pos), driver.substring(pos + 1), database);
 	}
 
+	/**
+	 * Load SQL driver.
+	 *
+	 * @param driver the driver
+	 * @param host the host
+	 * @param database the database
+	 * @return the connection
+	 */
 	public static Connection loadSQLDriver(String driver, String host, String database) {
 		try {
 			if ("jdbc:sqlite".equalsIgnoreCase(driver)) {
@@ -961,6 +1309,13 @@ public class ReflectionLoader {
 		return null;
 	}
 
+	/**
+	 * Checks if is access.
+	 *
+	 * @param member the member
+	 * @param entity the entity
+	 * @return true, if is access
+	 */
 	public static boolean isAccess(Member member, Object entity) {
 		if (member == null) {
 			return false;
@@ -984,7 +1339,7 @@ public class ReflectionLoader {
 
 	/**
 	 * Attempts to list all the classes in the specified package as determined by
-	 * the context class loader
+	 * the context class loader.
 	 *
 	 * @param pckgname the package name to search
 	 * @return a list of classes that exist within that package

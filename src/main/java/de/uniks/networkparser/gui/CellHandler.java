@@ -25,6 +25,21 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * The Interface CellHandler.
+ *
+ * @author Stefan
+ */
 public interface CellHandler {
+	
+	/**
+	 * On action.
+	 *
+	 * @param entity the entity
+	 * @param creator the creator
+	 * @param x the x
+	 * @param y the y
+	 * @return true, if successful
+	 */
 	public boolean onAction(Object entity, SendableEntityCreator creator, double x, double y);
 }

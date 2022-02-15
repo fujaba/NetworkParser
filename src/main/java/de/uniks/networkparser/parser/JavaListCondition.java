@@ -32,19 +32,44 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.StringList;
 import de.uniks.networkparser.logic.CustomCondition;
 
+/**
+ * The Class JavaListCondition.
+ *
+ * @author Stefan
+ */
 public class JavaListCondition extends CustomCondition<Attribute> {
+	
+	/** The Constant TAG. */
 	public static final String TAG = "listType";
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return TAG;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param isExpression the is expression
+	 * @return the sendable instance
+	 */
 	@Override
 	public ParserCondition getSendableInstance(boolean isExpression) {
 		return new JavaListCondition();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param creator the creator
+	 * @param member the member
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(SendableEntityCreator creator, Attribute member) {
 		if (member == null || member.getType() == null) {

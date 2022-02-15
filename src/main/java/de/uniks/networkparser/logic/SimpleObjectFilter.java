@@ -27,7 +27,19 @@ import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
+/**
+ * The Class SimpleObjectFilter.
+ *
+ * @author Stefan
+ */
 public class SimpleObjectFilter implements ObjectCondition {
+	
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof SimpleEvent == false) {

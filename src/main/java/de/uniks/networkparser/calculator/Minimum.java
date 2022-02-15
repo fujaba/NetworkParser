@@ -1,5 +1,7 @@
 package de.uniks.networkparser.calculator;
 
+import de.uniks.networkparser.interfaces.MathOperator;
+
 /*
 NetworkParser
 The MIT License
@@ -24,12 +26,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public class Minimum implements Operator {
+/**
+ * The Class Minimum.
+ *
+ * @author Stefan
+ */
+public class Minimum implements MathOperator {
+	
+	/**
+	 * Gets the priority.
+	 *
+	 * @return the priority
+	 */
 	@Override
 	public int getPriority() {
 		return RegCalculator.FUNCTION;
 	}
 
+	/**
+	 * Calculate.
+	 *
+	 * @param values the values
+	 * @return the double
+	 */
 	@Override
 	public double calculate(Double... values) {
 		if (values == null) {
@@ -44,11 +63,21 @@ public class Minimum implements Operator {
 		return min;
 	}
 
+	/**
+	 * Gets the tag.
+	 *
+	 * @return the tag
+	 */
 	@Override
 	public String getTag() {
 		return "min";
 	}
 
+	/**
+	 * Gets the values.
+	 *
+	 * @return the values
+	 */
 	@Override
 	public int getValues() {
 		return 2;

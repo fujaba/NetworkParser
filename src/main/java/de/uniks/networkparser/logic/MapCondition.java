@@ -5,27 +5,56 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * The Class MapCondition.
+ *
+ * @author Stefan
+ */
 public class MapCondition implements ObjectCondition {
 	private IdMap map;
 	private SendableEntityCreator creator;
 	private String property;
 	private ObjectCondition condition;
 
+	/**
+	 * With map.
+	 *
+	 * @param map the map
+	 * @return the map condition
+	 */
 	public MapCondition withMap(IdMap map) {
 		this.map = map;
 		return this;
 	}
 
+	/**
+	 * With property.
+	 *
+	 * @param property the property
+	 * @return the map condition
+	 */
 	public MapCondition withProperty(String property) {
 		this.property = property;
 		return this;
 	}
 
+	/**
+	 * With creator.
+	 *
+	 * @param creator the creator
+	 * @return the map condition
+	 */
 	public MapCondition withCreator(SendableEntityCreator creator) {
 		this.creator = creator;
 		return this;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof SimpleEvent == false) {
@@ -50,6 +79,12 @@ public class MapCondition implements ObjectCondition {
 		return false;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param evt the evt
+	 * @return the value
+	 */
 	public Object getValue(SimpleEvent evt) {
 		if (evt == null) {
 			return null;

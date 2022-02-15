@@ -43,7 +43,8 @@ THE SOFTWARE.
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyFileSystem;
 
 /**
- * FileWatcher for Changes on Storage 
+ * FileWatcher for Changes on Storage .
+ *
  * @author Stefan Lindel
  */
 public class FileWatcher implements Runnable {
@@ -55,6 +56,13 @@ public class FileWatcher implements Runnable {
 	private long lastChange = -1;
 	private Space space;
 
+	/**
+	 * Inits the.
+	 *
+	 * @param owner the owner
+	 * @param fileName the file name
+	 * @return the file watcher
+	 */
 	public FileWatcher init(NodeProxyFileSystem owner, String fileName) {
 		this.proxy = owner;
 		this.fileName = fileName;
@@ -62,6 +70,9 @@ public class FileWatcher implements Runnable {
 		return this;
 	}
 
+	/**
+	 * Run.
+	 */
 	public void run() {
 		if (space == null) {
 			return;
@@ -130,6 +141,11 @@ public class FileWatcher implements Runnable {
 		return true;
 	}
 
+	/**
+	 * Inits the NIO file watcher.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean initNIOFileWatcher() {
 		try {
 			watcher = FileSystems.getDefault().newWatchService();
@@ -146,6 +162,9 @@ public class FileWatcher implements Runnable {
 		return true;
 	}
 
+	/**
+	 * Close.
+	 */
 	public void close() {
 		this.runTask = false;
 	}

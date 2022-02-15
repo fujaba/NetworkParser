@@ -35,11 +35,21 @@ import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLTokener;
 
+/**
+ * The Class SimpleParser.
+ *
+ * @author Stefan
+ */
 public class SimpleParser {
 	private IdMap map;
 	private Tokener tokener;
 	private char endTag;
 
+	/**
+	 * Gets the tokener.
+	 *
+	 * @return the tokener
+	 */
 	public Tokener getTokener() {
 		if (this.tokener == null) {
 			this.tokener = new JsonTokener();
@@ -47,6 +57,11 @@ public class SimpleParser {
 		return tokener;
 	}
 
+	/**
+	 * Gets the map.
+	 *
+	 * @return the map
+	 */
 	public IdMap getMap() {
 		if (this.map == null) {
 			this.map = new IdMap();
@@ -54,10 +69,25 @@ public class SimpleParser {
 		return map;
 	}
 
+	/**
+	 * Decode.
+	 *
+	 * @param <T> the generic type
+	 * @param json the json
+	 * @return the t
+	 */
 	public <T> T decode(Object json) {
 		return decode(json, null);
 	}
 
+	/**
+	 * Decode.
+	 *
+	 * @param <T> the generic type
+	 * @param json the json
+	 * @param classOfT the class of T
+	 * @return the t
+	 */
 	public <T> T decode(Object json, Class<T> classOfT) {
 		JsonObject jsonObject = null;
 		if (json instanceof String) {
@@ -100,6 +130,12 @@ public class SimpleParser {
 
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param src the src
+	 * @return the json object
+	 */
 	public JsonObject encode(Object src) {
 		if (src == null) {
 			return new JsonObject();
@@ -109,27 +145,70 @@ public class SimpleParser {
 		return map.toJsonObject(src);
 	}
 
+	/**
+	 * From json.
+	 *
+	 * @param <T> the generic type
+	 * @param json the json
+	 * @return the t
+	 */
 	public static <T> T fromJson(Object json) {
 		return new SimpleParser().decode(json);
 	}
 
+	/**
+	 * From file.
+	 *
+	 * @param <T> the generic type
+	 * @param file the file
+	 * @return the t
+	 */
 	public static <T> T fromFile(String file) {
 		BaseItem modelJson = FileBuffer.readBaseFile(file);
 		return new SimpleParser().decode(modelJson);
 	}
 
+	/**
+	 * From json.
+	 *
+	 * @param <T> the generic type
+	 * @param json the json
+	 * @param classOfT the class of T
+	 * @return the t
+	 */
 	public static <T> T fromJson(Object json, Class<T> classOfT) {
 		return new SimpleParser().decode(json, classOfT);
 	}
 
+	/**
+	 * To json.
+	 *
+	 * @param src the src
+	 * @return the json object
+	 */
 	public static JsonObject toJson(Object src) {
 		return new SimpleParser().encode(src);
 	}
 
+	/**
+	 * Decode model.
+	 *
+	 * @param <T> the generic type
+	 * @param buffer the buffer
+	 * @return the t
+	 */
 	public <T> T decodeModel(Buffer buffer) {
 		return decodeModel(buffer, map, getTokener(), endTag);
 	}
 
+	/**
+	 * Decode model.
+	 *
+	 * @param <T> the generic type
+	 * @param buffer the buffer
+	 * @param map the map
+	 * @return the t
+	 */
 	public static <T> T decodeModel(Buffer buffer, IdMap map) {
 		if (buffer == null || map == null) {
 			return null;
@@ -167,6 +246,16 @@ public class SimpleParser {
 		return 0;
 	}
 
+	/**
+	 * Decode model.
+	 *
+	 * @param <T> the generic type
+	 * @param buffer the buffer
+	 * @param map the map
+	 * @param tokener the tokener
+	 * @param endTag the end tag
+	 * @return the t
+	 */
 	public static <T> T decodeModel(Buffer buffer, IdMap map, Tokener tokener, char endTag) {
 		Object result = decodingModel(buffer, map, tokener, endTag);
 		if (result == null) {

@@ -28,14 +28,31 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class StoryStepTitle.
+ *
+ * @author Stefan
+ */
 public class StoryStepTitle implements ObjectCondition {
 	private String title;
 
+	/**
+	 * With title.
+	 *
+	 * @param title the title
+	 * @return the story step title
+	 */
 	public StoryStepTitle withTitle(String title) {
 		this.title = title;
 		return this;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof SimpleEvent == false) {
@@ -45,12 +62,17 @@ public class StoryStepTitle implements ObjectCondition {
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
 		if (this.title != null) {
 			element.withTitle(this.title);
-			XMLEntity headerLine = element.createTag("h1", element.getBody());
+			XMLEntity headerLine = element.createChild("h1", element.getBody());
 			headerLine.withValue(this.title);
 		}
 		return true;
 	}
 
+	/**
+	 * Gets the title.
+	 *
+	 * @return the title
+	 */
 	public String getTitle() {
 		return this.title;
 	}

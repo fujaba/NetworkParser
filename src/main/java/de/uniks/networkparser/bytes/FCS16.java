@@ -25,13 +25,19 @@ THE SOFTWARE.
 */
 
 /**
- * FCS-Check  (Frame check sequence)
+ * FCS-Check  (Frame check sequence).
+ *
  * @author Stefan Lindel
  */
 public class FCS16 extends Checksum {
 	protected int polynom = 0x8408;
 	protected int[] crc_table = getGenTable();
 
+	/**
+	 * Gets the gen table.
+	 *
+	 * @return the gen table
+	 */
 	public int[] getGenTable() {
 		int[] result = new int[256];
 		for (int b = 0; b < 256; b++) {
@@ -44,6 +50,7 @@ public class FCS16 extends Checksum {
 		return result;
 	}
 
+	/** The Constant crctab. */
 	public static final int crctab[] = { 0x0000, 0x1189, 0x2312, 0x329B, 0x4624, 0x57AD, 0x6536, 0x74BF, 0x8C48, 0x9DC1,
 			0xAF5A, 0xBED3, 0xCA6C, 0xDBE5, 0xE97E, 0xF8F7, 0x1081, 0x0108, 0x3393, 0x221A, 0x56A5, 0x472C, 0x75B7,
 			0x643E, 0x9CC9, 0x8D40, 0xBFDB, 0xAE52, 0xDAED, 0xCB64, 0xF9FF, 0xE876, 0x2102, 0x308B, 0x0210, 0x1399,
@@ -67,12 +74,21 @@ public class FCS16 extends Checksum {
 
 	};
 
+	/**
+	 * Reset.
+	 */
 	@Override
 	public void reset() {
 		super.reset();
 		value = 0xFFFF;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param b the b
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(int b) {
 		super.update(b);
@@ -80,11 +96,21 @@ public class FCS16 extends Checksum {
 		return true;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	@Override
 	public long getValue() {
 		return (~value & 0xFFFF);
 	}
 
+	/**
+	 * Gets the order.
+	 *
+	 * @return the order
+	 */
 	@Override
 	public int getOrder() {
 		return 16;

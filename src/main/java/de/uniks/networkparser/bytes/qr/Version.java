@@ -5,7 +5,7 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.AbstractArray;
 
 /**
- * See ISO 18004:2006 Annex D
+ * See ISO 18004:2006 Annex D.
  *
  * @author Sean Owen
  */
@@ -74,22 +74,48 @@ public final class Version {
 		return first;
 	}
 
+	/**
+	 * Gets the version number.
+	 *
+	 * @return the version number
+	 */
 	public int getVersionNumber() {
 		return versionNumber;
 	}
 
+	/**
+	 * Gets the alignment pattern centers.
+	 *
+	 * @return the alignment pattern centers
+	 */
 	public int[] getAlignmentPatternCenters() {
 		return alignmentPatternCenters;
 	}
 
+	/**
+	 * Gets the total codewords.
+	 *
+	 * @return the total codewords
+	 */
 	public int getTotalCodewords() {
 		return totalCodewords;
 	}
 
+	/**
+	 * Gets the dimension for version.
+	 *
+	 * @return the dimension for version
+	 */
 	public int getDimensionForVersion() {
 		return 17 + 4 * versionNumber;
 	}
 
+	/**
+	 * Gets the EC blocks for level.
+	 *
+	 * @param ecLevel the ec level
+	 * @return the EC blocks for level
+	 */
 	public ECB getECBlocksForLevel(ErrorCorrectionLevel ecLevel) {
 		if (ecLevel == null) {
 			return null;
@@ -124,6 +150,12 @@ public final class Version {
 		return getVersionForNumber((dimension - 17) >> 2);
 	}
 
+	/**
+	 * Gets the version for number.
+	 *
+	 * @param versionNumber the version number
+	 * @return the version for number
+	 */
 	public static Version getVersionForNumber(int versionNumber) {
 		if (versionNumber < 1 || versionNumber > 40) {
 			return null;
@@ -287,6 +319,11 @@ public final class Version {
 		return bitMatrix;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
    public String toString() {
 		return String.valueOf(versionNumber);
@@ -299,6 +336,8 @@ public final class Version {
 	 * a block with these parameters is used consecutively in the QR code version's
 	 * format.
 	 * </p>
+	 *
+	 * @author Stefan
 	 */
 	public static final class ECB {
 		private final int count;
@@ -312,27 +351,58 @@ public final class Version {
 			this.dataCodewords = dataCodewords;
 		}
 
+		/**
+		 * Gets the EC codewords per block.
+		 *
+		 * @return the EC codewords per block
+		 */
 		public int getECCodewordsPerBlock() {
 			return ecCodewordsPerBlock;
 		}
 
+		/**
+		 * Next.
+		 *
+		 * @return the ecb
+		 */
 		public ECB next() {
 			return next;
 		}
 
+		/**
+		 * Gets the count.
+		 *
+		 * @return the count
+		 */
 		public int getCount() {
 			return count;
 		}
 
+		/**
+		 * Gets the data codewords.
+		 *
+		 * @return the data codewords
+		 */
 		public int getDataCodewords() {
 			return dataCodewords;
 		}
 
+		/**
+		 * With next.
+		 *
+		 * @param value the value
+		 * @return the ecb
+		 */
 		public ECB withNext(ECB value) {
 			this.next = value;
 			return this;
 		}
 
+		/**
+		 * Gets the num blocks.
+		 *
+		 * @return the num blocks
+		 */
 		public int getNumBlocks() {
 			int total = 0;
 			ECB element = this;
@@ -343,6 +413,11 @@ public final class Version {
 			return total;
 		}
 
+		/**
+		 * Gets the total EC codewords.
+		 *
+		 * @return the total EC codewords
+		 */
 		public int getTotalECCodewords() {
 			return ecCodewordsPerBlock * getNumBlocks();
 		}

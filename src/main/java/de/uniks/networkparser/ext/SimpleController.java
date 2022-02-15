@@ -61,12 +61,29 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class SimpleController.
+ *
+ * @author Stefan
+ */
 public class SimpleController implements ObjectCondition, UncaughtExceptionHandler, Runnable {
+	
+	/** The Constant SEPARATOR. */
 	public static final String SEPARATOR = "------";
+	
+	/** The Constant USER. */
 	public static final String USER = "USER";
+	
+	/** The Constant USERNAME. */
 	public static final String USERNAME = "USERNAME";
+	
+	/** The Constant CLOSE. */
 	public static final String CLOSE = "close";
+	
+	/** The Constant SHOWING. */
 	public static final String SHOWING = "SHOWING";
+	
+	/** The Constant CREATING. */
 	public static final String CREATING = "CREATING";
 	private Object stage;
 	private Object rootScene;
@@ -92,13 +109,27 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	private IdMap map;
 	private static NetworkParserLog logger = new NetworkParserLog();
 
+	/**
+	 * Instantiates a new simple controller.
+	 */
 	public SimpleController() {
 	}
 
+	/**
+	 * Instantiates a new simple controller.
+	 *
+	 * @param primitiveStage the primitive stage
+	 */
 	public SimpleController(Object primitiveStage) {
 		this(primitiveStage, true);
 	}
 
+	/**
+	 * Instantiates a new simple controller.
+	 *
+	 * @param primitiveStage the primitive stage
+	 * @param init the init
+	 */
 	public SimpleController(Object primitiveStage, boolean init) {
 		withStage(primitiveStage);
 		if (init) {
@@ -106,6 +137,11 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		}
 	}
 
+	/**
+	 * Show content.
+	 *
+	 * @param element the element
+	 */
 	public void showContent(Object element) {
 		Object content = this.createContent(element);
 		if (content != null) {
@@ -114,6 +150,12 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		}
 	}
 
+	/**
+	 * Creates the content.
+	 *
+	 * @param element the element
+	 * @return the object
+	 */
 	public Object createContent(Object element) {
 		if (element == null) {
 			return null;
@@ -128,6 +170,12 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return null;
 	}
 
+	/**
+	 * With stage.
+	 *
+	 * @param stage the stage
+	 * @return the simple controller
+	 */
 	public SimpleController withStage(Object stage) {
 		this.stage = stage;
 		if (stage != null && stage.getClass().getName().startsWith("javafx")) {
@@ -163,6 +211,12 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return null;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param primaryStage the primary stage
+	 * @return the simple controller
+	 */
 	public static SimpleController create(Object primaryStage) {
 		SimpleController controller = new SimpleController(primaryStage);
 		return controller;
@@ -376,6 +430,11 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return null;
 	}
 
+	/**
+	 * Gets the parameter map.
+	 *
+	 * @return the parameter map
+	 */
 	@SuppressWarnings("unchecked")
 	public SimpleKeyValueList<String, String> getParameterMap() {
 		SimpleKeyValueList<String, String> map = new SimpleKeyValueList<String, String>();
@@ -403,6 +462,12 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return map;
 	}
 
+	/**
+	 * Gets the user name.
+	 *
+	 * @param defaultName the default name
+	 * @return the user name
+	 */
 	public String getUserName(String... defaultName) {
 		SimpleKeyValueList<String, String> parameterMap = getParameterMap();
 		for (int i = 0; i < parameterMap.size(); i++) {
@@ -419,6 +484,13 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return "";
 	}
 
+	/**
+	 * Show.
+	 *
+	 * @param root the root
+	 * @param wait the wait
+	 * @param newStage the new stage
+	 */
 	public void show(Object root, boolean wait, boolean newStage) {
 		if (!Os.isFXThread()) {
 			this.runParams = new Object[] { root, wait, newStage };
@@ -473,18 +545,36 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		}
 	}
 
+	/**
+	 * Show.
+	 *
+	 * @param root the root
+	 */
 	public void show(Object root) {
 		show(root, false, firstShow == false);
 	}
 
+	/**
+	 * Show.
+	 */
 	public void show() {
 		show(null, false, firstShow == false);
 	}
 
+	/**
+	 * Gets the current scene.
+	 *
+	 * @return the current scene
+	 */
 	public Object getCurrentScene() {
 		return ReflectionLoader.call(stage, "getScene");
 	}
 
+	/**
+	 * Gets the stage.
+	 *
+	 * @return the stage
+	 */
 	public Object getStage() {
 		return stage;
 	}
@@ -513,6 +603,11 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		}
 	}
 
+	/**
+	 * Start.
+	 *
+	 * @return the int
+	 */
 	public int start() {
 		Process p = this.init();
 		if (p == null) {
@@ -525,6 +620,14 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return -1;
 	}
 
+	/**
+	 * With agent.
+	 *
+	 * @param agent the agent
+	 * @param backBoxTester the back box tester
+	 * @param mainClass the main class
+	 * @return the simple controller
+	 */
 	public SimpleController withAgent(String agent, String backBoxTester, String... mainClass) {
 		this.javaAgent = agent;
 		CharacterBuffer testClasses = new CharacterBuffer();
@@ -546,6 +649,14 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return this;
 	}
 
+	/**
+	 * With agent.
+	 *
+	 * @param agent the agent
+	 * @param backBoxTester the back box tester
+	 * @param mainClass the main class
+	 * @return the simple controller
+	 */
 	public SimpleController withAgent(String agent, boolean backBoxTester, String... mainClass) {
 		if (backBoxTester) {
 			return withAgent(agent, "", mainClass);
@@ -553,15 +664,31 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return withAgent(agent, null, mainClass);
 	}
 
+	/**
+	 * With output.
+	 *
+	 * @param value the value
+	 * @return the simple controller
+	 */
 	public SimpleController withOutput(String value) {
 		this.outputParameter = value;
 		return this;
 	}
 
+	/**
+	 * Gets the encoding code.
+	 *
+	 * @return the encoding code
+	 */
 	public String getEncodingCode() {
 		return encodingCode;
 	}
 
+	/**
+	 * With encoding code.
+	 *
+	 * @param value the value
+	 */
 	public void withEncodingCode(String value) {
 		this.encodingCode = value;
 	}
@@ -578,16 +705,34 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return sb.toString();
 	}
 
+	/**
+	 * With eclipse.
+	 *
+	 * @param enableThrows the enable throws
+	 * @return the simple controller
+	 */
 	public SimpleController withEclipse(boolean enableThrows) {
 		this.isEclipse = enableThrows;
 		return this;
 	}
 
+	/**
+	 * With main.
+	 *
+	 * @param value the value
+	 * @return the simple controller
+	 */
 	public SimpleController withMain(String value) {
 		this.mainClass = value;
 		return this;
 	}
 
+	/**
+	 * With error path.
+	 *
+	 * @param value the value
+	 * @return the simple controller
+	 */
 	public SimpleController withErrorPath(String value) {
 		this.errorHandler.withURL(value);
 		if (isEclipse == false) {
@@ -602,14 +747,32 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 
 	}
 
+	/**
+	 * With title.
+	 *
+	 * @param value the value
+	 */
 	public void withTitle(String value) {
 		this.title = value;
 	}
 
+	/**
+	 * With icon.
+	 *
+	 * @param value the value
+	 * @return the simple controller
+	 */
 	public SimpleController withIcon(String value) {
 		return withIcon(value, null);
 	}
 
+	/**
+	 * With icon.
+	 *
+	 * @param value the value
+	 * @param relative the relative
+	 * @return the simple controller
+	 */
 	public SimpleController withIcon(String value, Class<?> relative) {
 		if (Os.isReflectionTest()) {
 			return this;
@@ -658,6 +821,12 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		icons.add(image);
 	}
 
+	/**
+	 * With tool tip.
+	 *
+	 * @param text the text
+	 * @return the simple controller
+	 */
 	public SimpleController withToolTip(String text) {
 		if (this.trayIcon != null) {
 			ReflectionLoader.call(trayIcon, "setToolTip", String.class, text);
@@ -665,22 +834,46 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return this;
 	}
 
+	/**
+	 * With size.
+	 *
+	 * @param width the width
+	 * @param height the height
+	 * @return the simple controller
+	 */
 	public SimpleController withSize(double width, double height) {
 		ReflectionLoader.call(stage, "setWidth", double.class, width);
 		ReflectionLoader.call(stage, "setHeight", double.class, height);
 		return this;
 	}
 
+	/**
+	 * With full screen.
+	 *
+	 * @param value the value
+	 * @return the simple controller
+	 */
 	public SimpleController withFullScreen(boolean value) {
 		ReflectionLoader.call(stage, "setFullScreen", boolean.class, value);
 		return this;
 	}
 
+	/**
+	 * With always on top.
+	 *
+	 * @param value the value
+	 * @return the simple controller
+	 */
 	public SimpleController withAlwaysOnTop(boolean value) {
 		ReflectionLoader.call(stage, "setAlwaysOnTop", boolean.class, value);
 		return this;
 	}
 
+	/**
+	 * Gets the title.
+	 *
+	 * @return the title
+	 */
 	public String getTitle() {
 		String caption = "";
 		String temp = this.title;
@@ -692,6 +885,13 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 				+ System.getProperty("sun.arch.data.model") + "-Bit)";
 	}
 
+	/**
+	 * Adds the tray menu item.
+	 *
+	 * @param text the text
+	 * @param listener the listener
+	 * @return the object
+	 */
 	public Object addTrayMenuItem(String text, ObjectCondition listener) {
 		Object item = ReflectionLoader.newInstance(ReflectionLoader.MENUITEM, String.class, text);
 
@@ -705,6 +905,9 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return item;
 	}
 
+	/**
+	 * Adds the tray seperator.
+	 */
 	public void addTraySeperator() {
 		ReflectionLoader.call(getPopUp(), "addSeparator");
 	}
@@ -716,6 +919,12 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return popupMenu;
 	}
 
+	/**
+	 * Show tray icon.
+	 *
+	 * @param labels the labels
+	 * @return the object
+	 */
 	public Object showTrayIcon(String... labels) {
 		if (Os.checkSystemTray() == false) {
 			return null;
@@ -758,6 +967,9 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return this.trayIcon;
 	}
 
+	/**
+	 * Close.
+	 */
 	public void close() {
 		if (this.stage != null) {
 			ReflectionLoader.call(this.stage, "close");
@@ -770,6 +982,11 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		}
 	}
 
+	/**
+	 * Gets the version.
+	 *
+	 * @return the version
+	 */
 	public static String getVersion() {
 		String result = SimpleController.class.getPackage().getImplementationVersion();
 		if (result == null) {
@@ -778,20 +995,43 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return result;
 	}
 
+	/**
+	 * With listener.
+	 *
+	 * @param value the value
+	 * @return the simple controller
+	 */
 	public SimpleController withListener(ObjectCondition value) {
 		this.listener.add(value);
 		return this;
 	}
 
+	/**
+	 * Save exception.
+	 *
+	 * @param e the e
+	 */
 	public void saveException(Throwable e) {
 		this.errorHandler.saveException(e);
 	}
 
+	/**
+	 * With listener.
+	 *
+	 * @param listener the listener
+	 * @return the simple controller
+	 */
 	public SimpleController withListener(GUIEvent listener) {
 		this.listener.add(listener);
 		return this;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value == null) {
@@ -819,10 +1059,20 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return true;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @return the simple controller
+	 */
 	public static SimpleController create() {
 		return new SimpleController(null);
 	}
 
+	/**
+	 * Creates the FX.
+	 *
+	 * @return the simple controller
+	 */
 	public static SimpleController createFX() {
 		if (Os.isReflectionTest()) {
 			return null;
@@ -832,6 +1082,11 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return controller;
 	}
 
+	/**
+	 * Start FX.
+	 *
+	 * @return true, if successful
+	 */
 	public static boolean startFX() {
 		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
 		if (launcherClass == null) {
@@ -845,12 +1100,24 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 
 	}
 
+	/**
+	 * Hide.
+	 */
 	public void hide() {
 		if (this.stage != null) {
 			ReflectionLoader.call(this.stage, "hide");
 		}
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param bridge the bridge
+	 * @param listener the listener
+	 * @param exitOnClose the exit on close
+	 * @param wait the wait
+	 * @return the simple controller
+	 */
 	public static SimpleController create(JavaBridge bridge, final ObjectCondition listener, boolean exitOnClose,
 			boolean wait) {
 		final SimpleController controller = new SimpleController(null);
@@ -891,6 +1158,13 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return controller;
 	}
 
+	/**
+	 * With FXML.
+	 *
+	 * @param fxmlFile the fxml file
+	 * @param fromClass the from class
+	 * @return the simple controller
+	 */
 	public SimpleController withFXML(String fxmlFile, Class<?>... fromClass) {
 		Class<?> path = null;
 		if (fromClass != null && fromClass.length > 0) {
@@ -953,6 +1227,13 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return this;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param location the location
+	 * @param resources the resources
+	 * @return the object
+	 */
 	public Object create(URL location, ResourceBundle resources) {
 		Object fxmlLoader;
 		if (location == null) {
@@ -984,29 +1265,64 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return this;
 	}
 
+	/**
+	 * Gets the controller.
+	 *
+	 * @return the controller
+	 */
 	public Object getController() {
 		return controller;
 	}
 
+	/**
+	 * Run later.
+	 *
+	 * @param runnable the runnable
+	 * @param values the values
+	 */
 	public void runLater(Runnable runnable, Object... values) {
 		runParams = values;
 		runAction = CREATING;
 		JavaAdapter.executeAndWait(runnable);
 	}
 
+	/**
+	 * With bridge.
+	 *
+	 * @param value the value
+	 * @return the simple controller
+	 */
 	public SimpleController withBridge(JavaBridge value) {
 		this.bridge = value;
 		return this;
 	}
 
+	/**
+	 * Gets the bridge.
+	 *
+	 * @return the bridge
+	 */
 	public JavaBridge getBridge() {
 		return bridge;
 	}
 
+	/**
+	 * Execute process.
+	 *
+	 * @param values the values
+	 * @return the character buffer
+	 */
 	public static CharacterBuffer executeProcess(String... values) {
 		return executeProcess(new CharacterBuffer(), values);
 	}
 
+	/**
+	 * Execute process.
+	 *
+	 * @param command the command
+	 * @param values the values
+	 * @return the character buffer
+	 */
 	public static CharacterBuffer executeProcess(CharacterBuffer command, String... values) {
 		CharacterBuffer result = new CharacterBuffer();
 		if (values == null) {
@@ -1101,6 +1417,13 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return result;
 	}
 
+	/**
+	 * With package name.
+	 *
+	 * @param packageName the package name
+	 * @param excludes the excludes
+	 * @return the simple controller
+	 */
 	public SimpleController withPackageName(String packageName, String... excludes) {
 		if (compilePath == null && packageName != null && packageName.length() > 0) {
 			if ((packageName.endsWith("/") || packageName.endsWith("\\")) == false) {
@@ -1115,6 +1438,15 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return this;
 	}
 
+	/**
+	 * Visit path.
+	 *
+	 * @param file the file
+	 * @param root the root
+	 * @param deep the deep
+	 * @param maxDeep the max deep
+	 * @param excludes the excludes
+	 */
 	public void visitPath(File file, String root, int deep, int maxDeep, String... excludes) {
 		if (file == null || root == null || deep > maxDeep) {
 			return;
@@ -1152,11 +1484,20 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		}
 	}
 
+	/**
+	 * Uncaught exception.
+	 *
+	 * @param t the t
+	 * @param e the e
+	 */
 	@Override
 	public void uncaughtException(Thread t, Throwable e) {
 		this.errorHandler.saveException(e);
 	}
 
+	/**
+	 * Run.
+	 */
 	@Override
 	public void run() {
 		boolean showBridge = true;
@@ -1188,6 +1529,13 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		}
 	}
 
+	/**
+	 * With map.
+	 *
+	 * @param key the key
+	 * @param modelMapping the model mapping
+	 * @return the model listener property
+	 */
 	public ModelListenerProperty withMap(String key, Object... modelMapping) {
 		ModelListenerProperty propertyPrototype = new ModelListenerProperty();
 		withMap(propertyPrototype, key, modelMapping);
@@ -1195,6 +1543,8 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	}
 
 	/**
+	 * With map.
+	 *
 	 * @param controller   Creator for Controller
 	 * @param key          Key of GUI
 	 * @param modelMapping Mapping for Mapping GUI
@@ -1222,10 +1572,21 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return this;
 	}
 
+	/**
+	 * Gets the controllers.
+	 *
+	 * @return the controllers
+	 */
 	public SimpleList<SendableEntityCreator> getControllers() {
 		return controllers;
 	}
 
+	/**
+	 * With map.
+	 *
+	 * @param map the map
+	 * @return the simple controller
+	 */
 	public SimpleController withMap(IdMap map) {
 		this.map = map;
 		return this;

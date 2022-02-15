@@ -43,19 +43,36 @@ import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.xml.XMLEntity;
 
-/** Buffer for FileContext 
- * @author Stefan Lindel */
+/**
+ * Buffer for FileContext.
+ *
+ * @author Stefan Lindel
+ */
 public class FileBuffer extends Buffer {
+	
+	/** The Constant BUFFER. */
 	public static final int BUFFER = 4096;
 	private BufferedReader reader;
 	private File file;
 	private CharacterBuffer lookAHead = new CharacterBuffer();
 	private int length;
 	private char currentChar;
+	
+	/** The none. */
 	public static byte NONE = 0;
+	
+	/** The append. */
 	public static byte APPEND = 1;
+	
+	/** The override. */
 	public static byte OVERRIDE = 2;
 
+	/**
+	 * With file.
+	 *
+	 * @param fileName the file name
+	 * @return the file buffer
+	 */
 	public FileBuffer withFile(String fileName) {
 		if (fileName != null) {
 			withFile(new File(fileName));
@@ -63,6 +80,13 @@ public class FileBuffer extends Buffer {
 		return this;
 	}
 
+	/**
+	 * With file.
+	 *
+	 * @param file the file
+	 * @param cache the cache
+	 * @return the file buffer
+	 */
 	public FileBuffer withFile(File file, int cache) {
 		this.file = file;
 		if (file == null) {
@@ -79,23 +103,50 @@ public class FileBuffer extends Buffer {
 		return this;
 	}
 	
+	/**
+	 * As stream.
+	 *
+	 * @return the file input stream
+	 * @throws FileNotFoundException the file not found exception
+	 */
 	public FileInputStream asStream() throws FileNotFoundException {
 		return new FileInputStream(this.file);
 	}
 
+	/**
+	 * As file.
+	 *
+	 * @return the file
+	 */
 	public File asFile() {
 		return this.file;
 	}
 
+	/**
+	 * With file.
+	 *
+	 * @param file the file
+	 * @return the file buffer
+	 */
 	public FileBuffer withFile(File file) {
 		return withFile(file, 1024 * 1024);
 	}
 
+	/**
+	 * Length.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int length() {
 		return length;
 	}
 
+	/**
+	 * Exists.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean exists() {
 		if (this.file == null) {
 			return false;
@@ -103,6 +154,11 @@ public class FileBuffer extends Buffer {
 		return this.file.exists();
 	}
 
+	/**
+	 * Gets the char.
+	 *
+	 * @return the char
+	 */
 	@Override
 	public char getChar() {
 		char value = 0;
@@ -132,6 +188,11 @@ public class FileBuffer extends Buffer {
 		return value;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		char[] values = new char[remaining()];
@@ -157,6 +218,12 @@ public class FileBuffer extends Buffer {
 		return new String(values);
 	}
 
+	/**
+	 * With look A head.
+	 *
+	 * @param lookahead the lookahead
+	 * @return the file buffer
+	 */
 	@Override
 	public FileBuffer withLookAHead(CharSequence lookahead) {
 		this.lookAHead.set(lookahead);
@@ -170,6 +237,12 @@ public class FileBuffer extends Buffer {
 		return this;
 	}
 
+	/**
+	 * With look A head.
+	 *
+	 * @param current the current
+	 * @return the file buffer
+	 */
 	@Override
 	public FileBuffer withLookAHead(char current) {
 		this.lookAHead.set(this.currentChar);
@@ -178,6 +251,12 @@ public class FileBuffer extends Buffer {
 		return this;
 	}
 
+	/**
+	 * Next clean.
+	 *
+	 * @param currentValid the current valid
+	 * @return the char
+	 */
 	@Override
 	public char nextClean(boolean currentValid) {
 		char current = super.nextClean(currentValid);
@@ -185,6 +264,11 @@ public class FileBuffer extends Buffer {
 		return current;
 	}
 
+	/**
+	 * Gets the current char.
+	 *
+	 * @return the current char
+	 */
 	@Override
 	public char getCurrentChar() {
 		if (currentChar != 0) {
@@ -194,10 +278,18 @@ public class FileBuffer extends Buffer {
 		return value;
 	}
 
+	/**
+	 * Gets the byte.
+	 *
+	 * @return the byte
+	 */
 	public byte getByte() {
 		return (byte) getChar();
 	}
 
+	/**
+	 * Close.
+	 */
 	public void close() {
 		try {
 			if (this.reader != null) {
@@ -207,6 +299,14 @@ public class FileBuffer extends Buffer {
 		}
 	}
 
+	/**
+	 * Write file.
+	 *
+	 * @param fileName the file name
+	 * @param data the data
+	 * @param flag the flag
+	 * @return the int
+	 */
 	public static final int writeFile(String fileName, CharSequence data, byte flag) {
 		if (data != null) {
 			return writeFile(fileName, data.toString().getBytes(), flag);
@@ -214,6 +314,13 @@ public class FileBuffer extends Buffer {
 		return -1;
 	}
 
+	/**
+	 * Copy file.
+	 *
+	 * @param sourceFile the source file
+	 * @param targetfileName the targetfile name
+	 * @return the int
+	 */
 	public static final int copyFile(String sourceFile, String targetfileName) {
 		if (sourceFile != null) {
 			ByteBuffer readFile = readBinaryFile(sourceFile);
@@ -226,6 +333,14 @@ public class FileBuffer extends Buffer {
 		return -1;
 	}
 
+	/**
+	 * Write file.
+	 *
+	 * @param fileName the file name
+	 * @param data the data
+	 * @param flag the flag
+	 * @return the int
+	 */
 	public static final int writeFile(String fileName, byte[] data, byte flag) {
 		if (fileName == null || fileName.length() < 1) {
 			return -1;
@@ -250,10 +365,24 @@ public class FileBuffer extends Buffer {
 		return buffer.write(flag, data);
 	}
 
+	/**
+	 * Write file.
+	 *
+	 * @param fileName the file name
+	 * @param data the data
+	 * @return the int
+	 */
 	public static final int writeFile(String fileName, CharSequence data) {
 		return writeFile(fileName, data, OVERRIDE);
 	}
 
+	/**
+	 * Write reource file.
+	 *
+	 * @param fileName the file name
+	 * @param path the path
+	 * @return the int
+	 */
 	public static final int writeReourceFile(String fileName, String path) {
 		if (path == null) {
 			return -1;
@@ -261,16 +390,37 @@ public class FileBuffer extends Buffer {
 		return writeFile(fileName, FileBuffer.readBinaryResource(path).array(), OVERRIDE);
 	}
 
+	/**
+	 * Write file.
+	 *
+	 * @param fileName the file name
+	 * @param data the data
+	 * @return the int
+	 */
 	public static final int writeFile(String fileName, byte[] data) {
 		return writeFile(fileName, data, OVERRIDE);
 	}
 
+	/**
+	 * Read resource.
+	 *
+	 * @param file the file
+	 * @return the character buffer
+	 */
 	public CharacterBuffer readResource(String file) {
 		if (file == null) {
 			return null;
 		}
 		return readResource(IdMap.class.getResourceAsStream(file));
 	}
+	
+	/**
+	 * Read resource.
+	 *
+	 * @param file the file
+	 * @param reference the reference
+	 * @return the character buffer
+	 */
 	public static CharacterBuffer readResource(String file, Class<?> reference) {
         if (file == null ||  reference == null) {
             return null;
@@ -278,6 +428,11 @@ public class FileBuffer extends Buffer {
         return readResource(reference.getResourceAsStream(file));
     }
 	
+	/**
+	 * Read all.
+	 *
+	 * @return the character buffer
+	 */
 	public CharacterBuffer readAll() {
 		if (file == null) {
 			return null;
@@ -285,6 +440,12 @@ public class FileBuffer extends Buffer {
 		return readFile(file);
 	}
 
+	/**
+	 * Read resource.
+	 *
+	 * @param is the is
+	 * @return the character buffer
+	 */
 	public static CharacterBuffer readResource(InputStream is) {
 		CharacterBuffer sb = new CharacterBuffer();
 		if (is != null) {
@@ -308,9 +469,23 @@ public class FileBuffer extends Buffer {
 		return sb;
 	}
 
+	/**
+	 * Read binary resource.
+	 *
+	 * @param file the file
+	 * @return the byte buffer
+	 */
 	public static ByteBuffer readBinaryResource(String file) {
 		return readBinaryResource(file, IdMap.class);
 	}
+	
+	/**
+	 * Read binary resource.
+	 *
+	 * @param file the file
+	 * @param reference the reference
+	 * @return the byte buffer
+	 */
 	public static ByteBuffer readBinaryResource(String file, Class<?> reference) {
 		if (file == null) {
 			return null;
@@ -339,6 +514,12 @@ public class FileBuffer extends Buffer {
 		return sb;
 	}
 
+	/**
+	 * Read file.
+	 *
+	 * @param file the file
+	 * @return the character buffer
+	 */
 	public static final CharacterBuffer readFile(String file) {
 		if (file == null) {
 			return null;
@@ -346,6 +527,12 @@ public class FileBuffer extends Buffer {
 		return readFile(new File(file));
 	}
 
+	/**
+	 * Read file.
+	 *
+	 * @param file the file
+	 * @return the character buffer
+	 */
 	public static final CharacterBuffer readFile(File file) {
 		CharacterBuffer sb = new CharacterBuffer();
 		if (file == null) {
@@ -374,6 +561,12 @@ public class FileBuffer extends Buffer {
 		return sb;
 	}
 
+	/**
+	 * Read binary file.
+	 *
+	 * @param file the file
+	 * @return the byte buffer
+	 */
 	public static final ByteBuffer readBinaryFile(String file) {
 		if (file == null) {
 			return null;
@@ -403,10 +596,23 @@ public class FileBuffer extends Buffer {
 		return sb;
 	}
 
+	/**
+	 * Read base file.
+	 *
+	 * @param configFile the config file
+	 * @return the base item
+	 */
 	public static BaseItem readBaseFile(String configFile) {
 		return readBaseFile(configFile, null);
 	}
 
+	/**
+	 * Read base file resource.
+	 *
+	 * @param file the file
+	 * @param referenceClass the reference class
+	 * @return the base item
+	 */
 	public static BaseItem readBaseFileResource(String file, Class<?> referenceClass) {
 		if (referenceClass == null || file == null) {
 			return null;
@@ -417,6 +623,13 @@ public class FileBuffer extends Buffer {
 
 	}
 
+	/**
+	 * Read base file.
+	 *
+	 * @param configFile the config file
+	 * @param container the container
+	 * @return the base item
+	 */
 	public static BaseItem readBaseFile(String configFile, BaseItem container) {
 		/* load it */
 		CharacterBuffer buffer = FileBuffer.readFile(configFile);
@@ -469,6 +682,12 @@ public class FileBuffer extends Buffer {
 		return container;
 	}
 
+	/**
+	 * Delete file.
+	 *
+	 * @param fileName the file name
+	 * @return true, if successful
+	 */
 	public static final boolean deleteFile(String fileName) {
 		if (fileName == null) {
 			return false;
@@ -482,10 +701,21 @@ public class FileBuffer extends Buffer {
 		return true;
 	}
 
+	/**
+	 * Creates the file.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean createFile() {
 		return FileBuffer.createFile(this.file);
 	}
 
+	/**
+	 * Creates the file.
+	 *
+	 * @param file the file
+	 * @return true, if successful
+	 */
 	public static boolean createFile(File file) {
 		if (file == null) {
 			return false;
@@ -503,6 +733,13 @@ public class FileBuffer extends Buffer {
 		}
 		return false;
 	}
+	
+	/**
+	 * Creates the folder.
+	 *
+	 * @param file the file
+	 * @return true, if successful
+	 */
 	public static boolean createFolder(String file) {
 		if (file == null) {
 			return false;
@@ -514,15 +751,37 @@ public class FileBuffer extends Buffer {
 		return folder.mkdirs();
 	}
 
+	/**
+	 * Write.
+	 *
+	 * @param flag the flag
+	 * @param data the data
+	 * @return the int
+	 */
 	public int write(byte flag, CharSequence data) {
 		if (data != null) {
 			return write(flag, data.toString().getBytes());
 		}
 		return -1;
 	}
+	
+	/**
+	 * Write binary.
+	 *
+	 * @param data the data
+	 * @return the int
+	 */
 	public int writeBinary(byte... data) {
 		return write(APPEND, data);
 	}
+	
+	/**
+	 * Write.
+	 *
+	 * @param flag the flag
+	 * @param data the data
+	 * @return the int
+	 */
 	public int write(byte flag, byte... data) {
 		if (this.file == null || data == null) {
 			return -1;
@@ -546,15 +805,33 @@ public class FileBuffer extends Buffer {
 		return -1;
 	}
 
+	/**
+	 * Println.
+	 *
+	 * @param string the string
+	 * @return true, if successful
+	 */
 	public boolean println(CharSequence string) {
 		this.write(APPEND, string);
 		return newline();
 	}
 
+	/**
+	 * Newline.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean newline() {
 		return this.write(APPEND, BaseItem.CRLF) > 0;
 	}
 
+	/**
+	 * Skip.
+	 *
+	 * @param input the input
+	 * @param numToSkip the num to skip
+	 * @return the long
+	 */
 	public static long skip(InputStream input, long numToSkip) {
 		if (input == null) {
 			return -1;
@@ -582,6 +859,13 @@ public class FileBuffer extends Buffer {
 		return available - numToSkip;
 	}
 
+	/**
+	 * Read fully.
+	 *
+	 * @param input the input
+	 * @param b the b
+	 * @return the int
+	 */
 	public static int readFully(final InputStream input, final byte[] b) {
 		if (b == null) {
 			return -1;
@@ -589,6 +873,13 @@ public class FileBuffer extends Buffer {
 		return readFully(input, b, 0, b.length);
 	}
 
+	/**
+	 * Copy.
+	 *
+	 * @param input the input
+	 * @param output the output
+	 * @return the long
+	 */
 	public static long copy(final InputStream input, final OutputStream output) {
 		if (input == null || output == null) {
 			return -1;
@@ -607,6 +898,15 @@ public class FileBuffer extends Buffer {
 		return count;
 	}
 
+	/**
+	 * Read fully.
+	 *
+	 * @param input the input
+	 * @param b the b
+	 * @param offset the offset
+	 * @param len the len
+	 * @return the int
+	 */
 	public static int readFully(final InputStream input, final byte[] b, final int offset, final int len) {
 		if (b == null || input == null || len < 0 || offset < 0 || len + offset > b.length) {
 			return -1;

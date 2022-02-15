@@ -41,15 +41,28 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
 
 /**
- * The XSD Entity
+ * The XSD Entity.
+ *
  * @author Stefan
  */
 public class XSDEntity extends XMLEntity implements SendableEntityCreator {
+	
+	/** The Constant XSD_COMPLEX_TYPE. */
 	public static final String XSD_COMPLEX_TYPE = ":complexType";
+	
+	/** The Constant XSD_ELEMENT_TYPE. */
 	public static final String XSD_ELEMENT_TYPE = ":element";
+	
+	/** The Constant XSD_STRING_TYPE. */
 	public static final String XSD_STRING_TYPE = ":string";
+	
+	/** The Constant XSD_SEQUENCE_TYPE. */
 	public static final String XSD_SEQUENCE_TYPE = ":sequence";
+	
+	/** The Constant XSD_ATTRIBUTE_TYPE. */
 	public static final String XSD_ATTRIBUTE_TYPE = ":attribute";
+	
+	/** The Constant XSD_UNBOUNDED. */
 	public static final String XSD_UNBOUNDED = "unbounded";
 	/** Constant of Choice. */
 	public static final String PROPERTY_CHOICE = "choice";
@@ -78,13 +91,17 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 	/** The Maximum of Elements. */
 	private String maxOccurs;
 
-	/** @return The Choice of Elements. */
+	/**
+	 * Gets the choice.
+	 *
+	 * @return The Choice of Elements.
+	 */
 	public ArrayList<XSDEntity> getChoice() {
 		return choice;
 	}
 
 	/**
-	 * Set a ChoiceList
+	 * Set a ChoiceList.
 	 *
 	 * @param value Elements of Choice.
 	 */
@@ -92,13 +109,17 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		this.choice = value;
 	}
 
-	/** @return The Sequence of Elements. */
+	/**
+	 * Gets the sequence.
+	 *
+	 * @return The Sequence of Elements.
+	 */
 	public ArrayList<XSDEntity> getSequence() {
 		return sequence;
 	}
 
 	/**
-	 * Set a Sequence Validator
+	 * Set a Sequence Validator.
 	 *
 	 * @param values Set the Sequence.
 	 */
@@ -106,13 +127,17 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		this.sequence = values;
 	}
 
-	/** @return All Attributes. */
+	/**
+	 * Gets the attribute.
+	 *
+	 * @return All Attributes.
+	 */
 	public ArrayList<String> getAttribute() {
 		return attribute;
 	}
 
 	/**
-	 * Set a List of Attributes
+	 * Set a List of Attributes.
 	 *
 	 * @param values Set All Attributes.
 	 */
@@ -120,13 +145,17 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		this.attribute = values;
 	}
 
-	/** @return The Minimum of Elements. */
+	/**
+	 * Gets the min occurs.
+	 *
+	 * @return The Minimum of Elements.
+	 */
 	public String getMinOccurs() {
 		return minOccurs;
 	}
 
 	/**
-	 * Set the Mimimum for XSD Entity
+	 * Set the Mimimum for XSD Entity.
 	 *
 	 * @param value The Minimum of Elements.
 	 * @return success for Set new Value
@@ -139,13 +168,17 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		return false;
 	}
 
-	/** @return The Maximum of Elements. */
+	/**
+	 * Gets the max occurs.
+	 *
+	 * @return The Maximum of Elements.
+	 */
 	public String getMaxOccurs() {
 		return maxOccurs;
 	}
 
 	/**
-	 * Set the Maximum of Occurs
+	 * Set the Maximum of Occurs.
 	 *
 	 * @param value the Maximum of Elements.
 	 * @return success for Set new Value
@@ -158,22 +191,49 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new XSDEntity();
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { PROPERTY_CHOICE, PROPERTY_SEQUENCE, PROPERTY_ATTRIBUTE, PROPERTY_MINOCCURS,
 				PROPERTY_MAXOCCURS, PROPERTY_TAG, PROPERTY_VALUE, PROEPRTY_CHILDREN };
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (entity == null || entity instanceof XSDEntity == false) {
@@ -201,6 +261,13 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the object
+	 */
 	@Override
 	public Object put(String key, Object value) {
 		/* Override Standard for Custom Keys ;) */
@@ -219,6 +286,12 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		return super.put(key, value);
 	}
 
+	/**
+	 * Sets the tag.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setTag(String value) {
 		if (value != this.tag) {
 			this.tag = value;
@@ -227,6 +300,12 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * Adds the to adttribute.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean addToAdttribute(String value) {
 		if (this.attribute == null) {
 			this.attribute = new ArrayList<String>();
@@ -235,6 +314,12 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		return true;
 	}
 
+	/**
+	 * Adds the to sequence.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean addToSequence(XSDEntity value) {
 		if (this.sequence == null) {
 			this.sequence = new ArrayList<XSDEntity>();
@@ -243,6 +328,12 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		return true;
 	}
 
+	/**
+	 * Adds the to choice.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean addToChoice(XSDEntity value) {
 		if (this.choice == null) {
 			this.choice = new ArrayList<XSDEntity>();
@@ -251,6 +342,12 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		return true;
 	}
 
+	/**
+	 * Creates the model.
+	 *
+	 * @param prefix the prefix
+	 * @return the class model
+	 */
 	public ClassModel createModel(String prefix) {
 		ClassModel model = new ClassModel();
 		if (prefix == null) {
@@ -403,6 +500,12 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		return "";
 	}
 
+	/**
+	 * Clean up.
+	 *
+	 * @param prefix the prefix
+	 * @return true, if successful
+	 */
 	public boolean cleanUp(String prefix) {
 		if (prefix == null) {
 			return false;

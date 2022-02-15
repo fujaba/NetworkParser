@@ -35,24 +35,40 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 public class GraphPatternChange implements ObjectCondition, SendableEntityCreator {
 	/** Constant for ITEM. */
 	public static final String OLD = "oldValue";
+	
+	/** The Constant NEW. */
 	public static final String NEW = "newValue";
+	
+	/** The Constant PROPERTY. */
 	public static final String PROPERTY = "property";
 	/** Varibale for Condition. */
 	private String property;
 	private Object oldValue;
 	private Object newValue;
 
+	/**
+	 * Update.
+	 *
+	 * @param evt the evt
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object evt) {
 		return true;
 	}
 
-	/** @return The OldValue */
+	/**
+	 * Gets the old value.
+	 *
+	 * @return The OldValue
+	 */
 	public Object getOldValue() {
 		return oldValue;
 	}
 
 	/**
+	 * With old value.
+	 *
 	 * @param value for The OldValue
 	 * @return GraphPatternChange Instance
 	 */
@@ -61,12 +77,18 @@ public class GraphPatternChange implements ObjectCondition, SendableEntityCreato
 		return this;
 	}
 
-	/** @return The OldValue */
+	/**
+	 * Gets the new value.
+	 *
+	 * @return The OldValue
+	 */
 	public Object getNewValue() {
 		return newValue;
 	}
 
 	/**
+	 * With property.
+	 *
 	 * @param value for Property
 	 * @return GraphPatternChange Instance
 	 */
@@ -75,12 +97,18 @@ public class GraphPatternChange implements ObjectCondition, SendableEntityCreato
 		return this;
 	}
 
-	/** @return The Property */
+	/**
+	 * Gets the property.
+	 *
+	 * @return The Property
+	 */
 	public String getProperty() {
 		return property;
 	}
 
 	/**
+	 * With new value.
+	 *
 	 * @param value for new Condition
 	 * @return GraphPatternChange Instance
 	 */
@@ -89,16 +117,34 @@ public class GraphPatternChange implements ObjectCondition, SendableEntityCreato
 		return this;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { PROPERTY, OLD, NEW };
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new GraphPatternChange();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (PROPERTY.equalsIgnoreCase(attribute)) {
@@ -113,6 +159,15 @@ public class GraphPatternChange implements ObjectCondition, SendableEntityCreato
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (PROPERTY.equalsIgnoreCase(attribute)) {
@@ -130,26 +185,67 @@ public class GraphPatternChange implements ObjectCondition, SendableEntityCreato
 		return false;
 	}
 
+	/**
+	 * Creates the create.
+	 *
+	 * @param newValue the new value
+	 * @return the graph pattern change
+	 */
 	public static GraphPatternChange createCreate(Object newValue) {
 		return new GraphPatternChange().withNewValue(newValue);
 	}
 
+	/**
+	 * Creates the create.
+	 *
+	 * @param property the property
+	 * @param newValue the new value
+	 * @return the graph pattern change
+	 */
 	public static GraphPatternChange createCreate(String property, Object newValue) {
 		return new GraphPatternChange().withProperty(property).withNewValue(newValue);
 	}
 
+	/**
+	 * Creates the change.
+	 *
+	 * @param oldValue the old value
+	 * @param newValue the new value
+	 * @return the graph pattern change
+	 */
 	public static GraphPatternChange createChange(Object oldValue, Object newValue) {
 		return new GraphPatternChange().withOldValue(oldValue).withNewValue(newValue);
 	}
 
+	/**
+	 * Creates the change.
+	 *
+	 * @param property the property
+	 * @param oldValue the old value
+	 * @param newValue the new value
+	 * @return the graph pattern change
+	 */
 	public static GraphPatternChange createChange(String property, Object oldValue, Object newValue) {
 		return new GraphPatternChange().withProperty(property).withOldValue(oldValue).withNewValue(newValue);
 	}
 
+	/**
+	 * Creates the delete.
+	 *
+	 * @param oldValue the old value
+	 * @return the graph pattern change
+	 */
 	public static GraphPatternChange createDelete(Object oldValue) {
 		return new GraphPatternChange().withOldValue(oldValue);
 	}
 
+	/**
+	 * Creates the delete.
+	 *
+	 * @param property the property
+	 * @param oldValue the old value
+	 * @return the graph pattern change
+	 */
 	public static GraphPatternChange createDelete(String property, Object oldValue) {
 		return new GraphPatternChange().withProperty(property).withOldValue(oldValue);
 	}

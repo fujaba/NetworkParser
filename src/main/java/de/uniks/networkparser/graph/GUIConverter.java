@@ -13,9 +13,17 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class GUIConverter.
+ *
+ * @author Stefan
+ */
 public class GUIConverter implements Converter {
 	private SimpleKeyValueList<String, Control> factory;
 
+	/**
+	 * Instantiates a new GUI converter.
+	 */
 	public GUIConverter() {
 		factory = new SimpleKeyValueList<String, Control>();
 		factory.add("textArea", new TextField());
@@ -25,6 +33,12 @@ public class GUIConverter implements Converter {
 		factory.add("button", new Button());
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @return the string
+	 */
 	@Override
 	public String encode(BaseItem entity) {
 		if (entity instanceof Entity) {
@@ -33,14 +47,32 @@ public class GUIConverter implements Converter {
 		return null;
 	}
 
+	/**
+	 * Convert.
+	 *
+	 * @param value the value
+	 * @return the control
+	 */
 	public Control convert(String value) {
 		return convert(new XMLEntity().withValue(value));
 	}
 
+	/**
+	 * Convert.
+	 *
+	 * @param value the value
+	 * @return the control
+	 */
 	public Control convert(Buffer value) {
 		return convert(new XMLEntity().withValue(value));
 	}
 
+	/**
+	 * Convert.
+	 *
+	 * @param value the value
+	 * @return the control
+	 */
 	public Control convert(Entity value) {
 		if (value instanceof XMLEntity) {
 			Group group = new Group();
@@ -50,6 +82,12 @@ public class GUIConverter implements Converter {
 		return null;
 	}
 
+	/**
+	 * Parsing XML entity.
+	 *
+	 * @param element the element
+	 * @return the control
+	 */
 	public Control parsingXMLEntity(XMLEntity element) {
 		String tag = null;
 		if (element != null) {

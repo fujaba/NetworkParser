@@ -34,23 +34,38 @@ import de.uniks.networkparser.ext.sql.SQLStatementList;
 import de.uniks.networkparser.ext.sql.SQLTokener;
 
 /**
- * Proxy for Database COnnection
+ * Proxy for Database COnnection.
+ *
  * @author Stefan Lindel
  */
 public class NodeProxySQL extends NodeProxy {
+	
+	/** The Constant PROPERTY_DATABASE. */
 	public static final String PROPERTY_DATABASE = "database";
+	
+	/** The Constant PROPERTY_DRIVER. */
 	public static final String PROPERTY_DRIVER = "driver";
 
 	private String database;
 	private String driver;
 	private SQLTokener tokener;
 
+	/**
+	 * Instantiates a new node proxy SQL.
+	 */
 	public NodeProxySQL() {
 		this.property.addAll(PROPERTY_DATABASE, PROPERTY_DRIVER);
 		this.propertyInfo.addAll(PROPERTY_DATABASE, PROPERTY_DRIVER);
 		this.propertyUpdate.addAll(PROPERTY_DATABASE, PROPERTY_DRIVER);
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param element the element
+	 * @param attrName the attr name
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object element, String attrName) {
 		if (element instanceof NodeProxySQL) {
@@ -65,19 +80,41 @@ public class NodeProxySQL extends NodeProxy {
 		return super.getValue(element, attrName);
 	}
 
+	/**
+	 * With connection.
+	 *
+	 * @param con the con
+	 * @return the node proxy SQL
+	 */
 	public NodeProxySQL withConnection(Connection con) {
 		initTokener(con);
 		return this;
 	}
 
+	/**
+	 * Gets the data base.
+	 *
+	 * @return the data base
+	 */
 	public String getDataBase() {
 		return this.database;
 	}
 
+	/**
+	 * Gets the driver.
+	 *
+	 * @return the driver
+	 */
 	public String getDriver() {
 		return driver;
 	}
 
+	/**
+	 * With driver.
+	 *
+	 * @param value the value
+	 * @return the node proxy SQL
+	 */
 	public NodeProxySQL withDriver(String value) {
 		this.driver = value;
 		return this;
@@ -88,6 +125,15 @@ public class NodeProxySQL extends NodeProxy {
 		return this;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param element the element
+	 * @param attrName the attr name
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object element, String attrName, Object value, String type) {
 		if (element instanceof NodeProxySQL) {
@@ -104,16 +150,32 @@ public class NodeProxySQL extends NodeProxy {
 		return super.setValue(element, attrName, value, type);
 	}
 
+	/**
+	 * Compare to.
+	 *
+	 * @param o the o
+	 * @return the int
+	 */
 	@Override
 	public int compareTo(NodeProxy o) {
 		return 0;
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return database;
 	}
 
+	/**
+	 * Close.
+	 *
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean close() {
 		if (this.tokener != null) {
@@ -128,16 +190,32 @@ public class NodeProxySQL extends NodeProxy {
 		return true;
 	}
 
+	/**
+	 * Checks if is sendable.
+	 *
+	 * @return true, if is sendable
+	 */
 	@Override
 	public boolean isSendable() {
 		return driver != null;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new NodeProxySQL();
 	}
 
+	/**
+	 * Inits the tokener.
+	 *
+	 * @param con the con
+	 */
 	public void initTokener(Connection con) {
 		if (this.tokener == null) {
 			String[] split = driver.split(":");

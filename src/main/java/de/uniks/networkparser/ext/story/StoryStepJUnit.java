@@ -51,6 +51,11 @@ import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class StoryStepJUnit.
+ *
+ * @author Stefan
+ */
 public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 	private static final String BLACKBOXFILE = "blackbox.txt";
 	private ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
@@ -65,9 +70,18 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 	private IdMap map;
 	private GraphModel model;
 
+	/**
+	 * Instantiates a new story step J unit.
+	 */
 	public StoryStepJUnit() {
 		initColumn();
 	}
+	
+	/**
+	 * Inits the column.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean initColumn() {
 		if(this.column != null) {
 			return true;
@@ -79,6 +93,12 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 		return this.column != null;
 	}
 
+	/**
+	 * Adds the group.
+	 *
+	 * @param label the label
+	 * @return the feature
+	 */
 	public Feature addGroup(String label) {
 		Feature feature = Feature.JUNIT.create();
 		feature.withStringValue(label);
@@ -87,6 +107,14 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 		return feature;
 	}
 
+	/**
+	 * Write HTML.
+	 *
+	 * @param executeData the execute data
+	 * @param outputFile the output file
+	 * @param label the label
+	 * @return true, if successful
+	 */
 	public boolean writeHTML(String executeData, String outputFile, String label) {
 		Object loader = ReflectionLoader.newInstance("org.jacoco.core.tools.ExecFileLoader");
 		if (loader == null) {
@@ -175,6 +203,12 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 		return multi;
 	}
 
+	/**
+	 * Execute black box test.
+	 *
+	 * @param path the path
+	 * @return true, if successful
+	 */
 	public boolean executeBlackBoxTest(String path) {
 		this.task = path;
 		try {
@@ -192,6 +226,12 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 		return true;
 	}
 
+	/**
+	 * Recompile.
+	 *
+	 * @param output the output
+	 * @return true, if successful
+	 */
 	public boolean recompile(String... output) {
 		if (this.packageName == null) {
 			return false;
@@ -208,6 +248,12 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 		return controller.start() >= 0;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof SimpleEvent == false) {
@@ -228,6 +274,14 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 		/* EXECUTE JUNIT AND JACOCO */
 		return writeResult(evt, evt.getNewValue());
 	}
+	
+	/**
+	 * Write result.
+	 *
+	 * @param source the source
+	 * @param newElement the new element
+	 * @return true, if successful
+	 */
 	public boolean writeResult(Object source, Object newElement) {
 		if(source == null) {
 			return false;
@@ -273,8 +327,8 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 				if (end > 0) {
 					String name = indexFile.substring(pos, end);
 					HTMLEntity output = (HTMLEntity) newElement;
-					XMLEntity div = output.createTag("div", output.getBody());
-					XMLEntity p = output.createTag("p", div);
+					XMLEntity div = output.createChild("div", output.getBody());
+					XMLEntity p = output.createChild("p", div);
 					p.withCloseTag();
 					int level = 0;
 					try {
@@ -291,7 +345,7 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 						}
 					} catch (Exception e) {
 					}
-					XMLEntity textnode = output.createTag("div", div);
+					XMLEntity textnode = output.createChild("div", div);
 					textnode.add("class", "notify-text");
 					if (level == 0) {
 						div.add("class", "notify notify-red");
@@ -311,6 +365,8 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 	}
 
 	/**
+	 * Gets the logger.
+	 *
 	 * @return the logger
 	 */
 	public NetworkParserLog getLogger() {
@@ -318,6 +374,8 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 	}
 
 	/**
+	 * With logger.
+	 *
 	 * @param logger the logger to set
 	 * @return ThisComponent
 	 */
@@ -327,6 +385,8 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 	}
 
 	/**
+	 * Gets the package name.
+	 *
 	 * @return the packageName
 	 */
 	public String getPackageName() {
@@ -334,6 +394,8 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 	}
 
 	/**
+	 * With package name.
+	 *
 	 * @param packageName the packageName to set
 	 * @param excludes    Exclude Packages
 	 * @return ThisComponent
@@ -351,12 +413,20 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * With gradle task.
+	 *
+	 * @param task the task
+	 * @return the story step J unit
+	 */
 	public StoryStepJUnit withGradleTask(String task) {
 		this.task = task;
 		return this;
 	}
 
 	/**
+	 * With test classes.
+	 *
 	 * @param classNames ClassNames of Tests
 	 * @return ThisComponent
 	 */
@@ -373,20 +443,46 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * With agent.
+	 *
+	 * @param path the path
+	 * @return the story step J unit
+	 */
 	public StoryStepJUnit withAgent(String path) {
 		this.task = path;
 		return this;
 	}
 
+	/**
+	 * Adds the column.
+	 *
+	 * @param name the name
+	 * @param callback the callback
+	 * @return the story step J unit
+	 */
 	public StoryStepJUnit addColumn(String name, JacocoColumn callback) {
 		this.columns.add(name, callback);
 		return this;
 	}
 
+	/**
+	 * Adds the value to list.
+	 *
+	 * @param key the key
+	 * @param no the no
+	 */
 	public void addValueToList(String key, int no) {
 		this.column.addValueToList(key, no);
 	}
 
+	/**
+	 * With use case.
+	 *
+	 * @param story the story
+	 * @param model the model
+	 * @return the story step J unit
+	 */
 	public StoryStepJUnit withUseCase(Story story, GraphModel model) {
 		this.map = new IdMap();
 		this.model = model;
@@ -412,6 +508,13 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * Creates the element.
+	 *
+	 * @param element the element
+	 * @param values the values
+	 * @return the object
+	 */
 	public Object createElement(Clazz element, Object... values) {
 		SendableEntityCreator creator = map.getCreator(element.getName(false), true);
 		if (creator != null) {
@@ -432,6 +535,14 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param element the element
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setValue(Object element, String attribute, String value) {
 		if (map != null && element != null) {
 			String name = element.getClass().getName();
@@ -448,6 +559,11 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 		return false;
 	}
 
+	/**
+	 * Creates the listener.
+	 *
+	 * @return the object
+	 */
 	public Object createListener() {
 		Class<?> class1 = ReflectionLoader.getClass("junit.framework.TestListener");
 		if (class1 != null) {
@@ -457,9 +573,10 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 	}
 	/* TestListener */
 	/**
-	 * TestListener
+	 * TestListener.
+	 *
 	 * @param test TestMethjod
-	 * @param e	Exception
+	 * @param e Exception
 	 */
 	public void addError(Object test, Throwable e) {
 		if(logger != null) {
@@ -467,34 +584,69 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 		}
 	}
 
+	/**
+	 * Adds the failure.
+	 *
+	 * @param test the test
+	 * @param e the e
+	 */
 	public void addFailure(Object test, Object e) {
 		if(logger != null) {
 			logger.fatal(test, "addFailure", e);
 		}
 	}
 
+	/**
+	 * End.
+	 *
+	 * @param test the test
+	 * @param method the method
+	 */
 	public void end(Object test, String method) {
 		if(logger != null) {
 			logger.end(test, method, "end Method");
 		}
 	}
 
+	/**
+	 * Start test.
+	 *
+	 * @param test the test
+	 * @param method the method
+	 */
 	public void startTest(Object test, String method) {
 		if(logger != null) {
 			logger.start(test, method, "start Method");
 		}
 	}
 
+	/**
+	 * Gets the output file.
+	 *
+	 * @param calculate the calculate
+	 * @return the output file
+	 */
 	@Override
 	public String getOutputFile(boolean calculate) {
 		return "jacoco/index.html";
 	}
 
+	/**
+	 * Gets the label.
+	 *
+	 * @return the label
+	 */
 	@Override
 	public String getLabel() {
 		return "Jacoco";
 	}
 
+	/**
+	 * Write to file.
+	 *
+	 * @param fileName the file name
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean writeToFile(String... fileName) {
 		return true;

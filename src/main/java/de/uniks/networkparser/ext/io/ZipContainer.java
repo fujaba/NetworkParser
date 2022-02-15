@@ -38,13 +38,22 @@ import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.xml.XMLEntity;
 
-/** Container for ZIP 
- * @author Stefan Lindel */
+/**
+ * Container for ZIP.
+ *
+ * @author Stefan Lindel
+ */
 public class ZipContainer {
 	private static final String XML = "xml";
 	private static final String BINARY = "bin";
 	private static final String JSON = "json";
 
+	/**
+	 * Gets the file name.
+	 *
+	 * @param data the data
+	 * @return the file name
+	 */
 	public String getFileName(BaseItem data) {
 		String extension = "txt";
 		String name = "data";
@@ -67,6 +76,12 @@ public class ZipContainer {
 		return name + "." + extension;
 	}
 
+	/**
+	 * Gets the new instance from file name.
+	 *
+	 * @param fileName the file name
+	 * @return the new instance from file name
+	 */
 	public BaseItem getNewInstanceFromFileName(String fileName) {
 		if (fileName != null) {
 			int pos = fileName.lastIndexOf(".");
@@ -90,6 +105,14 @@ public class ZipContainer {
 		return null;
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param data the data
+	 * @param stream the stream
+	 * @param closeStream the close stream
+	 * @return the zip output stream
+	 */
 	public ZipOutputStream encode(BaseItem data, OutputStream stream, boolean closeStream) {
 		if (data != null) {
 			ZipOutputStream zos;
@@ -114,6 +137,12 @@ public class ZipContainer {
 		return null;
 	}
 
+	/**
+	 * Decode.
+	 *
+	 * @param stream the stream
+	 * @return the base item
+	 */
 	public BaseItem decode(InputStream stream) {
 		if(stream == null) {
 			return null;
@@ -152,6 +181,12 @@ public class ZipContainer {
 		return null;
 	}
 	
+	/**
+	 * Decoding.
+	 *
+	 * @param params the params
+	 * @return true, if successful
+	 */
 	public static boolean decoding(String... params) {
 		if(params == null || params.length <1) {
 			return false;

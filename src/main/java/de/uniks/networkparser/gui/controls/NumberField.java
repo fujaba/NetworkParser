@@ -24,17 +24,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class NumberField.
+ *
+ * @author Stefan
+ */
 public class NumberField extends Input<Integer> {
 	/*
 	 * Constants
 	 */
 	protected static final String NUMBER = "number";
 
+	/**
+	 * Instantiates a new number field.
+	 */
 	public NumberField() {
 		super();
 		this.type = NUMBER;
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @return the number field
+	 */
 	@Override
 	public NumberField newInstance() {
 		return new NumberField();

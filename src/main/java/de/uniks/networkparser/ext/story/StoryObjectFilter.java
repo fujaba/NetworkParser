@@ -28,16 +28,37 @@ import de.uniks.networkparser.SimpleMap;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class StoryObjectFilter.
+ *
+ * @author Stefan
+ */
 public class StoryObjectFilter extends Filter {
 	private SimpleList<Object> elements = new SimpleList<Object>();
 	private SimpleKeyValueList<Object, String> ids = new SimpleKeyValueList<Object, String>();
 	private SimpleKeyValueList<String, String> images = new SimpleKeyValueList<String, String>();
 
+	/**
+	 * With.
+	 *
+	 * @param elements the elements
+	 * @return the story object filter
+	 */
 	public StoryObjectFilter with(Object... elements) {
 		this.elements.add(elements);
 		return this;
 	}
 
+	/**
+	 * Convert.
+	 *
+	 * @param entity the entity
+	 * @param property the property
+	 * @param value the value
+	 * @param map the map
+	 * @param deep the deep
+	 * @return the int
+	 */
 	@Override
 	public int convert(Object entity, String property, Object value, SimpleMap map, int deep) {
 		if (elements.contains(value)) {
@@ -46,14 +67,29 @@ public class StoryObjectFilter extends Filter {
 		return -1;
 	}
 
+	/**
+	 * Gets the elements.
+	 *
+	 * @return the elements
+	 */
 	public SimpleList<Object> getElements() {
 		return elements;
 	}
 
+	/**
+	 * Gets the ids.
+	 *
+	 * @return the ids
+	 */
 	public SimpleKeyValueList<Object, String> getIds() {
 		return ids;
 	}
 
+	/**
+	 * Gets the images.
+	 *
+	 * @return the images
+	 */
 	public SimpleKeyValueList<String, String> getImages() {
 		return images;
 	}

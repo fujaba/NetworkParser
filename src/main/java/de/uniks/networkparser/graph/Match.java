@@ -28,6 +28,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class Match.
+ *
+ * @author Stefan
+ */
 public class Match extends GraphMember implements Comparable<Match> {
 	private int count;
 	private GraphMember match;
@@ -44,6 +49,16 @@ public class Match extends GraphMember implements Comparable<Match> {
 	private GraphMember sourcematch;
 	private GraphMatcher owner;
 
+	/**
+	 * Creates the.
+	 *
+	 * @param owner the owner
+	 * @param role the role
+	 * @param type the type
+	 * @param oldValue the old value
+	 * @param newValue the new value
+	 * @return the match
+	 */
 	public static Match create(GraphMember owner, ObjectCondition role, String type, Object oldValue, Object newValue) {
 		Match graphDiff = new Match();
 		graphDiff.withRole(role);
@@ -54,6 +69,14 @@ public class Match extends GraphMember implements Comparable<Match> {
 		return graphDiff;
 	}
 
+	/**
+	 * Creates the match.
+	 *
+	 * @param node the node
+	 * @param model the model
+	 * @param isFileMatch the is file match
+	 * @return the match
+	 */
 	public static Match createMatch(GraphEntity node, GraphMember model, boolean isFileMatch) {
 		Match match = new Match().withMain(node);
 		match.match = model;
@@ -64,6 +87,13 @@ public class Match extends GraphMember implements Comparable<Match> {
 		return match;
 	}
 
+	/**
+	 * Creates the potent match.
+	 *
+	 * @param oldValue the old value
+	 * @param newValue the new value
+	 * @return the match
+	 */
 	public static Match createPotentMatch(GraphMember oldValue, GraphMember newValue) {
 		Match match = new Match();
 		match.match = oldValue;
@@ -71,24 +101,52 @@ public class Match extends GraphMember implements Comparable<Match> {
 		return match;
 	}
 
+	/**
+	 * With metda match.
+	 *
+	 * @param value the value
+	 * @return the match
+	 */
 	public Match withMetdaMatch(GraphMember value) {
 		this.metamatch = value;
 		return this;
 	}
 
+	/**
+	 * With owner.
+	 *
+	 * @param owner the owner
+	 * @return the match
+	 */
 	public Match withOwner(GraphMatcher owner) {
 		this.owner = owner;
 		return this;
 	}
 
+	/**
+	 * Gets the meta match.
+	 *
+	 * @return the meta match
+	 */
 	public GraphMember getMetaMatch() {
 		return metamatch;
 	}
 
+	/**
+	 * Gets the source match.
+	 *
+	 * @return the source match
+	 */
 	public GraphMember getSourceMatch() {
 		return sourcematch;
 	}
 
+	/**
+	 * With other match.
+	 *
+	 * @param other the other
+	 * @return the match
+	 */
 	public Match withOtherMatch(Match other) {
 		if (this.otherMatch != other) {
 			Match oldMatch = this.otherMatch;
@@ -104,36 +162,79 @@ public class Match extends GraphMember implements Comparable<Match> {
 		return this;
 	}
 
+	/**
+	 * Gets the other match.
+	 *
+	 * @return the other match
+	 */
 	public Match getOtherMatch() {
 		return otherMatch;
 	}
 
+	/**
+	 * Gets the potent match.
+	 *
+	 * @return the potent match
+	 */
 	public GraphMember getPotentMatch() {
 		return potentMatch;
 	}
 
+	/**
+	 * With potent match.
+	 *
+	 * @param value the value
+	 * @return the match
+	 */
 	public Match withPotentMatch(GraphMember value) {
 		this.potentMatch = value;
 		return this;
 	}
 
+	/**
+	 * Checks if is potent match.
+	 *
+	 * @return true, if is potent match
+	 */
 	public boolean isPotentMatch() {
 		return potentMatch != null;
 	}
 
+	/**
+	 * With main.
+	 *
+	 * @param node the node
+	 * @return the match
+	 */
 	public Match withMain(GraphEntity node) {
 		this.mainFile = node;
 		return this;
 	}
 
+	/**
+	 * Gets the main file.
+	 *
+	 * @return the main file
+	 */
 	public GraphEntity getMainFile() {
 		return mainFile;
 	}
 
+	/**
+	 * Gets the match.
+	 *
+	 * @return the match
+	 */
 	public GraphMember getMatch() {
 		return match;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param value the value
+	 * @return the match
+	 */
 	public Match with(GraphMember value) {
 		if (this.match != value) {
 			GraphMember oldValue = this.match;
@@ -149,6 +250,11 @@ public class Match extends GraphMember implements Comparable<Match> {
 		return this;
 	}
 
+	/**
+	 * Gets the count.
+	 *
+	 * @return the count
+	 */
 	public int getCount() {
 		return count;
 	}
@@ -157,10 +263,21 @@ public class Match extends GraphMember implements Comparable<Match> {
 		this.count++;
 	}
 
+	/**
+	 * Gets the old value.
+	 *
+	 * @return the old value
+	 */
 	public Object getOldValue() {
 		return oldValue;
 	}
 
+	/**
+	 * Sets the old value.
+	 *
+	 * @param oldValue the old value
+	 * @return true, if successful
+	 */
 	public boolean setOldValue(Object oldValue) {
 		if (oldValue != this.oldValue) {
 			this.oldValue = oldValue;
@@ -169,15 +286,32 @@ public class Match extends GraphMember implements Comparable<Match> {
 		return false;
 	}
 
+	/**
+	 * With old value.
+	 *
+	 * @param oldValue the old value
+	 * @return the match
+	 */
 	public Match withOldValue(Object oldValue) {
 		setOldValue(oldValue);
 		return this;
 	}
 
+	/**
+	 * Gets the new value.
+	 *
+	 * @return the new value
+	 */
 	public Object getNewValue() {
 		return newValue;
 	}
 
+	/**
+	 * Sets the new value.
+	 *
+	 * @param newValue the new value
+	 * @return true, if successful
+	 */
 	public boolean setNewValue(Object newValue) {
 		if (newValue != this.newValue) {
 			this.newValue = newValue;
@@ -186,20 +320,43 @@ public class Match extends GraphMember implements Comparable<Match> {
 		return false;
 	}
 
+	/**
+	 * With new value.
+	 *
+	 * @param newValue the new value
+	 * @return the match
+	 */
 	public Match withNewValue(Object newValue) {
 		setNewValue(newValue);
 		return this;
 	}
 
+	/**
+	 * With type.
+	 *
+	 * @param value the value
+	 * @return the match
+	 */
 	public Match withType(String value) {
 		this.type = value;
 		return this;
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public String getType() {
 		return this.type;
 	}
 
+	/**
+	 * Compare to.
+	 *
+	 * @param o the o
+	 * @return the int
+	 */
 	@Override
 	public int compareTo(Match o) {
 		String action = getType();
@@ -219,6 +376,11 @@ public class Match extends GraphMember implements Comparable<Match> {
 		return 1;
 	}
 
+	/**
+	 * Gets the update.
+	 *
+	 * @return the update
+	 */
 	public String getUpdate() {
 		if (this.oldValue == null) {
 			if (this.newValue != null) {
@@ -230,26 +392,56 @@ public class Match extends GraphMember implements Comparable<Match> {
 		return SendableEntityCreator.UPDATE;
 	}
 
+	/**
+	 * Gets the owner.
+	 *
+	 * @return the owner
+	 */
 	public GraphMatcher getOwner() {
 		return owner;
 	}
 
+	/**
+	 * Checks if is meta match.
+	 *
+	 * @return true, if is meta match
+	 */
 	public boolean isMetaMatch() {
 		return metamatch != null;
 	}
 
+	/**
+	 * Checks if is other match.
+	 *
+	 * @return true, if is other match
+	 */
 	public boolean isOtherMatch() {
 		return otherMatch != null;
 	}
 
+	/**
+	 * Checks if is file match.
+	 *
+	 * @return true, if is file match
+	 */
 	public boolean isFileMatch() {
 		return isFileMatch;
 	}
 
+	/**
+	 * Checks if is meta source match.
+	 *
+	 * @return true, if is meta source match
+	 */
 	public boolean isMetaSourceMatch() {
 		return metamatch != null && sourcematch != null;
 	}
 
+	/**
+	 * Checks if is source match.
+	 *
+	 * @return true, if is source match
+	 */
 	public boolean isSourceMatch() {
 		return sourcematch != null;
 	}

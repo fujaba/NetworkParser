@@ -14,9 +14,20 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class SimpleReverseEngineering.
+ *
+ * @author Stefan
+ */
 public class SimpleReverseEngineering implements ObjectCondition {
     private NetworkParserLog logger;
     
+    /**
+     * With logger.
+     *
+     * @param logger the logger
+     * @return the simple reverse engineering
+     */
     public SimpleReverseEngineering withLogger(NetworkParserLog logger) {
         this.logger = logger;
         return this;
@@ -28,6 +39,13 @@ public class SimpleReverseEngineering implements ObjectCondition {
         }
     }
     
+	/**
+	 * Parsing.
+	 *
+	 * @param model the model
+	 * @param lists the lists
+	 * @return true, if successful
+	 */
 	public boolean parsing(GraphModel model, SimpleSet<?> lists) {
 		if (lists == null) {
 			return true;
@@ -208,13 +226,19 @@ public class SimpleReverseEngineering implements ObjectCondition {
 		return true;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
-		if (value instanceof SimpleEvent == false) {
+		if (!(value instanceof SimpleEvent)) {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
-		if (evt.getSource() instanceof GraphModel == false || evt.getNewValue() instanceof SimpleSet<?> == false) {
+		if (!(evt.getSource() instanceof GraphModel) || !(evt.getNewValue() instanceof SimpleSet<?>)) {
 			return false;
 		}
 		SimpleSet<?> lists = (SimpleSet<?>) evt.getNewValue();

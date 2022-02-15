@@ -25,6 +25,11 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 
+/**
+ * The Class DialogPane.
+ *
+ * @author Stefan
+ */
 public class DialogPane implements Runnable {
 	private Object opaqueLayer;
 
@@ -35,9 +40,18 @@ public class DialogPane implements Runnable {
 	private double initHeight;
 	private int initCount = 1;
 
+	/**
+	 * Instantiates a new dialog pane.
+	 */
 	public DialogPane() {
 	}
 
+	/**
+	 * Instantiates a new dialog pane.
+	 *
+	 * @param owner the owner
+	 * @param parent the parent
+	 */
 	public DialogPane(DialogBox owner, Object parent) {
 		this.owner = owner;
 		this.parent = parent;
@@ -56,6 +70,11 @@ public class DialogPane implements Runnable {
 		ReflectionLoader.call(pane, "setManaged", boolean.class, true);
 	}
 
+	/**
+	 * Gets the pane.
+	 *
+	 * @return the pane
+	 */
 	public Object getPane() {
 		return pane;
 	}
@@ -160,6 +179,9 @@ public class DialogPane implements Runnable {
 		return -1;
 	}
 
+	/**
+	 * Run.
+	 */
 	@Override
 	public void run() {
 		this.layoutChildren();

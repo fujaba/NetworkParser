@@ -30,7 +30,14 @@ import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.TemplateParser;
 
+/**
+ * The Class And.
+ *
+ * @author Stefan
+ */
 public class And extends ListCondition {
+	
+	/** The Constant TAG. */
 	public static final String TAG = "and";
 
 	/**
@@ -43,18 +50,37 @@ public class And extends ListCondition {
 		return new And().with(conditions);
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param values the values
+	 * @return the and
+	 */
 	@Override
 	public And with(ObjectCondition... values) {
 		super.with(values);
 		return this;
 	}
 	
+	/**
+	 * With.
+	 *
+	 * @param values the values
+	 * @return the and
+	 */
 	@Override
 	public And with(PropertyChangeListener... values) {
 		super.with(values);
 		return this;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param buffer the buffer
+	 * @param parser the parser
+	 * @param customTemplate the custom template
+	 */
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		if(buffer == null) {
@@ -69,16 +95,32 @@ public class And extends ListCondition {
 		buffer.skip();
 	}
 
+	/**
+	 * Checks if is expression.
+	 *
+	 * @return true, if is expression
+	 */
 	@Override
 	public boolean isExpression() {
 		return true;
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return TAG;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param isExpression the is expression
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean isExpression) {
 		return new And();

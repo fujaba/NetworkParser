@@ -41,10 +41,20 @@ final class BitArray implements Cloneable {
     this.size = size;
   }
 
+  /**
+   * Gets the size.
+   *
+   * @return the size
+   */
   public int getSize() {
     return size;
   }
 
+  /**
+   * Gets the size in bytes.
+   *
+   * @return the size in bytes
+   */
   public int getSizeInBytes() {
     return (size + 7) / 8;
   }
@@ -60,6 +70,8 @@ final class BitArray implements Cloneable {
   }
 
   /**
+   * Gets the.
+   *
    * @param i bit to get
    * @return true iff bit i is set
    */
@@ -232,6 +244,12 @@ final class BitArray implements Cloneable {
     return new int[(size + 31) / 32];
   }
 
+  /**
+   * Equals.
+   *
+   * @param o the o
+   * @return true, if successful
+   */
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof BitArray)) {
@@ -241,11 +259,21 @@ final class BitArray implements Cloneable {
     return size == other.size && Arrays.equals(bits, other.bits);
   }
 
+  /**
+   * Hash code.
+   *
+   * @return the int
+   */
   @Override
   public int hashCode() {
     return 31 * size + Arrays.hashCode(bits);
   }
 
+  /**
+   * To string.
+   *
+   * @return the string
+   */
   @Override
   public String toString() {
     StringBuilder result = new StringBuilder(size);
@@ -258,6 +286,11 @@ final class BitArray implements Cloneable {
     return result.toString();
   }
 
+  /**
+   * Clone.
+   *
+   * @return the bit array
+   */
   @Override
   public BitArray clone() {
     if (bits != null) {

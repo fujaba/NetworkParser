@@ -1,7 +1,9 @@
 package de.uniks.networkparser.buffer;
 
-/** Container for String 
- * @author Stefan Lindel */
+/**
+ * Container for String .
+ * @author Stefan Lindel
+ */
 public class StringContainer implements CharSequence {
   /**
    * The value is used for character storage.
@@ -63,6 +65,8 @@ public class StringContainer implements CharSequence {
   }
 
   /**
+   * Gets the value.
+   *
    * @return The interal value Needed by {@code String} for the contentEquals method.
    */
   public CharSequence getValue() {
@@ -130,8 +134,8 @@ public class StringContainer implements CharSequence {
   }
 
   /**
-   * Set a new Startposition
-   * 
+   * Set a new Startposition.
+   *
    * @param start The new Start position relativ
    * @return this instance
    */
@@ -249,6 +253,12 @@ public class StringContainer implements CharSequence {
     return this;
   }
 
+  /**
+   * With.
+   *
+   * @param src the src
+   * @return the string container
+   */
   public final StringContainer with(char src) {
     if (value == null) {
       this.value = new CharacterBuffer().with(src);
@@ -261,6 +271,12 @@ public class StringContainer implements CharSequence {
     return this;
   }
 
+  /**
+   * Removes the.
+   *
+   * @param position the position
+   * @return the char
+   */
   public char remove(int position) {
     if (value == null) {
       return 0;
@@ -280,6 +296,11 @@ public class StringContainer implements CharSequence {
     return oldChar;
   }
 
+  /**
+   * Trim.
+   *
+   * @return the char sequence
+   */
   public CharSequence trim() {
     if (value == null) {
       return value;

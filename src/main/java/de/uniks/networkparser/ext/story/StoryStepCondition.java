@@ -29,11 +29,24 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class StoryStepCondition.
+ *
+ * @author Stefan
+ */
 public class StoryStepCondition implements ObjectCondition {
 	private Condition<Object> condition;
 	private Object value;
 	private String message;
 
+	/**
+	 * With condition.
+	 *
+	 * @param message the message
+	 * @param value the value
+	 * @param condition the condition
+	 * @return the story step condition
+	 */
 	public StoryStepCondition withCondition(String message, Object value, Condition<Object> condition) {
 		this.condition = condition;
 		this.value = value;
@@ -41,11 +54,22 @@ public class StoryStepCondition implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * With condition.
+	 *
+	 * @param condition the condition
+	 * @return the story step condition
+	 */
 	public StoryStepCondition withCondition(Condition<Object> condition) {
 		this.condition = condition;
 		return this;
 	}
 
+	/**
+	 * Check condition.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean checkCondition() {
 		if (this.condition != null) {
 			return this.condition.update(value);
@@ -53,6 +77,12 @@ public class StoryStepCondition implements ObjectCondition {
 		return true;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof SimpleEvent == false) {
@@ -62,10 +92,10 @@ public class StoryStepCondition implements ObjectCondition {
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
 		boolean success = checkCondition();
 
-		XMLEntity div = element.createTag("div", element.getBody());
-		XMLEntity p = element.createTag("p", div);
+		XMLEntity div = element.createChild("div", element.getBody());
+		XMLEntity p = element.createChild("p", div);
 		p.withCloseTag();
-		XMLEntity textnode = element.createTag("div", div);
+		XMLEntity textnode = element.createChild("div", div);
 		textnode.add("class", "notify-text");
 		if (success) {
 			div.add("class", "notify notify-green");
@@ -78,11 +108,21 @@ public class StoryStepCondition implements ObjectCondition {
 		return success;
 	}
 
+	/**
+	 * With message.
+	 *
+	 * @param message the message
+	 */
 	public void withMessage(String message) {
 		this.message = message;
 
 	}
 
+	/**
+	 * Gets the message.
+	 *
+	 * @return the message
+	 */
 	public String getMessage() {
 		return message;
 	}

@@ -39,19 +39,31 @@ import de.uniks.networkparser.list.SimpleSet;
 public class GraphPatternMatch implements ObjectCondition, SendableEntityCreator {
 	/** Constant for ITEM. */
 	public static final String ITEM = "item";
+	
+	/** The Constant MATCHES. */
 	public static final String MATCHES = "matches";
+	
+	/** The Constant PROPERTY. */
 	public static final String PROPERTY = "property";
 	/** Varibale for Condition. */
 	private Object item;
 	private String property;
 	private Set<ObjectCondition> matches;
 
+	/**
+	 * Update.
+	 *
+	 * @param evt the evt
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object evt) {
 		return true;
 	}
 
 	/**
+	 * Gets the item.
+	 *
 	 * @return The Item to Create
 	 */
 	public Object getItem() {
@@ -59,6 +71,8 @@ public class GraphPatternMatch implements ObjectCondition, SendableEntityCreator
 	}
 
 	/**
+	 * With item.
+	 *
 	 * @param value for new Condition
 	 * @return Not Instance
 	 */
@@ -68,6 +82,8 @@ public class GraphPatternMatch implements ObjectCondition, SendableEntityCreator
 	}
 
 	/**
+	 * With.
+	 *
 	 * @param value for new Condition
 	 * @return Not Instance
 	 */
@@ -86,11 +102,18 @@ public class GraphPatternMatch implements ObjectCondition, SendableEntityCreator
 		return this;
 	}
 
+	/**
+	 * Gets the matches.
+	 *
+	 * @return the matches
+	 */
 	public Set<ObjectCondition> getMatches() {
 		return matches;
 	}
 
 	/**
+	 * With property.
+	 *
 	 * @param value for Property
 	 * @return GraphPatternMatch Instance
 	 */
@@ -99,21 +122,43 @@ public class GraphPatternMatch implements ObjectCondition, SendableEntityCreator
 		return this;
 	}
 
-	/** @return The Property */
+	/**
+	 * Gets the property.
+	 *
+	 * @return The Property
+	 */
 	public String getProperty() {
 		return property;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { ITEM, PROPERTY, MATCHES };
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new GraphPatternMatch();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (ITEM.equalsIgnoreCase(attribute)) {
@@ -128,6 +173,15 @@ public class GraphPatternMatch implements ObjectCondition, SendableEntityCreator
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (ITEM.equalsIgnoreCase(attribute)) {
@@ -149,10 +203,22 @@ public class GraphPatternMatch implements ObjectCondition, SendableEntityCreator
 		return false;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param property the property
+	 * @param item the item
+	 * @return the graph pattern match
+	 */
 	public static GraphPatternMatch create(String property, Object item) {
 		return new GraphPatternMatch().withItem(item);
 	}
 
+	/**
+	 * Size.
+	 *
+	 * @return the int
+	 */
 	public int size() {
 		if (this.matches == null) {
 			return 0;

@@ -29,48 +29,85 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
-import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.bytes.ByteConverter64;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class MessageSession.
+ *
+ * @author Stefan
+ */
 public class MessageSession {
+	
+	/** The Constant TYPE_EMAIL. */
 	public static final String TYPE_EMAIL = "EMAIL";
+	
+	/** The Constant TYPE_XMPP. */
 	public static final String TYPE_XMPP = "XMPP";
+	
+	/** The Constant TYPE_FCM. */
 	public static final String TYPE_FCM = "FCM";
+	
+	/** The Constant TYPE_PLAIN. */
 	public static final String TYPE_PLAIN = "PLAIN";
+	
+	/** The Constant TYPE_AMQ. */
 	public static final String TYPE_AMQ = "AMQ";
+	
+	/** The Constant TYPE_MQTT. */
 	public static final String TYPE_MQTT = "MQTT";
 
+	/** The Constant RESPONSE_SERVERREADY. */
 	public static final String RESPONSE_SERVERREADY = "220";
+	
+	/** The Constant RESPONSE_MAILACTIONOKEY. */
 	public static final String RESPONSE_MAILACTIONOKEY = "250";
+	
+	/** The Constant RESPONSE_STARTMAILINPUT. */
 	public static final String RESPONSE_STARTMAILINPUT = "354";
+	
+	/** The Constant RESPONSE_SMTP_AUTH_NTLM_BLOB_Response. */
 	public static final String RESPONSE_SMTP_AUTH_NTLM_BLOB_Response = "334";
+	
+	/** The Constant RESPONSE_LOGIN_SUCCESS. */
 	public static final String RESPONSE_LOGIN_SUCCESS = "235";
+	
+	/** The Constant RESPONSE_SERVICE_CLOSING_TRANSMISSION. */
 	public static final String RESPONSE_SERVICE_CLOSING_TRANSMISSION = "221";
+	
+	/** The Constant SSL_PORT. */
 	public static final int SSL_PORT = 587;
+	
+	/** The Constant AMQP_PORT. */
 	public static final int AMQP_PORT = 5672;
+	
+	/** The Constant MQTT_PORT. */
 	public static final int MQTT_PORT = 1883;
 	/** 15 sec. socket read timeout */
 	public static final int SOCKET_READ_TIMEOUT = 15 * 1000;
+	
+	/** The Constant FEATURE_TLS. */
 	public static final String FEATURE_TLS = "STARTTLS";
+	
+	/** The Constant BUFFER. */
 	public static final int BUFFER = 1024;
 
 	private String host;
@@ -90,6 +127,14 @@ public class MessageSession {
 	private NetworkParserLog logger;
 	private boolean useTLS=true;
 
+	/**
+	 * Connect SSL.
+	 *
+	 * @param host the host
+	 * @param sender the sender
+	 * @param password the password
+	 * @return the message session
+	 */
 	public MessageSession connectSSL(String host, String sender, String password) {
 		this.host = host;
 		this.port = SSL_PORT;
@@ -98,6 +143,15 @@ public class MessageSession {
 		return this;
 	}
 
+	/**
+	 * Connect.
+	 *
+	 * @param host the host
+	 * @param port the port
+	 * @param sender the sender
+	 * @param password the password
+	 * @return true, if successful
+	 */
 	public boolean connect(String host, int port, String sender, String password) {
 		this.host = host;
 		this.port = port;
@@ -159,10 +213,21 @@ public class MessageSession {
 		return staticString.toString();
 	}
 
+	/**
+	 * Gets the sender.
+	 *
+	 * @return the sender
+	 */
 	public String getSender() {
 		return sender;
 	}
 
+	/**
+	 * Sets the sender.
+	 *
+	 * @param sender the sender
+	 * @return true, if successful
+	 */
 	public boolean setSender(String sender) {
 		if (StringUtil.stringEquals(this.sender, sender) == false) {
 			this.sender = sender;
@@ -171,15 +236,32 @@ public class MessageSession {
 		return false;
 	}
 
+	/**
+	 * Gets the port.
+	 *
+	 * @return the port
+	 */
 	public int getPort() {
 		return port;
 	}
 
+	/**
+	 * With port.
+	 *
+	 * @param port the port
+	 * @return the message session
+	 */
 	public MessageSession withPort(int port) {
 		this.port = port;
 		return this;
 	}
 
+	/**
+	 * With host.
+	 *
+	 * @param url the url
+	 * @return the message session
+	 */
 	public MessageSession withHost(String url) {
 		if (url == null) {
 			return this;
@@ -199,6 +281,11 @@ public class MessageSession {
 		return this;
 	}
 
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
 	public String getID() {
 		return id;
 	}
@@ -230,6 +317,11 @@ public class MessageSession {
 		return true;
 	}
 
+	/**
+	 * Checks if is close.
+	 *
+	 * @return true, if is close
+	 */
 	public boolean isClose() {
 		return in == null;
 	}
@@ -256,10 +348,23 @@ public class MessageSession {
 		return true;
 	}
 
+	/**
+	 * Connect.
+	 *
+	 * @param password the password
+	 * @return true, if successful
+	 */
 	public boolean connect(String password) {
 		return this.connect(this.sender, password);
 	}
 
+	/**
+	 * Connect XMPP.
+	 *
+	 * @param sender the sender
+	 * @param password the password
+	 * @return true, if successful
+	 */
 	public boolean connectXMPP(String sender, String password) {
 		this.type = TYPE_XMPP;
 		this.factory = javax.net.SocketFactory.getDefault();
@@ -309,6 +414,13 @@ public class MessageSession {
 		return false;
 	}
 
+	/**
+	 * Connect FCM.
+	 *
+	 * @param sender the sender
+	 * @param password the password
+	 * @return true, if successful
+	 */
 	public boolean connectFCM(String sender, String password) {
 		this.type = TYPE_FCM;
 		this.factory = SSLSocketFactory.getDefault();
@@ -357,6 +469,13 @@ public class MessageSession {
 		return false;
 	}
 
+	/**
+	 * Connect SMTP.
+	 *
+	 * @param sender the sender
+	 * @param password the password
+	 * @return true, if successful
+	 */
 	public boolean connectSMTP(String sender, String password) {
 		this.type = TYPE_EMAIL;
 		this.factory = javax.net.SocketFactory.getDefault();
@@ -401,6 +520,14 @@ public class MessageSession {
 		return false;
 	}
 
+	/**
+	 * Sending.
+	 *
+	 * @param broker the broker
+	 * @param message the message
+	 * @param answer the answer
+	 * @return the rabbit message
+	 */
 	public RabbitMessage sending(NodeProxyBroker broker, RabbitMessage message, boolean answer) {
 		if (message == null) {
 			return null;
@@ -416,6 +543,14 @@ public class MessageSession {
 		return response;
 	}
 
+	/**
+	 * Sending.
+	 *
+	 * @param broker the broker
+	 * @param message the message
+	 * @param answer the answer
+	 * @return the MQTT message
+	 */
 	public MQTTMessage sending(NodeProxyBroker broker, MQTTMessage message, boolean answer) {
 		if (broker == null || message == null || out == null) {
 			return null;
@@ -447,6 +582,18 @@ public class MessageSession {
 		return null;
 	}
 
+	/**
+	 * Connect MQTT.
+	 *
+	 * @param broker the broker
+	 * @param clientId the client id
+	 * @param sender the sender
+	 * @param password the password
+	 * @param keepAlive the keep alive
+	 * @param mqttVersion the mqtt version
+	 * @param cleanSession the clean session
+	 * @return true, if successful
+	 */
 	public boolean connectMQTT(NodeProxyBroker broker, String clientId, String sender, String password, int keepAlive,
 			int mqttVersion, boolean cleanSession) {
 		this.type = TYPE_MQTT;
@@ -479,6 +626,14 @@ public class MessageSession {
 		return false;
 	}
 
+	/**
+	 * Connect AMQ.
+	 *
+	 * @param broker the broker
+	 * @param sender the sender
+	 * @param password the password
+	 * @return true, if successful
+	 */
 	public boolean connectAMQ(NodeProxyBroker broker, String sender, String password) {
 		this.type = TYPE_AMQ;
 		if (this.port == 0) {
@@ -563,7 +718,7 @@ public class MessageSession {
 			write("AMQP".getBytes(), 0, major, minor, revision);
 			return new CharacterBuffer();
 		}
-		BufferedBuffer response = sendCommand("EHLO " + getLocalHost());
+		BufferedBuffer response = sendCommand("EHLO " + NodeProxyTCP.getLocalHost(serverSocket));
 		supportedFeature.clear();
 		String[] lines = response.toString().split("\n");
 		/* Skip first line */
@@ -573,6 +728,11 @@ public class MessageSession {
 		return response;
 	}
 
+	/**
+	 * Start TLS.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean startTLS() {
 		try {
 			if (this.serverSocket == null) {
@@ -664,6 +824,12 @@ public class MessageSession {
 		return true;
 	}
 
+	/**
+	 * Write.
+	 *
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	public boolean write(byte... values) {
 		if (out == null) {
 			return false;
@@ -681,6 +847,12 @@ public class MessageSession {
 		return true;
 	}
 
+	/**
+	 * Write.
+	 *
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	public boolean write(Object... values) {
 		if (values == null || out == null) {
 			return false;
@@ -777,6 +949,12 @@ public class MessageSession {
 		return response;
 	}
 
+	/**
+	 * Gets the server response.
+	 *
+	 * @param broker the broker
+	 * @return the server response
+	 */
 	public Object getServerResponse(NodeProxyBroker broker) {
 		if (diInput != null) {
 			if (TYPE_AMQ.equals(broker.getFormat())) {
@@ -827,46 +1005,14 @@ public class MessageSession {
 	}
 
 	/**
-	 * Get the name of the local host, for use in the EHLO and HELO commands. The
-	 * property InetAddress would tell us.
+	 * Gets the local adress.
 	 *
-	 * @return the local host name
+	 * @return the local adress
 	 */
-	public String getLocalHost() {
-		InetAddress localHost;
-		String localHostName = null;
-		/* get our hostname and cache it for future use */
-		try {
-			localHost = InetAddress.getLocalHost();
-			localHostName = localHost.getCanonicalHostName();
-			/* if we can't get our name, use local address literal */
-			if (localHostName == null) {
-				/* XXX - not correct for IPv6 */
-				localHostName = "[" + localHost.getHostAddress() + "]";
-			}
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-
-		/* last chance, try to get our address from our socket */
-		if (localHostName == null || localHostName.length() <= 0) {
-			if (serverSocket != null && serverSocket.isBound()) {
-				localHost = serverSocket.getLocalAddress();
-				localHostName = localHost.getCanonicalHostName();
-				/* if we can't get our name, use local address literal */
-				if (localHostName == null)
-					/* XXX - not correct for IPv6 */
-					localHostName = "[" + localHost.getHostAddress() + "]";
-			}
-		}
-		return localHostName;
-	}
-
 	public String getLocalAdress() {
-		try {
-			InetAddress localHost = InetAddress.getLocalHost();
-			return "@" + localHost.getHostName();
-		} catch (Exception e) {
+		String ipAdress = NodeProxyTCP.getIpAdress();
+		if(!ipAdress.isEmpty()) {
+			return "@" + ipAdress;
 		}
 		return "mailer@localhost"; /* worst-case default */
 	}
@@ -889,6 +1035,13 @@ public class MessageSession {
 		return prefix + Long.toString(messageId++);
 	}
 
+	/**
+	 * Send message.
+	 *
+	 * @param to the to
+	 * @param message the message
+	 * @return true, if successful
+	 */
 	public boolean sendMessage(String to, String message) {
 		SocketMessage msg = new SocketMessage();
 		msg.withRecipient(to);
@@ -917,7 +1070,7 @@ public class MessageSession {
 		}
 
 		/* Tell the server who this message is from */
-		if (doCommand(message.getHeaderFrom(this.sender), RESPONSE_MAILACTIONOKEY) == false) {
+		if (!doCommand(message.getHeaderFrom(this.sender), RESPONSE_MAILACTIONOKEY)) {
 			return false;
 		}
 
@@ -936,7 +1089,7 @@ public class MessageSession {
 		 * Okay, now send the mail message. We expect a response beginning with '3'
 		 * indicating that the server is ready for data.
 		 */
-		if (doCommand("DATA", RESPONSE_STARTMAILINPUT) == false) {
+		if (!doCommand("DATA", RESPONSE_STARTMAILINPUT)) {
 			return false;
 		}
 
@@ -975,7 +1128,7 @@ public class MessageSession {
 			/* The CRLF separator between header and content */
 			sendValues(BaseItem.CRLF);
 
-			while (buffer.isEnd() == false) {
+			while (!buffer.isEnd()) {
 				CharacterBuffer line = buffer.readLine();
 				/* If the line begins with a ".", put an extra "." in front of it. */
 				if (line.startsWith(".")) {
@@ -994,7 +1147,7 @@ public class MessageSession {
 			sendValues("Content-Disposition: attachment; filename=" + fileName);
 			/* The CRLF separator between header and content */
 			sendValues(BaseItem.CRLF);
-			while (buffer.isEnd() == false) {
+			while (!buffer.isEnd()) {
 				CharacterBuffer line = buffer.getString(1024);
 				sendValues(line.toString());
 			}
@@ -1009,32 +1162,70 @@ public class MessageSession {
 		return doCommand("QUIT", RESPONSE_SERVICE_CLOSING_TRANSMISSION);
 	}
 
+	/**
+	 * Gets the last answer.
+	 *
+	 * @return the last answer
+	 */
 	public BufferedBuffer getLastAnswer() {
 		return lastAnswer;
 	}
 
+	/**
+	 * Gets the last sended.
+	 *
+	 * @return the last sended
+	 */
 	public String getLastSended() {
 		return lastSended;
 	}
 
+	/**
+	 * Gets the url.
+	 *
+	 * @return the url
+	 */
 	public String getUrl() {
 		return this.host;
 	}
 
+	/**
+	 * With type.
+	 *
+	 * @param msgType the msg type
+	 * @return the message session
+	 */
 	public MessageSession withType(String msgType) {
 		this.type = msgType;
 		return this;
 	}
 
+	/**
+	 * Gets the logger.
+	 *
+	 * @return the logger
+	 */
 	public NetworkParserLog getLogger() {
 		return logger;
 	}
 
+	/**
+	 * With logger.
+	 *
+	 * @param logger the logger
+	 * @return the message session
+	 */
 	public MessageSession withLogger(NetworkParserLog logger) {
 		this.logger = logger;
 		return this;
 	}
 
+	/**
+	 * With TLS.
+	 *
+	 * @param value the value
+	 * @return the message session
+	 */
 	public MessageSession withTLS(boolean value) {
 		this.useTLS = value;
 		return this;

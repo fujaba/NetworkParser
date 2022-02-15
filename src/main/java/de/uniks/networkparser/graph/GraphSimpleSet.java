@@ -27,9 +27,20 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class GraphSimpleSet.
+ *
+ * @author Stefan
+ */
 public class GraphSimpleSet extends SimpleSet<GraphMember> implements Comparator<Object> {
 	private boolean comparator = true;
 
+	/**
+	 * Creates the.
+	 *
+	 * @param comparator the comparator
+	 * @return the graph simple set
+	 */
 	public static GraphSimpleSet create(boolean comparator) {
 		GraphSimpleSet set = new GraphSimpleSet();
 		set.comparator = comparator;
@@ -55,16 +66,33 @@ public class GraphSimpleSet extends SimpleSet<GraphMember> implements Comparator
 		return idA.equalsIgnoreCase(idB);
 	}
 
+	/**
+	 * Comparator.
+	 *
+	 * @return the comparator
+	 */
 	@Override
 	public Comparator<Object> comparator() {
 		return this;
 	}
 
+	/**
+	 * Checks if is comparator.
+	 *
+	 * @return true, if is comparator
+	 */
 	@Override
 	public boolean isComparator() {
 		return comparator;
 	}
 
+	/**
+	 * Compare.
+	 *
+	 * @param o1 the o 1
+	 * @param o2 the o 2
+	 * @return the int
+	 */
 	public int compare(Object o1, Object o2) {
 		if (o1 instanceof GraphMember == false || o2 instanceof GraphMember == false) {
 			return 0;

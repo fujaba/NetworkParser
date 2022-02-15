@@ -24,8 +24,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class ObjectSet.
+ *
+ * @author Stefan
+ */
 public class ObjectSet extends SimpleSet<Object> {
 
+	/**
+	 * Number list.
+	 *
+	 * @return the number list
+	 */
 	public NumberList numberList() {
 		NumberList result = new NumberList();
 

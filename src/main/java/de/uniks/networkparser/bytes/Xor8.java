@@ -24,7 +24,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class Xor8.
+ *
+ * @author Stefan
+ */
 public class Xor8 extends Checksum {
+	
+	/**
+	 * Update.
+	 *
+	 * @param b the b
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(int b) {
 		super.update(b);
@@ -32,6 +44,11 @@ public class Xor8 extends Checksum {
 		return true;
 	}
 
+	/**
+	 * Gets the order.
+	 *
+	 * @return the order
+	 */
 	@Override
 	public int getOrder() {
 		return 8;

@@ -26,15 +26,16 @@ import java.nio.charset.StandardCharsets;
 import de.uniks.networkparser.SimpleException;
 
 /**
- * Utility for Tar-File
+ * Utility for Tar-File.
+ *
  * @author Stefan Lindel
  */
 public class TarUtils {
 	/* CONST */
-	/** Default record size */
+	/**  Default record size. */
 	public static final int DEFAULT_RCDSIZE = 512;
 
-	/** Default block size */
+	/**  Default block size. */
 	public static final int DEFAULT_BLKSIZE = DEFAULT_RCDSIZE * 20;
 
 	/** GNU format as per before tar 1.12. */
@@ -51,7 +52,7 @@ public class TarUtils {
 	/** Length of the prefix field in xstar archives. */
 	public static final int PREFIXLEN_XSTAR = 131;
 
-	/** Offset of start of magic field within header record */
+	/**  Offset of start of magic field within header record. */
 	public static final int VERSION_OFFSET = 263;
 	/**
 	 * Previously this was regarded as part of "magic" field, but it is separate.
@@ -80,7 +81,8 @@ public class TarUtils {
 	 * char notation (that's 11 sevens, octal).
 	 */
 	public static final long MAXSIZE = 077777777777L;
-	/** Offset of start of magic field within header record */
+	
+	/**  Offset of start of magic field within header record. */
 	public static final int MAGIC_OFFSET = 257;
 	/** The length of the magic field in a header buffer. */
 	public static final int MAGICLEN = 6;
@@ -108,6 +110,8 @@ public class TarUtils {
 	 * The magic tag representing a POSIX tar archive.
 	 */
 	public static final String MAGIC_POSIX = "ustar\0";
+	
+	/** The Constant VERSION_POSIX. */
 	public static final String VERSION_POSIX = "00";
 	/**
 	 * LF_ constants represent the "link flag" of an entry, or more commonly, the
@@ -163,10 +167,17 @@ public class TarUtils {
 	public static final byte LF_GNUTYPE_LONGLINK = (byte) 'K';
 	/** Identifies the *next* file on the tape as having a long name. */
 	public static final byte LF_GNUTYPE_LONGNAME = (byte) 'L';
+	
+	/** The Constant LF_GNUTYPE_SPARSE. */
 	public static final byte LF_GNUTYPE_SPARSE = (byte) 'S';
 
+	/** The Constant MAGIC_GNU. */
 	public static final String MAGIC_GNU = "ustar ";
+	
+	/** The Constant VERSION_GNU_SPACE. */
 	public static final String VERSION_GNU_SPACE = " \0";
+	
+	/** The Constant VERSION_GNU_ZERO. */
 	public static final String VERSION_GNU_ZERO = "0\0";
 
 	/** The length of the is extension field in an old GNU header buffer. */
@@ -719,7 +730,7 @@ public class TarUtils {
 	}
 
 	/**
-	 * Compare byte buffers, optionally ignoring trailing nulls
+	 * Compare byte buffers, optionally ignoring trailing nulls.
 	 *
 	 * @param buffer1             first buffer
 	 * @param offset1             first offset
@@ -768,7 +779,7 @@ public class TarUtils {
 	}
 
 	/**
-	 * Returns true if the first N bytes of an array are all zero
+	 * Returns true if the first N bytes of an array are all zero.
 	 *
 	 * @param a    The array to check
 	 * @param size The number of characters to check (not the size of the array)
@@ -786,6 +797,13 @@ public class TarUtils {
 		return true;
 	}
 
+	/**
+	 * Grow buffer by.
+	 *
+	 * @param buffer the buffer
+	 * @param increment the increment
+	 * @return the byte buffer
+	 */
 	public static ByteBuffer growBufferBy(ByteBuffer buffer, int increment) {
 		if(buffer == null) {
 			return ByteBuffer.allocate(0);

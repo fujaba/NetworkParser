@@ -16,6 +16,11 @@ public final class ReedSolomon {
 	private final GenericGF field;
 	private final List<GenericGFPoly> cachedGenerators;
 
+	/**
+	 * Instantiates a new reed solomon.
+	 *
+	 * @param field the field
+	 */
 	public ReedSolomon(GenericGF field) {
 		this.field = field;
 		this.cachedGenerators = new ArrayList<GenericGFPoly>();
@@ -38,6 +43,13 @@ public final class ReedSolomon {
 		return cachedGenerators.get(degree);
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param toEncode the to encode
+	 * @param ecBytes the ec bytes
+	 * @return true, if successful
+	 */
 	public boolean encode(int[] toEncode, int ecBytes) {
 		if (ecBytes == 0 || toEncode == null) {
 			return false;

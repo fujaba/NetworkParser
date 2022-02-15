@@ -24,6 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Enum SQLCommand.
+ *
+ * @author Stefan
+ */
 public enum SQLCommand {
 	UPDATE("UPDATE", 4), INSERT("INSERT INTO", 3), DELETE("DELETE FROM", 5),
 	CREATETABLE("CREATE TABLE IF NOT EXISTS", 2), DROPTABLE("DROP TABLE IF EXISTS", 1), CONNECTION("", 0),
@@ -38,10 +43,20 @@ public enum SQLCommand {
 		this.executePriority = executePriority;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public String getValue() {
 		return this.value;
 	}
 
+	/**
+	 * Gets the execute priority.
+	 *
+	 * @return the execute priority
+	 */
 	public int getExecutePriority() {
 		return executePriority;
 	}

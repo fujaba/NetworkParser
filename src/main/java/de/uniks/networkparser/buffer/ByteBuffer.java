@@ -7,12 +7,21 @@ import java.nio.charset.Charset;
 import de.uniks.networkparser.bytes.ByteConverter;
 import de.uniks.networkparser.interfaces.Converter;
 
-/** ByteBuffer 
- * @author Stefan Lindel */
+/**
+ * ByteBuffer .
+ *
+ * @author Stefan Lindel
+ */
 public class ByteBuffer extends BufferedBuffer {
 	/** The buffer. */
 	protected byte[] buffer;
 
+	/**
+	 * Char at.
+	 *
+	 * @param index the index
+	 * @return the char
+	 */
 	@Override
 	public char charAt(int index) {
 		if (index < 0 || buffer == null || index >= buffer.length) {
@@ -21,6 +30,12 @@ public class ByteBuffer extends BufferedBuffer {
 		return (char) buffer[index];
 	}
 
+	/**
+	 * Byte at.
+	 *
+	 * @param index the index
+	 * @return the byte
+	 */
 	@Override
 	public byte byteAt(int index) {
 		if (index < 0 || buffer == null || index >= buffer.length) {
@@ -29,6 +44,13 @@ public class ByteBuffer extends BufferedBuffer {
 		return buffer[index];
 	}
 
+	/**
+	 * Sub sequence.
+	 *
+	 * @param start the start
+	 * @param end the end
+	 * @return the character buffer
+	 */
 	@Override
 	public CharacterBuffer subSequence(int start, int end) {
 		int len = end - start;
@@ -44,6 +66,12 @@ public class ByteBuffer extends BufferedBuffer {
 		return new CharacterBuffer().with(sub);
 	}
 
+	/**
+	 * With buffer length.
+	 *
+	 * @param length the length
+	 * @return the byte buffer
+	 */
 	public ByteBuffer withBufferLength(int length) {
 		super.withLength(length);
 		if (length >= 0) {
@@ -52,6 +80,11 @@ public class ByteBuffer extends BufferedBuffer {
 		return this;
 	}
 
+	/**
+	 * Gets the char.
+	 *
+	 * @return the char
+	 */
 	@Override
 	public char getChar() {
 		int no = getByte();
@@ -61,6 +94,11 @@ public class ByteBuffer extends BufferedBuffer {
 		return (char) (no << 8 + (char) getByte());
 	}
 
+	/**
+	 * Gets the byte.
+	 *
+	 * @return the byte
+	 */
 	@Override
 	public byte getByte() {
 		if (buffer == null || position >= buffer.length - 1) {
@@ -70,8 +108,8 @@ public class ByteBuffer extends BufferedBuffer {
 	}
 
 	/**
-	 * Get a Byte Field
-	 * 
+	 * Get a Byte Field.
+	 *
 	 * @param parameter Null for full, Number Length, or new Byte Array
 	 * @return a ByteArray
 	 */
@@ -99,6 +137,13 @@ public class ByteBuffer extends BufferedBuffer {
 		return result;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param start the start
+	 * @param len the len
+	 * @return the value
+	 */
 	public byte[] getValue(int start, int len) {
 		this.withPosition(start);
 		if (len < 0) {
@@ -111,10 +156,21 @@ public class ByteBuffer extends BufferedBuffer {
 		return array;
 	}
 
+	/**
+	 * Array.
+	 *
+	 * @return the byte[]
+	 */
 	public byte[] array() {
 		return buffer;
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	public boolean add(Object... values) {
 		if (values == null) {
 			return true;
@@ -125,6 +181,13 @@ public class ByteBuffer extends BufferedBuffer {
 		return true;
 	}
 
+	/**
+	 * Insert.
+	 *
+	 * @param item the item
+	 * @param bufferAdEnd the buffer ad end
+	 * @return true, if successful
+	 */
 	public boolean insert(Object item, boolean bufferAdEnd) {
 		if (item instanceof Byte) {
 			return addBytes(item, 1, bufferAdEnd);
@@ -216,6 +279,14 @@ public class ByteBuffer extends BufferedBuffer {
 		return false;
 	}
 
+	/**
+	 * Adds the bytes.
+	 *
+	 * @param value the value
+	 * @param len the len
+	 * @param bufferAtEnd the buffer at end
+	 * @return true, if successful
+	 */
 	public boolean addBytes(Object value, int len, boolean bufferAtEnd) {
 		boolean addEnd = false;
 		if (this.position == this.length) {
@@ -286,6 +357,12 @@ public class ByteBuffer extends BufferedBuffer {
 		return true;
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean put(byte value) {
 		if (this.buffer != null && position + 1 <= buffer.length) {
 			this.buffer[position++] = value;
@@ -294,6 +371,12 @@ public class ByteBuffer extends BufferedBuffer {
 		return false;
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean put(short value) {
 		if (this.buffer != null && position + 2 <= buffer.length) {
 			this.buffer[position++] = (byte) (value >>> 8);
@@ -303,6 +386,12 @@ public class ByteBuffer extends BufferedBuffer {
 		return false;
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean put(int value) {
 		if (this.buffer != null && position + 4 <= buffer.length) {
 			this.buffer[position++] = (byte) (value >>> 24);
@@ -314,6 +403,12 @@ public class ByteBuffer extends BufferedBuffer {
 		return false;
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean put(long value) {
 		if (this.buffer != null && position + 8 <= buffer.length) {
 			this.buffer[position++] = (byte) (value >>> 56);
@@ -329,6 +424,12 @@ public class ByteBuffer extends BufferedBuffer {
 		return false;
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean put(char value) {
 		if (this.buffer != null && position + 2 <= buffer.length) {
 			this.buffer[position++] = (byte) (value >>> 8);
@@ -338,6 +439,12 @@ public class ByteBuffer extends BufferedBuffer {
 		return false;
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean put(float value) {
 		int bits = Float.floatToIntBits(value);
 		if (this.buffer != null && position + 4 <= buffer.length) {
@@ -350,6 +457,12 @@ public class ByteBuffer extends BufferedBuffer {
 		return false;
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean put(double value) {
 		long bits = Double.doubleToLongBits(value);
 		if (this.buffer != null && position + 8 <= buffer.length) {
@@ -366,6 +479,12 @@ public class ByteBuffer extends BufferedBuffer {
 		return false;
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean put(byte[] value) {
 		if (value != null) {
 			for (int i = 0; i < value.length; i++) {
@@ -376,6 +495,13 @@ public class ByteBuffer extends BufferedBuffer {
 		return false;
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param value the value
+	 * @param offset the offset
+	 * @param length the length
+	 */
 	public void put(byte[] value, int offset, int length) {
 		if (value == null || offset < 0 || offset > value.length) {
 			return;
@@ -385,6 +511,12 @@ public class ByteBuffer extends BufferedBuffer {
 		}
 	}
 
+	/**
+	 * Flip.
+	 *
+	 * @param preFirst the pre first
+	 * @return the byte buffer
+	 */
 	public ByteBuffer flip(boolean preFirst) {
 		if (preFirst) {
 			this.position = -1;
@@ -394,10 +526,22 @@ public class ByteBuffer extends BufferedBuffer {
 		return this;
 	}
 
+	/**
+	 * Gets the new buffer.
+	 *
+	 * @param capacity the capacity
+	 * @return the new buffer
+	 */
 	public ByteBuffer getNewBuffer(int capacity) {
 		return new ByteBuffer().withBufferLength(capacity);
 	}
 
+	/**
+	 * Allocate.
+	 *
+	 * @param len the len
+	 * @return the byte buffer
+	 */
 	public static ByteBuffer allocate(int len) {
 		if (len < 1) {
 			return null;
@@ -406,10 +550,22 @@ public class ByteBuffer extends BufferedBuffer {
 		return bytesBuffer;
 	}
 
+	/**
+	 * Gets the new buffer.
+	 *
+	 * @param array the array
+	 * @return the new buffer
+	 */
 	public ByteBuffer getNewBuffer(byte[] array) {
 		return new ByteBuffer().with(array);
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param string the string
+	 * @return the byte buffer
+	 */
 	public ByteBuffer with(CharSequence... string) {
 		if (string != null && string.length > 0 && string[0] instanceof String) {
 			this.buffer = ((String) string[0]).getBytes(Charset.forName(ENCODING));
@@ -419,6 +575,12 @@ public class ByteBuffer extends BufferedBuffer {
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param array the array
+	 * @return the byte buffer
+	 */
 	public ByteBuffer with(byte... array) {
 		this.buffer = array;
 		this.position = 0;
@@ -430,6 +592,12 @@ public class ByteBuffer extends BufferedBuffer {
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param value the value
+	 * @return the byte buffer
+	 */
 	public ByteBuffer with(byte value) {
 		if (this.buffer == null) {
 			this.buffer = new byte[] { value };
@@ -441,25 +609,52 @@ public class ByteBuffer extends BufferedBuffer {
 		return this;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return toString(new ByteConverter());
 	}
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
 	@Override
 	public ByteBuffer getNewList(boolean keyValue) {
 		return new ByteBuffer();
 	}
 
+	/**
+	 * Size.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int size() {
 		return length();
 	}
 
+	/**
+	 * String.
+	 *
+	 * @return the string
+	 */
 	public String string() {
 		return new String(buffer);
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param converter the converter
+	 * @return the string
+	 */
 	public String toString(Converter converter) {
 		if (converter == null) {
 			converter = new ByteConverter();
@@ -470,6 +665,13 @@ public class ByteBuffer extends BufferedBuffer {
 		return String.valueOf(buffer);
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param array the array
+	 * @param len the len
+	 * @return the byte buffer
+	 */
 	public ByteBuffer with(byte[] array, int len) {
 		this.position = 0;
 		if (array == null) {
@@ -492,6 +694,14 @@ public class ByteBuffer extends BufferedBuffer {
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param values the values
+	 * @param start the start
+	 * @param len the len
+	 * @return the byte buffer
+	 */
 	public ByteBuffer with(char[] values, int start, int len) {
 		if (values == null || start + length > values.length) {
 			return this;
@@ -544,6 +754,13 @@ public class ByteBuffer extends BufferedBuffer {
 		return new String(b);
 	}
 
+	/**
+	 * Sets the.
+	 *
+	 * @param pos the pos
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean set(int pos, byte value) {
 		if (pos >= 0 && pos <= this.length && this.buffer != null) {
 			this.buffer[pos] = value;
@@ -552,6 +769,12 @@ public class ByteBuffer extends BufferedBuffer {
 		return false;
 	}
 
+	/**
+	 * Adds the stream.
+	 *
+	 * @param stream the stream
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean addStream(InputStream stream) {
 		 if(stream == null) {
@@ -565,6 +788,12 @@ public class ByteBuffer extends BufferedBuffer {
 		return putStream(stream);
 	}
 	
+	/**
+	 * Put stream.
+	 *
+	 * @param stream the stream
+	 * @return true, if successful
+	 */
 	public boolean putStream(InputStream stream) {
 		try {
 			int len = 1048;

@@ -31,23 +31,44 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 
 /**
- * InfoMessage
+ * InfoMessage.
+ *
  * @author Stefan Lindel
  */
 public class InfoMessage extends ReceivingTimerTask {
+	
+	/** The Constant PROPERTY_PROXIES. */
 	public static final String PROPERTY_PROXIES = "proxies";
+	
+	/** The Constant PROPERTY_LASTID. */
 	public static final String PROPERTY_LASTID = "history_id";
 
+	/**
+	 * Instantiates a new info message.
+	 */
 	public InfoMessage() {
 		InfoMessage.props.add(PROPERTY_PROXIES, PROPERTY_LASTID);
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param space the space
+	 * @return the info message
+	 */
 	public static InfoMessage create(Space space) {
 		InfoMessage msg = new InfoMessage();
 		msg.withSpace(space);
 		return msg;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (attribute == null || entity instanceof AcceptMessage == false) {
@@ -76,6 +97,12 @@ public class InfoMessage extends ReceivingTimerTask {
 		return super.getValue(entity, attribute);
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new InfoMessage();

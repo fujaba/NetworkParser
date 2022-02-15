@@ -8,18 +8,30 @@ import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;
 
 /**
- * List of Byte
+ * List of Byte.
+ *
  * @author Stefan Lindel
  */
 public class ByteList extends SimpleList<ByteItem> implements ByteItem {
   /** The children of the ByteEntity. */
   private byte type;
 
+  /** The Constant PROPERTY_PROPERTY. */
   /* Can be a Type */
   public static final String PROPERTY_PROPERTY = "property";
+  
+  /** The Constant PROPERTY_TYPE. */
   public static final String PROPERTY_TYPE = "type";
+  
+  /** The Constant PROPERTY_ORIENTATION. */
   public static final String PROPERTY_ORIENTATION = "orientation";
 
+  /**
+   * Gets the new list.
+   *
+   * @param keyValue the key value
+   * @return the new list
+   */
   @Override
   public BaseItem getNewList(boolean keyValue) {
     if (keyValue) {
@@ -28,13 +40,18 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
     return new ByteList();
   }
 
+  /**
+   * To string.
+   *
+   * @return the string
+   */
   @Override
   public String toString() {
     return toString(null);
   }
 
   /**
-   * Convert the bytes to a String
+   * Convert the bytes to a String.
    *
    * @param converter Grammar
    * @return converted bytes as String
@@ -48,7 +65,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
   }
 
   /**
-   * Convert the bytes to a String
+   * Convert the bytes to a String.
    *
    * @param converter Grammar
    * @param dynamic if byte is dynamic
@@ -62,6 +79,12 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
     return converter.toString(this.getBytes(dynamic));
   }
 
+  /**
+   * Gets the bytes.
+   *
+   * @param isDynamic the is dynamic
+   * @return the bytes
+   */
   @Override
   public ByteBuffer getBytes(boolean isDynamic) {
     int len = calcLength(isDynamic, true);
@@ -71,6 +94,14 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
     return buffer;
   }
 
+  /**
+   * Write bytes.
+   *
+   * @param buffer the buffer
+   * @param isDynamic the is dynamic
+   * @param last the last
+   * @param isPrimitive the is primitive
+   */
   @Override
   public void writeBytes(ByteBuffer buffer, boolean isDynamic, boolean last, boolean isPrimitive) {
     /* Override for each ByteList */
@@ -89,6 +120,13 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
     }
   }
 
+  /**
+   * Calc length.
+   *
+   * @param isDynamic the is dynamic
+   * @param isLast the is last
+   * @return the int
+   */
   @Override
   public int calcLength(boolean isDynamic, boolean isLast) {
     if (size() == 0) {
@@ -102,6 +140,13 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
     return length;
   }
 
+  /**
+   * Calc children.
+   *
+   * @param isDynamic the is dynamic
+   * @param isLast the is last
+   * @return the int
+   */
   public int calcChildren(boolean isDynamic, boolean isLast) {
     int length, size = size();
     if (size < 1) {
@@ -158,23 +203,46 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
     return true;
   }
 
+  /**
+   * Gets the type.
+   *
+   * @return the type
+   */
   @Override
   public byte getType() {
     return type;
   }
 
+  /**
+   * With type.
+   *
+   * @param value the value
+   * @return the byte list
+   */
   public ByteList withType(Byte value) {
     if (value != null)
       this.type = value;
     return this;
   }
 
+  /**
+   * With value.
+   *
+   * @param value the value
+   * @return the simple list
+   */
   public SimpleList<ByteItem> withValue(String value) {
     ByteConverter converter = new ByteConverter();
     this.add(((ByteEntity) getNewList(true)).withValue(ByteTokener.DATATYPE_FIXED, converter.decode(value)));
     return this;
   }
 
+  /**
+   * Removes the.
+   *
+   * @param value the value
+   * @return true, if successful
+   */
   @Override
   public boolean remove(Object value) {
     return removeByObject(value) >= 0;

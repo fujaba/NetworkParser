@@ -25,6 +25,9 @@ abstract class ReceivingProxy implements Runnable {
 
 	protected abstract boolean lookForMessage();
 
+	/**
+	 * Run.
+	 */
 	@Override
 	public void run() {
 		try {

@@ -26,9 +26,21 @@ THE SOFTWARE.
 import java.io.Serializable;
 import java.util.Comparator;
 
+/**
+ * The Class SQLStatementComparator.
+ *
+ * @author Stefan
+ */
 public class SQLStatementComparator implements Comparator<Object>, Serializable {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Compare.
+	 *
+	 * @param o1 the o 1
+	 * @param o2 the o 2
+	 * @return the int
+	 */
 	@Override
 	public int compare(Object o1, Object o2) {
 		SQLStatement s1 = (SQLStatement) o1;

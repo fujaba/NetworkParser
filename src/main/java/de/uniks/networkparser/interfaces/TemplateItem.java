@@ -1,7 +1,24 @@
 package de.uniks.networkparser.interfaces;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface TemplateItem.
+ * @author Stefan
+ */
 public interface TemplateItem {
-	public Object getValue(String attribute);
+	
+	/**
+	 * Gets the value.
+	 *
+	 * @param attribute the attribute
+	 * @return the value
+	 */
+	Object getValue(String attribute);
 
-	public String getName();
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
+	String getName();
 }

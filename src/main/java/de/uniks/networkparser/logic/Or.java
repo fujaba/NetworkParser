@@ -15,6 +15,8 @@ import de.uniks.networkparser.interfaces.TemplateParser;
  */
 
 public class Or extends ListCondition {
+	
+	/** The Constant TAG. */
 	public static final String TAG = "or";
 
 	/**
@@ -27,6 +29,13 @@ public class Or extends ListCondition {
 		return new Or().with(conditions);
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param buffer the buffer
+	 * @param parser the parser
+	 * @param customTemplate the custom template
+	 */
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		if(buffer == null) {
@@ -43,6 +52,12 @@ public class Or extends ListCondition {
 		buffer.skip();
 	}
 
+	/**
+	 * Update set.
+	 *
+	 * @param evt the evt
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean updateSet(Object evt) {
 		Set<ObjectCondition> list = getList();
@@ -54,28 +69,56 @@ public class Or extends ListCondition {
 		return false;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param values the values
+	 * @return the or
+	 */
 	@Override
 	public Or with(ObjectCondition... values) {
 		super.with(values);
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param values the values
+	 * @return the or
+	 */
 	@Override
 	public Or with(PropertyChangeListener... values) {
 		super.with(values);
 		return this;
 	}
 
+	/**
+	 * Checks if is expression.
+	 *
+	 * @return true, if is expression
+	 */
 	@Override
 	public boolean isExpression() {
 		return true;
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return TAG;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param isExpression the is expression
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean isExpression) {
 		return new Or();

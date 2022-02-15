@@ -24,12 +24,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class MapEntry.
+ *
+ * @author Stefan
+ */
 public class MapEntry extends SimpleEntity<String, Object> {
+	
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new MapEntry();
 	}
 
+	/**
+	 * With key item.
+	 *
+	 * @param key the key
+	 * @return the map entry
+	 */
 	@Override
 	public MapEntry withKeyItem(Object key) {
 		if (key instanceof String) {
@@ -38,18 +56,36 @@ public class MapEntry extends SimpleEntity<String, Object> {
 		return this;
 	}
 
+	/**
+	 * With value item.
+	 *
+	 * @param value the value
+	 * @return the map entry
+	 */
 	@Override
 	public MapEntry withValueItem(Object value) {
 		this.withValue(value);
 		return this;
 	}
 	
+    /**
+     * Creates the.
+     *
+     * @param key the key
+     * @param value the value
+     * @return the map entry
+     */
     public static MapEntry create(String key, String value) {
         MapEntry entry = new MapEntry();
         entry.withKey(key).withValue(value);
         return entry;
     }
     
+    /**
+     * Gets the value string.
+     *
+     * @return the value string
+     */
     public String getValueString() {
         return "" + this.getValue();
     }

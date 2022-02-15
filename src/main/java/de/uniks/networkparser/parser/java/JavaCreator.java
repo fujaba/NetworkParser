@@ -32,7 +32,16 @@ import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.Template;
 
+/**
+ * The Class JavaCreator.
+ *
+ * @author Stefan
+ */
 public class JavaCreator extends Template {
+	
+	/**
+	 * Instantiates a new java creator.
+	 */
 	public JavaCreator() {
 		this.id = TYPE_JAVA + ".creator";
 		this.extension = "java";

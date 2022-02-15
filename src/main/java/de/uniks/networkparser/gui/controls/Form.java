@@ -28,16 +28,27 @@ import java.util.Collection;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class Form.
+ *
+ * @author Stefan
+ */
 public class Form extends Control {
+	
+	/** The Constant FORM. */
 	/* constants */
 	public static final String FORM = "form";
 
+	/** The Constant METHOD. */
 	public static final String METHOD = "method";
 
 	protected String method = "get";
 
 	private SimpleList<Control> elements;
 
+	/**
+	 * Instantiates a new form.
+	 */
 	public Form() {
 		super();
 		/* Set variables of parent class */
@@ -46,6 +57,11 @@ public class Form extends Control {
 		this.addBaseElements(PROPERTY_ELEMENTS);
 	}
 
+	/**
+	 * Gets the method.
+	 *
+	 * @return the method
+	 */
 	public String getMethod() {
 		return method;
 	}
@@ -62,15 +78,32 @@ public class Form extends Control {
 		return firePropertyChange(METHOD, oldValue, value);
 	}
 
+	/**
+	 * Gets the elements.
+	 *
+	 * @return the elements
+	 */
 	public SimpleList<Control> getElements() {
 		return elements;
 	}
 
+	/**
+	 * With element.
+	 *
+	 * @param elements the elements
+	 * @return the form
+	 */
 	public Form withElement(Control... elements) {
 		addElement(elements);
 		return this;
 	}
 
+	/**
+	 * Adds the element.
+	 *
+	 * @param elements the elements
+	 * @return true, if successful
+	 */
 	public boolean addElement(Control... elements) {
 		if (elements == null) {
 			return false;
@@ -88,6 +121,12 @@ public class Form extends Control {
 		return changed;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param key the key
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(String key) {
 		if (METHOD.equals(key)) {
@@ -98,6 +137,13 @@ public class Form extends Control {
 		return super.getValue(key);
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(String key, Object value) {
 		if (METHOD.equals(key)) {
@@ -116,6 +162,14 @@ public class Form extends Control {
 		return super.setValue(key, value);
 	}
 
+	/**
+	 * With data binding.
+	 *
+	 * @param map the map
+	 * @param entity the entity
+	 * @param addCommandBtn the add command btn
+	 * @return the form
+	 */
 	public Form withDataBinding(IdMap map, Object entity, boolean addCommandBtn) {
 /* TODO		this.map = map;
 		this.item = entity;
@@ -129,6 +183,11 @@ public class Form extends Control {
 		return this;
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @return the form
+	 */
 	@Override
 	public Form newInstance() {
 		return new Form();

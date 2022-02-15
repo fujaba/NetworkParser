@@ -27,17 +27,40 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class Method.
+ *
+ * @author Stefan
+ */
 public class Method extends GraphMember {
+	
+	/** The Constant PROPERTY_RETURNTYPE. */
 	public static final String PROPERTY_RETURNTYPE = "returnType";
+	
+	/** The Constant PROPERTY_PARAMETER. */
 	public static final String PROPERTY_PARAMETER = "parameter";
+	
+	/** The Constant PROPERTY_PARAMETERNAME. */
 	public static final String PROPERTY_PARAMETERNAME = "parameterName";
+	
+	/** The Constant PROPERTY_NODE. */
 	public static final String PROPERTY_NODE = "node";
+	
+	/** The Constant PROPERTY_ANNOTATIONS. */
 	public static final String PROPERTY_ANNOTATIONS = "annotations";
+	
+	/** The Constant PROPERTY_BODY. */
 	public static final String PROPERTY_BODY = "body";
 
 	private DataType returnType = DataType.VOID;
 	private String body;
 
+	/**
+	 * With.
+	 *
+	 * @param name the name
+	 * @return the method
+	 */
 	@Override
 	public Method with(String name) {
 		if (name == null) {
@@ -51,6 +74,13 @@ public class Method extends GraphMember {
 		return this;
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @param shortName the short name
+	 * @param removeParameterNames the remove parameter names
+	 * @return the name
+	 */
 	public String getName(boolean shortName, boolean removeParameterNames) {
 		StringBuilder sb = new StringBuilder();
 
@@ -66,29 +96,62 @@ public class Method extends GraphMember {
 		return sb.toString();
 	}
 
+	/**
+	 * Instantiates a new method.
+	 */
 	public Method() {
 	}
 
+	/**
+	 * Instantiates a new method.
+	 *
+	 * @param name the name
+	 */
 	public Method(String name) {
 		this.with(name);
 	}
 
+	/**
+	 * Instantiates a new method.
+	 *
+	 * @param name the name
+	 * @param returnType the return type
+	 * @param parameters the parameters
+	 */
 	public Method(String name, DataType returnType, Parameter... parameters) {
 		this.with(name);
 		this.with(parameters);
 		this.with(returnType);
 	}
 
+	/**
+	 * Instantiates a new method.
+	 *
+	 * @param name the name
+	 * @param parameters the parameters
+	 */
 	public Method(String name, Parameter... parameters) {
 		this.with(parameters);
 		this.with(name);
 	}
 
+	/**
+	 * With parameter.
+	 *
+	 * @param paramName the param name
+	 * @param dataType the data type
+	 * @return the method
+	 */
 	public Method withParameter(String paramName, DataType dataType) {
 		new Parameter().with(paramName).with(dataType).withParent(this);
 		return this;
 	}
 
+	/**
+	 * Gets the modifier.
+	 *
+	 * @return the modifier
+	 */
 	@Override
 	public Modifier getModifier() {
 		Modifier modifier = super.getModifier();
@@ -99,19 +162,42 @@ public class Method extends GraphMember {
 		return modifier;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param modifiers the modifiers
+	 * @return the method
+	 */
 	public Method with(Modifier... modifiers) {
 		super.withModifier(modifiers);
 		return this;
 	}
 
+	/**
+	 * Gets the return type.
+	 *
+	 * @return the return type
+	 */
 	public DataType getReturnType() {
 		return this.returnType;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param type the type
+	 * @return the parameter
+	 */
 	public Parameter create(DataType type) {
 		return new Parameter().with(type).withParent(this);
 	}
 
+	/**
+	 * With parent.
+	 *
+	 * @param value the value
+	 * @return the method
+	 */
 	public Method withParent(Clazz value) {
 		setParentNode(value);
 		return this;
@@ -148,15 +234,31 @@ public class Method extends GraphMember {
 		return sb;
 	}
 
+	/**
+	 * Gets the body.
+	 *
+	 * @return the body
+	 */
 	public String getBody() {
 		return this.body;
 	}
 
+	/**
+	 * With body.
+	 *
+	 * @param value the value
+	 * @return the method
+	 */
 	public Method withBody(String value) {
 		this.body = value;
 		return this;
 	}
 
+	/**
+	 * Gets the throws.
+	 *
+	 * @return the throws
+	 */
 	public SimpleSet<Throws> getThrows() {
 		SimpleSet<Throws> collection = new SimpleSet<Throws>();
 		if (children == null) {
@@ -176,11 +278,11 @@ public class Method extends GraphMember {
 	}
 
 	/**
-	 * get All Parameter
-	 * 
+	 * get All Parameter.
+	 *
 	 * @param filters Can Filter the List of Parameter
 	 * @return all Parameter of a Method
-	 *
+	 * 
 	 *         <pre>
 	 * Method  --------------------- Parameter
 	 * one                          many
@@ -206,30 +308,65 @@ public class Method extends GraphMember {
 		return collection;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param values the values
+	 * @return the method
+	 */
 	public Method with(Throws... values) {
 		super.withChildren(values);
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param values the values
+	 * @return the method
+	 */
 	public Method with(Parameter... values) {
 		super.withChildren(values);
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param returnType the return type
+	 * @return the method
+	 */
 	public Method with(DataType returnType) {
 		this.returnType = returnType;
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param returnType the return type
+	 * @return the method
+	 */
 	public Method with(Clazz returnType) {
 		this.returnType = DataType.create(returnType);
 		return this;
 	}
 
+	/**
+	 * Gets the annotation.
+	 *
+	 * @return the annotation
+	 */
 	public Annotation getAnnotation() {
 		return super.getAnnotation();
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param value the value
+	 * @return the method
+	 */
 	public Method with(Annotation value) {
 		if (this.children != null) {
 			if (this.children instanceof Annotation) {
@@ -247,11 +384,22 @@ public class Method extends GraphMember {
 		return this;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return getName(true, false);
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(String attribute) {
 		if (PROPERTY_RETURNTYPE.equalsIgnoreCase(attribute)) {
@@ -275,6 +423,11 @@ public class Method extends GraphMember {
 		return super.getValue(attribute);
 	}
 
+	/**
+	 * Checks if is valid return.
+	 *
+	 * @return true, if is valid return
+	 */
 	public boolean isValidReturn() {
 		if (getReturnType() == null || DataType.VOID.equals(getReturnType())) {
 			return true;

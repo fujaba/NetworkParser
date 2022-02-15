@@ -36,20 +36,47 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
-/** SocketMessage 
- * @author Stefan Lindel */
+/**
+ * A Simple Socket-Message.
+ *
+ * @author Stefan Lindel
+ */
 public class SocketMessage implements BaseItem {
+	
+	/** The Constant PROPERTY_FROM. */
 	public static final String PROPERTY_FROM = "From: ";
+	
+	/** The Constant PROPERTY_TO. */
 	public static final String PROPERTY_TO = "To";
+	
+	/** The Constant PROPERTY_DATE. */
 	public static final String PROPERTY_DATE = "Date: ";
+	
+	/** The Constant PROPERTY_ID. */
 	public static final String PROPERTY_ID = "Message-Id: ";
+	
+	/** The Constant PROPERTY_MIME. */
 	public static final String PROPERTY_MIME = "MIME-Version: ";
+	
+	/** The Constant PROPERTY_SUBJECT. */
 	public static final String PROPERTY_SUBJECT = "Subject: ";
+	
+	/** The Constant PROPERTY_BOUNDARY. */
 	public static final String PROPERTY_BOUNDARY = "boundary=";
+	
+	/** The Constant PROPERTY_CONTENTTYPE. */
 	public static final String PROPERTY_CONTENTTYPE = "Content-Type: ";
+	
+	/** The Constant CONTENT_TYPE_MULTIPART. */
 	public static final String CONTENT_TYPE_MULTIPART = "multipart/mixed;";
+	
+	/** The Constant CONTENT_TYPE_HTML. */
 	public static final String CONTENT_TYPE_HTML = "text/html; charset=utf-8;";
+	
+	/** The Constant CONTENT_TYPE_PLAIN. */
 	public static final String CONTENT_TYPE_PLAIN = "text/plain; charset=utf-8;";
+	
+	/** The Constant CONTENT_ENCODING. */
 	public static final String CONTENT_ENCODING = "Content-Transfer-Encoding: 7bit";
 
 	private String subject;
@@ -62,10 +89,20 @@ public class SocketMessage implements BaseItem {
 	private SimpleKeyValueList<String, Buffer> attachment = new SimpleKeyValueList<String, Buffer>();
 	private String boundary;
 
+	/**
+	 * Instantiates a new socket message.
+	 *
+	 * @param toAdresses the to adresses
+	 */
 	public SocketMessage(String... toAdresses) {
 		this.withRecipient(toAdresses);
 	}
 
+	/**
+	 * Gets the content type.
+	 *
+	 * @return the content type
+	 */
 	public String getContentType() {
 		if (isMultiPart()) {
 			return CONTENT_TYPE_MULTIPART;
@@ -77,6 +114,12 @@ public class SocketMessage implements BaseItem {
 		return getContentType(item);
 	}
 
+	/**
+	 * Gets the content type.
+	 *
+	 * @param element the element
+	 * @return the content type
+	 */
 	public String getContentType(BaseItem element) {
 		if (element instanceof HTMLEntity) {
 			return CONTENT_TYPE_HTML;
@@ -84,6 +127,12 @@ public class SocketMessage implements BaseItem {
 		return CONTENT_TYPE_PLAIN;
 	}
 
+	/**
+	 * Gets the header.
+	 *
+	 * @param key the key
+	 * @return the header
+	 */
 	public String getHeader(String key) {
 		if (PROPERTY_FROM.equalsIgnoreCase(key)) {
 			return PROPERTY_FROM + from;
@@ -125,6 +174,12 @@ public class SocketMessage implements BaseItem {
 		return null;
 	}
 
+	/**
+	 * Gets the header from.
+	 *
+	 * @param defaultFrom the default from
+	 * @return the header from
+	 */
 	public String getHeaderFrom(String defaultFrom) {
 		if (from == null) {
 			this.from = defaultFrom;
@@ -132,6 +187,11 @@ public class SocketMessage implements BaseItem {
 		return "MAIL FROM:" + normalizeAddress(from);
 	}
 
+	/**
+	 * Gets the header to.
+	 *
+	 * @return the header to
+	 */
 	public SimpleList<String> getHeaderTo() {
 		SimpleList<String> toList = new SimpleList<String>();
 		for (int i = 0; i < to.size(); i++) {
@@ -140,6 +200,12 @@ public class SocketMessage implements BaseItem {
 		return toList;
 	}
 
+	/**
+	 * Generate message id.
+	 *
+	 * @param localHost the local host
+	 * @return the string
+	 */
 	public String generateMessageId(String localHost) {
 		if (this.id != null || localHost == null) {
 			return this.id;
@@ -157,6 +223,12 @@ public class SocketMessage implements BaseItem {
 		return this.id;
 	}
 
+	/**
+	 * To XML.
+	 *
+	 * @param type the type
+	 * @return the XML entity
+	 */
 	public XMLEntity toXML(String type) {
 		XMLEntity messageXML = XMLEntity.TAG("message");
 		if (type == MessageSession.TYPE_FCM) {
@@ -214,11 +286,23 @@ public class SocketMessage implements BaseItem {
 		return this.boundary;
 	}
 
+	/**
+	 * With subject.
+	 *
+	 * @param value the value
+	 * @return the socket message
+	 */
 	public SocketMessage withSubject(String value) {
 		this.subject = value;
 		return this;
 	}
 
+	/**
+	 * With recipient.
+	 *
+	 * @param toAdresses the to adresses
+	 * @return the socket message
+	 */
 	public SocketMessage withRecipient(String... toAdresses) {
 		if (toAdresses == null) {
 			return this;
@@ -248,15 +332,32 @@ public class SocketMessage implements BaseItem {
 		return returnValue + ">";
 	}
 
+	/**
+	 * Gets the subject.
+	 *
+	 * @return the subject
+	 */
 	public String getSubject() {
 		return this.subject;
 	}
 
+	/**
+	 * With message.
+	 *
+	 * @param value the value
+	 * @return the socket message
+	 */
 	public SocketMessage withMessage(HTMLEntity value) {
 		this.message.add(value);
 		return this;
 	}
 
+	/**
+	 * With message.
+	 *
+	 * @param value the value
+	 * @return the socket message
+	 */
 	public SocketMessage withMessage(String value) {
 		BaseItem item = new StringEntity();
 		item.add(value);
@@ -264,43 +365,93 @@ public class SocketMessage implements BaseItem {
 		return this;
 	}
 
+	/**
+	 * With HTML message.
+	 *
+	 * @param value the value
+	 * @return the socket message
+	 */
 	public SocketMessage withHTMLMessage(String value) {
 		BaseItem item = new HTMLEntity().withBody(value);
 		this.message.add(item);
 		return this;
 	}
 
+	/**
+	 * Gets the messages.
+	 *
+	 * @return the messages
+	 */
 	public SimpleList<BaseItem> getMessages() {
 		return this.message;
 	}
 
+	/**
+	 * Gets the attachments.
+	 *
+	 * @return the attachments
+	 */
 	public SimpleKeyValueList<String, Buffer> getAttachments() {
 		return this.attachment;
 	}
 
+	/**
+	 * Checks if is multi part.
+	 *
+	 * @return true, if is multi part
+	 */
 	public boolean isMultiPart() {
 		return this.message.size() > 1 || this.attachment.size() > 0;
 	}
 
+	/**
+	 * Removes the to adress.
+	 *
+	 * @param pos the pos
+	 */
 	public void removeToAdress(int pos) {
 		this.to.remove(pos);
 	}
 
+	/**
+	 * With attachment.
+	 *
+	 * @param fileName the file name
+	 * @param buffer the buffer
+	 * @return the socket message
+	 */
 	public SocketMessage withAttachment(String fileName, Buffer buffer) {
 		this.attachment.add(fileName, buffer);
 		return this;
 	}
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new SocketMessage();
 	}
 
+	/**
+	 * Size.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int size() {
 		return this.to.size();
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param converter the converter
+	 * @return the string
+	 */
 	@Override
 	public String toString(Converter converter) {
 		if (converter instanceof EntityStringConverter) {
@@ -312,6 +463,12 @@ public class SocketMessage implements BaseItem {
 		return converter.encode(this);
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean add(Object... values) {
 		if (values != null) {
@@ -324,6 +481,13 @@ public class SocketMessage implements BaseItem {
 		return true;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param message the message
+	 * @param toAdresses the to adresses
+	 * @return the socket message
+	 */
 	public static SocketMessage create(String message, String... toAdresses) {
 		SocketMessage socketMessage = new SocketMessage(toAdresses);
 		socketMessage.withMessage(message);

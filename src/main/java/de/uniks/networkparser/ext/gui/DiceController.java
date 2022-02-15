@@ -40,10 +40,21 @@ import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class DiceController.
+ *
+ * @author Stefan
+ */
 public class DiceController extends SendableItem
 		implements PropertyChangeListener, SendableEntityCreator, ObjectCondition {
+	
+	/** The Constant PROPERTY_CLICK. */
 	public static final String PROPERTY_CLICK = "click";
+	
+	/** The Constant PROPERTY_VALUE. */
 	public static final String PROPERTY_VALUE = "value";
+	
+	/** The Constant STOPPED. */
 	public static final String STOPPED = "STOPPED";
 	private Object pane;
 	private SimpleList<Object> children = new SimpleList<Object>();
@@ -60,6 +71,11 @@ public class DiceController extends SendableItem
 	private Class<?> mouseEventClass = ReflectionLoader.getClass("javafx.scene.input.MouseEvent");
 	private Class<?> actionEventClass = ReflectionLoader.getClass("javafx.event.ActionEvent");
 
+	/**
+	 * Gets the time line.
+	 *
+	 * @return the time line
+	 */
 	public Object getTimeLine() {
 		if (this.timeline != null) {
 			return this.timeline;
@@ -71,6 +87,9 @@ public class DiceController extends SendableItem
 		return this.timeline;
 	}
 
+	/**
+	 * Instantiates a new dice controller.
+	 */
 	public DiceController() {
 		this.eventListener = new GUIEvent().withListener(this);
 		this.eventProxy = ReflectionLoader.createProxy(eventListener, ReflectionLoader.EVENTHANDLER);
@@ -78,14 +97,30 @@ public class DiceController extends SendableItem
 		model.addPropertyChangeListener(Dice.PROPERTY_VALUE, this);
 	}
 
+	/**
+	 * Sets the style.
+	 *
+	 * @param value the new style
+	 */
 	public void setStyle(String value) {
 		this.style = value;
 	}
 
+	/**
+	 * Gets the style.
+	 *
+	 * @return the style
+	 */
 	public String getStyle() {
 		return style;
 	}
 
+	/**
+	 * Inits the.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean init(Object value) {
 		if (value == null) {
 			return false;
@@ -98,10 +133,19 @@ public class DiceController extends SendableItem
 		return true;
 	}
 
+	/**
+	 * Throw dice.
+	 */
 	public void throwDice() {
 		showAnimation(StringUtil.randInt(1, this.max));
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param number the number
+	 * @return the dice controller
+	 */
 	public DiceController withValue(int number) {
 		String value = "" + ReflectionLoader.call(getTimeLine(), "getStatus");
 		if (STOPPED.equals(value)) {
@@ -111,6 +155,12 @@ public class DiceController extends SendableItem
 		return this;
 	}
 
+	/**
+	 * Show animation.
+	 *
+	 * @param number the number
+	 * @return the dice controller
+	 */
 	@SuppressWarnings("unchecked")
 	public DiceController showAnimation(int number) {
 		if(pane == null) {
@@ -177,6 +227,11 @@ public class DiceController extends SendableItem
 		return this;
 	}
 
+	/**
+	 * Show number.
+	 *
+	 * @param number the number
+	 */
 	public void showNumber(int number) {
 		this.reset();
 		if (number == 1) {
@@ -206,6 +261,11 @@ public class DiceController extends SendableItem
 		firePropertyChange(PROPERTY_VALUE, oldValue, number);
 	}
 
+	/**
+	 * Adds the circle.
+	 *
+	 * @param values the values
+	 */
 	public void addCircle(int... values) {
 		if(values == null) {
 			return;
@@ -253,15 +313,31 @@ public class DiceController extends SendableItem
 		return circle;
 	}
 
+	/**
+	 * Gets the color.
+	 *
+	 * @return the color
+	 */
 	public String getColor() {
 		return color;
 	}
 
+	/**
+	 * With color.
+	 *
+	 * @param color the color
+	 * @return the dice controller
+	 */
 	public DiceController withColor(String color) {
 		this.color = color;
 		return this;
 	}
 
+	/**
+	 * Property change.
+	 *
+	 * @param evt the evt
+	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt != null) {
@@ -274,17 +350,43 @@ public class DiceController extends SendableItem
 		}
 	}
 
+	/**
+	 * Inits the property change.
+	 *
+	 * @param model the model
+	 * @param gui the gui
+	 */
 	public void initPropertyChange(Object model, Object gui) {
 	}
 
+	/**
+	 * Gets the pane.
+	 *
+	 * @return the pane
+	 */
 	public Object getPane() {
 		return pane;
 	}
 
+	/**
+	 * Adds the listener.
+	 *
+	 * @param item the item
+	 * @param property the property
+	 * @return true, if successful
+	 */
 	public boolean addListener(Object item, String property) {
 		return addListener(item, property, this);
 	}
 
+	/**
+	 * Adds the listener.
+	 *
+	 * @param item the item
+	 * @param property the property
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addListener(Object item, String property, PropertyChangeListener listener) {
 		if (item == null) {
 			return false;
@@ -334,16 +436,37 @@ public class DiceController extends SendableItem
 		return false;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return null;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (entity instanceof DiceController == false) {
@@ -357,11 +480,23 @@ public class DiceController extends SendableItem
 		return false;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new DiceController();
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if(mouseEventClass == null || value == null) {

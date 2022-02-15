@@ -32,12 +32,23 @@ import de.uniks.networkparser.xml.ArtifactFile;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class JarValidator.
+ *
+ * @author Stefan
+ */
 public class JarValidator
 {
    private String path;
    private String file = "build/jacoco/html/index.html";
+   
+   /** The Constant JARFILE. */
    public static final String JARFILE = ".jar";
+   
+   /** The Constant CLASSFILESUFFIX. */
    public static final String CLASSFILESUFFIX = ".class";
+   
+   /** The Constant MAINTAG. */
    public static final String MAINTAG = "JARVALIDATOR";
    private ArrayList<String> warnings = new ArrayList<String>();
    private TreeSet<String> warningsPackages = new TreeSet<String>();
@@ -53,15 +64,35 @@ public class JarValidator
 
    private int minCoverage = 0;
    private boolean isAnalyse = false;
+   
+   /** The is analyse jar. */
    public boolean isAnalyseJar = false;
+   
+   /** The is licence. */
    public boolean isLicence = false;
+   
+   /** The is error. */
    public boolean isError = true;
+   
+   /** The is warning. */
    public boolean isWarning = true;
+   
+   /** The is instance. */
    public boolean isInstance = true;
+   
+   /** The is validate. */
    public boolean isValidate = false;
+   
+   /** The instance package. */
    public String instancePackage;
    private NetworkParserLog logger = new NetworkParserLog().withListener(new StringPrintStream());
 
+   /**
+    * With min coverage.
+    *
+    * @param value the value
+    * @return the jar validator
+    */
    public JarValidator withMinCoverage(int value)
    {
       this.minCoverage = value;
@@ -69,6 +100,12 @@ public class JarValidator
       return this;
    }
 
+   /**
+    * With path.
+    *
+    * @param path the path
+    * @return the jar validator
+    */
    public JarValidator withPath(String path)
    {
       this.path = path;
@@ -104,6 +141,9 @@ public class JarValidator
       return packages;
    }
 
+   /**
+    * Validate.
+    */
    public void validate()
    {
       if (ReflectionBlackBoxTester.isTester())
@@ -281,6 +321,11 @@ public class JarValidator
       }
    }
 
+   /**
+    * Analyse report.
+    *
+    * @return the int
+    */
    public int analyseReport()
    {
       File file = new File(rootPath + this.file);
@@ -314,6 +359,12 @@ public class JarValidator
       return -1;
    }
 
+   /**
+    * Search files.
+    *
+    * @param output the output
+    * @return the int
+    */
    public int searchFiles(PrintStream output)
    {
       if (this.path == null)
@@ -323,21 +374,43 @@ public class JarValidator
       return searching(new File(rootPath + this.path), output);
    }
 
+   /**
+    * Checks if is error.
+    *
+    * @return true, if is error
+    */
    public boolean isError()
    {
       return warnings.size() > 0 || errors.size() > 0;
    }
 
+   /**
+    * Gets the errors.
+    *
+    * @return the errors
+    */
    public ArrayList<String> getErrors()
    {
       return errors;
    }
 
+   /**
+    * Gets the warnings.
+    *
+    * @return the warnings
+    */
    public ArrayList<String> getWarnings()
    {
       return warnings;
    }
 
+   /**
+    * Searching.
+    *
+    * @param file the file
+    * @param output the output
+    * @return the int
+    */
    public int searching(File file, PrintStream output)
    {
       if (file == null)
@@ -500,11 +573,21 @@ public class JarValidator
       return result;
    }
 
+   /**
+    * Checks if is exist full jar.
+    *
+    * @return true, if is exist full jar
+    */
    public boolean isExistFullJar()
    {
       return isExistFullJar;
    }
 
+   /**
+    * Count.
+    *
+    * @return the int
+    */
    public int count()
    {
       int count = 0;
@@ -519,6 +602,9 @@ public class JarValidator
       return count;
    }
 
+   /**
+    * Clear.
+    */
    public void clear()
    {
       this.warnings.clear();
@@ -529,6 +615,12 @@ public class JarValidator
       this.classes = 0;
    }
 
+   /**
+    * Merge packing.
+    *
+    * @param sources the sources
+    * @return the array list
+    */
    public ArrayList<String> mergePacking(TreeSet<String> sources)
    {
       ArrayList<String> dep = new ArrayList<String>();
@@ -564,6 +656,13 @@ public class JarValidator
       return dep;
    }
    
+   /**
+    * Analyse pom.
+    *
+    * @param file the file
+    * @param params the params
+    * @return the simple set
+    */
    public SimpleSet<ArtifactFile> analysePom(File file, boolean... params) {
 	   SimpleSet<ArtifactFile> result = new SimpleSet<ArtifactFile>();
 	   boolean simpleFormat = false;
@@ -794,6 +893,11 @@ public class JarValidator
       return null;
    }
 
+   /**
+    * Merge packages.
+    *
+    * @return the simple key value list
+    */
    public SimpleKeyValueList<String, JsonObject> mergePackages()
    {
       projects.clear();
@@ -852,11 +956,22 @@ public class JarValidator
 
    }
 
+   /**
+    * Gets the min coverage.
+    *
+    * @return the min coverage
+    */
    public int getMinCoverage()
    {
       return this.minCoverage;
    }
 
+   /**
+    * With root path.
+    *
+    * @param param the param
+    * @return the jar validator
+    */
    public JarValidator withRootPath(String param)
    {
       if (param != null)

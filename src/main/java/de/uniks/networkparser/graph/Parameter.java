@@ -23,6 +23,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class Parameter.
+ *
+ * @author Stefan
+ */
 public class Parameter extends Value {
 	private boolean isArray;
 
@@ -30,24 +35,51 @@ public class Parameter extends Value {
 
 	}
 
+	/**
+	 * Instantiates a new parameter.
+	 *
+	 * @param type the type
+	 */
 	public Parameter(DataType type) {
 		with(type);
 	}
 
+	/**
+	 * Instantiates a new parameter.
+	 *
+	 * @param value the value
+	 */
 	public Parameter(Clazz value) {
 		with(DataType.create(value));
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param value the value
+	 * @return the parameter
+	 */
 	@Override
 	public Parameter withValue(String value) {
 		super.withValue(value);
 		return this;
 	}
 
+	/**
+	 * Gets the method.
+	 *
+	 * @return the method
+	 */
 	public Method getMethod() {
 		return (Method) this.parentNode;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param string the string
+	 * @return the parameter
+	 */
 	/* Redirect */
 	@Override
 	public Parameter with(String string) {
@@ -55,17 +87,35 @@ public class Parameter extends Value {
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param value the value
+	 * @return the parameter
+	 */
 	@Override
 	public Parameter with(DataType value) {
 		super.with(value);
 		return this;
 	}
 
+	/**
+	 * With parent.
+	 *
+	 * @param value the value
+	 * @return the parameter
+	 */
 	public Parameter withParent(Method value) {
 		super.setParentNode(value);
 		return this;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param param the param
+	 * @return the parameter
+	 */
 	public static Parameter create(Object param) {
 		if (param == null) {
 			return null;
@@ -88,6 +138,11 @@ public class Parameter extends Value {
 		return null;
 	}
 
+	/**
+	 * Checks if is array.
+	 *
+	 * @return true, if is array
+	 */
 	public boolean isArray() {
 		return isArray;
 	}

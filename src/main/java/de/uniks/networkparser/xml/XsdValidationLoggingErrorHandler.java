@@ -26,8 +26,8 @@ THE SOFTWARE.
 import java.util.ArrayList;
 
 /**
- * XsdValidationLoggingErrorHandler XSD-Validation Logging Handler
- * 
+ * XsdValidationLoggingErrorHandler XSD-Validation Logging Handler.
+ *
  * @author Stefan XSD Validation Error Class.
  */
 public class XsdValidationLoggingErrorHandler {
@@ -51,8 +51,8 @@ public class XsdValidationLoggingErrorHandler {
 	 */
 
 	/**
-	 * Switch for Valid Document
-	 * 
+	 * Switch for Valid Document.
+	 *
 	 * @return is Document is Valid.
 	 */
 	public boolean isValid() {
@@ -60,8 +60,8 @@ public class XsdValidationLoggingErrorHandler {
 	}
 
 	/**
-	 * Get all Errors
-	 * 
+	 * Get all Errors.
+	 *
 	 * @return All Errors.
 	 */
 	public ArrayList<String> getErrors() {
@@ -69,8 +69,8 @@ public class XsdValidationLoggingErrorHandler {
 	}
 
 	/**
-	 * Get all Errors as Text
-	 * 
+	 * Get all Errors as Text.
+	 *
 	 * @return the ErrorText.
 	 */
 	public String getErrorText() {
@@ -83,8 +83,8 @@ public class XsdValidationLoggingErrorHandler {
 	}
 
 	/**
-	 * Get all Warnings
-	 * 
+	 * Get all Warnings.
+	 *
 	 * @return List of Warnings.
 	 */
 	public ArrayList<String> getWarnings() {

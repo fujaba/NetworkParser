@@ -33,11 +33,22 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class TextEntity.
+ *
+ * @author Stefan
+ */
 public class TextEntity implements EntityList {
 	private SimpleList<BaseItem> children;
 	private String tag;
 	private CharSequence tagEnd;
 
+	/**
+	 * To string.
+	 *
+	 * @param converter the converter
+	 * @return the string
+	 */
 	@Override
 	public String toString(Converter converter) {
 		if (converter == null) {
@@ -68,16 +79,33 @@ public class TextEntity implements EntityList {
 		return sb.toString();
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return parseItem(new EntityStringConverter());
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param indentFactor the indent factor
+	 * @return the string
+	 */
 	@Override
 	public String toString(int indentFactor) {
 		return parseItem(new EntityStringConverter(indentFactor));
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean add(Object... values) {
 		if (values == null || values.length < 1) {
@@ -109,30 +137,65 @@ public class TextEntity implements EntityList {
 		this.children.add(item);
 	}
 
+	/**
+	 * Gets the tag.
+	 *
+	 * @return the tag
+	 */
 	public String getTag() {
 		return tag;
 	}
 
+	/**
+	 * With tag.
+	 *
+	 * @param value the value
+	 * @return the text entity
+	 */
 	public TextEntity withTag(String value) {
 		this.tag = value;
 		return this;
 	}
 
+	/**
+	 * With tag.
+	 *
+	 * @param value the value
+	 * @return the text entity
+	 */
 	public TextEntity withTag(char value) {
 		this.tag = "" + value;
 		return this;
 	}
 
+	/**
+	 * With tag end.
+	 *
+	 * @param value the value
+	 * @return the text entity
+	 */
 	public TextEntity withTagEnd(CharSequence value) {
 		this.tagEnd = value;
 		return this;
 	}
 
+	/**
+	 * With tag end.
+	 *
+	 * @param value the value
+	 * @return the text entity
+	 */
 	public TextEntity withTagEnd(char value) {
 		this.tagEnd = "" + value;
 		return this;
 	}
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		if (keyValue) {
@@ -141,6 +204,11 @@ public class TextEntity implements EntityList {
 		return new TextEntity();
 	}
 
+	/**
+	 * Size.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int size() {
 		if (this.children == null) {
@@ -149,11 +217,22 @@ public class TextEntity implements EntityList {
 		return this.children.size();
 	}
 
+	/**
+	 * Size children.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int sizeChildren() {
 		return size();
 	}
 
+	/**
+	 * Gets the child.
+	 *
+	 * @param index the index
+	 * @return the child
+	 */
 	@Override
 	public BaseItem getChild(int index) {
 		if (this.children == null) {
@@ -162,21 +241,42 @@ public class TextEntity implements EntityList {
 		return this.children.get(index);
 	}
 
+	/**
+	 * Checks if is comparator.
+	 *
+	 * @return true, if is comparator
+	 */
 	@Override
 	public boolean isComparator() {
 		return false;
 	}
 
+	/**
+	 * Comparator.
+	 *
+	 * @return the comparator
+	 */
 	@Override
 	public Comparator<Object> comparator() {
 		return null;
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param values the values
+	 * @return the base item
+	 */
 	@Override
 	public BaseItem withValue(BufferItem values) {
 		return null;
 	}
 
+	/**
+	 * First child.
+	 *
+	 * @return the base item
+	 */
 	@Override
 	public BaseItem firstChild() {
 		return getChild(0);

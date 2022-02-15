@@ -140,6 +140,11 @@ public class ByteTokener extends Tokener {
   /** The Constant DATATYPE_LAST. */
   public static final byte LEN_LAST = 0x05;
 
+  /**
+   * Gets the charset.
+   *
+   * @return the charset
+   */
   public String getCharset() {
     return BaseItem.ENCODING;
   }
@@ -176,6 +181,13 @@ public class ByteTokener extends Tokener {
     return false;
   }
 
+  /**
+   * Encode.
+   *
+   * @param entity the entity
+   * @param map the map
+   * @return the byte item
+   */
   @Override
   public ByteItem encode(Object entity, MapEntity map) {
     SendableEntityCreator creator = getCreatorClass(entity);
@@ -231,6 +243,13 @@ public class ByteTokener extends Tokener {
     return msg;
   }
 
+  /**
+   * Encode value.
+   *
+   * @param value the value
+   * @param filter the filter
+   * @return the byte item
+   */
   public ByteItem encodeValue(Object value, MapEntity filter) {
     ByteEntity msgEntity = new ByteEntity();
     if (msgEntity.setValues(value)) {
@@ -315,6 +334,13 @@ public class ByteTokener extends Tokener {
     return entity;
   }
 
+  /**
+   * Decode value.
+   *
+   * @param entity the entity
+   * @param map the map
+   * @return the object
+   */
   public Object decodeValue(ByteEntity entity, MapEntity map) {
     if (entity == null) {
       return null;
@@ -512,12 +538,24 @@ public class ByteTokener extends Tokener {
     return null;
   }
 
+  /**
+   * With map.
+   *
+   * @param map the map
+   * @return the byte tokener
+   */
   @Override
   public ByteTokener withMap(SimpleMap map) {
     super.withMap(map);
     return this;
   }
 
+  /**
+   * Int to byte.
+   *
+   * @param value the value
+   * @return the byte[]
+   */
   public static final byte[] intToByte(int value) {
     byte[] result = new byte[4];
     result[0] = (byte) (value >>> 24);

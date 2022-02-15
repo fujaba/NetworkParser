@@ -25,8 +25,8 @@ THE SOFTWARE.
 */
 
 /**
- * Creator for Create ID in Creator
- * 
+ * Creator for Create ID in Creator.
+ *
  * @author Stefan Lindel
  */
 public interface SendableEntityCreatorIndexId extends SendableEntityCreator {

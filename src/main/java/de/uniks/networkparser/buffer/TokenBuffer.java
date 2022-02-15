@@ -24,11 +24,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-/** TokenBuffer 
- * @author Stefan Lindel */
+/**
+ * TokenBuffer
+ *
+ * @author Stefan Lindel
+ */
 public class TokenBuffer extends CharacterBuffer {
 	private int startToken = -1;
 
+	/**
+	 * Gets the token.
+	 *
+	 * @param defaultText the default text
+	 * @return the token
+	 */
 	public CharSequence getToken(CharSequence defaultText) {
 		if (this.startToken < 0) {
 			nextClean(false);

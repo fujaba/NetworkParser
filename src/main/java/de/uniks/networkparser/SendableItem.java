@@ -25,21 +25,45 @@ import java.beans.PropertyChangeSupport;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntity;
 
+/**
+ * The Class SendableItem.
+ *
+ * @author Stefan
+ */
 public abstract class SendableItem implements SendableEntity {
   protected PropertyChangeSupport listeners = null;
   /** The update listener. */
   protected ObjectCondition updateListener;
 
+  /**
+   * Adds the property change listener.
+   *
+   * @param propertyName the property name
+   * @param listener the listener
+   * @return true, if successful
+   */
   public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
     getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
     return true;
   }
 
+  /**
+   * Adds the property change listener.
+   *
+   * @param listener the listener
+   * @return true, if successful
+   */
   public boolean addPropertyChangeListener(PropertyChangeListener listener) {
     getPropertyChangeSupport().addPropertyChangeListener(listener);
     return true;
   }
 
+  /**
+   * Removes the property change listener.
+   *
+   * @param listener the listener
+   * @return true, if successful
+   */
   public boolean removePropertyChangeListener(PropertyChangeListener listener) {
     if (listeners != null) {
       listeners.removePropertyChangeListener(listener);
@@ -47,6 +71,13 @@ public abstract class SendableItem implements SendableEntity {
     return true;
   }
 
+  /**
+   * Removes the property change listener.
+   *
+   * @param property the property
+   * @param listener the listener
+   * @return true, if successful
+   */
   public boolean removePropertyChangeListener(String property, PropertyChangeListener listener) {
     if (listeners != null) {
       listeners.removePropertyChangeListener(property, listener);
@@ -61,6 +92,14 @@ public abstract class SendableItem implements SendableEntity {
     return listeners;
   }
 
+  /**
+   * Fire property change.
+   *
+   * @param propertyName the property name
+   * @param oldValue the old value
+   * @param newValue the new value
+   * @return true, if successful
+   */
   public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
     boolean change = false;
     if (oldValue == null) {
@@ -71,6 +110,15 @@ public abstract class SendableItem implements SendableEntity {
     return firePropertyChange(propertyName, oldValue, newValue, change);
   }
 
+  /**
+   * Fire property change.
+   *
+   * @param property the property
+   * @param oldValue the old value
+   * @param newValue the new value
+   * @param changed the changed
+   * @return true, if successful
+   */
   public boolean firePropertyChange(String property, Object oldValue, Object newValue, boolean changed) {
     if (!changed) {
       return false;
@@ -84,6 +132,14 @@ public abstract class SendableItem implements SendableEntity {
     return true;
   }
 
+  /**
+   * Fire property change.
+   *
+   * @param propertyName the property name
+   * @param oldValue the old value
+   * @param newValue the new value
+   * @return true, if successful
+   */
   public boolean firePropertyChange(String propertyName, int oldValue, int newValue) {
     if (oldValue == newValue) {
       return false;

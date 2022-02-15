@@ -18,6 +18,9 @@ public final class GenericGFPoly {
   private GenericGF field;
   private int[] coefficients;
 
+  /**
+   * Instantiates a new generic GF poly.
+   */
   public GenericGFPoly() {
 
   }
@@ -221,6 +224,11 @@ public final class GenericGFPoly {
     return new GenericGFPoly[] {quotient, remainder};
   }
 
+  /**
+   * To string.
+   *
+   * @return the string
+   */
   @Override
   public String toString() {
     StringBuilder result = new StringBuilder(8 * getDegree());

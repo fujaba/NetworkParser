@@ -25,10 +25,26 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Pos.
+ *
+ * @author Stefan
+ */
 public class Pos {
+	
+	/** The x. */
 	public int x = -1;
+	
+	/** The y. */
 	public int y = -1;
 
+	/**
+	 * Value of.
+	 *
+	 * @param tag the tag
+	 * @return the pos
+	 */
 	public static Pos valueOf(String tag) {
 		Pos pos = new Pos();
 		if (tag == null || tag.length() < 1) {
@@ -51,11 +67,21 @@ public class Pos {
 		return pos;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return toTag().toString();
 	}
 
+	/**
+	 * To tag.
+	 *
+	 * @return the character buffer
+	 */
 	public CharacterBuffer toTag() {
 		CharacterBuffer buffer = new CharacterBuffer();
 		int pos = x;
@@ -71,6 +97,13 @@ public class Pos {
 		return buffer;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @return the pos
+	 */
 	public static Pos create(int x, int y) {
 		Pos pos = new Pos();
 		pos.x = x;

@@ -35,11 +35,24 @@ import de.uniks.networkparser.list.SimpleIterator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class SQLTable.
+ *
+ * @author Stefan
+ */
 public class SQLTable extends SimpleList<Object> {
 	private String table;
 	private boolean simple;
 	private static NetworkParserLog logger;
 
+	/**
+	 * Creates the.
+	 *
+	 * @param executeQuery the execute query
+	 * @param statement the statement
+	 * @param dynamic the dynamic
+	 * @return the SQL table
+	 */
 	public static SQLTable create(ResultSet executeQuery, SQLStatement statement, boolean dynamic) {
 		AbstractArray<?> values = statement.getValues();
 		String[] properties = new String[values.size()];
@@ -53,6 +66,13 @@ public class SQLTable extends SimpleList<Object> {
 		return create(executeQuery, properties, statement.getTable(), dynamic);
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param executeQuery the execute query
+	 * @param creator the creator
+	 * @return the SQL table
+	 */
 	public static SQLTable create(ResultSet executeQuery, SendableEntityCreator creator) {
 		String tableName;
 		Object prototype = creator.getSendableInstance(true);
@@ -64,6 +84,12 @@ public class SQLTable extends SimpleList<Object> {
 		return create(executeQuery, creator.getProperties(), tableName, false);
 	}
 
+	/**
+	 * Gets the column value.
+	 *
+	 * @param column the column
+	 * @return the column value
+	 */
 	public SimpleList<Object> getColumnValue(String column) {
 		SimpleList<Object> values = new SimpleList<Object>();
 		if (this.simple) {
@@ -79,6 +105,15 @@ public class SQLTable extends SimpleList<Object> {
 		return values;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param executeQuery the execute query
+	 * @param properties the properties
+	 * @param table the table
+	 * @param isDynamicResult the is dynamic result
+	 * @return the SQL table
+	 */
 	public static SQLTable create(ResultSet executeQuery, String[] properties, String table, boolean isDynamicResult) {
 		SQLTable sqlTable = new SQLTable();
 		sqlTable.withTable(table);
@@ -116,14 +151,30 @@ public class SQLTable extends SimpleList<Object> {
 		return this;
 	}
 
+	/**
+	 * Gets the table.
+	 *
+	 * @return the table
+	 */
 	public String getTable() {
 		return this.table;
 	}
 
+	/**
+	 * Checks if is simple.
+	 *
+	 * @return true, if is simple
+	 */
 	public boolean isSimple() {
 		return simple;
 	}
 
+	/**
+	 * With simple.
+	 *
+	 * @param value the value
+	 * @return the SQL table
+	 */
 	public SQLTable withSimple(boolean value) {
 		this.simple = value;
 		return this;

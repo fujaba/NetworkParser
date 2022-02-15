@@ -24,6 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Enum FieldTyp.
+ *
+ * @author Stefan
+ */
 public enum FieldTyp {
 	ASSOC(1), DATE(2), CHECKBOX(3), COMBOBOX(4), DOUBLE(5), INTEGER(6), TEXT(7), PASSWORD(8), VALUEFROMDROPDOWNLIST(9);
 
@@ -33,10 +38,20 @@ public enum FieldTyp {
 		this.setValue(value);
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public int getValue() {
 		return value;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param value the new value
+	 */
 	public void setValue(int value) {
 		this.value = value;
 	}

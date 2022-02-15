@@ -7,13 +7,27 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * The Class OCLParser.
+ *
+ * @author Stefan
+ */
 public class OCLParser implements ObjectCondition {
+	
+	/** The Constant INV. */
 	/* context Meeting inv: self.end > self.start */
 	public static final String INV = "inv:";
 	private IdMap map;
 	private SendableEntityCreator creator;
 	private ObjectCondition inv;
 
+	/**
+	 * Creates the.
+	 *
+	 * @param sequence the sequence
+	 * @param map the map
+	 * @return the OCL parser
+	 */
 	public static OCLParser create(CharSequence sequence, IdMap map) {
 		OCLParser parser = new OCLParser();
 		parser.withMap(map);
@@ -39,6 +53,12 @@ public class OCLParser implements ObjectCondition {
 		return parser;
 	}
 
+	/**
+	 * With inv.
+	 *
+	 * @param parsingElement the parsing element
+	 * @return the OCL parser
+	 */
 	public OCLParser withInv(ObjectCondition parsingElement) {
 		this.inv = parsingElement;
 		return this;
@@ -85,11 +105,23 @@ public class OCLParser implements ObjectCondition {
 		return creator;
 	}
 
+	/**
+	 * With map.
+	 *
+	 * @param map the map
+	 * @return the OCL parser
+	 */
 	public OCLParser withMap(IdMap map) {
 		this.map = map;
 		return this;
 	}
 
+	/**
+	 * With creator.
+	 *
+	 * @param className the class name
+	 * @return the OCL parser
+	 */
 	public OCLParser withCreator(String className) {
 		if (this.map != null && className != null) {
 			className = StringUtil.upFirstChar(className);
@@ -98,11 +130,23 @@ public class OCLParser implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * With creator.
+	 *
+	 * @param creator the creator
+	 * @return the OCL parser
+	 */
 	public OCLParser withCreator(SendableEntityCreator creator) {
 		this.creator = creator;
 		return this;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		Object item;

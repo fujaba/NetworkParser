@@ -25,6 +25,11 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class DataTypeSet.
+ *
+ * @author Stefan
+ */
 public class DataTypeSet extends DataType {
 	private DataType generic;
 
@@ -38,10 +43,21 @@ public class DataTypeSet extends DataType {
 		return this;
 	}
 
+	/**
+	 * Gets the generic.
+	 *
+	 * @return the generic
+	 */
 	public DataType getGeneric() {
 		return generic;
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @param shortName the short name
+	 * @return the name
+	 */
 	@Override
 	public String getName(boolean shortName) {
 		return getInternName(shortName, false);
@@ -55,10 +71,23 @@ public class DataTypeSet extends DataType {
 		return this.value.getName(shortName) + "<" + generic.getInternName(shortName, primitivAllow) + ">";
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param genericType the generic type
+	 * @return the data type set
+	 */
 	public static DataTypeSet create(Object genericType) {
 		return new DataTypeSet().withGeneric(DataType.create(genericType));
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param container the container
+	 * @param genericType the generic type
+	 * @return the data type set
+	 */
 	public static DataTypeSet create(Clazz container, Object genericType) {
 		DataTypeSet list = new DataTypeSet().withGeneric(DataType.create(genericType));
 		if (container != null) {
@@ -67,6 +96,12 @@ public class DataTypeSet extends DataType {
 		return list;
 	}
 
+	/**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (super.equals(obj) == false) {
@@ -84,17 +119,34 @@ public class DataTypeSet extends DataType {
 		return ((DataTypeSet) obj).getGeneric().equals(this.generic);
 	}
 
+	/**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
 
+	/**
+	 * With external.
+	 *
+	 * @param external the external
+	 * @return the data type set
+	 */
 	@Override
 	public DataTypeSet withExternal(boolean external) {
 		super.withExternal(external);
 		return this;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param value the value
+	 * @return the value
+	 */
 	public Object getValue(String value) {
 		if (PROPERTY_NAME.equals(value)) {
 			return getGeneric().getName(true);
@@ -108,6 +160,12 @@ public class DataTypeSet extends DataType {
 		return super.getValue(value);
 	}
 	
+	/**
+	 * With array.
+	 *
+	 * @param value the value
+	 * @return the data type set
+	 */
 	@Override
 	public DataTypeSet withArray(boolean value) {
 		super.withArray(value);

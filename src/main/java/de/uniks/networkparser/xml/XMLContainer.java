@@ -26,19 +26,40 @@ THE SOFTWARE.
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class XMLContainer.
+ *
+ * @author Stefan
+ */
 public class XMLContainer extends XMLEntity {
 	private SimpleList<String> prefix = new SimpleList<String>();
 
+	/**
+	 * With prefix.
+	 *
+	 * @param value the value
+	 * @return the XML container
+	 */
 	public XMLContainer withPrefix(String value) {
 		this.prefix.add(value);
 		return this;
 	}
 
+	/**
+	 * With standard prefix.
+	 *
+	 * @return the XML container
+	 */
 	public XMLContainer withStandardPrefix() {
 		withPrefix("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		return this;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -50,6 +71,12 @@ public class XMLContainer extends XMLEntity {
 		return sb.toString();
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param indentFactor the indent factor
+	 * @return the string
+	 */
 	@Override
 	public String toString(int indentFactor) {
 		StringBuilder sb = new StringBuilder();

@@ -34,15 +34,28 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /**
- * Change Model Message
+ * Change Model Message.
+ *
  * @author Stefan Lindel
  */
 public class ChangeMessage extends ReceivingTimerTask {
+	
+	/** The Constant PROPERTY_TYPE. */
 	public static final String PROPERTY_TYPE = "change";
+	
+	/** The Constant PROPERTY_ID. */
 	public static final String PROPERTY_ID = "changeid";
+	
+	/** The Constant PROPERTY_PROPERTY. */
 	public static final String PROPERTY_PROPERTY = "property";
+	
+	/** The Constant PROPERTY_OLD. */
 	public static final String PROPERTY_OLD = "old";
+	
+	/** The Constant PROPERTY_NEW. */
 	public static final String PROPERTY_NEW = "new";
+	
+	/** The Constant PROPERTY_CHANGECLASS. */
 	public static final String PROPERTY_CHANGECLASS = "changeclass";
 
 	private Object entity;
@@ -52,20 +65,43 @@ public class ChangeMessage extends ReceivingTimerTask {
 	private Object oldValue;
 	private Object newValue;
 
+	/**
+	 * Instantiates a new change message.
+	 */
 	public ChangeMessage() {
 		ChangeMessage.props.add(PROPERTY_ID, PROPERTY_PROPERTY, PROPERTY_OLD, PROPERTY_NEW, PROPERTY_CHANGECLASS);
 	}
 
+	/**
+	 * With entity.
+	 *
+	 * @param value the value
+	 * @return the change message
+	 */
 	public ChangeMessage withEntity(Object value) {
 		this.entity = value;
 		return this;
 	}
 
+	/**
+	 * With filter.
+	 *
+	 * @param filter the filter
+	 * @return the change message
+	 */
 	public ChangeMessage withFilter(Filter filter) {
 		this.filter = filter;
 		return this;
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param property the property
+	 * @param oldValue the old value
+	 * @param newValue the new value
+	 * @return the change message
+	 */
 	public ChangeMessage withValue(String property, Object oldValue, Object newValue) {
 		this.property = property;
 		this.oldValue = oldValue;
@@ -73,6 +109,12 @@ public class ChangeMessage extends ReceivingTimerTask {
 		return this;
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param event the event
+	 * @return the change message
+	 */
 	public ChangeMessage withValue(SimpleEvent event) {
 		this.property = event.getPropertyName();
 		this.oldValue = event.getOldValue();
@@ -81,6 +123,11 @@ public class ChangeMessage extends ReceivingTimerTask {
 		return this;
 	}
 
+	/**
+	 * Gets the message.
+	 *
+	 * @return the message
+	 */
 	@Override
 	public BaseItem getMessage() {
 		if (msg == null && space != null) {
@@ -91,10 +138,20 @@ public class ChangeMessage extends ReceivingTimerTask {
 		return super.getMessage();
 	}
 
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * Run task.
+	 *
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean runTask() {
 		if (this.id == null || this.space == null) {
@@ -128,6 +185,13 @@ public class ChangeMessage extends ReceivingTimerTask {
 		return super.runTask();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (attribute == null || entity instanceof ChangeMessage == false) {
@@ -158,6 +222,15 @@ public class ChangeMessage extends ReceivingTimerTask {
 		return super.getValue(entity, attribute);
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (attribute == null || entity instanceof ChangeMessage == false) {
@@ -199,24 +272,50 @@ public class ChangeMessage extends ReceivingTimerTask {
 		}
 	}
 
+	/**
+	 * Gets the entity.
+	 *
+	 * @return the entity
+	 */
 	public Object getEntity() {
 		return entity;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public ChangeMessage getSendableInstance(boolean prototyp) {
 		return new ChangeMessage().withFilter(filter);
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	@Override
 	public String getType() {
 		return PROPERTY_TYPE;
 	}
 
+	/**
+	 * Gets the new value.
+	 *
+	 * @return the new value
+	 */
 	public Object getNewValue() {
 		return newValue;
 	}
 
+	/**
+	 * Gets the property.
+	 *
+	 * @return the property
+	 */
 	public String getProperty() {
 		return property;
 	}

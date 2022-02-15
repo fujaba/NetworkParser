@@ -10,12 +10,30 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class YAMLTokener.
+ *
+ * @author Stefan
+ */
 public class YAMLTokener extends Tokener {
+	
+	/** The Constant DASH. */
 	public static final char DASH = '-';
+	
+	/** The Constant STOPCHARS. */
 	public static final String STOPCHARS = "=# ";
+	
+	/** The Constant RETURN. */
 	public static final char RETURN = '\n';
 	private SimpleKeyValueList<Object, SimpleKeyValueList<String, SimpleList<String>>> refs;
 
+	/**
+	 * Parses the to entity.
+	 *
+	 * @param entity the entity
+	 * @param buffer the buffer
+	 * @return the entity list
+	 */
 	@Override
 	public EntityList parseToEntity(BaseItem entity, Object buffer) {
 		if (buffer != null && buffer instanceof Buffer && entity instanceof EntityList) {
@@ -97,8 +115,8 @@ public class YAMLTokener extends Tokener {
 	}
 
 	/**
-	 * Decoding YAML FILE
-	 * 
+	 * Decoding YAML FILE.
+	 *
 	 * @param yaml Yaml Text
 	 * @return decoded Value
 	 * 
@@ -112,7 +130,7 @@ public class YAMLTokener extends Tokener {
 		CharacterBuffer buffer = new CharacterBuffer().with(yaml);
 		Object root = null;
 		refs = new SimpleKeyValueList<Object, SimpleKeyValueList<String, SimpleList<String>>>();
-		while (buffer.isEnd() == false) {
+		while (!buffer.isEnd()) {
 			if (DASH != buffer.getCurrentChar()) {
 				buffer.printError("'-' expected");
 				break;
@@ -173,7 +191,7 @@ public class YAMLTokener extends Tokener {
 			currentToken = buffer.nextString();
 		}
 
-		while (currentToken.length() > 0 && currentToken.equals("-") == false) {
+		while (currentToken.length() > 0 && !currentToken.equals("-")) {
 			String objectId = currentToken.rtrim(COLON).toString();
 			currentToken = buffer.nextString();
 
@@ -185,8 +203,7 @@ public class YAMLTokener extends Tokener {
 
 			/* column values */
 			int colNum = 0;
-			while (currentToken.length() > 0 && !currentToken.endsWith(":", true)
-					&& currentToken.equals("-") == false) {
+			while (currentToken.length() > 0 && !currentToken.endsWith(":", true) && !currentToken.equals("-")) {
 				String attrName = colNameList.get(colNum);
 
 				if (currentToken.startsWith("[")) {
@@ -202,7 +219,7 @@ public class YAMLTokener extends Tokener {
 						if (currentToken.endsWith("]", true)) {
 							value = currentToken.substring(0, currentToken.length() - 1);
 						}
-						if (value.trim().equals("") == false ) {
+						if (!value.isEmpty()) {
 							setValue(creator, obj, attrName, value);
 						}
 					}
@@ -235,11 +252,11 @@ public class YAMLTokener extends Tokener {
 		}
 
 		/* read attributes */
-		while (currentToken.equals("") == false && !currentToken.equals("-")) {
+		while (!currentToken.equals("") && !currentToken.equals("-")) {
 			String attrName = currentToken.rtrim(':').toString();
 			currentToken = buffer.nextString();
 			/* many values */
-			while (currentToken.equals("") == false && !currentToken.endsWith(":", true) && !currentToken.equals("-")) {
+			while (!currentToken.equals("") && !currentToken.endsWith(":", true) && !currentToken.equals("-")) {
 				String attrValue = currentToken.toString();
 				setValue(creator, obj, attrName, attrValue);
 				currentToken = buffer.nextString();

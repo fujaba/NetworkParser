@@ -8,8 +8,11 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.Converter;
 
-/** ByteConverter 
- * @author Stefan Lindel */
+/**
+ * Converter for Byte To String or HEX.
+ *
+ * @author Stefan Lindel
+ */
 public class ByteConverter implements Converter {
     /** To simple string.
      * @param values the bytes
@@ -26,11 +29,23 @@ public class ByteConverter implements Converter {
         return returnValue.toString();
     }
 
+	/**
+	 * To string.
+	 *
+	 * @param values the values
+	 * @return the string
+	 */
 	public String toString(byte... values) {
 		ByteBuffer buffer = new ByteBuffer().with(values);
 		return this.toString(buffer);
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @return the string
+	 */
 	@Override
 	public String encode(BaseItem entity) {
 		ByteBuffer buffer;

@@ -34,6 +34,8 @@ public class Deep implements SendableEntityCreator, ObjectCondition {
   private int value;
 
   /**
+   * With depth.
+   *
    * @param value The new Value
    * @return Deep Instance
    */
@@ -42,11 +44,21 @@ public class Deep implements SendableEntityCreator, ObjectCondition {
     return this;
   }
 
-  /** @return The Current Deep Value */
+  /**
+   * Gets the depth.
+   *
+   * @return The Current Deep Value
+   */
   public int getDepth() {
     return value;
   }
 
+  /**
+   * Update.
+   *
+   * @param evt the evt
+   * @return true, if successful
+   */
   @Override
   public boolean update(Object evt) {
     if (evt instanceof SimpleEvent) {
@@ -56,7 +68,7 @@ public class Deep implements SendableEntityCreator, ObjectCondition {
   }
 
   /**
-   * Create a new DeepFilter and return a new Instance
+   * Create a new DeepFilter and return a new Instance.
    *
    * @param value Value of depth
    * @return a new depth Instance
@@ -65,16 +77,34 @@ public class Deep implements SendableEntityCreator, ObjectCondition {
     return new Deep().withDepth(value);
   }
 
+  /**
+   * Gets the properties.
+   *
+   * @return the properties
+   */
   @Override
   public String[] getProperties() {
     return new String[] {DEPTH};
   }
 
+  /**
+   * Gets the sendable instance.
+   *
+   * @param prototype the prototype
+   * @return the sendable instance
+   */
   @Override
   public Object getSendableInstance(boolean prototype) {
     return new Deep();
   }
 
+  /**
+   * Gets the value.
+   *
+   * @param entity the entity
+   * @param attribute the attribute
+   * @return the value
+   */
   @Override
   public Object getValue(Object entity, String attribute) {
     if (DEPTH.equalsIgnoreCase(attribute)) {
@@ -83,6 +113,15 @@ public class Deep implements SendableEntityCreator, ObjectCondition {
     return null;
   }
 
+  /**
+   * Sets the value.
+   *
+   * @param entity the entity
+   * @param attribute the attribute
+   * @param value the value
+   * @param type the type
+   * @return true, if successful
+   */
   @Override
   public boolean setValue(Object entity, String attribute, Object value, String type) {
     if (DEPTH.equalsIgnoreCase(attribute)) {

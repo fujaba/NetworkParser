@@ -36,7 +36,20 @@ import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.json.JsonObject;
 
+/**
+ * The Class JDLTokener.
+ *
+ * @author Stefan
+ */
 public class JDLTokener extends Tokener {
+	
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @param map the map
+	 * @return the base item
+	 */
 	@Override
 	public BaseItem encode(Object entity, MapEntity map) {
 		if (entity instanceof GraphList) {
@@ -64,8 +77,8 @@ public class JDLTokener extends Tokener {
 
 	/**
 	 * {@code
-	 * 		entity <entity name> { <field name> <type> [<validation>*] } }
-	 * 
+	 * 		entity <entity name> { <field name> <type> [<validation>*] } }.
+	 *
 	 * @param item a Clazz for Transform
 	 * @return a new TextEntity
 	 */
@@ -93,8 +106,8 @@ public class JDLTokener extends Tokener {
 	/**
 	 * Enocding Attribute {@code
 	 * 		<field name> <type> [<validation>*]
-	 * }
-	 * 
+	 * }.
+	 *
 	 * @param item The Attribute to Convert
 	 * @return a new TextEntity
 	 */
@@ -111,8 +124,8 @@ public class JDLTokener extends Tokener {
 	 * Encoding RelationShip {@code
 	 * 		relationship (OneToMany | ManyToOne | OneToOne | ManyToMany) { <from
 	 * entity>[{<relationship name>[(<display field>)]}] to <to
-	 * entity>[{<relationship name>[(<display field>)]}] } }
-	 * 
+	 * entity>[{<relationship name>[(<display field>)]}] } }.
+	 *
 	 * @param assoc a Association
 	 * @return a new TextEntity
 	 */
@@ -133,6 +146,12 @@ public class JDLTokener extends Tokener {
 		return relationship;
 	}
 
+	/**
+	 * Encode relationship clazz.
+	 *
+	 * @param assoc the assoc
+	 * @return the text entity
+	 */
 	public TextEntity encodeRelationshipClazz(Association assoc) {
 		TextEntity result = new TextEntity();
 		if (assoc == null || assoc.getClazz() == null) {

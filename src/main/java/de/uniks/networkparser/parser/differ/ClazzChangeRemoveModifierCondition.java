@@ -6,8 +6,16 @@ import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.GraphMatcher;
 
+/**
+ * The Class ClazzChangeRemoveModifierCondition.
+ *
+ * @author Stefan
+ */
 public class ClazzChangeRemoveModifierCondition extends MatchCondition {
 
+	/**
+	 * Instantiates a new clazz change remove modifier condition.
+	 */
 	public ClazzChangeRemoveModifierCondition() {
 		super(true);
 	}
@@ -74,6 +82,11 @@ public class ClazzChangeRemoveModifierCondition extends MatchCondition {
 		return true;
 	}
 
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
 	@Override
 	public String getAction() {
 		return SendableEntityCreator.REMOVE;

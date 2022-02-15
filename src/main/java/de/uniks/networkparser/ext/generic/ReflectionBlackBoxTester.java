@@ -56,15 +56,38 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class ReflectionBlackBoxTester.
+ *
+ * @author Stefan
+ */
 public class ReflectionBlackBoxTester {
+	
+	/** The Constant TYPE_NULLVALUE. */
 	public static final String TYPE_NULLVALUE = "null";
+	
+	/** The Constant TYPE_MINVALUE. */
 	public static final String TYPE_MINVALUE = "min";
+	
+	/** The Constant TYPE_MIDDLEVALUE. */
 	public static final String TYPE_MIDDLEVALUE = "middle";
+	
+	/** The Constant TYPE_MAXVALUE. */
 	public static final String TYPE_MAXVALUE = "max";
+	
+	/** The Constant TYPE_RANDOMVALUE. */
 	public static final String TYPE_RANDOMVALUE = "random";
+	
+	/** The Constant TYPE_CUSTOMVALUE. */
 	public static final String TYPE_CUSTOMVALUE = "custom";
+	
+	/** The Constant BLACKBOXTESTER. */
 	public static final String BLACKBOXTESTER = "backboxtest";
+	
+	/** The Constant INSTANCE. */
 	public static final String INSTANCE = "instance";
+	
+	/** The Constant DEFAULTMETHODS. */
 	public static final String DEFAULTMETHODS = "";
 
 	private SimpleSet<String> tests = new SimpleSet<String>().with(TYPE_NULLVALUE, TYPE_MINVALUE, TYPE_RANDOMVALUE,
@@ -84,6 +107,11 @@ public class ReflectionBlackBoxTester {
 	private int breakByErrorCount = -1;
 	private boolean overrideLogger;
 
+	/**
+	 * Main tester.
+	 *
+	 * @param args the args
+	 */
 	public void mainTester(String[] args) {
 		Object junitCore = ReflectionLoader.newInstanceStr("org.junit.runner.JUnitCore");
 		SimpleSet<Class<?>> testClasses = new SimpleSet<Class<?>>();
@@ -144,6 +172,9 @@ public class ReflectionBlackBoxTester {
 		}
 	}
 
+	/**
+	 * Instantiates a new reflection black box tester.
+	 */
 	public ReflectionBlackBoxTester() {
 		ignoreMethods = new SimpleKeyValueList<String, SimpleSet<String>>();
 
@@ -162,6 +193,13 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(JarValidator.class);
 	}
 
+	/**
+	 * With ignore clazzes.
+	 *
+	 * @param metaClass the meta class
+	 * @param methods the methods
+	 * @return the reflection black box tester
+	 */
 	public ReflectionBlackBoxTester withIgnoreClazzes(Class<?> metaClass, String... methods) {
 		if (metaClass == null) {
 			return this;
@@ -176,6 +214,12 @@ public class ReflectionBlackBoxTester {
 		return this;
 	}
 
+	/**
+	 * With ignore clazzes.
+	 *
+	 * @param values the values
+	 * @return the reflection black box tester
+	 */
 	public ReflectionBlackBoxTester withIgnoreClazzes(String... values) {
 		if (values == null) {
 			return this;
@@ -204,11 +248,21 @@ public class ReflectionBlackBoxTester {
 		return this;
 	}
 
+	/**
+	 * Checks if is tester.
+	 *
+	 * @return true, if is tester
+	 */
 	public static final boolean isTester() {
 		String property = System.getProperty("Tester");
 		return property != null;
 	}
 
+	/**
+	 * Sets the tester.
+	 *
+	 * @return true, if successful
+	 */
 	public static final boolean setTester() {
 		String property = System.getProperty("Tester");
 		if (property == null || property.length() < 1) {
@@ -216,6 +270,12 @@ public class ReflectionBlackBoxTester {
 		}
 		return true;
 	}
+	
+	/**
+	 * Clear tester.
+	 *
+	 * @return true, if successful
+	 */
 	public static final boolean clearTester() {
 		String property = System.getProperty("Tester");
 		if (property != null && property.length() >0) {
@@ -224,6 +284,12 @@ public class ReflectionBlackBoxTester {
 		return true;
 	}
 
+	/**
+	 * Execute.
+	 *
+	 * @param path the path
+	 * @return true, if successful
+	 */
 	public boolean execute(String... path) {
 		try {
 			if (path != null && path.length > 0) {
@@ -235,6 +301,19 @@ public class ReflectionBlackBoxTester {
 		return false;
 	}
 
+	/**
+	 * Test.
+	 *
+	 * @param packageName the package name
+	 * @param logger the logger
+	 * @return true, if successful
+	 * @throws ClassNotFoundException the class not found exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws InstantiationException the instantiation exception
+	 * @throws IllegalAccessException the illegal access exception
+	 * @throws IllegalArgumentException the illegal argument exception
+	 * @throws InvocationTargetException the invocation target exception
+	 */
 	public boolean test(String packageName, NetworkParserLog logger) throws ClassNotFoundException, IOException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String tester = Os.getTester();
@@ -303,10 +382,24 @@ public class ReflectionBlackBoxTester {
 		return true;
 	}
 
+	/**
+	 * Gets the methods.
+	 *
+	 * @param className the class name
+	 * @return the methods
+	 */
 	public SimpleSet<String> getMethods(String className) {
 		return this.ignoreMethods.get(className);
 	}
 
+	/**
+	 * Test class.
+	 *
+	 * @param obj the obj
+	 * @param clazz the clazz
+	 * @param ignoreMethods the ignore methods
+	 * @return true, if successful
+	 */
 	public boolean testClass(Object obj, Class<?> clazz, SimpleSet<String> ignoreMethods) {
 		boolean reg = false;
 		Set<Thread> oldThreads = Thread.getAllStackTraces().keySet();
@@ -461,6 +554,12 @@ public class ReflectionBlackBoxTester {
 		return true;
 	}
 
+	/**
+	 * With test.
+	 *
+	 * @param value the value
+	 * @return the reflection black box tester
+	 */
 	public ReflectionBlackBoxTester withTest(String value) {
 		this.tests.clear();
 		this.tests.add(value);
@@ -515,6 +614,12 @@ public class ReflectionBlackBoxTester {
 		return true;
 	}
 
+	/**
+	 * Gets the paramto string.
+	 *
+	 * @param params the params
+	 * @return the paramto string
+	 */
 	public String getParamtoString(Object[] params) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("(");
@@ -538,11 +643,22 @@ public class ReflectionBlackBoxTester {
 		return sb.toString();
 	}
 	
+	/**
+	 * Break by error count.
+	 *
+	 * @param number the number
+	 * @return the reflection black box tester
+	 */
 	public ReflectionBlackBoxTester breakByErrorCount(int number) {
 		this.breakByErrorCount = number;
 		return this;
 	}
 
+	/**
+	 * Prints the result.
+	 *
+	 * @param loglevel the loglevel
+	 */
 	public void printResult(int loglevel) {
 		/* Write out all Results */
 		String prefix = "Errors: ";
@@ -558,12 +674,30 @@ public class ReflectionBlackBoxTester {
 
 	}
 
+	/**
+	 * Output.
+	 *
+	 * @param owner the owner
+	 * @param message the message
+	 * @param logger the logger
+	 * @param logLevel the log level
+	 * @param e the e
+	 */
 	public void output(Object owner, String message, NetworkParserLog logger, int logLevel, Exception e) {
 		if (logger != null) {
 			logger.log(owner, "output", message, logLevel, e);
 		}
 	}
 
+	/**
+	 * Gets the parameters.
+	 *
+	 * @param m the m
+	 * @param parameters the parameters
+	 * @param type the type
+	 * @param owner the owner
+	 * @return the parameters
+	 */
 	public static Object[] getParameters(Executable m, Class<?>[] parameters, String type, Object owner) {
 		if (parameters == null) {
 			return new Object[0];
@@ -697,10 +831,21 @@ public class ReflectionBlackBoxTester {
 		return null;
 	}
 
+	/**
+	 * Gets the custom.
+	 *
+	 * @return the custom
+	 */
 	public ObjectCondition getCustom() {
 		return custom;
 	}
 
+	/**
+	 * With custom.
+	 *
+	 * @param condition the condition
+	 * @return the reflection black box tester
+	 */
 	public ReflectionBlackBoxTester withCustom(ObjectCondition condition) {
 		this.custom = condition;
 		return this;
@@ -886,21 +1031,45 @@ public class ReflectionBlackBoxTester {
 		return "";
 	}
 
+	/**
+	 * With logger.
+	 *
+	 * @param logger the logger
+	 * @return the reflection black box tester
+	 */
 	public ReflectionBlackBoxTester withLogger(NetworkParserLog logger) {
 		this.logger = logger;
 		return this;
 	}
 
+	/**
+	 * With disable class error.
+	 *
+	 * @param value the value
+	 * @return the reflection black box tester
+	 */
 	public ReflectionBlackBoxTester withDisableClassError(boolean value) {
 		this.ignoreClassError = value;
 		return this;
 	}
 
+	/**
+	 * With disable simple exception.
+	 *
+	 * @param value the value
+	 * @return the reflection black box tester
+	 */
 	public ReflectionBlackBoxTester withDisableSimpleException(boolean value) {
 		this.ignoreSimpleException = value;
 		return this;
 	}
 	
+	/**
+	 * With override logger.
+	 *
+	 * @param value the value
+	 * @return the reflection black box tester
+	 */
 	public ReflectionBlackBoxTester withOverrideLogger(boolean value) {
 		this.overrideLogger = value;
 		return this;

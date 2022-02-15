@@ -29,31 +29,68 @@ import de.uniks.networkparser.ext.io.SocketMessage;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 
+/**
+ * The Class NodeProxyMessages.
+ *
+ * @author Stefan
+ */
 public class NodeProxyMessages extends NodeProxy {
+	
+	/** The Constant EVENT_CONNECTION. */
 	public static final String EVENT_CONNECTION = "connection";
+	
+	/** The Constant BODY. */
 	public static final String BODY = "body";
+	
+	/** The Constant MESSAGE. */
 	public static final String MESSAGE = "message";
+	
+	/** The Constant PROPERTY_URL. */
 	public static final String PROPERTY_URL = "url";
+	
+	/** The Constant PROPERTY_PORT. */
 	public static final String PROPERTY_PORT = "port";
+	
+	/** The Constant PROPERTY_ACCOUNT. */
 	public static final String PROPERTY_ACCOUNT = "account";
+	
+	/** The Constant PROPERTY_PASSWORD. */
 	public static final String PROPERTY_PASSWORD = "password";
+	
+	/** The Constant PROPERTY_MESSAGETYPE. */
 	public static final String PROPERTY_MESSAGETYPE = "msgtype";
 
 	private MessageSession connection = null;
 	private String password;
 	private String msgType = MessageSession.TYPE_EMAIL;
 
+	/**
+	 * Instantiates a new node proxy messages.
+	 */
 	public NodeProxyMessages() {
 		this.property.addAll(PROPERTY_URL, PROPERTY_PORT, PROPERTY_ACCOUNT, PROPERTY_MESSAGETYPE);
 		this.propertyUpdate.addAll(PROPERTY_URL, PROPERTY_PORT, PROPERTY_MESSAGETYPE);
 		this.propertyInfo.addAll(PROPERTY_URL, PROPERTY_PORT, PROPERTY_ACCOUNT, PROPERTY_MESSAGETYPE);
 	}
 
+	/**
+	 * Compare to.
+	 *
+	 * @param o the o
+	 * @return the int
+	 */
 	@Override
 	public int compareTo(NodeProxy o) {
 		return 0;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param element the element
+	 * @param attrName the attr name
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object element, String attrName) {
 		if (element instanceof NodeProxyMessages) {
@@ -77,6 +114,15 @@ public class NodeProxyMessages extends NodeProxy {
 		return super.getValue(element, attrName);
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param element the element
+	 * @param attrName the attr name
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object element, String attrName, Object value, String type) {
 		if (element instanceof NodeProxyMessages) {
@@ -114,6 +160,11 @@ public class NodeProxyMessages extends NodeProxy {
 		return msgType;
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		if (this.connection != null) {
@@ -122,6 +173,11 @@ public class NodeProxyMessages extends NodeProxy {
 		return null;
 	}
 
+	/**
+	 * Close.
+	 *
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean close() {
 		if (connection != null) {
@@ -138,6 +194,11 @@ public class NodeProxyMessages extends NodeProxy {
 		return true;
 	}
 
+	/**
+	 * Checks if is sendable.
+	 *
+	 * @return true, if is sendable
+	 */
 	@Override
 	public boolean isSendable() {
 		if (this.connection != null) {
@@ -146,11 +207,22 @@ public class NodeProxyMessages extends NodeProxy {
 		return false;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new NodeProxyMessages();
 	}
 
+	/**
+	 * Connect.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean connect() {
 		if (this.connection != null) {
 			this.connection.withType(this.msgType);
@@ -160,6 +232,12 @@ public class NodeProxyMessages extends NodeProxy {
 		return false;
 	}
 
+	/**
+	 * With sender.
+	 *
+	 * @param name the name
+	 * @return the node proxy messages
+	 */
 	public NodeProxyMessages withSender(String name) {
 		if (this.connection == null) {
 			this.connection = getNewConnection();
@@ -176,6 +254,12 @@ public class NodeProxyMessages extends NodeProxy {
 		return new SocketMessage(this.name).withSubject("Message from PetaF");
 	}
 
+	/**
+	 * With port.
+	 *
+	 * @param value the value
+	 * @return the node proxy messages
+	 */
 	public NodeProxyMessages withPort(Integer value) {
 		if (this.connection == null) {
 			this.connection = getNewConnection();
@@ -184,6 +268,11 @@ public class NodeProxyMessages extends NodeProxy {
 		return this;
 	}
 
+	/**
+	 * Gets the port.
+	 *
+	 * @return the port
+	 */
 	public int getPort() {
 		if (this.connection != null) {
 			return this.connection.getPort();
@@ -191,6 +280,12 @@ public class NodeProxyMessages extends NodeProxy {
 		return -1;
 	}
 
+	/**
+	 * With url.
+	 *
+	 * @param value the value
+	 * @return the node proxy messages
+	 */
 	public NodeProxyMessages withUrl(String value) {
 		if (this.connection == null) {
 			this.connection = getNewConnection();
@@ -199,6 +294,11 @@ public class NodeProxyMessages extends NodeProxy {
 		return this;
 	}
 
+	/**
+	 * Gets the url.
+	 *
+	 * @return the url
+	 */
 	public String getUrl() {
 		if (this.connection != null) {
 			return this.connection.getUrl();
@@ -207,6 +307,12 @@ public class NodeProxyMessages extends NodeProxy {
 
 	}
 
+	/**
+	 * With password.
+	 *
+	 * @param password the password
+	 * @return the node proxy messages
+	 */
 	public NodeProxyMessages withPassword(String password) {
 		this.password = password;
 		return this;
@@ -236,6 +342,12 @@ public class NodeProxyMessages extends NodeProxy {
 		return success;
 	}
 	
+	/**
+	 * With TLS.
+	 *
+	 * @param value the value
+	 * @return the node proxy messages
+	 */
 	public NodeProxyMessages withTLS(boolean value) {
 		if(this.connection != null) {
 			this.connection.withTLS(value);
@@ -243,6 +355,12 @@ public class NodeProxyMessages extends NodeProxy {
 		return this;
 	}
 	
+	/**
+	 * Send E mail.
+	 *
+	 * @param msg the msg
+	 * @return true, if successful
+	 */
 	public boolean sendEMail(SocketMessage msg) {
 		boolean success = connection.sending(msg, this.password);
 		if (success) {
@@ -252,6 +370,12 @@ public class NodeProxyMessages extends NodeProxy {
 		return success;
 	}
 
+	/**
+	 * With logger.
+	 *
+	 * @param value the value
+	 * @return the node proxy messages
+	 */
 	public NodeProxyMessages withLogger(NetworkParserLog value) {
 		if(this.connection != null) {
 			this.connection.withLogger(value);

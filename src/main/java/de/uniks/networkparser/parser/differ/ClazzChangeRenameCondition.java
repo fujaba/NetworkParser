@@ -6,8 +6,16 @@ import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.GraphMatcher;
 
+/**
+ * The Class ClazzChangeRenameCondition.
+ *
+ * @author Stefan
+ */
 public class ClazzChangeRenameCondition extends MatchCondition {
 
+	/**
+	 * Instantiates a new clazz change rename condition.
+	 */
 	public ClazzChangeRenameCondition() {
 		super(true);
 	}
@@ -48,6 +56,11 @@ public class ClazzChangeRenameCondition extends MatchCondition {
 		return true;
 	}
 
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
 	@Override
 	public String getAction() {
 		return SendableEntityCreator.UPDATE;

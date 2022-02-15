@@ -29,11 +29,26 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class TextDiff.
+ *
+ * @author Stefan
+ */
 public class TextDiff {
+	
+	/** The Constant NEW. */
 	public static final char NEW = '+';
+	
+	/** The Constant NONE. */
 	public static final char NONE = ' ';
+	
+	/** The Constant CHANGE. */
 	public static final char CHANGE = '#';
+	
+	/** The Constant REMOVE. */
 	public static final char REMOVE = '-';
+	
+	/** The Constant TO. */
 	public static final String TO = "->";
 
 	private String key;
@@ -42,6 +57,14 @@ public class TextDiff {
 	private Object right;
 	private SimpleList<TextDiff> children;
 
+	/**
+	 * With.
+	 *
+	 * @param key the key
+	 * @param left the left
+	 * @param right the right
+	 * @return the text diff
+	 */
 	public TextDiff with(String key, Object left, Object right) {
 		this.left = left;
 		this.right = right;
@@ -64,6 +87,15 @@ public class TextDiff {
 		return this;
 	}
 
+	/**
+	 * Replace child.
+	 *
+	 * @param last the last
+	 * @param key the key
+	 * @param left the left
+	 * @param right the right
+	 * @return the text diff
+	 */
 	public TextDiff replaceChild(TextDiff last, String key, Object left, Object right) {
 		TextDiff lastChild = null;
 		if (this.children != null) {
@@ -84,6 +116,11 @@ public class TextDiff {
 		return lastChild;
 	}
 
+	/**
+	 * Gets the last.
+	 *
+	 * @return the last
+	 */
 	public TextDiff getLast() {
 		if (this.children != null) {
 			return this.children.get(this.children.size() - 1);
@@ -91,6 +128,12 @@ public class TextDiff {
 		return null;
 	}
 
+	/**
+	 * With child.
+	 *
+	 * @param child the child
+	 * @return the text diff
+	 */
 	public TextDiff withChild(TextDiff child) {
 		if (this.children == null) {
 			this.children = new SimpleList<TextDiff>();
@@ -99,6 +142,14 @@ public class TextDiff {
 		return this;
 	}
 
+	/**
+	 * With child.
+	 *
+	 * @param key the key
+	 * @param type the type
+	 * @param child the child
+	 * @return the text diff
+	 */
 	public TextDiff withChild(String key, char type, TextDiff child) {
 		if (this.children == null) {
 			this.children = new SimpleList<TextDiff>();
@@ -109,6 +160,14 @@ public class TextDiff {
 		return this;
 	}
 
+	/**
+	 * Creates the child.
+	 *
+	 * @param key the key
+	 * @param left the left
+	 * @param right the right
+	 * @return the text diff
+	 */
 	public TextDiff createChild(String key, Object left, Object right) {
 		TextDiff child = new TextDiff();
 		if (this.children == null) {
@@ -119,22 +178,47 @@ public class TextDiff {
 		return child;
 	}
 
+	/**
+	 * Gets the left.
+	 *
+	 * @return the left
+	 */
 	public Object getLeft() {
 		return left;
 	}
 
+	/**
+	 * Gets the right.
+	 *
+	 * @return the right
+	 */
 	public Object getRight() {
 		return right;
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public char getType() {
 		return type;
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	public String getKey() {
 		return key;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -142,6 +226,13 @@ public class TextDiff {
 		return sb.toString();
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param indentFactor the indent factor
+	 * @param splitAddAndRemove the split add and remove
+	 * @return the string
+	 */
 	public String toString(int indentFactor, boolean splitAddAndRemove) {
 		CharacterBuffer sb = new CharacterBuffer();
 		if (this.children != null) {

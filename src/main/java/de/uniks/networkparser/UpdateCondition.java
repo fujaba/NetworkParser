@@ -8,8 +8,8 @@ import de.uniks.networkparser.list.SimpleSet;
 
 /**
  * Condition for Listener for changes in Element (Datamodel) in IdMap Or AtomarCondition with
- * PropertyChange
- * 
+ * PropertyChange.
+ *
  * @author Stefan Lindel
  */
 public class UpdateCondition implements ObjectCondition {
@@ -40,27 +40,56 @@ public class UpdateCondition implements ObjectCondition {
 
   }
 
+  /**
+   * With contidion.
+   *
+   * @param condition the condition
+   * @return the update condition
+   */
   public UpdateCondition withContidion(ObjectCondition condition) {
     this.condition = condition;
     return this;
   }
 
+  /**
+   * Creates the atomar condition.
+   *
+   * @param listener the listener
+   * @return the update condition
+   */
   public static UpdateCondition createAtomarCondition(ObjectCondition listener) {
     UpdateCondition condition = new UpdateCondition();
     condition.condition = listener;
     return condition;
   }
 
+  /**
+   * Creates the update condition.
+   *
+   * @return the update condition
+   */
   public static UpdateCondition createUpdateCondition() {
     return new UpdateCondition();
   }
 
+  /**
+   * Creates the acumulate condition.
+   *
+   * @param tokener the tokener
+   * @return the update condition
+   */
   public static UpdateCondition createAcumulateCondition(Tokener tokener) {
     UpdateCondition condition = new UpdateCondition();
     condition.tokener = tokener;
     return condition;
   }
 
+  /**
+   * Creates the acumulate condition.
+   *
+   * @param map the map
+   * @return the update condition
+   */
   public static UpdateCondition createAcumulateCondition(SimpleMap map) {
     UpdateCondition condition = new UpdateCondition();
     if (map != null) {
@@ -70,6 +99,15 @@ public class UpdateCondition implements ObjectCondition {
     return condition;
   }
 
+  /**
+   * Creates the acumulate condition.
+   *
+   * @param tokener the tokener
+   * @param target the target
+   * @param creator the creator
+   * @param property the property
+   * @return the update condition
+   */
   public static UpdateCondition createAcumulateCondition(Tokener tokener, Object target,
       SendableEntityCreator creator, String property) {
     UpdateCondition condition = new UpdateCondition();
@@ -80,28 +118,61 @@ public class UpdateCondition implements ObjectCondition {
     return condition;
   }
 
+  /**
+   * Creates the transaction.
+   *
+   * @param map the map
+   * @return the update condition
+   */
   public static UpdateCondition createTransaction(SimpleMap map) {
     UpdateCondition condition = new UpdateCondition();
     condition.map = map;
     return condition;
   }
 
+  /**
+   * Checks if is atomar.
+   *
+   * @return true, if is atomar
+   */
   public boolean isAtomar() {
     return !isTransaction() && condition != null;
   }
 
+  /**
+   * Checks if is transaction.
+   *
+   * @return true, if is transaction
+   */
   public boolean isTransaction() {
     return (endProperty != null || endClass != null);
   }
 
+  /**
+   * Checks if is accumulate.
+   *
+   * @return true, if is accumulate
+   */
   public boolean isAccumulate() {
     return tokener != null;
   }
 
+  /**
+   * Checks if is change listener.
+   *
+   * @return true, if is change listener
+   */
   public boolean isChangeListener() {
     return condition == null;
   }
 
+  /**
+   * With start.
+   *
+   * @param property the property
+   * @param startClass the start class
+   * @return the update condition
+   */
   public UpdateCondition withStart(String property, Object startClass) {
     this.owner = startClass;
     this.property = property;
@@ -111,6 +182,12 @@ public class UpdateCondition implements ObjectCondition {
     return this;
   }
 
+  /**
+   * With start.
+   *
+   * @param startClass the start class
+   * @return the update condition
+   */
   public UpdateCondition withStart(Object startClass) {
     this.owner = startClass;
     if (map != null) {
@@ -124,16 +201,35 @@ public class UpdateCondition implements ObjectCondition {
     return this;
   }
 
+  /**
+   * With end.
+   *
+   * @param property the property
+   * @return the update condition
+   */
   public UpdateCondition withEnd(String property) {
     this.endProperty = property;
     return this;
   }
 
+  /**
+   * With start conition.
+   *
+   * @param condition the condition
+   * @return the update condition
+   */
   public UpdateCondition withStartConition(ObjectCondition condition) {
     this.startCondition = condition;
     return this;
   }
 
+  /**
+   * With end.
+   *
+   * @param property the property
+   * @param endClass the end class
+   * @return the update condition
+   */
   public UpdateCondition withEnd(String property, Object endClass) {
     this.endClass = endClass;
     this.endProperty = property;
@@ -148,11 +244,23 @@ public class UpdateCondition implements ObjectCondition {
     return this;
   }
 
+  /**
+   * With end conition.
+   *
+   * @param condition the condition
+   * @return the update condition
+   */
   public UpdateCondition withEndConition(ObjectCondition condition) {
     this.endCondition = condition;
     return this;
   }
 
+  /**
+   * Update.
+   *
+   * @param evt the evt
+   * @return true, if successful
+   */
   @Override
   public boolean update(Object evt) {
     if (isAtomar()) {
@@ -257,6 +365,11 @@ public class UpdateCondition implements ObjectCondition {
     return false;
   }
 
+  /**
+   * Merge changes.
+   *
+   * @return the object
+   */
   public Object mergeChanges() {
     if (this.changes == null) {
       return null;
@@ -303,6 +416,14 @@ public class UpdateCondition implements ObjectCondition {
     return mergeChange;
   }
 
+  /**
+   * Change item.
+   *
+   * @param source the source
+   * @param target the target
+   * @param property the property
+   * @return true, if successful
+   */
   public boolean changeItem(Object source, Object target, String property) {
     if (map == null) {
       return false;
@@ -365,11 +486,24 @@ public class UpdateCondition implements ObjectCondition {
     return true;
   }
 
+  /**
+   * With attribute.
+   *
+   * @param newValue the new value
+   * @param property the property
+   * @return the update condition
+   */
   public UpdateCondition withAttribute(Object newValue, String property) {
     changeAttribute(newValue, property);
     return this;
   }
 
+  /**
+   * With target.
+   *
+   * @param value the value
+   * @return the update condition
+   */
   public UpdateCondition withTarget(Object value) {
     this.owner = value;
     if (value != null && map != null) {
@@ -381,6 +515,14 @@ public class UpdateCondition implements ObjectCondition {
     return this;
   }
 
+  /**
+   * With acumulate target.
+   *
+   * @param value the value
+   * @param creator the creator
+   * @param property the property
+   * @return the update condition
+   */
   public UpdateCondition withAcumulateTarget(Object value, SendableEntityCreator creator, String property) {
     this.owner = value;
     this.creator = creator;
@@ -400,6 +542,17 @@ public class UpdateCondition implements ObjectCondition {
     }
   }
 
+  /**
+   * Change attribute.
+   *
+   * @param listener the listener
+   * @param source the source
+   * @param creator the creator
+   * @param property the property
+   * @param oldValue the old value
+   * @param newValue the new value
+   * @return true, if successful
+   */
   public boolean changeAttribute(UpdateListener listener, Object source, SendableEntityCreator creator,
       String property, Object oldValue, Object newValue) {
     if (this.owner == null) {
@@ -415,6 +568,13 @@ public class UpdateCondition implements ObjectCondition {
     return false;
   }
 
+  /**
+   * Change attribute.
+   *
+   * @param newValue the new value
+   * @param property the property
+   * @return true, if successful
+   */
   public boolean changeAttribute(Object newValue, String property) {
     return changeAttribute(owner, newValue, property, creator, defaultItem);
   }
@@ -481,10 +641,21 @@ public class UpdateCondition implements ObjectCondition {
     return true;
   }
 
+  /**
+   * Gets the change.
+   *
+   * @return the change
+   */
   public Entity getChange() {
     return change;
   }
 
+  /**
+   * With change.
+   *
+   * @param change the change
+   * @return the update condition
+   */
   public UpdateCondition withChange(Entity change) {
     this.change = change;
     return this;

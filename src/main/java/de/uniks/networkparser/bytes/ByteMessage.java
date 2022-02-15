@@ -37,8 +37,8 @@ public class ByteMessage implements SendableEntityCreatorTag {
   private byte[] value = new byte[] {};
 
   /**
-   * Generic Getter for Attributes
-   * 
+   * Generic Getter for Attributes.
+   *
    * @param entity ByteMessage Entity
    * @param attrName Name of Attribute
    * @return Value of Attribute
@@ -61,10 +61,12 @@ public class ByteMessage implements SendableEntityCreatorTag {
   }
 
   /**
-   * Generic Setter for Attributes
-   * 
+   * Generic Setter for Attributes.
+   *
+   * @param entity the entity
    * @param attribute the Name of Attribute
    * @param value the Value of Attribute
+   * @param type the type
    * @return success
    */
 
@@ -91,7 +93,7 @@ public class ByteMessage implements SendableEntityCreatorTag {
   }
 
   /**
-   * Gets the value As String
+   * Gets the value As String.
    *
    * @return the value
    */
@@ -123,19 +125,32 @@ public class ByteMessage implements SendableEntityCreatorTag {
     return this;
   }
 
-  /** return the Properties */
+  /**
+   *  return the Properties.
+   *
+   * @return the properties
+   */
   @Override
   public String[] getProperties() {
     return properties;
   }
 
-  /** Create new Instance of ByteMessage */
+  /**
+   *  Create new Instance of ByteMessage.
+   *
+   * @param reference the reference
+   * @return the sendable instance
+   */
   @Override
   public Object getSendableInstance(boolean reference) {
     return new ByteMessage();
   }
 
-  /** Get the EventType of BasicMessage (0x42) UTF-8 */
+  /**
+   *  Get the EventType of BasicMessage (0x42) UTF-8.
+   *
+   * @return the tag
+   */
   @Override
   public String getTag() {
     return new String(new byte[] {0x42});

@@ -26,7 +26,8 @@ THE SOFTWARE.
 import java.io.UnsupportedEncodingException;
 
 /**
- * Tokener for QR-Code
+ * Tokener for QR-Code.
+ *
  * @author Stefan Lindel
  */
 public class QRTokener {
@@ -215,7 +216,7 @@ public class QRTokener {
 	}
 
 	/**
-	 * encoding Content to QRCode
+	 * encoding Content to QRCode.
 	 *
 	 * @param content text to encode
 	 * @param ecLevel error correction level to use
@@ -1208,7 +1209,7 @@ public class QRTokener {
 	 * @return success
 	 */
 	static boolean makeTypeInfoBits(ErrorCorrectionLevel ecLevel, int maskPattern, BitArray bits) {
-		if (ecLevel == null || QRCode.isValidMaskPattern(maskPattern) == false) {
+		if (ecLevel == null || !QRCode.isValidMaskPattern(maskPattern)) {
 			return false;
 		}
 		int typeInfo = (ecLevel.getBits() << 3) | maskPattern;

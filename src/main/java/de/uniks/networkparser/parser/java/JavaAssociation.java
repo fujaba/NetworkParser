@@ -5,7 +5,16 @@ import java.util.Collection;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.parser.Template;
 
+/**
+ * The Class JavaAssociation.
+ *
+ * @author Stefan
+ */
 public class JavaAssociation extends Template {
+	
+	/**
+	 * Instantiates a new java association.
+	 */
 	public JavaAssociation() {
 		this.id = "association";
 		this.type = DECLARATION;

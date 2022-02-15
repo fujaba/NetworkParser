@@ -2,7 +2,16 @@ package de.uniks.networkparser.parser.java;
 
 import de.uniks.networkparser.parser.Template;
 
+/**
+ * The Class JavaSetMethod.
+ *
+ * @author Stefan
+ */
 public class JavaSetMethod extends Template {
+	
+	/**
+	 * Instantiates a new java set method.
+	 */
 	public JavaSetMethod() {
 		this.id = "method";
 		this.type = METHOD;

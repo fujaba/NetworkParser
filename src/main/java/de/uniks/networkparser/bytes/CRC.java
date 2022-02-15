@@ -25,31 +25,53 @@ THE SOFTWARE.
 */
 
 /**
- * CRC CheckSum (Cyclic redundancy check)
+ * CRC CheckSum (Cyclic redundancy check).
+ *
  * @author Stefan Lindel
  */
 public class CRC extends Checksum {
+	
+	/** The Constant CRC8. */
 	/*
 	 * CRC-8, poly = x^8 + x^2 + x^1 + 1, init = 0 1 0000 0111 0111 0000 1
 	 */
 	public static final int CRC8 = 0x107;
+	
+	/** The Constant CRC16. */
 	/* 1000000000000101 */
 	public static final int CRC16 = 0x8005;
 
+	/** The Constant CRC32. */
 	public static final int CRC32 = 0xedb88320;
+	
+	/** The Constant CCITT16. */
 	/* 1000000000000101 */
 	public static final int CCITT16 = 0x1021;
 	/** The fast CRC table. Computed once when the CRC32 class is loaded. */
 	protected int[] crc_table = null;
 	private int order;
 
+	/**
+	 * Instantiates a new crc.
+	 */
 	public CRC() {
 	}
 
+	/**
+	 * Instantiates a new crc.
+	 *
+	 * @param bitMask the bit mask
+	 */
 	public CRC(int bitMask) {
 		withCRC(bitMask);
 	}
 
+	/**
+	 * With CRC.
+	 *
+	 * @param bitMask the bit mask
+	 * @return the crc
+	 */
 	public CRC withCRC(int bitMask) {
 		this.order = bitMask;
 		if (order == 0) {
@@ -73,6 +95,7 @@ public class CRC extends Checksum {
 	 * Update the CRC value with a byte data.
 	 *
 	 * @param data The byte data
+	 * @return true, if successful
 	 */
 	@Override
 	public boolean update(int data) {
@@ -103,6 +126,11 @@ public class CRC extends Checksum {
 		return true;
 	}
 
+	/**
+	 * Gets the order.
+	 *
+	 * @return the order
+	 */
 	@Override
 	public int getOrder() {
 		return order;
@@ -180,6 +208,12 @@ public class CRC extends Checksum {
 		return data;
 	}
 	
+	/**
+	 * Index of.
+	 *
+	 * @param pos the pos
+	 * @return the int
+	 */
 	public int indexOf(int pos) {
 		if(pos>0 && pos <this.crc_table.length) {
 			return this.crc_table[pos];
@@ -187,6 +221,13 @@ public class CRC extends Checksum {
 		return -1;
 	}
 	
+	/**
+	 * Crc 32.
+	 *
+	 * @param oldCrc the old crc
+	 * @param charAt the char at
+	 * @return the int
+	 */
 	public int crc32(int oldCrc, byte charAt) {
     	return (oldCrc >>> 8) ^ this.crc_table[(oldCrc ^ charAt) & 0xff];
     }

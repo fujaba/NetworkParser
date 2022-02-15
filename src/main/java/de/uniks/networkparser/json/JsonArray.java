@@ -80,11 +80,15 @@ import de.uniks.networkparser.list.SortedList;
  */
 
 public class JsonArray extends SortedList<Object> implements EntityList {
+	
+	/** The Constant START. */
 	public static final char START = '[';
+	
+	/** The Constant END. */
 	public static final char END = ']';
 
 	/**
-	 * Default Constructor
+	 * Default Constructor.
 	 */
 	public JsonArray() {
 		super(false);
@@ -108,6 +112,11 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 		return returnValue;
 	}
 
+	/**
+	 * Size children.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int sizeChildren() {
 		return super.size();
@@ -190,11 +199,11 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	@Override
 	protected String parseItem(EntityStringConverter converter) {
 		Iterator<Object> iterator = iterator();
-		if (iterator.hasNext() == false) {
+		if (!iterator.hasNext()) {
 			return "[]";
 		}
 
-		if (isVisible() == false) {
+		if (!isVisible()) {
 			return "[" + size() + " Items]";
 		}
 		/* First Element */
@@ -231,7 +240,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	}
 
 	/**
-	 * Set the value to Tokener or pairs of values
+	 * Set the value to Tokener or pairs of values.
 	 *
 	 * @param values a simple String of Value or pairs of key-values
 	 * @return Itself
@@ -257,6 +266,12 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 		return this;
 	}
 
+	/**
+	 * Gets the.
+	 *
+	 * @param id the id
+	 * @return the json object
+	 */
 	public JsonObject get(String id) {
 		for (Object item : this) {
 			if (item instanceof JsonObject) {
@@ -270,7 +285,10 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	}
 
 	/**
-	 * Get a new Instance of a JsonObject
+	 * Get a new Instance of a JsonObject.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
 	 */
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
@@ -280,16 +298,35 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 		return new JsonArray();
 	}
 
+	/**
+	 * Removes the.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean remove(Object value) {
 		return removeByObject(value) >= 0;
 	}
 
+	/**
+	 * Sub list.
+	 *
+	 * @param fromIndex the from index
+	 * @param toIndex the to index
+	 * @return the json array
+	 */
 	@Override
 	public JsonArray subList(int fromIndex, int toIndex) {
 		return (JsonArray) super.subList(fromIndex, toIndex);
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param value the value
+	 * @return the json array
+	 */
 	public static JsonArray create(String value) {
 		return new JsonArray().withValue(value);
 	}

@@ -16,13 +16,29 @@ package de.uniks.networkparser.bytes.qr;
  * @author David Olivier
  */
 public final class GenericGF {
+	
+	/** The Constant AZTEC_DATA_12. */
 	public static final GenericGF AZTEC_DATA_12 = new GenericGF(0x1069, 4096, 1); /* x^12 + x^6 + x^5 + x^3 + 1 */
+	
+	/** The Constant AZTEC_DATA_10. */
 	public static final GenericGF AZTEC_DATA_10 = new GenericGF(0x409, 1024, 1); /* x^10 + x^3 + 1 */
+	
+	/** The Constant AZTEC_DATA_6. */
 	public static final GenericGF AZTEC_DATA_6 = new GenericGF(0x43, 64, 1); /* x^6 + x + 1 */
+	
+	/** The Constant AZTEC_PARAM. */
 	public static final GenericGF AZTEC_PARAM = new GenericGF(0x13, 16, 1); /* x^4 + x + 1 */
+	
+	/** The Constant QR_CODE_FIELD_256. */
 	public static final GenericGF QR_CODE_FIELD_256 = new GenericGF(0x011D, 256, 0); /* x^8 + x^4 + x^3 + x^2 + 1 */
+	
+	/** The Constant DATA_MATRIX_FIELD_256. */
 	public static final GenericGF DATA_MATRIX_FIELD_256 = new GenericGF(0x012D, 256, 1); /* x^8 + x^5 + x^3 + x^2 + 1 */
+	
+	/** The Constant AZTEC_DATA_8. */
 	public static final GenericGF AZTEC_DATA_8 = DATA_MATRIX_FIELD_256;
+	
+	/** The Constant MAXICODE_FIELD_64. */
 	public static final GenericGF MAXICODE_FIELD_64 = AZTEC_DATA_6;
 
 	private final int[] expTable;
@@ -152,14 +168,29 @@ public final class GenericGF {
 		return expTable[(logTable[a] + logTable[b]) % (size - 1)];
 	}
 
+	/**
+	 * Gets the size.
+	 *
+	 * @return the size
+	 */
 	public int getSize() {
 		return size;
 	}
 
+	/**
+	 * Gets the generator base.
+	 *
+	 * @return the generator base
+	 */
 	public int getGeneratorBase() {
 		return generatorBase;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return "GF(0x" + Integer.toHexString(primitive) + ',' + size + ')';

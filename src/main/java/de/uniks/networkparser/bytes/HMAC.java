@@ -11,6 +11,11 @@ public class HMAC {
 	private int[] istate;
 	private int[] ostate;
 
+	/**
+	 * Instantiates a new hmac.
+	 *
+	 * @param key the key
+	 */
 	public HMAC(String key) {
 		if (key == null) {
 			return;
@@ -58,6 +63,9 @@ public class HMAC {
 		return this;
 	}
 
+	/**
+	 * Clean.
+	 */
 	/* Cleans HMAC state. */
 	public void clean() {
 		if (this.istate != null) {
@@ -82,6 +90,12 @@ public class HMAC {
 		return this;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param data the data
+	 * @return the hmac
+	 */
 	public HMAC update(byte[] data) {
 		if (data != null) {
 			this.inner.update(data, data.length);
@@ -105,6 +119,11 @@ public class HMAC {
 		return this;
 	}
 
+	/**
+	 * Digest.
+	 *
+	 * @return the byte[]
+	 */
 	/* Returns message authentication code. */
 	public byte[] digest() {
 		byte[] out = new byte[this.inner.digestLength];

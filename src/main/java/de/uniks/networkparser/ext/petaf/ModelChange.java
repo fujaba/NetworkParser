@@ -27,16 +27,21 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.json.JsonObject;
 
 /**
- * ModelChange for PetaF
+ * ModelChange for PetaF.
+ *
  * @author Stefan Lindel
  */
 public class ModelChange implements Comparable<ModelChange> {
+	
+	/** The Constant PROPERTY_KEY. */
 	/* History-Id */
 	public static final String PROPERTY_KEY = "key";
 
+	/** The Constant PROPERTY_RECEIVER. */
 	/* Receiver */
 	public static final String PROPERTY_RECEIVER = "receiver";
 
+	/** The Constant PROPERTY_CHANGE. */
 	/* Json-Change */
 	public static final String PROPERTY_CHANGE = "change";
 
@@ -44,16 +49,32 @@ public class ModelChange implements Comparable<ModelChange> {
 	private BaseItem receiver;
 	private BaseItem change;
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return "" + key + " " + (receiver == null ? "" : receiver.toString());
 	}
 
+	/**
+	 * Gets the full key.
+	 *
+	 * @return the full key
+	 */
 	public String getFullKey() {
 		String format = String.format("%%0%dd", 20);
 		return String.format(format, key) + "!" + receiver;
 	}
 
+	/**
+	 * Compare to.
+	 *
+	 * @param o the o
+	 * @return the int
+	 */
 	@Override
 	public int compareTo(ModelChange o) {
 		if (this.getKey() == null) {
@@ -69,10 +90,20 @@ public class ModelChange implements Comparable<ModelChange> {
 		return result;
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	public String getKey() {
 		return key;
 	}
 
+	/**
+	 * Gets the key number.
+	 *
+	 * @return the key number
+	 */
 	public int getKeyNumber() {
 		int result = -1;
 		try {
@@ -82,29 +113,63 @@ public class ModelChange implements Comparable<ModelChange> {
 		return result;
 	}
 
+	/**
+	 * With key.
+	 *
+	 * @param key the key
+	 * @return the model change
+	 */
 	public ModelChange withKey(String key) {
 		this.key = key;
 		return this;
 	}
 
+	/**
+	 * Gets the change.
+	 *
+	 * @return the change
+	 */
 	public BaseItem getChange() {
 		return change;
 	}
 
+	/**
+	 * With change.
+	 *
+	 * @param value the value
+	 * @return the model change
+	 */
 	public ModelChange withChange(BaseItem value) {
 		this.change = value;
 		return this;
 	}
 
+	/**
+	 * Gets the receiver.
+	 *
+	 * @return the receiver
+	 */
 	public BaseItem getReceiver() {
 		return receiver;
 	}
 
+	/**
+	 * With receiver.
+	 *
+	 * @param value the value
+	 * @return the model change
+	 */
 	public ModelChange withReceiver(BaseItem value) {
 		this.receiver = value;
 		return this;
 	}
 
+	/**
+	 * Gets the.
+	 *
+	 * @param attrName the attr name
+	 * @return the object
+	 */
 	public Object get(String attrName) {
 		if (PROPERTY_KEY.equals(attrName)) {
 			return getKey();
@@ -118,6 +183,13 @@ public class ModelChange implements Comparable<ModelChange> {
 		return null;
 	}
 
+	/**
+	 * Sets the.
+	 *
+	 * @param attrName the attr name
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean set(String attrName, Object value) {
 		if (PROPERTY_KEY.equals(attrName)) {
 			withKey((String) value);

@@ -7,16 +7,37 @@ import java.util.ListIterator;
 
 import de.uniks.networkparser.interfaces.BaseItem;
 
+/**
+ * The Class SpeedList.
+ *
+ * @author Stefan
+ * @param <V> the value type
+ */
 public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<V> {
+	
+	/**
+	 * Instantiates a new speed list.
+	 */
 	public SpeedList() {
 		withFlag(SimpleList.ALLOWDUPLICATE);
 	}
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new SpeedList<V>();
 	}
 
+	/**
+	 * Iterator.
+	 *
+	 * @return the iterator
+	 */
 	public Iterator<V> iterator() {
 		return new Iterator<V>() {
 			private int cursor;
@@ -37,6 +58,12 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 		};
 	}
 
+	/**
+	 * Contains.
+	 *
+	 * @param o the o
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean contains(Object o) {
 		if (size < MINHASHINGSIZE) {
@@ -50,6 +77,12 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 		return getPosition(o, 0, false) >= 0;
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param e the e
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean add(V e) {
 		if (size < MINHASHINGSIZE - 10) {
@@ -67,11 +100,23 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 		return super.add(e);
 	}
 
+	/**
+	 * Removes the.
+	 *
+	 * @param o the o
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean remove(Object o) {
 		return super.removeByObject(o) >= 0;
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean add(Object... values) {
 		if (values == null || values.length < 1) {
@@ -88,6 +133,12 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 		return size > newSize - values.length;
 	}
 
+	/**
+	 * Adds the all.
+	 *
+	 * @param c the c
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean addAll(Collection<? extends V> c) {
 		if (c == null) {
@@ -102,6 +153,13 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 		return modified;
 	}
 
+	/**
+	 * Adds the all.
+	 *
+	 * @param index the index
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean addAll(int index, Collection<? extends V> values) {
 		if (values == null) {
@@ -118,6 +176,13 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 		return allAdded;
 	}
 
+	/**
+	 * Sets the.
+	 *
+	 * @param index the index
+	 * @param element the element
+	 * @return the v
+	 */
 	@Override
 	public V set(int index, V element) {
 		if (index < 0 || index > size) {
@@ -127,6 +192,12 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 		return element;
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param index the index
+	 * @param element the element
+	 */
 	@Override
 	public void add(int index, V element) {
 		int pos = hasKey(element);
@@ -136,6 +207,12 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 		}
 	}
 
+	/**
+	 * Removes the.
+	 *
+	 * @param index the index
+	 * @return the v
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public V remove(int index) {
@@ -145,21 +222,42 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 		return (V) removeByIndex(index, SMALL_KEY, this.index);
 	}
 
+	/**
+	 * List iterator.
+	 *
+	 * @return the list iterator
+	 */
 	@Override
 	public ListIterator<V> listIterator() {
 		return new SimpleIterator<V>(this);
 	}
 
+	/**
+	 * List iterator.
+	 *
+	 * @param index the index
+	 * @return the list iterator
+	 */
 	@Override
 	public ListIterator<V> listIterator(int index) {
 		return new SimpleIterator<V>(this, index);
 	}
 
+	/**
+	 * Sub list.
+	 *
+	 * @param fromIndex the from index
+	 * @param toIndex the to index
+	 * @return the speed list
+	 */
 	@SuppressWarnings("unchecked")
 	public SpeedList<V> subList(int fromIndex, int toIndex) {
 		return (SpeedList<V>) super.subList(fromIndex, toIndex);
 	}
 
+	/**
+	 * Clear.
+	 */
 	@Override
 	public void clear() {
 		this.elements = null;

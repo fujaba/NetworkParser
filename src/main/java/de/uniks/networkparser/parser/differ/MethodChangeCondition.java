@@ -5,8 +5,16 @@ import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.GraphMatcher;
 
+/**
+ * The Class MethodChangeCondition.
+ *
+ * @author Stefan
+ */
 public class MethodChangeCondition extends MatchCondition {
 
+	/**
+	 * Instantiates a new method change condition.
+	 */
 	public MethodChangeCondition() {
 		super(new ChangeRenameCondition(), new ChangeAddCondition(), new ChangeAddModifierCondition(),
 				new ChangeRemoveModifierCondition(), new MethodChangeUpdateTypeCondition(),
@@ -43,6 +51,11 @@ public class MethodChangeCondition extends MatchCondition {
 		return true;
 	}
 
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
 	@Override
 	public String getAction() {
 		return SendableEntityCreator.UPDATE;

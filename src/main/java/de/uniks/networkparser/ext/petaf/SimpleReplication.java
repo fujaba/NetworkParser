@@ -10,7 +10,8 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 
 /**
- * Simple Replication
+ * Simple Replication.
+ *
  * @author Stefan Lindel
  */
 public class SimpleReplication implements ObjectCondition {
@@ -20,6 +21,14 @@ public class SimpleReplication implements ObjectCondition {
 	protected Object item;
 	protected ObjectCondition listener;
 
+	/**
+	 * Bind.
+	 *
+	 * @param creator the creator
+	 * @param root the root
+	 * @param tag the tag
+	 * @return the simple replication
+	 */
 	public static SimpleReplication bind(SendableEntityCreator creator, Object root, String... tag) {
 		Object item = ReflectionLoader.call(creator, "createIdMap", "");
 		SimpleReplication binder = new SimpleReplication();
@@ -41,6 +50,14 @@ public class SimpleReplication implements ObjectCondition {
 		return binder;
 	}
 
+	/**
+	 * Binding.
+	 *
+	 * @param creator the creator
+	 * @param root the root
+	 * @param tag the tag
+	 * @return the simple replication
+	 */
 	public SimpleReplication binding(SendableEntityCreator creator, Object root, String tag) {
 		/* Bind all Children to */
 		this.creator = creator;
@@ -77,6 +94,11 @@ public class SimpleReplication implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * Checks if is valid.
+	 *
+	 * @return true, if is valid
+	 */
 	public boolean isValid() {
 		if (this.creator == null) {
 			return false;
@@ -90,11 +112,22 @@ public class SimpleReplication implements ObjectCondition {
 		return true;
 	}
 
+	/**
+	 * With map.
+	 *
+	 * @param map the map
+	 * @return the simple replication
+	 */
 	public SimpleReplication withMap(IdMap map) {
 		getSpace().withMap(map);
 		return this;
 	}
 
+	/**
+	 * Gets the space.
+	 *
+	 * @return the space
+	 */
 	public Space getSpace() {
 		if (space == null) {
 			this.space = new Space();
@@ -102,6 +135,12 @@ public class SimpleReplication implements ObjectCondition {
 		return space;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		return false;

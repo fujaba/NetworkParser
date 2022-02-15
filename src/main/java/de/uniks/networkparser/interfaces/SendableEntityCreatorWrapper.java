@@ -1,5 +1,6 @@
 package de.uniks.networkparser.interfaces;
 
+// TODO: Auto-generated Javadoc
 /*
 NetworkParser
 The MIT License
@@ -24,11 +25,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class SendableEntityCreatorWrapper.
+ *
+ * @author Stefan
+ */
 public abstract class SendableEntityCreatorWrapper implements SendableEntityCreator, SendableEntityCreatorNoIndex {
+	
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		return false;
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @param item the item
+	 * @return the object
+	 */
 	public abstract Object newInstance(Entity item);
 }

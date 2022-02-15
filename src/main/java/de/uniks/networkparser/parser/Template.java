@@ -57,18 +57,34 @@ import de.uniks.networkparser.logic.TemplateFragmentCondition;
 import de.uniks.networkparser.logic.VariableCondition;
 
 /**
- * Template for Codegeneration
+ * Template for Codegeneration.
+ *
  * @author Stefan Lindel
  */
 public class Template implements TemplateParser {
+	
+	/** The Constant PROPERTY_FEATURE. */
 	public static final String PROPERTY_FEATURE = "features";
+	
+	/** The Constant TYPE_JAVA. */
 	public static final String TYPE_JAVA = "java";
+	
+	/** The Constant TYPE_TYPESCRIPT. */
 	public static final String TYPE_TYPESCRIPT = "typescript";
+	
+	/** The Constant TYPE_CPP. */
 	public static final String TYPE_CPP = "cpp";
 
+	/** The Constant SPLITSTART. */
 	public static final char SPLITSTART = '{';
+	
+	/** The Constant SPLITEND. */
 	public static final char SPLITEND = '}';
+	
+	/** The Constant ENTER. */
 	public static final char ENTER = '=';
+	
+	/** The Constant SPACE. */
 	public static final char SPACE = ' ';
 
 	/** Template Variables */
@@ -96,18 +112,38 @@ public class Template implements TemplateParser {
 	
 	private String[] lastStopWords;
 
+	/**
+	 * Instantiates a new template.
+	 *
+	 * @param name the name
+	 */
 	public Template(String name) {
 		this.id = name;
 	}
 
+	/**
+	 * With file type.
+	 *
+	 * @param value the value
+	 * @return the template
+	 */
 	public Template withFileType(String value) {
 		this.fileType = value;
 		return this;
 	}
 
+	/**
+	 * Instantiates a new template.
+	 */
 	public Template() {
 	}
 
+	/**
+	 * Gets the templates.
+	 *
+	 * @param filter the filter
+	 * @return the templates
+	 */
 	public SimpleList<Template> getTemplates(String filter) {
 		if (owner != null) {
 			return owner.getTemplates(filter);
@@ -115,8 +151,14 @@ public class Template implements TemplateParser {
 		return null;
 	}
 
+	/**
+	 * Gets the id.
+	 *
+	 * @param full the full
+	 * @return the id
+	 */
 	public String getId(boolean full) {
-		if (full == false) {
+		if (!full) {
 			return id;
 		}
 		if (this.owner != null) {
@@ -129,6 +171,14 @@ public class Template implements TemplateParser {
 		return this.id;
 	}
 
+	/**
+	 * Generate.
+	 *
+	 * @param parameters the parameters
+	 * @param parent the parent
+	 * @param member the member
+	 * @return the template result fragment
+	 */
 	public TemplateResultFragment generate(LocalisationInterface parameters, SendableEntityCreator parent,
 			TemplateItem member) {
 		ObjectCondition condition = this.token.getCondition();
@@ -148,7 +198,7 @@ public class Template implements TemplateParser {
 		templateFragment.withVariable(parameters);
 		templateFragment.withMember(member);
 
-		if (this.token.update(templateFragment) == false) {
+		if (!this.token.update(templateFragment)) {
 			return null;
 		}
 		templateFragment.withExpression(false);
@@ -165,14 +215,15 @@ public class Template implements TemplateParser {
 		return templateFragment;
 	}
 
-	/** Parsing Variables *
+	/**
+	 *  Parsing Variables *
 	 * Search for Variables and UIUf and combiVariables
 	 * {{Type}}
 	 * {{#if Type}} {{#end}}
 	 * {{#if Type}} {{#else}} {{#end}}
 	 * {{Type} } means {{Type}}{{#if Type}} {{#end}}
 	 * Define Type=int
-	 * {{{Type}}} means {int}
+	 * {{{Type}}} means {int}.
 	 *
 	 * @param tokenTemplate The TokenTemplate
 	 * @param customTemplate CustomTemplates
@@ -196,6 +247,12 @@ public class Template implements TemplateParser {
 		return parsing(template, customTemplate, false, true);
 	}
 
+	/**
+	 * Parsing.
+	 *
+	 * @param customTemplates the custom templates
+	 * @return the object condition
+	 */
 	public ObjectCondition parsing(ParserCondition... customTemplates) {
 		TemplateResultModel result = new TemplateResultModel();
 		SimpleList<ParserCondition> templateCondition = getTemplateCondition();
@@ -225,6 +282,16 @@ public class Template implements TemplateParser {
 		return condition;
 	}
 
+	/**
+	 * Parsing.
+	 *
+	 * @param buffer the buffer
+	 * @param customTemplate the custom template
+	 * @param isExpression the is expression
+	 * @param allowSpace the allow space
+	 * @param stopWords the stop words
+	 * @return the object condition
+	 */
 	public ObjectCondition parsing(CharacterBuffer buffer, LocalisationInterface customTemplate, boolean isExpression,
 			boolean allowSpace, String... stopWords) {
 		if (buffer == null) {
@@ -257,18 +324,17 @@ public class Template implements TemplateParser {
 		}
 		startDif = 2;
 
-		while (buffer.isEnd() == false) {
+		while (!buffer.isEnd()) {
 			if (isExpression && buffer.getCurrentChar() == SPACE) {
 				break;
-			} else if (stopCharacter != null && isQuote == false
-					&& stopCharacter.indexOf(buffer.getCurrentChar()) >= 0) {
+			} else if (stopCharacter != null && !isQuote && stopCharacter.indexOf(buffer.getCurrentChar()) >= 0) {
 				break;
 			}
 
 			char character = buffer.nextClean(true);
 			if (isExpression && character == SPLITEND) {
 				break;
-			} else if (isQuote == false && stopCharacter != null) {
+			} else if (!isQuote && stopCharacter != null) {
 				if (stopCharacter.indexOf(character) >= 0) {
 					break;
 				}
@@ -480,6 +546,12 @@ public class Template implements TemplateParser {
 		return condition;
 	}
 
+	/**
+	 * With template.
+	 *
+	 * @param template the template
+	 * @return the template
+	 */
 	public Template withTemplate(String... template) {
 		CharacterBuffer sb = new CharacterBuffer();
 		if (template == null || template.length < 1) {
@@ -507,6 +579,12 @@ public class Template implements TemplateParser {
 		return this;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param templateValues the template values
+	 * @return the template
+	 */
 	public static final Template create(String... templateValues) {
 		Template template = new Template();
 		template.withTemplate(templateValues);
@@ -517,38 +595,83 @@ public class Template implements TemplateParser {
 		this.token.withTemplate(new StringCondition().withValue(value));
 	}
 
+	/**
+	 * With condition.
+	 *
+	 * @param condition the condition
+	 * @return the template
+	 */
 	public Template withCondition(CharSequence condition) {
 		this.token.withCondition(new StringCondition().withValue(condition));
 		return this;
 	}
 
+	/**
+	 * With import.
+	 *
+	 * @param item the item
+	 * @return the template
+	 */
 	public Template withImport(String item) {
 		this.imports.add(item);
 		return this;
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public int getType() {
 		return type;
 	}
 
+	/**
+	 * Sets the type.
+	 *
+	 * @param type the new type
+	 */
 	public void setType(int type) {
 		this.type = type;
 	}
 
+	/**
+	 * With type.
+	 *
+	 * @param type the type
+	 * @return the template
+	 */
 	public Template withType(int type) {
 		setType(type);
 		return this;
 	}
 
+	/**
+	 * Gets the variables.
+	 *
+	 * @return the variables
+	 */
 	public SimpleList<String> getVariables() {
 		return variables;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return type + ": " + id;
 	}
 
+	/**
+	 * Adds the template.
+	 *
+	 * @param template the template
+	 * @param addOwner the add owner
+	 * @return true, if successful
+	 */
 	public boolean addTemplate(Template template, boolean addOwner) {
 		if (template == null) {
 			return false;
@@ -565,23 +688,53 @@ public class Template implements TemplateParser {
 		return true;
 	}
 
+	/**
+	 * With owner.
+	 *
+	 * @param template the template
+	 * @return the template
+	 */
 	public Template withOwner(Template template) {
 		this.owner = template;
 		return this;
 	}
 
+	/**
+	 * Gets the owner.
+	 *
+	 * @return the owner
+	 */
 	public Template getOwner() {
 		return owner;
 	}
 
+	/**
+	 * Gets the file name.
+	 *
+	 * @return the file name
+	 */
 	public String getFileName() {
 		return null;
 	}
 
+	/**
+	 * Execute entity.
+	 *
+	 * @param condition the condition
+	 * @param parameters the parameters
+	 * @return the template result fragment
+	 */
 	public TemplateResultFragment executeEntity(ObjectCondition condition, LocalisationInterface parameters) {
 		return executingEntity(condition, parameters);
 	}
 
+	/**
+	 * Execute simple entity.
+	 *
+	 * @param condition the condition
+	 * @param parameters the parameters
+	 * @return the template result fragment
+	 */
 	public TemplateResultFragment executeSimpleEntity(ObjectCondition condition, TemplateItem parameters) {
 		return executingEntity(condition, parameters);
 	}
@@ -601,7 +754,7 @@ public class Template implements TemplateParser {
 			}
 		}
 
-		if (this.token.update(templateFragment) == false) {
+		if (!this.token.update(templateFragment)) {
 			return null;
 		}
 		templateFragment.withExpression(false);
@@ -613,16 +766,32 @@ public class Template implements TemplateParser {
 		return templateFragment;
 	}
 
+	/**
+	 * Execute entity.
+	 *
+	 * @param model the model
+	 * @param parameters the parameters
+	 * @param isStandard the is standard
+	 * @return the template result file
+	 */
 	public TemplateResultFile executeEntity(TemplateItem model, LocalisationInterface parameters, boolean isStandard) {
-		if (isValid(model, parameters) == false) {
+		if (!isValid(model, parameters)) {
 			return null;
 		}
 		TemplateResultFile templateResult = createResultFile(model, isStandard);
 		return templateResult;
 	}
 
+	/**
+	 * Execute clazz.
+	 *
+	 * @param clazz the clazz
+	 * @param parameters the parameters
+	 * @param isStandard the is standard
+	 * @return the template result file
+	 */
 	public TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters, boolean isStandard) {
-		if (isValid(clazz, parameters) == false) {
+		if (!isValid(clazz, parameters)) {
 			return null;
 		}
 		TemplateResultFile templateResult = createResultFile(clazz, isStandard);
@@ -668,8 +837,7 @@ public class Template implements TemplateParser {
 					// FOUND IT
 					for (Association assoc : associations) {
 						template.executeTemplate(parameters, templateResult, assoc);
-						if (assoc.getClazz().equals(assoc.getOtherClazz())
-								&& assoc.getName().equals(assoc.getOther().getName()) == false) {
+						if (assoc.getClazz().equals(assoc.getOtherClazz()) && !assoc.getName().equals(assoc.getOther().getName())) {
 							template.executeTemplate(parameters, templateResult, assoc.getOther());
 						}
 					}
@@ -691,6 +859,12 @@ public class Template implements TemplateParser {
 		}
 	}
 
+	/**
+	 * Read template.
+	 *
+	 * @param buffer the buffer
+	 * @return true, if successful
+	 */
 	public boolean readTemplate(CharacterBuffer buffer) {
 		boolean result = false;
 		if (buffer == null) {
@@ -716,9 +890,16 @@ public class Template implements TemplateParser {
 		return null;
 	}
 
+	/**
+	 * Execute template.
+	 *
+	 * @param parameters the parameters
+	 * @param templateResult the template result
+	 * @param member the member
+	 */
 	public void executeTemplate(LocalisationInterface parameters, TemplateResultFile templateResult,
 			GraphMember member) {
-		if (isValid(member, parameters) == false) {
+		if (!isValid(member, parameters)) {
 			return;
 		}
 		String id2 = this.getId(true);
@@ -776,6 +957,13 @@ public class Template implements TemplateParser {
 
 	}
 
+	/**
+	 * Creates the result file.
+	 *
+	 * @param clazz the clazz
+	 * @param isStandard the is standard
+	 * @return the template result file
+	 */
 	public TemplateResultFile createResultFile(TemplateItem clazz, boolean isStandard) {
 		TemplateResultFile templateResult = new TemplateResultFile(clazz, isStandard);
 		templateResult.withExtension(this.extension);
@@ -788,15 +976,30 @@ public class Template implements TemplateParser {
 		return templateResult;
 	}
 
+	/**
+	 * Checks if is meta model.
+	 *
+	 * @return true, if is meta model
+	 */
 	public boolean isMetaModel() {
 		return metaModel;
 	}
 
+	/**
+	 * Gets the children.
+	 *
+	 * @return the children
+	 */
 	public SimpleList<Template> getChildren() {
 		return this.children;
 
 	}
 
+	/**
+	 * Gets the template condition.
+	 *
+	 * @return the template condition
+	 */
 	public static SimpleList<ParserCondition> getTemplateCondition() {
 		SimpleList<ParserCondition> customTemplates = new SimpleList<ParserCondition>();
 		customTemplates.add(new FeatureCondition());
@@ -814,6 +1017,11 @@ public class Template implements TemplateParser {
 		return customTemplates;
 	}
 
+	/**
+	 * Gets the last stop words.
+	 *
+	 * @return the last stop words
+	 */
 	@Override
 	public String[] getLastStopWords() {
 		return lastStopWords;

@@ -12,6 +12,11 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.graph.DotConverter;
 import de.uniks.networkparser.graph.GraphList;
 
+/**
+ * The Class BNDGraph.
+ *
+ * @author Stefan
+ */
 public class BNDGraph {
     private HashSet<String> visited = new HashSet<String>();
     private ArrayList<String> todo = new ArrayList<String>();
@@ -20,6 +25,13 @@ public class BNDGraph {
     private NetworkParserLog logger;
     private GraphList graph;
 
+    /**
+     * Anaylse project.
+     *
+     * @param path the path
+     * @param startproject the startproject
+     * @param fileName the file name
+     */
     public void anaylseProject(String path, String startproject, String fileName) {
         graph = new GraphList();
         File file = new File(path);

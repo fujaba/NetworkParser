@@ -2,7 +2,16 @@ package de.uniks.networkparser.parser.java;
 
 import de.uniks.networkparser.parser.Template;
 
+/**
+ * The Class JavaAttribute.
+ *
+ * @author Stefan
+ */
 public class JavaAttribute extends Template {
+	
+	/**
+	 * Instantiates a new java attribute.
+	 */
 	public JavaAttribute() {
 		this.id = "attribute";
 		this.type = DECLARATION;

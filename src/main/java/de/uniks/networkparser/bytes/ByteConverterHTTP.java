@@ -32,10 +32,18 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 
 /**
- * Converter for Byte to HTTP-Request
+ * Converter for Byte to HTTP-Request.
+ *
  * @author Stefan Lindel
  */
 public class ByteConverterHTTP extends ByteConverter {
+	
+	/**
+	 * To string.
+	 *
+	 * @param values the values
+	 * @return the string
+	 */
 	@Override
 	public String toString(BufferedBuffer values) {
 		CharacterBuffer returnValue = new CharacterBuffer();
@@ -68,6 +76,12 @@ public class ByteConverterHTTP extends ByteConverter {
 		return null;
 	}
 
+	/**
+	 * Decode.
+	 *
+	 * @param values the values
+	 * @return the byte[]
+	 */
 	public byte[] decode(byte[] values) {
 		if (values == null || values.length < 1) {
 			return null;

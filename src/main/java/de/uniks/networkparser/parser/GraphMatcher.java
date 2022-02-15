@@ -33,6 +33,11 @@ import de.uniks.networkparser.parser.differ.AttributeChangeCondition;
 import de.uniks.networkparser.parser.differ.MemberDiffer;
 import de.uniks.networkparser.parser.differ.RemoveCondition;
 
+/**
+ * The Class GraphMatcher.
+ *
+ * @author Stefan
+ */
 public class GraphMatcher extends GraphEntity {
 	private SimpleList<Match> clazzMatches = new SimpleList<Match>();
 
@@ -47,15 +52,31 @@ public class GraphMatcher extends GraphEntity {
 	private GraphModel metaModel;
 	private GraphSimpleSet diffs = new GraphSimpleSet();
 
+	/**
+	 * Instantiates a new graph matcher.
+	 */
 	public GraphMatcher() {
 	}
 
+	/**
+	 * Instantiates a new graph matcher.
+	 *
+	 * @param oldModel the old model
+	 * @param newModel the new model
+	 */
 	public GraphMatcher(GraphModel oldModel, GraphModel newModel) {
 		this.oldModel = oldModel;
 		this.newModel = newModel;
 		createMatches();
 	}
 
+	/**
+	 * Instantiates a new graph matcher.
+	 *
+	 * @param oldModel the old model
+	 * @param newModel the new model
+	 * @param metaModel the meta model
+	 */
 	public GraphMatcher(GraphModel oldModel, GraphModel newModel, GraphModel metaModel) {
 		this.oldModel = oldModel;
 		this.newModel = newModel;
@@ -63,6 +84,11 @@ public class GraphMatcher extends GraphEntity {
 		createMatches();
 	}
 
+	/**
+	 * Creates the matches.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean createMatches() {
 		matchClazzes();
 
@@ -92,7 +118,12 @@ public class GraphMatcher extends GraphEntity {
 //	private MemberDiffer associationDiffer = new MemberDiffer(new AssociationAddCondition(), new AssociationChangeCondition(), new AssociationRemoveCondition());
 //	private MemberDiffer methodDiffer = new MemberDiffer(new AddCondition(), new MethodChangeCondition(), new RemoveCondition());
 
-	public GraphSimpleSet getDiffs() {
+	/**
+ * Gets the diffs.
+ *
+ * @return the diffs
+ */
+public GraphSimpleSet getDiffs() {
 //		clazzDiffer.diff(matches, getClazzMatches());
 		attributeDiffer.diff(this, getAttributeMatches());
 //		associationDiffer.diff(matches, getAssociationMatches());
@@ -104,6 +135,11 @@ public class GraphMatcher extends GraphEntity {
 		return attributeMatches;
 	}
 
+	/**
+	 * Match clazzes.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean matchClazzes() {
 		if (oldModel == null || newModel == null) {
 			return oldModel == newModel;
@@ -236,6 +272,11 @@ public class GraphMatcher extends GraphEntity {
 		}
 	}
 
+	/**
+	 * Gets the possible links.
+	 *
+	 * @return the possible links
+	 */
 	public Map<Match, Match> getPossibleLinks() {
 		return possibleLinks;
 	}
@@ -347,6 +388,12 @@ public class GraphMatcher extends GraphEntity {
 		return oldMatches.size() == oldAttributes.size() && newMatches.size() == newAttributes.size();
 	}
 
+	/**
+	 * Put possible link.
+	 *
+	 * @param sourceMatch the source match
+	 * @param otherMatch the other match
+	 */
 	public void putPossibleLink(Match sourceMatch, Match otherMatch) {
 		this.possibleLinks.put(sourceMatch, otherMatch);
 	}
@@ -495,6 +542,12 @@ public class GraphMatcher extends GraphEntity {
 		return false;
 	}
 
+	/**
+	 * Gets the association match.
+	 *
+	 * @param association the association
+	 * @return the association match
+	 */
 	public Match getAssociationMatch(GraphMember association) {
 		for (Match associationMatch : associationMatches) {
 			if (associationMatch.getMatch() == association) {
@@ -558,6 +611,12 @@ public class GraphMatcher extends GraphEntity {
 		return oldMatches.size() == oldMethods.size() && newMatches.size() == newMethods.size();
 	}
 
+	/**
+	 * Gets the attribute match.
+	 *
+	 * @param attribute the attribute
+	 * @return the attribute match
+	 */
 	public Match getAttributeMatch(GraphMember attribute) {
 		for (Match attributeMatch : attributeMatches) {
 			if (attributeMatch.getMatch() == attribute) {
@@ -567,6 +626,12 @@ public class GraphMatcher extends GraphEntity {
 		return null;
 	}
 
+	/**
+	 * Gets the method match.
+	 *
+	 * @param method the method
+	 * @return the method match
+	 */
 	public Match getMethodMatch(GraphMember method) {
 		for (Match methodMatch : methodMatches) {
 			if (methodMatch.getMatch() == method) {
@@ -576,6 +641,12 @@ public class GraphMatcher extends GraphEntity {
 		return null;
 	}
 
+	/**
+	 * Gets the clazz match.
+	 *
+	 * @param clazz the clazz
+	 * @return the clazz match
+	 */
 	public Match getClazzMatch(GraphMember clazz) {
 		for (Match clazzMatch : clazzMatches) {
 			if (clazzMatch.getMatch() == clazz) {
@@ -829,42 +900,93 @@ public class GraphMatcher extends GraphEntity {
 		return true;
 	}
 
+	/**
+	 * Adds the clazz match.
+	 *
+	 * @param clazzMatch the clazz match
+	 */
 	public void addClazzMatch(Match clazzMatch) {
 		this.clazzMatches.add(clazzMatch);
 	}
 
+	/**
+	 * Adds the attribute match.
+	 *
+	 * @param attributeMatch the attribute match
+	 */
 	public void addAttributeMatch(Match attributeMatch) {
 		this.attributeMatches.add(attributeMatch);
 	}
 
+	/**
+	 * Adds the association match.
+	 *
+	 * @param associationMatch the association match
+	 */
 	public void addAssociationMatch(Match associationMatch) {
 		this.associationMatches.add(associationMatch);
 	}
 
+	/**
+	 * Adds the method match.
+	 *
+	 * @param methodMatch the method match
+	 */
 	public void addMethodMatch(Match methodMatch) {
 		this.methodMatches.add(methodMatch);
 	}
 
+	/**
+	 * Gets the clazz matches.
+	 *
+	 * @return the clazz matches
+	 */
 	public List<Match> getClazzMatches() {
 		return clazzMatches;
 	}
 
+	/**
+	 * Gets the old model.
+	 *
+	 * @return the old model
+	 */
 	public GraphModel getOldModel() {
 		return oldModel;
 	}
 
+	/**
+	 * Gets the new model.
+	 *
+	 * @return the new model
+	 */
 	public GraphModel getNewModel() {
 		return newModel;
 	}
 
+	/**
+	 * Adds the diff.
+	 *
+	 * @param diff the diff
+	 * @return true, if successful
+	 */
 	public boolean addDiff(Match diff) {
 		return this.diffs.add(diff);
 	}
 
+	/**
+	 * Gets the meta model.
+	 *
+	 * @return the meta model
+	 */
 	public Object getMetaModel() {
 		return metaModel;
 	}
 
+	/**
+	 * Generate.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean generate() {
 		createMatches();
 //		GraphSimpleSet diffs = getDiffs();

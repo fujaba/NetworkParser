@@ -26,53 +26,114 @@ THE SOFTWARE.
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 
+/**
+ * The Class YamlItem.
+ *
+ * @author Stefan
+ */
 public class YamlItem implements BaseItem {
 	private Object key;
 	private Object value;
 	private String comment;
 
+	/**
+	 * Gets the comment.
+	 *
+	 * @return the comment
+	 */
 	public String getComment() {
 		return comment;
 	}
 
+	/**
+	 * With comment.
+	 *
+	 * @param comment the comment
+	 * @return the yaml item
+	 */
 	public YamlItem withComment(String comment) {
 		this.comment = comment;
 		return this;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public Object getValue() {
 		return value;
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param value the value
+	 * @return the yaml item
+	 */
 	public YamlItem withValue(Object value) {
 		this.value = value;
 		return this;
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	public Object getKey() {
 		return key;
 	}
 
+	/**
+	 * With key.
+	 *
+	 * @param key the key
+	 * @return the yaml item
+	 */
 	public YamlItem withKey(Object key) {
 		this.key = key;
 		return this;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param converter the converter
+	 * @return the string
+	 */
 	@Override
 	public String toString(Converter converter) {
 		return null;
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean add(Object... values) {
 		return false;
 	}
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new YamlEntity();
 	}
 
+	/**
+	 * Size.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int size() {
 		return 1;

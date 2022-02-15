@@ -36,11 +36,16 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
- * Proxy for Broker
+ * Proxy for Broker.
+ *
  * @author Stefan Lindel
  */
 public class NodeProxyBroker extends NodeProxy {
+	
+	/** The Constant PROPERTY_SERVERURL. */
 	public static final String PROPERTY_SERVERURL = "url";
+	
+	/** The Constant PROPERTY_clientId. */
 	public static final String PROPERTY_clientId = "clientId";
 	private String sender;
 	private String password;
@@ -57,8 +62,14 @@ public class NodeProxyBroker extends NodeProxy {
 	private SimpleKeyValueList<String, String> topics = new SimpleKeyValueList<String, String>();
 	private SimpleKeyValueList<Short, SimpleKeyValueList<Short, SimpleKeyValueList<String, Byte>>> values;
 	private ObjectCondition callBack;
+	
+	/** The Constant EVENT_CONNECT. */
 	public static final String EVENT_CONNECT = "connected";
+	
+	/** The Constant EVENT_CONNECTLOST. */
 	public static final String EVENT_CONNECTLOST = "ConnectionLost";
+	
+	/** The Constant EVENT_MESSAGE. */
 	public static final String EVENT_MESSAGE = "Message";
 	/** Lowest possible MQTT message ID to use */
 	private static final int MIN_MSG_ID = 1; 
@@ -67,22 +78,43 @@ public class NodeProxyBroker extends NodeProxy {
 	/* The next available message ID to use */
 	private int nextMsgId = MIN_MSG_ID - 1; 
 
+	/**
+	 * Instantiates a new node proxy broker.
+	 */
 	public NodeProxyBroker() {
 		this.property.addAll(PROPERTY_SERVERURL);
 		this.propertyUpdate.addAll(PROPERTY_SERVERURL);
 		this.propertyInfo.addAll(PROPERTY_SERVERURL);
 	}
 
+	/**
+	 * Instantiates a new node proxy broker.
+	 *
+	 * @param serverURI the server URI
+	 */
 	public NodeProxyBroker(String serverURI) {
 		this(serverURI, null);
 	}
 
+	/**
+	 * With auth.
+	 *
+	 * @param sender the sender
+	 * @param password the password
+	 * @return the node proxy broker
+	 */
 	public NodeProxyBroker withAuth(String sender, String password) {
 		this.sender = sender;
 		this.password = password;
 		return this;
 	}
 
+	/**
+	 * Instantiates a new node proxy broker.
+	 *
+	 * @param url the url
+	 * @param clientId the client id
+	 */
 	public NodeProxyBroker(String url, String clientId) {
 		this.url = url;
 		if (clientId == null) {
@@ -100,6 +132,11 @@ public class NodeProxyBroker extends NodeProxy {
 		return CLIENTID_PREFIX + System.nanoTime();
 	}
 
+	/**
+	 * Connect.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean connect() {
 		if (session == null) {
 			session = new MessageSession();
@@ -122,6 +159,11 @@ public class NodeProxyBroker extends NodeProxy {
 		return success;
 	}
 
+	/**
+	 * Execute exception.
+	 *
+	 * @param e the e
+	 */
 	public void executeException(Exception e) {
 		if (this.callBack != null) {
 			SimpleEvent event = new SimpleEvent(this, url, null, session).withType(NodeProxyBroker.EVENT_CONNECTLOST);
@@ -129,24 +171,50 @@ public class NodeProxyBroker extends NodeProxy {
 		}
 	}
 
+	/**
+	 * Gets the client id.
+	 *
+	 * @return the client id
+	 */
 	public String getClientId() {
 		return clientId;
 	}
 
+	/**
+	 * Gets the server URI.
+	 *
+	 * @return the server URI
+	 */
 	public String getServerURI() {
 		return url;
 	}
 
+	/**
+	 * Checks if is sendable.
+	 *
+	 * @return true, if is sendable
+	 */
 	@Override
 	public boolean isSendable() {
 		return true;
 	}
 
+	/**
+	 * Close.
+	 *
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean close() {
 		return close(false);
 	}
 
+	/**
+	 * Close.
+	 *
+	 * @param force the force
+	 * @return true, if successful
+	 */
 	public boolean close(boolean force) {
 		/* @TRACE 113=< */
 		if (session == null) {
@@ -184,38 +252,84 @@ public class NodeProxyBroker extends NodeProxy {
 		return false;
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return url;
 	}
 
+	/**
+	 * Gets the user name.
+	 *
+	 * @return the user name
+	 */
 	public String getUserName() {
 		return sender;
 	}
 
+	/**
+	 * Gets the password.
+	 *
+	 * @return the password
+	 */
 	public String getPassword() {
 		return password;
 	}
 
+	/**
+	 * Gets the reconnecting.
+	 *
+	 * @return the reconnecting
+	 */
 	public boolean getReconnecting() {
 		return reconnecting;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public NodeProxyBroker getSendableInstance(boolean prototyp) {
 		return new NodeProxyBroker();
 	}
 
+	/**
+	 * With callback.
+	 *
+	 * @param condition the condition
+	 * @return the node proxy broker
+	 */
 	public NodeProxyBroker withCallback(ObjectCondition condition) {
 		this.callBack = condition;
 		return this;
 	}
 
+	/**
+	 * Subscribe.
+	 *
+	 * @param topic the topic
+	 * @param callBack the call back
+	 * @return true, if successful
+	 */
 	public boolean subscribe(String topic, ObjectCondition callBack) {
 		this.callBack = callBack;
 		return subscribe(topic);
 	}
 
+	/**
+	 * Consume.
+	 *
+	 * @param topic the topic
+	 * @param condition the condition
+	 * @return true, if successful
+	 */
 	public boolean consume(String topic, ObjectCondition condition) {
 /*		SimpleKeyValueList<String, String> topics = getTopics();
 		short channelNo = Short.valueOf(topics.get(topic));*/
@@ -228,6 +342,12 @@ public class NodeProxyBroker extends NodeProxy {
 		return true;
 	}
 
+	/**
+	 * Subscribe.
+	 *
+	 * @param topic the topic
+	 * @return true, if successful
+	 */
 	public boolean subscribe(String topic) {
 		if (session != null) {
 			if (MessageSession.TYPE_AMQ.equals(format)) {
@@ -278,6 +398,13 @@ public class NodeProxyBroker extends NodeProxy {
 		return false;
 	}
 
+	/**
+	 * Publish.
+	 *
+	 * @param channel the channel
+	 * @param message the message
+	 * @return true, if successful
+	 */
 	public boolean publish(String channel, String message) {
 		if (MessageSession.TYPE_AMQ.equals(format)) {
 			SimpleKeyValueList<String, String> topics = getTopics();
@@ -301,6 +428,13 @@ public class NodeProxyBroker extends NodeProxy {
 		return false;
 	}
 
+	/**
+	 * Bind exchange.
+	 *
+	 * @param exchange the exchange
+	 * @param queue the queue
+	 * @return true, if successful
+	 */
 	public boolean bindExchange(String exchange, String queue) {
 		if (MessageSession.TYPE_AMQ.equals(format)) {
 			SimpleKeyValueList<String, String> topics = getTopics();
@@ -323,17 +457,35 @@ public class NodeProxyBroker extends NodeProxy {
 		return false;
 	}
 
+	/**
+	 * With format.
+	 *
+	 * @param format the format
+	 * @return the node proxy broker
+	 */
 	public NodeProxyBroker withFormat(String format) {
 		this.format = format;
 		return this;
 	}
 
+	/**
+	 * Creates the MQTT broker.
+	 *
+	 * @param url the url
+	 * @return the node proxy broker
+	 */
 	public static NodeProxyBroker createMQTTBroker(String url) {
 		NodeProxyBroker broker = new NodeProxyBroker(url);
 		broker.withFormat(MessageSession.TYPE_MQTT);
 		return broker;
 	}
 
+	/**
+	 * Gets the grammar.
+	 *
+	 * @param create the create
+	 * @return the grammar
+	 */
 	public SimpleKeyValueList<Short, SimpleKeyValueList<Short, SimpleKeyValueList<String, Byte>>> getGrammar(
 			boolean create) {
 		if (create == false) {
@@ -343,6 +495,11 @@ public class NodeProxyBroker extends NodeProxy {
 		return values;
 	}
 
+	/**
+	 * Gets the topics.
+	 *
+	 * @return the topics
+	 */
 	public SimpleKeyValueList<String, String> getTopics() {
 		if (topics == null) {
 			topics = new SimpleKeyValueList<String, String>();
@@ -350,6 +507,11 @@ public class NodeProxyBroker extends NodeProxy {
 		return topics;
 	}
 
+	/**
+	 * Gets the format.
+	 *
+	 * @return the format
+	 */
 	public String getFormat() {
 		return format;
 	}

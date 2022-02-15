@@ -31,21 +31,41 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
 /**
- * Representation for Manifest
+ * Representation for Manifest.
+ *
  * @author Stefan Lindel
  */
 public class Manifest extends SimpleKeyValueList<String, String> {
     private static char SPLITTER = ':';
 	private static char[] CRLF = new char[] { '\r', '\n' };
+	
+	/** The Constant VERSION. */
 	public static final String VERSION = "Implementation-Version";
+	
+	/** The Constant TITLE. */
 	public static final String TITLE = "Specification-Title";
+	
+	/** The Constant BUILD. */
 	public static final String BUILD = "Built-Time";
+	
+	/** The Constant HASH. */
 	public static final String HASH = "Hash";
+	
+	/** The Constant LICENCE. */
 	public static final String LICENCE = "Licence";
+	
+	/** The Constant HOMEPAGE. */
 	public static final String HOMEPAGE = "Homepage";
+	
+	/** The Constant COVERAGE. */
 	public static final String COVERAGE = "Coverage";
 	private boolean empty = true;
 
+	/**
+	 * Creates the.
+	 *
+	 * @return the manifest
+	 */
 	public static Manifest create() {
 		String value = null;
 		InputStream resources = Manifest.class.getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF");
@@ -66,6 +86,12 @@ public class Manifest extends SimpleKeyValueList<String, String> {
 		}
 		return create(value);
 	}
+	
+	/**
+	 * Gets the global version.
+	 *
+	 * @return the global version
+	 */
 	public static String getGlobalVersion() {
         Manifest manifest = create();
         if (!manifest.isEmptyManifest()) {
@@ -74,6 +100,11 @@ public class Manifest extends SimpleKeyValueList<String, String> {
         return "";
 	}
 	
+	/**
+	 * Gets the version.
+	 *
+	 * @return the version
+	 */
 	public String getVersion() {
 		CharacterBuffer sb = new CharacterBuffer();
 		sb.withLine("Title: " + getString(TITLE));
@@ -86,6 +117,13 @@ public class Manifest extends SimpleKeyValueList<String, String> {
 		return sb.toString();
 	}
 	
+	/**
+	 * Gets the full version.
+	 *
+	 * @param splitter the splitter
+	 * @param excludes the excludes
+	 * @return the full version
+	 */
 	public CharacterBuffer getFullVersion(String splitter, String... excludes) {
 	    CharacterBuffer sb = new CharacterBuffer();
 	    SimpleList<String> excludeList = new SimpleList<>();
@@ -95,17 +133,26 @@ public class Manifest extends SimpleKeyValueList<String, String> {
 	    }
 	    for(int i=0;i<this.size();i++) {
 	        String key = this.getKeyByIndex(i);
-	        if(!excludeList.containsKey(key)) {
-	            sb.withLine(key + ": " +this.getValueByIndex(i) + splitter);
+	        if(!excludeList.containsKey(key) && !key.isEmpty()) {
+	            String value = this.getValueByIndex(i);
+	            if(!value.isEmpty()) {
+	                sb.withLine(key.trim() + ": " +value.trim()+ splitter);
+	            }
 	        }
 	    }
 	    return sb;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param value the value
+	 * @return the manifest
+	 */
 	public static Manifest create(CharSequence value) {
 		Manifest manifest = new Manifest();
 		CharacterBuffer tokener = new CharacterBuffer().with(value);
-		while (tokener.isEnd() == false) {
+		while (!tokener.isEnd()) {
 			CharacterBuffer section = tokener.nextToken(true, SPLITTER);
 			CharacterBuffer sectionheader = tokener.nextToken(false, CRLF);
 			boolean isCoverage = section.toString().equals(COVERAGE);
@@ -119,16 +166,21 @@ public class Manifest extends SimpleKeyValueList<String, String> {
 				}
 				tokener.skipFor('\n');
 			}
-			String key = section.toString();
+			String key = section.trim().toString();
 			String valueKey = sectionheader.trim().toString();
 			if(!key.isEmpty() && !valueKey.isEmpty()) {
 			    manifest.add(key, valueKey);
 			}
 		}
-		manifest.empty = manifest.containsAll(VERSION, TITLE, BUILD) == false;
+		manifest.empty = !manifest.containsAll(VERSION, TITLE, BUILD);
 		return manifest;
 	}
 
+	/**
+	 * Checks if is empty manifest.
+	 *
+	 * @return true, if is empty manifest
+	 */
 	public boolean isEmptyManifest() {
 		return empty;
 	}

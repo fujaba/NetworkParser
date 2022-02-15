@@ -32,20 +32,44 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class SimpleGrammar.
+ *
+ * @author Stefan
+ */
 public class SimpleGrammar implements Grammar {
 	private boolean flatFormat = false;
 	private ObjectCondition condition;
 	private SimpleList<String> basicProperties = new SimpleList<String>().with(SimpleMap.ID, SimpleMap.CLASS, SimpleMap.SESSION, SimpleMap.TIMESTAMP);
 
+	/**
+	 * With flat format.
+	 *
+	 * @param value the value
+	 * @return the simple grammar
+	 */
 	public SimpleGrammar withFlatFormat(boolean value) {
 		this.flatFormat = value;
 		return this;
 	}
 
+	/**
+	 * Checks if is flat format.
+	 *
+	 * @return true, if is flat format
+	 */
 	public boolean isFlatFormat() {
 		return flatFormat;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @param item the item
+	 * @param map the map
+	 * @param isId the is id
+	 * @return the properties
+	 */
 	@Override
 	public BaseItem getProperties(Entity item, MapEntity map, boolean isId) {
 		if (item == null) {
@@ -59,7 +83,7 @@ public class SimpleGrammar implements Grammar {
 		}
 		JsonObject props = new JsonObject();
 		for (int i = 0; i < item.size(); i++) {
-			if (SimpleMap.CLASS.equalsIgnoreCase(item.getKeyByIndex(i)) == false) {
+			if (!SimpleMap.CLASS.equalsIgnoreCase(item.getKeyByIndex(i))) {
 				props.put(item.getKeyByIndex(i), item.getValueByIndex(i));
 			}
 
@@ -67,6 +91,13 @@ public class SimpleGrammar implements Grammar {
 		return props;
 	}
 
+	/**
+	 * Gets the id.
+	 *
+	 * @param obj the obj
+	 * @param map the map
+	 * @return the id
+	 */
 	@Override
 	public String getId(Object obj, SimpleMap map) {
 		if (condition != null) {
@@ -79,13 +110,23 @@ public class SimpleGrammar implements Grammar {
 		return null;
 	}
 
+	/**
+	 * Write basic value.
+	 *
+	 * @param entity the entity
+	 * @param className the class name
+	 * @param id the id
+	 * @param type the type
+	 * @param map the map
+	 * @return the entity
+	 */
 	@Override
 	public Entity writeBasicValue(Entity entity, String className, String id, String type, SimpleMap map) {
 		if (entity == null || map == null) {
 			return null;
 		}
 		if (this.flatFormat) {
-			if (type != null && SendableEntityCreator.UPDATE.equalsIgnoreCase(type) == false) {
+			if (type != null && !SendableEntityCreator.UPDATE.equalsIgnoreCase(type)) {
 				entity.put("." + SimpleMap.TYPE, type);
 			}
 			if (basicProperties.contains(SimpleMap.SESSION)) {
@@ -115,7 +156,7 @@ public class SimpleGrammar implements Grammar {
 			}
 			return entity;
 		}
-		if (type != null && SendableEntityCreator.UPDATE.equalsIgnoreCase(type) == false) {
+		if (type != null && !SendableEntityCreator.UPDATE.equalsIgnoreCase(type)) {
 			entity.put(SimpleMap.TYPE, type);
 		}
 		if (basicProperties.contains(SimpleMap.SESSION)) {
@@ -147,6 +188,15 @@ public class SimpleGrammar implements Grammar {
 		return entity;
 	}
 
+	/**
+	 * Gets the creator.
+	 *
+	 * @param type the type
+	 * @param item the item
+	 * @param entity the entity
+	 * @param className the class name
+	 * @return the creator
+	 */
 	@Override
 	public SendableEntityCreator getCreator(String type, Object item, MapEntity entity, String className) {
 		if (item == null) {
@@ -185,6 +235,14 @@ public class SimpleGrammar implements Grammar {
 		return getSuperCreator(map, entity.isSearchForSuperClass(), clazzName);
 	}
 
+	/**
+	 * Gets the super creator.
+	 *
+	 * @param map the map
+	 * @param searchForSuperCreator the search for super creator
+	 * @param modelItem the model item
+	 * @return the super creator
+	 */
 	public SendableEntityCreator getSuperCreator(SimpleMap map, boolean searchForSuperCreator, Object modelItem) {
 		return null;
 	}
@@ -193,6 +251,13 @@ public class SimpleGrammar implements Grammar {
 		return null;
 	}
 
+	/**
+	 * Checks for value.
+	 *
+	 * @param item the item
+	 * @param property the property
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean hasValue(Entity item, String property) {
 		if (item == null) {
@@ -201,6 +266,14 @@ public class SimpleGrammar implements Grammar {
 		return item.has(property);
 	}
 
+	/**
+	 * Gets the new entity.
+	 *
+	 * @param creator the creator
+	 * @param className the class name
+	 * @param prototype the prototype
+	 * @return the new entity
+	 */
 	@Override
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype) {
 		if (creator == null) {
@@ -209,6 +282,13 @@ public class SimpleGrammar implements Grammar {
 		return creator.getSendableInstance(prototype);
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param item the item
+	 * @param property the property
+	 * @return the value
+	 */
 	@Override
 	public String getValue(Entity item, String property) {
 		if (item == null) {
@@ -217,6 +297,13 @@ public class SimpleGrammar implements Grammar {
 		return item.getString(property);
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @param map the map
+	 * @return the base item
+	 */
 	@Override
 	public BaseItem encode(Object entity, MapEntity map) {
 		if (map != null) {
@@ -228,6 +315,12 @@ public class SimpleGrammar implements Grammar {
 		return null;
 	}
 
+	/**
+	 * With basic feature.
+	 *
+	 * @param values the values
+	 * @return the simple grammar
+	 */
 	public SimpleGrammar withBasicFeature(String... values) {
 		if (values == null) {
 			return this;
@@ -238,6 +331,12 @@ public class SimpleGrammar implements Grammar {
 		return this;
 	}
 
+	/**
+	 * Without basic feature.
+	 *
+	 * @param values the values
+	 * @return the simple grammar
+	 */
 	public SimpleGrammar withoutBasicFeature(String... values) {
 		if (values == null) {
 			return this;
@@ -248,6 +347,16 @@ public class SimpleGrammar implements Grammar {
 		return this;
 	}
 
+	/**
+	 * Write value.
+	 *
+	 * @param parent the parent
+	 * @param property the property
+	 * @param value the value
+	 * @param map the map
+	 * @param tokener the tokener
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean writeValue(BaseItem parent, String property, Object value, MapEntity map, Tokener tokener) {
 		return false;

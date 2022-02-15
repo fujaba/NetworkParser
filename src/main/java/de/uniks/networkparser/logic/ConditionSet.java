@@ -28,7 +28,19 @@ import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class ConditionSet.
+ *
+ * @author Stefan
+ */
 public class ConditionSet extends SimpleSet<ObjectCondition> {
+	
+	/**
+	 * Adds the.
+	 *
+	 * @param newValue the new value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean add(ObjectCondition newValue) {
 		if (newValue instanceof ChainCondition) {
@@ -38,6 +50,12 @@ public class ConditionSet extends SimpleSet<ObjectCondition> {
 		return super.add(newValue);
 	}
 
+	/**
+	 * Gets the all value.
+	 *
+	 * @param variables the variables
+	 * @return the all value
+	 */
 	public CharacterBuffer getAllValue(LocalisationInterface variables) {
 		CharacterBuffer buffer = new CharacterBuffer();
 		for (ObjectCondition item : this) {

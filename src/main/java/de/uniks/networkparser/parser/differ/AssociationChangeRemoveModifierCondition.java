@@ -7,8 +7,16 @@ import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.GraphMatcher;
 
+/**
+ * The Class AssociationChangeRemoveModifierCondition.
+ *
+ * @author Stefan
+ */
 public class AssociationChangeRemoveModifierCondition extends MatchCondition {
 
+	/**
+	 * Instantiates a new association change remove modifier condition.
+	 */
 	public AssociationChangeRemoveModifierCondition() {
 		super(true);
 	}
@@ -93,6 +101,11 @@ public class AssociationChangeRemoveModifierCondition extends MatchCondition {
 		}
 	}
 
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
 	@Override
 	public String getAction() {
 		return SendableEntityCreator.REMOVE;

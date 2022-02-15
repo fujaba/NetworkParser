@@ -3,7 +3,16 @@ package de.uniks.networkparser.parser.java;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.parser.Template;
 
+/**
+ * The Class JavaSetAssociation.
+ *
+ * @author Stefan
+ */
 public class JavaSetAssociation extends Template {
+	
+	/**
+	 * Instantiates a new java set association.
+	 */
 	public JavaSetAssociation() {
 		this.id = "association";
 		this.type = Template.DECLARATION;

@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.beans.PropertyChangeListener;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface SendableEntity. Add this Interface to your Modellentity to
  * activate the propertyChange Notification
@@ -40,9 +41,28 @@ public interface SendableEntity {
 	 */
 	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
 
+	/**
+	 * Adds the property change listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addPropertyChangeListener(PropertyChangeListener listener);
 
+	/**
+	 * Removes the property change listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean removePropertyChangeListener(PropertyChangeListener listener);
 
+	/**
+	 * Removes the property change listener.
+	 *
+	 * @param propertyName the property name
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
 }

@@ -15,21 +15,35 @@ import de.uniks.networkparser.logic.VariableCondition;
 
 /**
  * DebugCondition for Debug Templates create is parsing exeuteTemplate is
- * Execute Template
- * 
+ * Execute Template.
+ *
  * @author Stefan DebugCondition
  */
 public class DebugCondition implements ParserCondition, SendableEntityCreator {
+	
+	/** The Constant KEY. */
 	public static final String KEY = "debug";
 	private int line = -1;
 	private NetworkParserLog logger = new NetworkParserLog();
 	private ObjectCondition condition;
 
+	/**
+	 * With line.
+	 *
+	 * @param value the value
+	 * @return the debug condition
+	 */
 	public DebugCondition withLine(int value) {
 		this.line = value;
 		return this;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param evt the evt
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object evt) {
 		if (condition != null) {
@@ -62,10 +76,23 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 		return true;
 	}
 
+	/**
+	 * Exeute template.
+	 *
+	 * @param fragment the fragment
+	 * @return true, if successful
+	 */
 	public boolean exeuteTemplate(TemplateResultFragment fragment) {
 		return true;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param buffer the buffer
+	 * @param parser the parser
+	 * @param customTemplate the custom template
+	 */
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		/* CREATE FIELD */
@@ -99,41 +126,89 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 		buffer.skip();
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		return true;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param variables the variables
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(LocalisationInterface variables) {
 		return null;
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return KEY;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param isExpression the is expression
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean isExpression) {
 		return new DebugCondition();
 	}
 
+	/**
+	 * Checks if is expression.
+	 *
+	 * @return true, if is expression
+	 */
 	@Override
 	public boolean isExpression() {
 		return false;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return null;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		return null;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return "{{#DEBUG}}";

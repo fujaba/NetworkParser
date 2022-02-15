@@ -34,6 +34,11 @@ import de.uniks.networkparser.list.SimpleEntity;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class SimpleObject.
+ *
+ * @author Stefan
+ */
 public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntity {
 	protected String className;
 	protected String id;
@@ -47,6 +52,11 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 
 	private SimpleKeyValueList<String, Object> values = new SimpleKeyValueList<String, Object>();
 
+	/**
+	 * Gets the class name.
+	 *
+	 * @return the class name
+	 */
 	public String getClassName() {
 		return className;
 	}
@@ -62,6 +72,12 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		}
 	}
 
+	/**
+	 * Sets the class name.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setClassName(String value) {
 		if (value != this.className) {
 			this.className = value;
@@ -70,10 +86,21 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return false;
 	}
 
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * Sets the id.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setId(String value) {
 		if (value != this.id) {
 			this.id = value;
@@ -82,6 +109,12 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return false;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param key the key
+	 * @return the value
+	 */
 	public Object getValue(String key) {
 		if (SimpleMap.ID.equals(key)) {
 			return this.getId();
@@ -91,6 +124,11 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return values.get(key);
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public Object getValue() {
 		if (values.size() == 1) {
 			return values.getValueByIndex(0);
@@ -98,6 +136,13 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setValue(String key, Object value) {
 		if (key == null) {
 			return false;
@@ -116,7 +161,7 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 				this.setClassName((String) value);
 			}
 		}
-		if (checked == false) {
+		if (!checked) {
 			int pos = this.values.indexOf(key);
 
 			if (pos < 0) {
@@ -132,6 +177,14 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return firePropertyChange(key, oldValue, value);
 	}
 
+	/**
+	 * Fire property change.
+	 *
+	 * @param propertyName the property name
+	 * @param oldValue the old value
+	 * @param newValue the new value
+	 * @return true, if successful
+	 */
 	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
 		if (propertyChangeSupport != null) {
 			if (isChanged(oldValue, newValue)) {
@@ -142,10 +195,23 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return false;
 	}
 
+	/**
+	 * Checks if is changed.
+	 *
+	 * @param oldValue the old value
+	 * @param newValue the new value
+	 * @return true, if is changed
+	 */
 	public boolean isChanged(Object oldValue, Object newValue) {
 		return !(oldValue != null && oldValue.equals(newValue) || oldValue == newValue);
 	}
 
+	/**
+	 * Without value.
+	 *
+	 * @param key the key
+	 * @return the object
+	 */
 	public Object withoutValue(String key) {
 		Object result = this.values.remove(key);
 		if (result != null) {
@@ -155,6 +221,12 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return result;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param values the values
+	 * @return the simple object
+	 */
 	@SuppressWarnings("unchecked")
 	public static SimpleObject create(SimpleEntity<String, Object>... values) {
 		SimpleObject result = new SimpleObject();
@@ -168,6 +240,14 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return result;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param className the class name
+	 * @param key the key
+	 * @param value the value
+	 * @return the simple object
+	 */
 	public static SimpleObject create(String className, String key, Object value) {
 		SimpleObject result = new SimpleObject();
 		result.setClassName(className);
@@ -175,6 +255,15 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return result;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param id the id
+	 * @param className the class name
+	 * @param key the key
+	 * @param value the value
+	 * @return the simple object
+	 */
 	public static SimpleObject create(String id, String className, String key, Object value) {
 		SimpleObject result = new SimpleObject();
 		result.setId(id);
@@ -183,6 +272,12 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return result;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param json the json
+	 * @return the simple object
+	 */
 	public static SimpleObject create(JsonObject json) {
 		SimpleObject result = new SimpleObject();
 		if (json == null) {
@@ -206,6 +301,11 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return result;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		if (this.dirty) {
@@ -215,6 +315,13 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return this.properties;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (entity instanceof SimpleObject) {
@@ -223,16 +330,36 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		return setValue(attribute, value);
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new SimpleObject();
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -264,6 +391,13 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return sb.toString();
 	}
 
+	/**
+	 * Adds the property change listener.
+	 *
+	 * @param propertyName the property name
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		if (this.propertyChangeSupport == null)
@@ -272,6 +406,12 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return true;
 	}
 
+	/**
+	 * Adds the property change listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
 		if (this.propertyChangeSupport == null)
@@ -280,6 +420,12 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return true;
 	}
 
+	/**
+	 * Removes the property change listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
 		if (this.propertyChangeSupport == null)
@@ -288,6 +434,13 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		return true;
 	}
 
+	/**
+	 * Removes the property change listener.
+	 *
+	 * @param propertyName the property name
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		if (this.propertyChangeSupport == null)

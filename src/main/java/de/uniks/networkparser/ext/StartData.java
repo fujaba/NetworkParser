@@ -34,7 +34,14 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class StartData.
+ *
+ * @author Stefan
+ */
 public class StartData implements SendableEntityCreatorNoIndex {
+	
+	/** The Constant PROPERTY_EDITABLE. */
 	public static final String PROPERTY_EDITABLE = "editable";
 	private static StartData instance;
 	private String[] attribute = null;
@@ -42,6 +49,12 @@ public class StartData implements SendableEntityCreatorNoIndex {
 	private boolean editable = true;
 	private String fileName = "config.json";
 
+	/**
+	 * Sets the file name.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public static boolean setFileName(String value) {
 		if (value != null && !value.equals(instance().fileName)) {
 			instance().fileName = value;
@@ -50,6 +63,11 @@ public class StartData implements SendableEntityCreatorNoIndex {
 		return false;
 	}
 
+	/**
+	 * Instance.
+	 *
+	 * @return the start data
+	 */
 	public static StartData instance() {
 		if(instance == null) {
 			instance = new StartData();
@@ -57,6 +75,15 @@ public class StartData implements SendableEntityCreatorNoIndex {
 		return instance;
 	}
 
+	/**
+	 * Adds the parameter.
+	 *
+	 * @param key the key
+	 * @param label the label
+	 * @param description the description
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	public static boolean addParameter(String key, String label, String description, Object values) {
 		if (PROPERTY_EDITABLE.equals(key)) {
 			return false;
@@ -73,6 +100,13 @@ public class StartData implements SendableEntityCreatorNoIndex {
 		return success;
 	}
 
+	/**
+	 * Adds the parameter.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public static boolean addParameter(String key, Object value) {
 		if (PROPERTY_EDITABLE.equals(key)) {
 			if (value instanceof Boolean) {
@@ -91,6 +125,12 @@ public class StartData implements SendableEntityCreatorNoIndex {
 		return success;
 	}
 
+	/**
+	 * Checks for.
+	 *
+	 * @param key the key
+	 * @return true, if successful
+	 */
 	public static boolean has(String key) {
 		if (key == null) {
 			return false;
@@ -103,10 +143,21 @@ public class StartData implements SendableEntityCreatorNoIndex {
 		return false;
 	}
 
+	/**
+	 * Checks if is editable.
+	 *
+	 * @return true, if is editable
+	 */
 	public static boolean isEditable() {
 		return instance().editable;
 	}
 
+	/**
+	 * Gets the string.
+	 *
+	 * @param key the key
+	 * @return the string
+	 */
 	public static String getString(String key) {
 		if (key == null) {
 			return "";
@@ -123,6 +174,12 @@ public class StartData implements SendableEntityCreatorNoIndex {
 		return "";
 	}
 
+	/**
+	 * Gets the integer.
+	 *
+	 * @param key the key
+	 * @return the integer
+	 */
 	public static Integer getInteger(String key) {
 		if (key == null) {
 			return null;
@@ -139,6 +196,13 @@ public class StartData implements SendableEntityCreatorNoIndex {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public static boolean setValue(String key, Object value) {
 		if (PROPERTY_EDITABLE.equals(key)) {
 			if (value instanceof Boolean) {
@@ -156,6 +220,11 @@ public class StartData implements SendableEntityCreatorNoIndex {
 		return false;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		if (instance.attribute == null) {
@@ -169,15 +238,33 @@ public class StartData implements SendableEntityCreatorNoIndex {
 		return attribute;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param reference the reference
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean reference) {
 		return new StartData();
 	}
 
+	/**
+	 * Gets the elements.
+	 *
+	 * @return the elements
+	 */
 	public static SimpleList<StartElement> getElements() {
 		return instance().properties;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attrName the attr name
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attrName) {
 		if (attrName == null || !(entity instanceof StartData)) {
@@ -195,6 +282,15 @@ public class StartData implements SendableEntityCreatorNoIndex {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attrName the attr name
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attrName, Object value, String type) {
 		if (attrName == null || !(entity instanceof StartData)) {
@@ -214,6 +310,11 @@ public class StartData implements SendableEntityCreatorNoIndex {
 		return StartData.addParameter(attrName, value);
 	}
 
+	/**
+	 * Save.
+	 *
+	 * @return true, if successful
+	 */
 	public static boolean save() {
 		StartData startData = StartData.instance();
 		if (startData.size() < 1) {
@@ -226,10 +327,20 @@ public class StartData implements SendableEntityCreatorNoIndex {
 		return FileBuffer.writeFile(instance().fileName, config.toString(2)) >= 0;
 	}
 
+	/**
+	 * Size.
+	 *
+	 * @return the int
+	 */
 	public int size() {
 		return instance().properties.size();
 	}
 
+	/**
+	 * Load.
+	 *
+	 * @return true, if successful
+	 */
 	public static boolean load() {
 		IdMap map = new IdMap();
 		map.with(StartData.instance());
@@ -251,6 +362,11 @@ public class StartData implements SendableEntityCreatorNoIndex {
 		return map.decode(json, StartData.instance(), null) != null;
 	}
 
+	/**
+	 * Checks if is auto start.
+	 *
+	 * @return true, if is auto start
+	 */
 	public static boolean isAutoStart() {
 		return !StartData.isEditable();
 	}

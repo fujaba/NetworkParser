@@ -24,18 +24,41 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class GraphNode.
+ *
+ * @author Stefan
+ */
 public class GraphNode extends GraphMember {
+	
+	/**
+	 * With.
+	 *
+	 * @param name the name
+	 * @return the graph node
+	 */
 	@Override
 	public GraphNode with(String name) {
 		super.with(name);
 		return this;
 	}
 
+	/**
+	 * With parent.
+	 *
+	 * @param value the value
+	 * @return the graph node
+	 */
 	public GraphNode withParent(GraphMember value) {
 		super.setParentNode(value);
 		return this;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return name;

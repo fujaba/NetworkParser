@@ -28,10 +28,21 @@ import java.util.Comparator;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * The Class SortedSet.
+ *
+ * @author Stefan
+ * @param <V> the value type
+ */
 public class SortedSet<V> extends SimpleSet<V> {
 	protected Comparator<V> cpr;
 
 
+	/**
+	 * Instantiates a new sorted set.
+	 *
+	 * @param comparator the comparator
+	 */
 	public SortedSet(Object... comparator) {
 		if(comparator != null && comparator.length>0) {
 			if(comparator[0] instanceof Boolean) { 
@@ -48,6 +59,11 @@ public class SortedSet<V> extends SimpleSet<V> {
 		}
 	}
 
+	/**
+	 * Comparator.
+	 *
+	 * @return the comparator
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Comparator<Object> comparator() {
@@ -58,21 +74,45 @@ public class SortedSet<V> extends SimpleSet<V> {
 		return (Comparator<Object>) cpr;
 	}
 
+	/**
+	 * Checks if is comparator.
+	 *
+	 * @return true, if is comparator
+	 */
 	@Override
 	public boolean isComparator() {
 		return true;
 	}
 
+	/**
+	 * With comparator.
+	 *
+	 * @param comparator the comparator
+	 * @return the sorted set
+	 */
 	public SortedSet<V> withComparator(Comparator<V> comparator) {
 		this.cpr = comparator;
 		return this;
 	}
 
+	/**
+	 * With comparator.
+	 *
+	 * @param column the column
+	 * @return the sorted set
+	 */
 	public SortedSet<V> withComparator(String column) {
 		this.cpr = new EntityComparator<V>().withColumn(column).withDirection(SortingDirection.ASC);
 		return this;
 	}
 
+	/**
+	 * With comparator.
+	 *
+	 * @param column the column
+	 * @param creator the creator
+	 * @return the sorted set
+	 */
 	public SortedSet<V> withComparator(String column, SendableEntityCreator creator) {
 		this.cpr = new EntityComparator<V>().withColumn(column, creator).withDirection(SortingDirection.ASC);
 		return this;
@@ -82,15 +122,12 @@ public class SortedSet<V> extends SimpleSet<V> {
 	 * Returns a view of the portion of this map whose keys are greater than (or
 	 * equal to, if {@code inclusive} is true) {@code fromKey}.
 	 *
+	 * @param <ST>        the ContainerClass
 	 * @param fromElement low endpoint of the keys in the returned map
 	 * @param inclusive   {@code true} if the low endpoint is to be included in the
 	 *                    returned view
-	 * @param <ST>        the ContainerClass
-	 *
-	 *
 	 * @return a view of the portion of this map whose keys are greater than (or
 	 *         equal to, if {@code inclusive} is true) {@code fromKey}
-	 *
 	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleSet<V>> ST tailSet(V fromElement, boolean inclusive) {
@@ -126,13 +163,11 @@ public class SortedSet<V> extends SimpleSet<V> {
 	 * vice-versa. The returned map supports all optional map operations that this
 	 * map supports.
 	 *
+	 * @param <ST>      the ContainerClass
 	 * @param toElement high endpoint of the keys in the returned map
 	 * @param inclusive {@code true} if the high endpoint is to be included in the
 	 *                  returned view
-	 * @param <ST>      the ContainerClass
-	 *
 	 * @return result a list with less item then the key
-	 *
 	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleSet<V>> ST headSet(V toElement, boolean inclusive) {
@@ -156,6 +191,12 @@ public class SortedSet<V> extends SimpleSet<V> {
 		return (ST) newList;
 	}
 
+	/**
+	 * Higher.
+	 *
+	 * @param toElement the to element
+	 * @return the v
+	 */
 	public V higher(V toElement) {
 		if (isComparator() == false) {
 			return null;

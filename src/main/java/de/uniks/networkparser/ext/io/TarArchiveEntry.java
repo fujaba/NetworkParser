@@ -208,20 +208,20 @@ public class TarArchiveEntry {
 
     private File file;
 
-	/** Maximum length of a user is name in the tar file */
+	/**  Maximum length of a user is name in the tar file. */
 	public static final int MAX_NAMELEN = 31;
 
-	/** Default permissions bits for directories */
+	/**  Default permissions bits for directories. */
 	public static final int DEFAULT_DIR_MODE = 040755;
 
-	/** Default permissions bits for files */
+	/**  Default permissions bits for files. */
 	public static final int DEFAULT_FILE_MODE = 0100644;
 
-	/** Convert millis to seconds */
+	/**  Convert millis to seconds. */
 	public static final int MILLIS_PER_SECOND = 1000;
 
 	/**
-	 * Construct an empty entry
+	 * Construct an empty entry.
 	 */
 	public TarArchiveEntry() {
 		String user = System.getProperty("user.name", "");
@@ -232,13 +232,22 @@ public class TarArchiveEntry {
 		this.userName = user;
 	}
 	
+	/**
+	 * With absolute path.
+	 *
+	 * @param value the value
+	 * @return the tar archive entry
+	 */
 	public TarArchiveEntry withAbsolutePath(boolean value) {
 	    this.preserveAbsolutePath = value;
 	    return this;
 	}
 
 	/**
+	 * With link flag.
+	 *
 	 * @param linkFlag             the entry link flag.
+	 * @return the tar archive entry
 	 */
 	public TarArchiveEntry withLinkFlag(byte linkFlag) {
 		this.linkFlag = linkFlag;
@@ -249,6 +258,12 @@ public class TarArchiveEntry {
 		return this;
 	}
 	
+	/**
+	 * With file.
+	 *
+	 * @param value the value
+	 * @return the tar archive entry
+	 */
 	public TarArchiveEntry withFile(File value) {
 	    this.file = value;
 	    return this;                                                                                                
@@ -324,6 +339,7 @@ public class TarArchiveEntry {
 	 * Set this entry is name.
 	 *
 	 * @param name This entry is new name.
+	 * @return the tar archive entry
 	 */
 	public TarArchiveEntry withName(String name) {
 		this.name = normalizeFileName(name, this.preserveAbsolutePath);
@@ -331,7 +347,7 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Set the mode for this entry
+	 * Set the mode for this entry.
 	 *
 	 * @param mode the mode for this entry
 	 * @return ThisComponent
@@ -458,6 +474,7 @@ public class TarArchiveEntry {
 	 *
 	 * @param userName  This entry is new user name.
 	 * @param groupName This entry is new group name.
+	 * @return the tar archive entry
 	 */
 	public TarArchiveEntry withNames(String userName, String groupName) {
 		withUserName(userName);
@@ -498,6 +515,11 @@ public class TarArchiveEntry {
 		return new Date(modTime * MILLIS_PER_SECOND);
 	}
 
+	/**
+	 * Gets the last modified date.
+	 *
+	 * @return the last modified date
+	 */
 	public Date getLastModifiedDate() {
 		return getModTime();
 	}
@@ -570,6 +592,7 @@ public class TarArchiveEntry {
 	 * Set this entry is major device number.
 	 *
 	 * @param devNo This entry is major device number.
+	 * @return the tar archive entry
 	 */
 	public TarArchiveEntry withDevMajor(int devNo) {
 		if (devNo >= 0) {
@@ -656,7 +679,7 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Indicate if this entry is a GNU long linkname block
+	 * Indicate if this entry is a GNU long linkname block.
 	 *
 	 * @return true if this is a long name extension provided by GNU tar
 	 */
@@ -665,7 +688,7 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Indicate if this entry is a GNU long name block
+	 * Indicate if this entry is a GNU long name block.
 	 *
 	 * @return true if this is a long name extension provided by GNU tar
 	 */
@@ -710,7 +733,7 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Check if this is a "normal file"
+	 * Check if this is a "normal file".
 	 *
 	 * @return whether this is a "normal file"
 	 */
@@ -779,7 +802,7 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * get extra PAX Headers
+	 * get extra PAX Headers.
 	 *
 	 * @return read-only map containing any extra PAX Headers
 	 */
@@ -808,7 +831,7 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * get named extra PAX header
+	 * get named extra PAX header.
 	 *
 	 * @param name The full name of an extended PAX header to retrieve
 	 * @return The value of the header, if any.
@@ -976,6 +999,7 @@ public class TarArchiveEntry {
 	 * Parse an entry is header information from a header buffer.
 	 *
 	 * @param header The tar entry header buffer to get information from.
+	 * @return the tar archive entry
 	 */
 	public TarArchiveEntry parseTarHeader(byte[] header) {
 		try {
@@ -991,6 +1015,7 @@ public class TarArchiveEntry {
 	 *
 	 * @param header   The tar entry header buffer to get information from.
 	 * @param encoding encoding to use for file names
+	 * @return the tar archive entry
 	 */
 	public TarArchiveEntry parseTarHeader(byte[] header, NioZipEncoding encoding) {
 		parseTarHeader(header, encoding, false);

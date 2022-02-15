@@ -30,6 +30,18 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleIteratorSet;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The listener interface for receiving update events.
+ * The class that is interested in processing a update
+ * event implements this interface, and the object created
+ * with that class is registered with a component using the
+ * component's <code>addUpdateListener<code> method. When
+ * the update event occurs, that object's appropriate
+ * method is invoked.
+ *
+ * @see SimpleEvent
+ * @author Stefan
+ */
 public class UpdateListener implements MapListener, ObjectCondition {
   /** The map. */
   private SimpleMap map;
@@ -37,11 +49,22 @@ public class UpdateListener implements MapListener, ObjectCondition {
   /** The suspend id list. */
   private SimpleList<UpdateCondition> suspendIdList;
 
+  /** The Constant TYPE_OP_ADD. */
   public static final String TYPE_OP_ADD = "add";
+  
+  /** The Constant TYPE_OP_REMOVE. */
   public static final String TYPE_OP_REMOVE = "remove";
+  
+  /** The Constant TYPE_OP_REPLACE. */
   public static final String TYPE_OP_REPLACE = "replace";
+  
+  /** The Constant TYPE_OP_COPY. */
   public static final String TYPE_OP_COPY = "copy";
+  
+  /** The Constant TYPE_OP_MOVE. */
   public static final String TYPE_OP_MOVE = "move";
+  
+  /** The Constant TYPE_OP_TEST. */
   public static final String TYPE_OP_TEST = "test";
 
   /** The update listener. */
@@ -81,12 +104,22 @@ public class UpdateListener implements MapListener, ObjectCondition {
     return true;
   }
 
+  /**
+   * Reset notification.
+   *
+   * @return the simple list
+   */
   public SimpleList<UpdateCondition> resetNotification() {
     SimpleList<UpdateCondition> list = this.suspendIdList;
     this.suspendIdList = null;
     return list;
   }
 
+  /**
+   * Property change.
+   *
+   * @param evt the evt
+   */
   /*
    * (non-Javadoc)
    *
@@ -143,6 +176,16 @@ public class UpdateListener implements MapListener, ObjectCondition {
     }
   }
 
+  /**
+   * Change.
+   *
+   * @param property the property
+   * @param source the source
+   * @param creatorClass the creator class
+   * @param oldValue the old value
+   * @param newValue the new value
+   * @return the entity
+   */
   public Entity change(String property, Object source, SendableEntityCreator creatorClass, Object oldValue,
       Object newValue) {
     if (factory == null) {
@@ -156,6 +199,16 @@ public class UpdateListener implements MapListener, ObjectCondition {
     return jsonObject;
   }
 
+  /**
+   * Change.
+   *
+   * @param property the property
+   * @param creator the creator
+   * @param change the change
+   * @param oldValue the old value
+   * @param newValue the new value
+   * @return true, if successful
+   */
   public boolean change(String property, SendableEntityCreator creator, Entity change, Object oldValue,
       Object newValue) {
     boolean done = false;
@@ -478,19 +531,30 @@ public class UpdateListener implements MapListener, ObjectCondition {
     return null;
   }
 
+  /**
+   * With filter.
+   *
+   * @param filter the filter
+   * @return the update listener
+   */
   public UpdateListener withFilter(Filter filter) {
     this.updateFilter = filter;
     return this;
   }
 
+  /**
+   * Gets the filter.
+   *
+   * @return the filter
+   */
   @Override
   public Filter getFilter() {
     return this.updateFilter;
   }
 
   /**
-   * Remove the given object from the IdMap
-   * 
+   * Remove the given object from the IdMap.
+   *
    * @param oldValue Object to remove
    * @param destroy switch for remove link from object
    * @return success
@@ -502,11 +566,23 @@ public class UpdateListener implements MapListener, ObjectCondition {
     return false;
   }
 
+  /**
+   * With condition.
+   *
+   * @param condition the condition
+   * @return the update listener
+   */
   public UpdateListener withCondition(ObjectCondition condition) {
     this.condition = condition;
     return this;
   }
 
+  /**
+   * Update.
+   *
+   * @param value the value
+   * @return true, if successful
+   */
   @Override
   public boolean update(Object value) {
     if (condition == null || !(value instanceof SimpleEvent)) {
@@ -532,6 +608,11 @@ public class UpdateListener implements MapListener, ObjectCondition {
     return true;
   }
 
+  /**
+   * Gets the tokener.
+   *
+   * @return the tokener
+   */
   @Override
   public Tokener getTokener() {
     return factory;

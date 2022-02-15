@@ -6,7 +6,16 @@ import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.GraphMatcher;
 
+/**
+ * The Class AssociationChangeCondition.
+ *
+ * @author Stefan
+ */
 public class AssociationChangeCondition extends MatchCondition {
+	
+	/**
+	 * Instantiates a new association change condition.
+	 */
 	public AssociationChangeCondition() {
 		changeConditions.add(new AssociationChangeRenameCondition());
 		changeConditions.add(new AssociationChangeAddCondition());
@@ -91,6 +100,11 @@ public class AssociationChangeCondition extends MatchCondition {
 		return sourceAssociation.getOther().getName().equals(otherAssociation.getOther().getName());
 	}
 
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
 	@Override
 	public String getAction() {
 		return SendableEntityCreator.UPDATE;

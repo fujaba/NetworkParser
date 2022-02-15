@@ -37,29 +37,64 @@ import de.uniks.networkparser.list.EntityComparator;
 import de.uniks.networkparser.list.SortedList;
 import de.uniks.networkparser.list.SortingDirection;
 
+/**
+ * The Class TableList.
+ *
+ * @author Stefan
+ */
 public class TableList extends SortedList<Object> implements SendableEntity, SendableEntityCreator {
+	
+	/** The Constant PROPERTY_ITEMS. */
 	public static final String PROPERTY_ITEMS = "items";
+	
+	/** The Constant properties. */
 	public static final String[] properties = new String[] { PROPERTY_ITEMS };
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 
+	/**
+	 * Instantiates a new table list.
+	 */
 	public TableList() {
 		super(false);
 	}
 
+	/**
+	 * Instantiates a new table list.
+	 *
+	 * @param comparator the comparator
+	 */
 	public TableList(boolean comparator) {
 		super(comparator);
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return properties;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototype the prototype
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototype) {
 		return new TableList();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (TableList.PROPERTY_ITEMS.equalsIgnoreCase(attribute)) {
@@ -68,6 +103,15 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (SendableEntityCreator.REMOVE.equalsIgnoreCase(type)) {
@@ -76,6 +120,12 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 		return ((TableList) entity).setValue(attribute, value);
 	}
 
+	/**
+	 * Sets the id map.
+	 *
+	 * @param map the map
+	 * @return true, if successful
+	 */
 	public boolean setIdMap(IdMap map) {
 		if (isComparator() == false) {
 			return false;
@@ -86,6 +136,13 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 		return false;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param attrName the attr name
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setValue(String attrName, Object value) {
 		if (PROPERTY_ITEMS.equalsIgnoreCase(attrName)) {
 			add(value);
@@ -107,10 +164,20 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 		return result;
 	}
 
+	/**
+	 * Gets the property change support.
+	 *
+	 * @return the property change support
+	 */
 	public PropertyChangeSupport getPropertyChangeSupport() {
 		return listeners;
 	}
 
+	/**
+	 * Removes the all from items.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean removeAllFromItems() {
 		Object[] array = toArray(new Object[size()]);
 		for (Object item : array) {
@@ -122,6 +189,14 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 		return true;
 	}
 
+	/**
+	 * With sort.
+	 *
+	 * @param field the field
+	 * @param direction the direction
+	 * @param cellValueCreator the cell value creator
+	 * @return the table list
+	 */
 	public TableList withSort(String field, SortingDirection direction, EntityValueFactory cellValueCreator) {
 
 		EntityComparator<Object> cpr;
@@ -137,12 +212,25 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 		return this;
 	}
 
+	/**
+	 * With comparator.
+	 *
+	 * @param comparator the comparator
+	 * @return the table list
+	 */
 	@Override
 	public TableList withComparator(Comparator<Object> comparator) {
 		super.withComparator(comparator);
 		return this;
 	}
 
+	/**
+	 * With sort.
+	 *
+	 * @param field the field
+	 * @param direction the direction
+	 * @return the table list
+	 */
 	public TableList withSort(String field, SortingDirection direction) {
 		EntityComparator<Object> cpr;
 		if (isComparator() && comparator() instanceof EntityComparator<?>) {
@@ -156,6 +244,11 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 		return this;
 	}
 
+	/**
+	 * Change direction.
+	 *
+	 * @return the sorting direction
+	 */
 	public SortingDirection changeDirection() {
 		if (isComparator() && comparator() instanceof EntityComparator) {
 			return ((EntityComparator<?>) comparator()).changeDirection();
@@ -164,6 +257,11 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 		return null;
 	}
 
+	/**
+	 * Gets the sorted index.
+	 *
+	 * @return the sorted index
+	 */
 	public Object[] getSortedIndex() {
 		if (comparator() instanceof EntityComparator<?> == false) {
 			return null;
@@ -201,23 +299,49 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 		return null;
 	}
 
+	/**
+	 * Adds the property change listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
 		getPropertyChangeSupport().addPropertyChangeListener(listener);
 		return true;
 	}
 
+	/**
+	 * Removes the property change listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
 		getPropertyChangeSupport().removePropertyChangeListener(listener);
 		return true;
 	}
 
+	/**
+	 * Removes the property change listener.
+	 *
+	 * @param name the name
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean removePropertyChangeListener(String name, PropertyChangeListener listener) {
 		getPropertyChangeSupport().removePropertyChangeListener(name, listener);
 		return true;
 	}
 
+	/**
+	 * Adds the property change listener.
+	 *
+	 * @param name the name
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean addPropertyChangeListener(String name, PropertyChangeListener listener) {
 		getPropertyChangeSupport().addPropertyChangeListener(name, listener);
@@ -225,11 +349,22 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return "TableList with " + size() + " Elements";
 	}
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
 	@Override
 	public TableList getNewList(boolean keyValue) {
 		return new TableList();

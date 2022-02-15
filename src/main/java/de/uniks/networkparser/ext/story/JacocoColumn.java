@@ -31,6 +31,11 @@ import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
+/**
+ * The Class JacocoColumn.
+ *
+ * @author Stefan
+ */
 public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 	private static final String COLUMRENDERER = "org.jacoco.report.internal.html.table.IColumnRenderer";
 	private static final String PACKAGE = "PACKAGE";
@@ -42,6 +47,12 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 	private SimpleKeyValueList<String, Integer> value = new SimpleKeyValueList<String, Integer>();
 	private SimpleKeyValueList<Object, String> classes = new SimpleKeyValueList<Object, String>();
 
+	/**
+	 * Creates the.
+	 *
+	 * @param logger the logger
+	 * @return the jacoco column
+	 */
 	public static JacocoColumn create(NetworkParserLog logger) {
 		JacocoColumn jacocoColumn = new JacocoColumn();
 		Class<?> proxyClass = ReflectionLoader.getSimpleClass(COLUMRENDERER);
@@ -62,10 +73,21 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 		return this;
 	}
 
+	/**
+	 * Gets the proxy.
+	 *
+	 * @return the proxy
+	 */
 	public Object getProxy() {
 		return proxy;
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @param element the element
+	 * @return the type
+	 */
 	public String getType(Object element) {
 		Object call = ReflectionLoader.calling(element, "getElementType", false, null);
 		if (call != null) {
@@ -74,6 +96,12 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 		return EMPTY;
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @param element the element
+	 * @return the name
+	 */
 	public String getName(Object element) {
 		Object call = ReflectionLoader.calling(element, "getName", false, null);
 		if (call instanceof String) {
@@ -83,12 +111,13 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 	}
 
 	/**
-	*	init(List &lt;? extends ITableItem&gt; items, ICoverageNode total) { 
-	*	Init JacocoColumn
-	*	@param items Items
-	*	@param total ICoverageNode
-	*	@return success
-	*/
+	 * 	init(List &lt;? extends ITableItem&gt; items, ICoverageNode total) { 
+	 * 	Init JacocoColumn.
+	 *
+	 * @param items Items
+	 * @param total ICoverageNode
+	 * @return success
+	 */
 	public boolean init(Object items, Object total) {
 		String type = getType(total);
 		if (PACKAGE.equalsIgnoreCase(type)) {
@@ -106,11 +135,12 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 	}
 
 	/**
-	 * Set Footer
-	 *	@param td HTMLElement 
-	 *	@param total ICoverageNode 
-	 *	@param resources Resources
-	 *	@param base ReportOutputFolder
+	 * Set Footer.
+	 *
+	 * @param td HTMLElement
+	 * @param total ICoverageNode
+	 * @param resources Resources
+	 * @param base ReportOutputFolder
 	 */
 	public void footer(Object td, Object total, Object resources, Object base) {
 		String search = getSearch(total);
@@ -123,6 +153,12 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 		}
 	}
 
+	/**
+	 * Sets the text.
+	 *
+	 * @param item the item
+	 * @param text the text
+	 */
 	public void setText(Object item, String text) {
 		ReflectionLoader.calling(item, "text", false, null, text);
 	}
@@ -143,6 +179,12 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 		return search;
 	}
 
+	/**
+	 * Adds the value to list.
+	 *
+	 * @param key the key
+	 * @param no the no
+	 */
 	public void addValueToList(String key, int no) {
 		String fullClass = key.substring(0, key.indexOf(":"));
 
@@ -168,12 +210,12 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 	}
 
 	/**
-	 * Set new Item
+	 * Set new Item.
+	 *
 	 * @param td HTMLElement
 	 * @param item ITableItem
 	 * @param resources Resources
 	 * @param base ReportOutputFolder
-	 * 
 	 */
 	public void item(Object td, Object item, Object resources, Object base) {
 		Object node = ReflectionLoader.calling(item, "getNode", false, null);
@@ -215,10 +257,22 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 		}
 	}
 
+	/**
+	 * Gets the comparator.
+	 *
+	 * @return the comparator
+	 */
 	public Comparator<Object> getComparator() {
 		return this;
 	}
 
+	/**
+	 * Compare.
+	 *
+	 * @param o1 the o 1
+	 * @param o2 the o 2
+	 * @return the int
+	 */
 	@Override
 	public int compare(Object o1, Object o2) {
 		return 1;

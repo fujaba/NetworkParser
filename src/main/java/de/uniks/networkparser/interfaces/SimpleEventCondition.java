@@ -25,14 +25,33 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.SimpleEvent;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SimpleEventCondition.
+ *
+ * @author Stefan
+ */
 public abstract class SimpleEventCondition implements ObjectCondition {
+	
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
-		if (value instanceof SimpleEvent == false) {
+		if (!(value instanceof SimpleEvent)) {
 			return false;
 		}
 		return update((SimpleEvent) value);
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param event the event
+	 * @return true, if successful
+	 */
 	public abstract boolean update(SimpleEvent event);
 }

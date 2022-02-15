@@ -28,27 +28,49 @@ import java.net.Socket;
 import de.uniks.networkparser.interfaces.Condition;
 
 /**
- * Request for Message
+ * Request for Message.
+ *
  * @author Stefan Lindel
  */
 public class MessageRequest implements Runnable {
+	
+	/** The Constant BUFFER. */
 	public static final int BUFFER = 100 * 1024;
 	private final Socket requestSocket;
 	private Condition<Socket> handler;
 
+	/**
+	 * Instantiates a new message request.
+	 */
 	public MessageRequest() {
 		this.requestSocket = null;
 	}
 
+	/**
+	 * Instantiates a new message request.
+	 *
+	 * @param requestSocket the request socket
+	 * @param handler the handler
+	 */
 	public MessageRequest(Socket requestSocket, Condition<Socket> handler) {
 		this.requestSocket = requestSocket;
 		this.handler = handler;
 	}
 
+	/**
+	 * Run.
+	 */
 	public void run() {
 		handler.update(requestSocket);
 	}
 
+	/**
+	 * Creates the task.
+	 *
+	 * @param requestSocket the request socket
+	 * @param handler the handler
+	 * @return the message request
+	 */
 	public MessageRequest createTask(Socket requestSocket, Condition<Socket> handler) {
 		return new MessageRequest(requestSocket, handler);
 	}

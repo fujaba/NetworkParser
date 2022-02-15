@@ -6,21 +6,40 @@ import de.uniks.networkparser.bytes.HMAC;
 import de.uniks.networkparser.json.JsonObject;
 
 /**
- * Tokener for Json Format
+ * Tokener for Json Format.
+ *
  * @author Stefan Lindel
  */
 public class JsonToken {
+	
+	/** The Constant EXPIRATION_DAY. */
 	public static final long EXPIRATION_DAY = 24 * 60 * 60;
+	
+	/** The Constant ALG. */
 	public static final String ALG = "alg";
+	
+	/** The Constant HS256. */
 	public static final String HS256 = "HS256";
+	
+	/** The Constant SUB. */
 	public static final String SUB = "sub";
+	
+	/** The Constant IAT. */
 	public static final String IAT = "iat";
+	
+	/** The Constant EXPIRATION. */
 	public static final String EXPIRATION = "exp";
 	private JsonObject header;
 	private JsonObject body;
 	private Long expiration;
 	private String secret;
 
+	/**
+	 * With algorytm.
+	 *
+	 * @param value the value
+	 * @return the json token
+	 */
 	public JsonToken withAlgorytm(String value) {
 		if (header == null) {
 			header = new JsonObject();
@@ -29,6 +48,11 @@ public class JsonToken {
 		return this;
 	}
 
+	/**
+	 * Gets the header.
+	 *
+	 * @return the header
+	 */
 	public JsonObject getHeader() {
 		if (this.header == null) {
 			this.withAlgorytm(HS256);
@@ -36,6 +60,11 @@ public class JsonToken {
 		return this.header;
 	}
 
+	/**
+	 * Gets the body.
+	 *
+	 * @return the body
+	 */
 	public JsonObject getBody() {
 		if (this.body == null) {
 			this.body = new JsonObject();
@@ -43,6 +72,11 @@ public class JsonToken {
 		return this.body;
 	}
 
+	/**
+	 * Gets the body clone.
+	 *
+	 * @return the body clone
+	 */
 	public JsonObject getBodyClone() {
 		JsonObject jsonObject = new JsonObject();
 		JsonObject ref = getBody();
@@ -52,26 +86,55 @@ public class JsonToken {
 		return jsonObject;
 	}
 
+	/**
+	 * With subject.
+	 *
+	 * @param value the value
+	 * @return the json token
+	 */
 	public JsonToken withSubject(String value) {
 		getBody().put(SUB, value);
 		return this;
 	}
 
+	/**
+	 * With time.
+	 *
+	 * @param time the time
+	 * @return the json token
+	 */
 	public JsonToken withTime(long time) {
 		getBody().put(IAT, time);
 		return this;
 	}
 
+	/**
+	 * With expiration.
+	 *
+	 * @param time the time
+	 * @return the json token
+	 */
 	public JsonToken withExpiration(Long time) {
 		this.expiration = time;
 		return this;
 	}
 
+	/**
+	 * With secret.
+	 *
+	 * @param secret the secret
+	 * @return the json token
+	 */
 	public JsonToken withSecret(String secret) {
 		this.secret = secret;
 		return this;
 	}
 
+	/**
+	 * Gets the token.
+	 *
+	 * @return the token
+	 */
 	public String getToken() {
 		if (this.secret == null) {
 			return null;
@@ -97,6 +160,11 @@ public class JsonToken {
 		return buffer.toString();
 	}
 
+	/**
+	 * Gets the check sum.
+	 *
+	 * @return the check sum
+	 */
 	public String getCheckSum() {
 		String token = getToken();
 		if (token == null) {
@@ -109,6 +177,13 @@ public class JsonToken {
 		return null;
 	}
 
+	/**
+	 * With key value.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the json token
+	 */
 	public JsonToken withKeyValue(String key, String value) {
 		if (this.body == null) {
 			this.body = new JsonObject();
@@ -117,6 +192,11 @@ public class JsonToken {
 		return this;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @return the json token
+	 */
 	public JsonToken create() {
 		JsonToken tokener = new JsonToken();
 		tokener.withSecret(this.getSecret());
@@ -126,6 +206,11 @@ public class JsonToken {
 		return tokener;
 	}
 
+	/**
+	 * Creates the decoder.
+	 *
+	 * @return the json token
+	 */
 	public JsonToken createDecoder() {
 		JsonToken tokener = new JsonToken();
 		tokener.withSecret(this.getSecret());
@@ -133,6 +218,11 @@ public class JsonToken {
 		return tokener;
 	}
 
+	/**
+	 * Gets the expiration.
+	 *
+	 * @return the expiration
+	 */
 	public Long getExpiration() {
 		return this.expiration;
 	}
@@ -151,6 +241,12 @@ public class JsonToken {
 		return this.secret;
 	}
 
+	/**
+	 * Validate.
+	 *
+	 * @param token the token
+	 * @return true, if successful
+	 */
 	public boolean validate(String token) {
 		if (token == null) {
 			return false;

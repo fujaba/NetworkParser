@@ -29,13 +29,22 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
 /**
- * Feature for Modell
+ * Feature for Modell.
+ *
  * @author Stefan Lindel
  */
 public class Feature implements Comparable<Feature> {
+	
+	/** The Constant ALL. */
 	public static final Clazz ALL = new Clazz("*");
+	
+	/** The Constant NAME. */
 	public static final String NAME = "name";
+	
+	/** The Constant CLASSVALUE. */
 	public static final String CLASSVALUE = "classValue";
+	
+	/** The Constant CLASSSTRING. */
 	public static final String CLASSSTRING = "classString";
 
 	private SimpleList<Clazz> includeClazz = new SimpleList<Clazz>();
@@ -52,6 +61,11 @@ public class Feature implements Comparable<Feature> {
 		this.reference = true;
 	}
 
+	/**
+	 * Instantiates a new feature.
+	 *
+	 * @param ref the ref
+	 */
 	/* Real Constructor */
 	public Feature(Feature ref) {
 		if (ref != null) {
@@ -60,6 +74,11 @@ public class Feature implements Comparable<Feature> {
 		includeClazz.add(ALL);
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @return the feature
+	 */
 	public Feature create() {
 		if (Feature.SETCLASS.equals(this)) {
 			return newInstance(this).withClazzValue(SimpleSet.class);
@@ -74,36 +93,59 @@ public class Feature implements Comparable<Feature> {
 		return new Feature(ref);
 	}
 
+	/** The Constant PROPERTYCHANGESUPPORT. */
 	/* For Generate PropertyChange */
 	public static final Feature PROPERTYCHANGESUPPORT = new Feature("PROPERTYCHANGESUPPORT");
+	
+	/** The Constant SERIALIZATION. */
 	/* For Generate Creator */
 	public static final Feature SERIALIZATION = new Feature("SERIALIZATION");
+	
+	/** The Constant SETCLASS. */
 	/* For Generate Set Class */
 	public static final Feature SETCLASS = new Feature("SETCLASS");
+	
+	/** The Constant JUNIT. */
 	/* For Generate JUNIT */
 	public static final Feature JUNIT = new Feature("JUNIT");
+	
+	/** The Constant PATTERN. */
 	/* For Generate PATTERN */
 	public static final Feature PATTERN = new Feature("PATTERN");
 
+	/** The Constant DYNAMICVALUES. */
 	/* For Generate dynamic Values */
 	public static final Feature DYNAMICVALUES = new Feature("DYNAMICVALUES");
 
+	/** The Constant CODESTYLE. */
 	/* For Generator CODESTYLE STANDARD OR DIVIDED */
 	public static final Feature CODESTYLE = new Feature("CODESTYLE");
 
+	/** The Constant DIFFERENCE_BEHAVIOUR. */
 	public static final Feature DIFFERENCE_BEHAVIOUR = new Feature("DIFFERENCE_BEHAVIOUR");
 
+	/** The Constant METADATA. */
 	public static final Feature METADATA = new Feature("METADATA");
 
+	/** The Constant DOCUMENTATION. */
 	public static final Feature DOCUMENTATION = new Feature("DOCUMENTATION");
 
+	/** The Constant SOURCECODE. */
 	public static final Feature SOURCECODE = new Feature("SOURCECODE");
 
+	/** The Constant GENCODE. */
 	public static final Feature GENCODE = new Feature("GENCODE");
 
+	/** The Constant allGenerateFlags. */
 	public static final FeatureSet allGenerateFlags = new FeatureSet().with(PROPERTYCHANGESUPPORT, SERIALIZATION,
 			SETCLASS, JUNIT, PATTERN, DYNAMICVALUES, CODESTYLE);
 
+	/**
+	 * Value of.
+	 *
+	 * @param string the string
+	 * @return the feature
+	 */
 	public static Feature valueOf(String string) {
 		for (Feature feature : allGenerateFlags) {
 			if (feature.getName().equals(string)) {
@@ -113,25 +155,49 @@ public class Feature implements Comparable<Feature> {
 		return null;
 	}
 
+	/** The Constant CODESTYLE_STANDARD. */
 	public static final String CODESTYLE_STANDARD = "standard";
+	
+	/** The Constant CODESTYLE_DIVIDED. */
 	public static final String CODESTYLE_DIVIDED = "divided";
 
+	/**
+	 * Creates the none.
+	 *
+	 * @return the feature set
+	 */
 	public static final FeatureSet createNone() {
 		return new FeatureSet();
 	}
 
+	/**
+	 * Creates the all.
+	 *
+	 * @return the feature set
+	 */
 	public static FeatureSet createAll() {
 		FeatureSet result = new FeatureSet().with(PROPERTYCHANGESUPPORT, SERIALIZATION, PATTERN, SETCLASS.create(),
 				CODESTYLE.create());
 		return result;
 	}
 
+	/**
+	 * Creates the stand alone.
+	 *
+	 * @return the feature set
+	 */
 	public static FeatureSet createStandAlone() {
 		FeatureSet result = new FeatureSet().with(PROPERTYCHANGESUPPORT, CODESTYLE.create());
 		result.add(SETCLASS.create().withClazzValue(LinkedHashSet.class));
 		return result;
 	}
 
+	/**
+	 * With include clazz.
+	 *
+	 * @param value the value
+	 * @return the feature
+	 */
 	public Feature withIncludeClazz(String... value) {
 		if (this.reference) {
 			return null;
@@ -148,6 +214,12 @@ public class Feature implements Comparable<Feature> {
 		return this;
 	}
 
+	/**
+	 * With exclude clazz.
+	 *
+	 * @param value the value
+	 * @return the feature
+	 */
 	public Feature withExcludeClazz(String... value) {
 		if (this.reference) {
 			return null;
@@ -167,6 +239,12 @@ public class Feature implements Comparable<Feature> {
 		return this;
 	}
 
+	/**
+	 * With exclude clazz.
+	 *
+	 * @param value the value
+	 * @return the feature
+	 */
 	public Feature withExcludeClazz(Clazz... value) {
 		if (this.reference) {
 			return null;
@@ -186,6 +264,12 @@ public class Feature implements Comparable<Feature> {
 		return this;
 	}
 
+	/**
+	 * Match.
+	 *
+	 * @param clazzes the clazzes
+	 * @return true, if successful
+	 */
 	public boolean match(Clazz... clazzes) {
 		if (clazzes == null) {
 			return true;
@@ -201,6 +285,12 @@ public class Feature implements Comparable<Feature> {
 		return true;
 	}
 
+	/**
+	 * Match.
+	 *
+	 * @param clazzName the clazz name
+	 * @return true, if successful
+	 */
 	public boolean match(String clazzName) {
 		/* if Clazz is positive */
 		boolean result = false;
@@ -235,14 +325,30 @@ public class Feature implements Comparable<Feature> {
 		return result;
 	}
 
+	/**
+	 * Gets the clazzes.
+	 *
+	 * @return the clazzes
+	 */
 	public SimpleList<Clazz> getClazzes() {
 		return includeClazz;
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * With clazz value.
+	 *
+	 * @param value the value
+	 * @return the feature
+	 */
 	public Feature withClazzValue(Class<?> value) {
 		if (this.reference) {
 			return null;
@@ -251,6 +357,12 @@ public class Feature implements Comparable<Feature> {
 		return this;
 	}
 
+	/**
+	 * With path.
+	 *
+	 * @param value the value
+	 * @return the feature
+	 */
 	public Feature withPath(String... value) {
 		if (this.reference) {
 			return null;
@@ -266,14 +378,30 @@ public class Feature implements Comparable<Feature> {
 		return this;
 	}
 
+	/**
+	 * Gets the path.
+	 *
+	 * @return the path
+	 */
 	public SimpleList<String> getPath() {
 		return path;
 	}
 
+	/**
+	 * Gets the class value.
+	 *
+	 * @return the class value
+	 */
 	public Class<?> getClassValue() {
 		return classValue;
 	}
 
+	/**
+	 * Compare to.
+	 *
+	 * @param o the o
+	 * @return the int
+	 */
 	@Override
 	public int compareTo(Feature o) {
 		if (this.name == null || o == null || o.getName() == null) {
@@ -282,6 +410,11 @@ public class Feature implements Comparable<Feature> {
 		return this.name.compareTo(o.getName());
 	}
 
+	/**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int hashCode() {
 		if (name != null) {
@@ -290,6 +423,12 @@ public class Feature implements Comparable<Feature> {
 		return super.hashCode();
 	}
 
+	/**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof String) {
@@ -301,6 +440,11 @@ public class Feature implements Comparable<Feature> {
 		return compareTo((Feature) obj) == 0;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		if (name != null) {
@@ -309,10 +453,21 @@ public class Feature implements Comparable<Feature> {
 		return "NONE:" + super.toString();
 	}
 
+	/**
+	 * Gets the string value.
+	 *
+	 * @return the string value
+	 */
 	public String getStringValue() {
 		return value;
 	}
 
+	/**
+	 * With string value.
+	 *
+	 * @param value the value
+	 * @return the feature
+	 */
 	public Feature withStringValue(String value) {
 		if (this.reference) {
 			return null;
@@ -321,6 +476,12 @@ public class Feature implements Comparable<Feature> {
 		return this;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param value the value
+	 * @return the value
+	 */
 	public Object getValue(String value) {
 		if (NAME.equalsIgnoreCase(value)) {
 			return name;

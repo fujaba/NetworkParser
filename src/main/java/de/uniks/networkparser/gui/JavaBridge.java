@@ -41,10 +41,20 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class JavaBridge.
+ *
+ * @author Stefan
+ */
 public class JavaBridge implements ObjectCondition {
+	
+	/** The content type include. */
 	public static String CONTENT_TYPE_INCLUDE = "INCLUDE";
 
+	/** The content type exclude. */
 	public static String CONTENT_TYPE_EXCLUDE = "EXCLUDE";
+	
+	/** The content type none. */
 	public static String CONTENT_TYPE_NONE = "NONE";
 
 	protected static final String JAVA_BRIDGE = "JavaBridge";
@@ -65,10 +75,19 @@ public class JavaBridge implements ObjectCondition {
 
 	protected Buffer resourceHandler;
 
+	/**
+	 * Instantiates a new java bridge.
+	 */
 	public JavaBridge() {
 		this(null, null, CONTENT_TYPE_INCLUDE);
 	}
 
+	/**
+	 * With debug.
+	 *
+	 * @param value the value
+	 * @return the java bridge
+	 */
 	public JavaBridge withDebug(boolean value) {
 		if (value && entity != null) {
 			this.debug = entity.createScript("", null);
@@ -78,6 +97,13 @@ public class JavaBridge implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * Instantiates a new java bridge.
+	 *
+	 * @param map the map
+	 * @param webView the web view
+	 * @param type the type
+	 */
 	public JavaBridge(IdMap map, JavaViewAdapter webView, String type) {
 		if (map == null) {
 			map = new IdMap();
@@ -92,7 +118,7 @@ public class JavaBridge implements ObjectCondition {
 			this.webView.withOwner(this);
 
 		}
-		if (type.equals(CONTENT_TYPE_NONE) == false) {
+		if (!type.equals(CONTENT_TYPE_NONE)) {
 			entity = init(type, "var bridge = new DiagramJS.Bridge();");
 			if (webView != null) {
 				this.webView.load(entity);
@@ -100,15 +126,33 @@ public class JavaBridge implements ObjectCondition {
 		}
 	}
 
+	/**
+	 * Gets the entity.
+	 *
+	 * @return the entity
+	 */
 	public HTMLEntity getEntity() {
 		return entity;
 	}
 
+	/**
+	 * With logger.
+	 *
+	 * @param logger the logger
+	 * @return the java bridge
+	 */
 	public JavaBridge withLogger(NetworkParserLog logger) {
 		this.logger = logger;
 		return this;
 	}
 
+	/**
+	 * Inits the.
+	 *
+	 * @param type the type
+	 * @param script the script
+	 * @return the HTML entity
+	 */
 	public HTMLEntity init(String type, String script) {
 		/* script = "classEditor = new ClassEditor(\"board\");"; */
 		HTMLEntity entity = new HTMLEntity();
@@ -131,16 +175,22 @@ public class JavaBridge implements ObjectCondition {
 		return null;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param event the event
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object event) {
 		if (isApplyingChangeMSG) {
 			return false;
 		}
-		if (event == null || event instanceof SimpleEvent == false) {
+		if (event == null || !(event instanceof SimpleEvent)) {
 			return false;
 		}
 		SimpleEvent simpleEvent = (SimpleEvent) event;
-		if (simpleEvent.isNewEvent() == false) {
+		if (!simpleEvent.isNewEvent()) {
 			return true;
 		}
 		JsonObject jsonObject = (JsonObject) simpleEvent.getEntity();
@@ -163,10 +213,21 @@ public class JavaBridge implements ObjectCondition {
 		}
 	}
 
+	/**
+	 * Gets the map.
+	 *
+	 * @return the map
+	 */
 	public IdMap getMap() {
 		return this.map;
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param so the so
+	 * @return the string
+	 */
 	public String put(SimpleObject so) {
 		if (so == null || map == null) {
 			return null;
@@ -184,6 +245,12 @@ public class JavaBridge implements ObjectCondition {
 		return id;
 	}
 
+	/**
+	 * Adds the control.
+	 *
+	 * @param c the c
+	 * @return the string
+	 */
 	public String addControl(Control c) {
 		String key = null;
 		if (this.controls != null) {
@@ -214,6 +281,12 @@ public class JavaBridge implements ObjectCondition {
 		return this.controls;
 	}
 
+	/**
+	 * Execute script.
+	 *
+	 * @param script the script
+	 * @return the object
+	 */
 	public Object executeScript(String script) {
 		if (script == null) {
 			return null;
@@ -233,6 +306,14 @@ public class JavaBridge implements ObjectCondition {
 		return this.webView.executeScript(script);
 	}
 
+	/**
+	 * Adds the event listener.
+	 *
+	 * @param c the c
+	 * @param eventType the event type
+	 * @param eventListener the event listener
+	 * @return true, if successful
+	 */
 	public boolean addEventListener(Control c, EventTypes eventType, ObjectCondition eventListener) {
 		if (c == null) {
 			return false;
@@ -243,12 +324,23 @@ public class JavaBridge implements ObjectCondition {
 		return c.addEventListener(eventType, eventListener);
 	}
 
+	/**
+	 * Fire event.
+	 *
+	 * @param event the event
+	 */
 	public void fireEvent(JsonObject event) {
 		if (this.map != null) {
 			this.map.decode(event);
 		}
 	}
 
+	/**
+	 * Fire event.
+	 *
+	 * @param event the event
+	 * @return true, if successful
+	 */
 	public boolean fireEvent(Event event) {
 		if (event == null) {
 			return false;
@@ -265,6 +357,14 @@ public class JavaBridge implements ObjectCondition {
 		return true;
 	}
 
+	/**
+	 * Fire control change.
+	 *
+	 * @param control the control
+	 * @param property the property
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean fireControlChange(Control control, String property, Object value) {
 		if (control == null) {
 			return false;
@@ -273,15 +373,31 @@ public class JavaBridge implements ObjectCondition {
 		return true;
 	}
 
+	/**
+	 * Sets the applying change MSG.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setApplyingChangeMSG(boolean value) {
 		this.isApplyingChangeMSG = value;
 		return this.isApplyingChangeMSG;
 	}
 
+	/**
+	 * Gets the view adapter.
+	 *
+	 * @return the view adapter
+	 */
 	public JavaViewAdapter getViewAdapter() {
 		return webView;
 	}
 
+	/**
+	 * Gets the web view.
+	 *
+	 * @return the web view
+	 */
 	public Object getWebView() {
 		if (webView != null) {
 			return webView.getWebView();
@@ -289,17 +405,36 @@ public class JavaBridge implements ObjectCondition {
 		return null;
 	}
 
+	/**
+	 * With web view.
+	 *
+	 * @param webView the web view
+	 * @return the java bridge
+	 */
 	public JavaBridge withWebView(JavaViewAdapter webView) {
 		this.webView = webView;
 		return this;
 	}
 
+	/**
+	 * Log script.
+	 *
+	 * @param msg the msg
+	 * @param level the level
+	 * @param owner the owner
+	 * @param method the method
+	 */
 	public void logScript(String msg, int level, Object owner, String method) {
 		if (logger != null) {
 			this.logger.log(owner, method, msg, level);
 		}
 	}
 
+	/**
+	 * Load.
+	 *
+	 * @param url the url
+	 */
 	public void load(String url) {
 		if (this.webView != null) {
 			this.webView.load(entity);

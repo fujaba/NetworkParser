@@ -28,6 +28,8 @@ import java.math.BigInteger;
 /** Byte buffer used for DER parsing. 
  * @author Stefan Lindel */
 public class DERBuffer extends ByteBuffer {
+	
+	/** The Constant ARRAY. */
 	public static final byte ARRAY = 0x00;
 	/** Tag value indicating an ASN.1 "BOOLEAN" value. */
 	public static final byte BOOLEAN = 0x01;
@@ -53,13 +55,13 @@ public class DERBuffer extends ByteBuffer {
 	/** Tag value indicating an ASN.1 "UTF8String" value. */
 	public static final byte UTF8STRING = 0x0C;
 
-	/** Tag value including a "printable" string */
+	/**  Tag value including a "printable" string. */
 	public static final byte PRINTABLESTRING = 0x13;
 
-	/** Tag value including a "teletype" string */
+	/**  Tag value including a "teletype" string. */
 	public static final byte T61STRING = 0x14;
 
-	/** Tag value including an ASCII string */
+	/**  Tag value including an ASCII string. */
 	public static final byte IA5STRING = 0x16;
 
 	/** Tag value indicating an ASN.1 "UTCTime" value. */
@@ -77,6 +79,11 @@ public class DERBuffer extends ByteBuffer {
 	/** Tag value indicating an ASN.1 "BMPString" value. */
 	public static final byte BMPSTRING = 0x1E;
 
+	/**
+	 * Adds the.
+	 *
+	 * @param paramBigInteger the param big integer
+	 */
 	public void add(BigInteger paramBigInteger) {
 		if (paramBigInteger != null) {
 			byte[] arrayOfByte = paramBigInteger.toByteArray();
@@ -86,6 +93,11 @@ public class DERBuffer extends ByteBuffer {
 		}
 	}
 
+	/**
+	 * Adds the bit string.
+	 *
+	 * @param string the string
+	 */
 	public void addBitString(String string) {
 		if (string != null) {
 			byte[] bytes = string.getBytes();
@@ -95,6 +107,11 @@ public class DERBuffer extends ByteBuffer {
 		}
 	}
 
+	/**
+	 * Adds the big integer length.
+	 *
+	 * @param length the length
+	 */
 	public void addBigIntegerLength(int length) {
 		if (length > 127) {
 			int size = 1;
@@ -113,6 +130,11 @@ public class DERBuffer extends ByteBuffer {
 		}
 	}
 
+	/**
+	 * Adds the length.
+	 *
+	 * @param value the value
+	 */
 	public void addLength(int value) {
 		if (value < 128) {
 			add((byte) value);
@@ -137,6 +159,12 @@ public class DERBuffer extends ByteBuffer {
 		}
 	}
 
+	/**
+	 * Adds the group.
+	 *
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	public boolean addGroup(Object... values) {
 		if (values == null || values.length < 1) {
 			return false;
@@ -187,6 +215,14 @@ public class DERBuffer extends ByteBuffer {
 		return true;
 	}
 
+	/**
+	 * Adds the bytes.
+	 *
+	 * @param bytes the bytes
+	 * @param len the len
+	 * @param bufferAtEnd the buffer at end
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean addBytes(Object bytes, int len, boolean bufferAtEnd) {
 		if (bytes != null) {

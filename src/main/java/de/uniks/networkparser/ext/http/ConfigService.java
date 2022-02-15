@@ -4,6 +4,8 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.RESTServiceTask;
+import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
@@ -11,32 +13,79 @@ import de.uniks.networkparser.interfaces.SimpleUpdateListener;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class ConfigService.
+ *
+ * @author Stefan
+ */
 public class ConfigService implements Condition<HTTPRequest> {
 	private HTTPRequest routing;
 	private RESTServiceTask task;
 	private Configuration configuration;
 	
+	/** The Constant ACTION_CLOSE. */
 	public static final String ACTION_CLOSE="close";
+	
+	/** The Constant ACTION_OPEN. */
 	public static final String ACTION_OPEN="open";
+	
+	/** The Constant ACTION_SAVE. */
 	public static final String ACTION_SAVE="Speichern";
+	
+	/** The Constant ACTION_ABORT. */
 	public static final String ACTION_ABORT="Abbrechen";
 	private SimpleUpdateListener listener;
+    private String tag = "Konfiguration";
 	
+	/**
+	 * Instantiates a new config service.
+	 *
+	 * @param configuration the configuration
+	 */
 	public ConfigService(Configuration configuration) {
 		routing = HTTPRequest.createRouting("/"+ configuration.getTag());
+		routing.withTag(tag);
 		routing.withUpdateCondition(this);
 		this.configuration = configuration;
 	}
 	
+	/**
+	 * With tag.
+	 *
+	 * @param value the value
+	 * @return the config service
+	 */
+	public ConfigService withTag(String value) {
+	    this.tag = value;
+	    return this;
+	}
+	
+	/**
+	 * Gets the routing.
+	 *
+	 * @return the routing
+	 */
 	public HTTPRequest getRouting() {
 		return routing;
 	}
 	
+	/**
+	 * With task.
+	 *
+	 * @param task the task
+	 * @return the config service
+	 */
 	public ConfigService withTask(RESTServiceTask task) {
 		this.task = task;
 		return this;
 	}
 	
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(HTTPRequest value) {
 		if(task == null) {
@@ -61,7 +110,13 @@ public class ConfigService implements Condition<HTTPRequest> {
 
 	private boolean showDefault(HTTPRequest value) {
 		HTMLEntity entity = new HTMLEntity();
-		entity.createTag("h1", "Konfiguration");
+		
+		XMLEntity headerTag = entity.createChild("div", "class", "header");
+		XMLEntity backBtn = headerTag.createChild("a", "href", "/");
+		backBtn.createChild("div", FileBuffer.readResource("back.svg", GraphUtil.class).toString());
+		backBtn.createChild("div", "Zur&uuml;ck");
+		
+		entity.createChild("h1", tag);
 		
 		entity.withActionButton("Allgemein", ACTION_OPEN, this.routing.getAbsolutePath("general"));
 		
@@ -74,7 +129,7 @@ public class ConfigService implements Condition<HTTPRequest> {
 		
 		entity.withActionButton("Beenden", ACTION_CLOSE);
 		if(this.task.getImpressumService() != null) {
-		    XMLEntity footer = entity.createTag("div").with("class", "footer");
+		    XMLEntity footer = entity.createChild("div").with("class", "footer");
 		    XMLEntity lnk = footer.createChild("a", "href", this.task.getImpressumService().getRouting().getAbsolutePath());
 		    lnk.withValue("Impressum");
 		}
@@ -101,8 +156,8 @@ public class ConfigService implements Condition<HTTPRequest> {
 				}
 			}
 			HTMLEntity entity = new HTMLEntity();
-			entity.createTag("h1", "Allgemein");
-			XMLEntity formTag = entity.createTag("form").withKeyValue("method", "post")
+			entity.createChild("h1", "Allgemein");
+			XMLEntity formTag = entity.createChild("form").withKeyValue("method", "post")
 			.withKeyValue("enctype", "application/json");
 			
 			formTag.withChild(entity.createInput("Port:", "port", configuration.getPort()));
@@ -133,8 +188,8 @@ public class ConfigService implements Condition<HTTPRequest> {
 						}
 					}
 					HTMLEntity entity = new HTMLEntity();
-					entity.createTag("h1", creator.getTag());
-					XMLEntity formTag = entity.createTag("form").withKeyValue("method", "post").withKeyValue("enctype", "application/json");
+					entity.createChild("h1", creator.getTag());
+					XMLEntity formTag = entity.createChild("form").withKeyValue("method", "post").withKeyValue("enctype", "application/json");
 					for(String prop : creator.getProperties()) {
 						formTag.withChild(entity.createInput(prop+":", prop, creator.getValue(creator, prop)));	
 					}
@@ -151,6 +206,12 @@ public class ConfigService implements Condition<HTTPRequest> {
 		return false;
 	}
 
+	/**
+	 * With listener.
+	 *
+	 * @param updateListener the update listener
+	 * @return the config service
+	 */
 	public ConfigService withListener(SimpleUpdateListener updateListener) {
 		this.listener = updateListener;
 		return this;

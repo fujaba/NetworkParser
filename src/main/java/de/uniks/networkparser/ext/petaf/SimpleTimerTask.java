@@ -31,7 +31,8 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.ErrorHandler;
 
 /**
- * Simple Task
+ * Simple Task.
+ *
  * @author Stefan Lindel
  */
 public class SimpleTimerTask extends TimerTask implements Callable<Object> {
@@ -43,39 +44,81 @@ public class SimpleTimerTask extends TimerTask implements Callable<Object> {
 	private SimpleEvent event;
 	private ModelExecutor executor;
 
+	/**
+	 * Instantiates a new simple timer task.
+	 *
+	 * @param event the event
+	 * @param executor the executor
+	 */
 	public SimpleTimerTask(SimpleEvent event, ModelExecutor executor) {
 		this.event = event;
 		this.executor = executor;
 	}
 
+	/**
+	 * Instantiates a new simple timer task.
+	 *
+	 * @param simpleExit the simple exit
+	 */
 	public SimpleTimerTask(Thread simpleExit) {
 		this.simpleExit = simpleExit;
 	}
 
+	/**
+	 * Instantiates a new simple timer task.
+	 *
+	 * @param space the space
+	 */
 	public SimpleTimerTask(Space space) {
 		handler.addListener(space);
 		this.space = space;
 	}
 
+	/**
+	 * With date time.
+	 *
+	 * @param entity the entity
+	 * @return the simple timer task
+	 */
 	public SimpleTimerTask withDateTime(DateTimeEntity entity) {
 		this.lastRun = entity;
 		return this;
 	}
 
+	/**
+	 * With simple exit.
+	 *
+	 * @param value the value
+	 * @return the simple timer task
+	 */
 	public SimpleTimerTask withSimpleExit(Thread value) {
 		this.simpleExit = value;
 		return this;
 	}
 
+	/**
+	 * Gets the last run.
+	 *
+	 * @return the last run
+	 */
 	public DateTimeEntity getLastRun() {
 		return lastRun;
 	}
 
+	/**
+	 * With event.
+	 *
+	 * @param event the event
+	 * @return the simple timer task
+	 */
 	public SimpleTimerTask withEvent(SimpleEvent event) {
 		this.event = event;
 		return this;
 	}
 
+	/**
+	 * Run.
+	 */
 	@Override
 	public void run() {
 		if (simpleExit != null) {
@@ -89,6 +132,9 @@ public class SimpleTimerTask extends TimerTask implements Callable<Object> {
 		}
 	}
 
+	/**
+	 * Update last run.
+	 */
 	public void updateLastRun() {
 		if (lastRun != null) {
 			lastRun.withValue(System.currentTimeMillis());
@@ -98,6 +144,12 @@ public class SimpleTimerTask extends TimerTask implements Callable<Object> {
 		}
 	}
 
+	/**
+	 * Run task.
+	 *
+	 * @return true, if successful
+	 * @throws Exception the exception
+	 */
 	public boolean runTask() throws Exception {
 		if (this.task != null) {
 			task.run();
@@ -106,15 +158,32 @@ public class SimpleTimerTask extends TimerTask implements Callable<Object> {
 		return false;
 	}
 
+	/**
+	 * With task.
+	 *
+	 * @param task the task
+	 * @return the simple timer task
+	 */
 	public SimpleTimerTask withTask(Runnable task) {
 		this.task = task;
 		return this;
 	}
 
+	/**
+	 * Gets the space.
+	 *
+	 * @return the space
+	 */
 	public Space getSpace() {
 		return space;
 	}
 
+	/**
+	 * Call.
+	 *
+	 * @return the object
+	 * @throws Exception the exception
+	 */
 	@Override
 	public Object call() throws Exception {
 		if (this.event == null || this.executor == null) {

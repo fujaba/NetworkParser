@@ -13,11 +13,26 @@ import de.uniks.networkparser.list.SimpleIterator;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class Pattern.
+ *
+ * @author Stefan
+ */
 public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondition {
+	
+	/** The Constant MODIFIER_SEARCH. */
 	public static final String MODIFIER_SEARCH = "search";
+	
+	/** The Constant MODIFIER_CHANGE. */
 	public static final String MODIFIER_CHANGE = "change";
+	
+	/** The Constant MODIFIER_ADD. */
 	public static final String MODIFIER_ADD = "add";
+	
+	/** The Constant MODIFIER_REMOVE. */
 	public static final String MODIFIER_REMOVE = "remove";
+	
+	/** The Constant MODIFIER_ROLE. */
 	public static final String MODIFIER_ROLE = "role";
 	private Object match;
 	private String modifier = MODIFIER_SEARCH;
@@ -30,6 +45,11 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 	private SimpleIterator<Object> iterator;
 	private SimpleSet<Pattern> chain;
 
+	/**
+	 * Gets the root.
+	 *
+	 * @return the root
+	 */
 	public Pattern getRoot() {
 		if (this.getParent() != null) {
 			return this.getParent().getRoot();
@@ -37,10 +57,21 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 		return this;
 	}
 
+	/**
+	 * Gets the map.
+	 *
+	 * @return the map
+	 */
 	public IdMap getMap() {
 		return getRoot().map;
 	}
 
+	/**
+	 * Instantiates a new pattern.
+	 *
+	 * @param map the map
+	 * @param match the match
+	 */
 	public Pattern(IdMap map, Object match) {
 		this();
 		this.match = match;
@@ -51,16 +82,31 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 		this.candidates.add(match);
 	}
 	
+	/**
+	 * With condition.
+	 *
+	 * @param condition the condition
+	 * @return the pattern
+	 */
 	public Pattern withCondition(ObjectCondition condition) {
 		this.condition = condition;
 		return this;
 	}
 
+	/**
+	 * Instantiates a new pattern.
+	 */
 	public Pattern() {
 		this.chain = new SimpleSet<Pattern>();
 		this.chain.add(this);
 	}
 
+	/**
+	 * Instantiates a new pattern.
+	 *
+	 * @param parent the parent
+	 * @param condition the condition
+	 */
 	public Pattern(Pattern parent, ObjectCondition condition) {
 		if (parent != null) {
 			this.parent = parent;
@@ -69,10 +115,22 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 		this.condition = condition;
 	}
 
+	/**
+	 * Checks for.
+	 *
+	 * @param property the property
+	 * @return the pattern
+	 */
 	public Pattern has(String property) {
 		return has(PatternCondition.create(property));
 	}
 
+	/**
+	 * Checks for.
+	 *
+	 * @param condition the condition
+	 * @return the pattern
+	 */
 	public Pattern has(ObjectCondition condition) {
 		Pattern root = getRoot();
 		if (root != this && this.condition == null) {
@@ -98,10 +156,23 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 		return false;
 	}
 
+	/**
+	 * Creates the list of type.
+	 *
+	 * @param <T> the generic type
+	 * @param type the type
+	 * @return the simple list
+	 */
 	public static <T> SimpleList<T> createListOfType(Class<T> type) {
 		return new SimpleList<T>();
 	}
 
+	/**
+	 * All matches.
+	 *
+	 * @param <ST> the generic type
+	 * @return the st
+	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends List<Object>> ST allMatches() {
 		if (this.match == null) {
@@ -117,20 +188,43 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 		return (ST) result;
 	}
 
+	/**
+	 * Gets the match.
+	 *
+	 * @return the match
+	 */
 	public Object getMatch() {
 		return match;
 	}
 
+	/**
+	 * Gets the match.
+	 *
+	 * @param <ST> the generic type
+	 * @param clazz the clazz
+	 * @return the match
+	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends Object> ST getMatch(Class<ST> clazz) {
 		return (ST) match;
 	}
 	
+	/**
+	 * Find.
+	 *
+	 * @param condition the condition
+	 * @return true, if successful
+	 */
 	public boolean find(Object condition) {
 		this.withCandidates(condition);
 		return find();
 	}
 
+	/**
+	 * Find.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean find() {
 		SimpleSet<Pattern> chain = getChain();
 		if (chain == null) {
@@ -143,10 +237,20 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 		return last.finding(true);
 	}
 
+	/**
+	 * Gets the chain.
+	 *
+	 * @return the chain
+	 */
 	public SimpleSet<Pattern> getChain() {
 		return getRoot().chain;
 	}
 
+	/**
+	 * Checks for next.
+	 *
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean hasNext() {
 		SimpleSet<Pattern> chain = getChain();
@@ -223,6 +327,11 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 		return this.match != null;
 	}
 
+	/**
+	 * Next.
+	 *
+	 * @return the object
+	 */
 	@Override
 	public Object next() {
 		if (find()) {
@@ -231,19 +340,40 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 		return null;
 	}
 
+	/**
+	 * Iterator.
+	 *
+	 * @return the iterator
+	 */
 	@Override
 	public Iterator<Object> iterator() {
 		return this;
 	}
 
+	/**
+	 * Gets the candidates.
+	 *
+	 * @return the candidates
+	 */
 	public SimpleSet<Object> getCandidates() {
 		return candidates;
 	}
 
+	/**
+	 * Gets the parent.
+	 *
+	 * @return the parent
+	 */
 	public Pattern getParent() {
 		return parent;
 	}
 
+	/**
+	 * With candidates.
+	 *
+	 * @param newValue the new value
+	 * @return the pattern
+	 */
 	public Pattern withCandidates(Object newValue) {
 		if (this.candidates == null) {
 			this.candidates = new SimpleSet<Object>();
@@ -258,15 +388,31 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 		return this;
 	}
 
+	/**
+	 * Gets the iterator.
+	 *
+	 * @return the iterator
+	 */
 	public SimpleIterator<Object> getIterator() {
 		return iterator;
 	}
 
+	/**
+	 * With match.
+	 *
+	 * @param candidate the candidate
+	 * @return the pattern
+	 */
 	public Pattern withMatch(Object candidate) {
 		this.match = candidate;
 		return this;
 	}
 
+	/**
+	 * Apply pattern.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean applyPattern() {
 		if (MODIFIER_SEARCH.equals(this.modifier)) {
 			return true;
@@ -282,6 +428,11 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 		return true;
 	}
 
+	/**
+	 * Appling.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean appling() {
 		if (condition instanceof PatternCondition == false) {
 			return false;
@@ -319,6 +470,13 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 		return false;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param property the property
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setValue(String property, Object value) {
 		if (this.match != null) {
 			SendableEntityCreator creatorClass = getMap().getCreatorClass(this.match);
@@ -327,6 +485,12 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 		return false;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if(value == null) {
@@ -360,6 +524,12 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 		return item != null;
 	}
 
+	/**
+	 * With map.
+	 *
+	 * @param map the map
+	 * @return the pattern
+	 */
 	public Pattern withMap(IdMap map) {
 		this.map = map;
 		return this;

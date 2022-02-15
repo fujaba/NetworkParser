@@ -8,8 +8,16 @@ import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.GraphMatcher;
 
+/**
+ * The Class AssociationChangeUpdateTypeCondition.
+ *
+ * @author Stefan
+ */
 public class AssociationChangeUpdateTypeCondition extends MatchCondition {
 
+	/**
+	 * Instantiates a new association change update type condition.
+	 */
 	public AssociationChangeUpdateTypeCondition() {
 		super(true);
 	}
@@ -107,6 +115,11 @@ public class AssociationChangeUpdateTypeCondition extends MatchCondition {
 		return true;
 	}
 
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
 	@Override
 	public String getAction() {
 		return SendableEntityCreator.UPDATE;

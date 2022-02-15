@@ -25,20 +25,44 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class Literal.
+ *
+ * @author Stefan
+ */
 public class Literal extends GraphMember {
+	
+	/** The Constant PROPERTY_VALUE. */
 	public static final String PROPERTY_VALUE = "value";
 	private SimpleList<Object> values;
 
+	/**
+	 * Instantiates a new literal.
+	 *
+	 * @param name the name
+	 */
 	public Literal(String name) {
 		super.with(name);
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param name the name
+	 * @return the literal
+	 */
 	@Override
 	public Literal with(String name) {
 		super.with(name);
 		return this;
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param values the values
+	 * @return the literal
+	 */
 	public Literal withValue(Object... values) {
 		if (values == null) {
 			return this;
@@ -54,6 +78,12 @@ public class Literal extends GraphMember {
 		return this;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	public Object getValue(String attribute) {
 		int pos = attribute.indexOf('.');
 		String attrName;
@@ -74,6 +104,11 @@ public class Literal extends GraphMember {
 		return super.getValue(attribute);
 	}
 
+	/**
+	 * Gets the values.
+	 *
+	 * @return the values
+	 */
 	public SimpleList<Object> getValues() {
 		return values;
 	}

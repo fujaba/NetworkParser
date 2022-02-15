@@ -1,5 +1,7 @@
 package de.uniks.networkparser.calculator;
 
+import de.uniks.networkparser.interfaces.MathOperator;
+
 /*
  * NetworkParser The MIT License Copyright (c) 2010-2016 Stefan Lindel
  * https://www.github.com/fujaba/NetworkParser/
@@ -20,12 +22,29 @@ package de.uniks.networkparser.calculator;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-public class Potenz implements Operator {
+/**
+ * The Class Potenz.
+ *
+ * @author Stefan
+ */
+public class Potenz implements MathOperator {
+  
+  /**
+   * Gets the priority.
+   *
+   * @return the priority
+   */
   @Override
   public int getPriority() {
     return RegCalculator.POTENZ;
   }
 
+  /**
+   * Calculate.
+   *
+   * @param values the values
+   * @return the double
+   */
   @Override
   public double calculate(Double... values) {
     if (values == null || values.length < 2) {
@@ -50,11 +69,21 @@ public class Potenz implements Operator {
     return result;
   }
 
+  /**
+   * Gets the tag.
+   *
+   * @return the tag
+   */
   @Override
   public String getTag() {
     return "^";
   }
 
+  /**
+   * Gets the values.
+   *
+   * @return the values
+   */
   @Override
   public int getValues() {
     return 2;

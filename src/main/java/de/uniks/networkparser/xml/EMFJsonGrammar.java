@@ -35,11 +35,30 @@ import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
 
+/**
+ * The Class EMFJsonGrammar.
+ *
+ * @author Stefan
+ */
 public class EMFJsonGrammar extends SimpleGrammar {
+	
+	/** The Constant SRC. */
 	public static final String SRC = "@src";
+	
+	/** The Constant PROP. */
 	public static final String PROP = "@prop";
+	
+	/** The Constant NV. */
 	public static final String NV = "@nv";
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @param item the item
+	 * @param map the map
+	 * @param isId the is id
+	 * @return the properties
+	 */
 	@Override
 	public BaseItem getProperties(Entity item, MapEntity map, boolean isId) {
 		JsonObject props = new JsonObject();
@@ -58,6 +77,15 @@ public class EMFJsonGrammar extends SimpleGrammar {
 		return item;
 	}
 
+	/**
+	 * Gets the creator.
+	 *
+	 * @param type the type
+	 * @param item the item
+	 * @param entity the entity
+	 * @param className the class name
+	 * @return the creator
+	 */
 	@Override
 	public SendableEntityCreator getCreator(String type, Object item, MapEntity entity, String className) {
 		if (Grammar.READ.equals(type) && item instanceof Entity) {
@@ -94,6 +122,13 @@ public class EMFJsonGrammar extends SimpleGrammar {
 		return super.getCreator(type, item, entity, className);
 	}
 
+	/**
+	 * Gets the id.
+	 *
+	 * @param obj the obj
+	 * @param map the map
+	 * @return the id
+	 */
 	@Override
 	public String getId(Object obj, SimpleMap map) {
 		if (obj == null) {
@@ -107,6 +142,13 @@ public class EMFJsonGrammar extends SimpleGrammar {
 		return name + IdMap.ENTITYSPLITTER + map.createId(obj, true);
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param item the item
+	 * @param property the property
+	 * @return the value
+	 */
 	@Override
 	public String getValue(Entity item, String property) {
 		if (item == null) {
@@ -118,6 +160,13 @@ public class EMFJsonGrammar extends SimpleGrammar {
 		return item.getString(property);
 	}
 
+	/**
+	 * Checks for value.
+	 *
+	 * @param json the json
+	 * @param property the property
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean hasValue(Entity json, String property) {
 		if (property == null) {
@@ -129,6 +178,16 @@ public class EMFJsonGrammar extends SimpleGrammar {
 		return super.hasValue(json, property);
 	}
 
+	/**
+	 * Write basic value.
+	 *
+	 * @param entity the entity
+	 * @param className the class name
+	 * @param id the id
+	 * @param type the type
+	 * @param map the map
+	 * @return the entity
+	 */
 	@Override
 	public Entity writeBasicValue(Entity entity, String className, String id, String type, SimpleMap map) {
 		if (id != null && entity != null) {

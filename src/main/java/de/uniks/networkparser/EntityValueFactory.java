@@ -25,11 +25,30 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * A factory for creating EntityValue objects.
+ * @author Stefan
+ */
 public class EntityValueFactory {
+	
+	/**
+	 * Gets the cell value.
+	 *
+	 * @param value the value
+	 * @return the cell value
+	 */
 	public Object getCellValue(Object value) {
 		return getCellValue(value, null, null);
 	}
 
+	/**
+	 * Gets the cell value.
+	 *
+	 * @param value the value
+	 * @param creator the creator
+	 * @param property the property
+	 * @return the cell value
+	 */
 	public Object getCellValue(Object value, SendableEntityCreator creator, String property) {
 		if (creator != null && property != null) {
 			return creator.getValue(value, property);

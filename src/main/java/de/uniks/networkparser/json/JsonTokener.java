@@ -51,15 +51,22 @@ import de.uniks.networkparser.list.SimpleIteratorSet;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class JsonTokener.
+ *
+ * @author Stefan
+ */
 public class JsonTokener extends Tokener {
 	/** The Constant JSON_PROPS. */
 	public static final String STOPCHARS = ",]}/\\\"[{;=# ";
+	
+	/** The Constant COMMENT. */
 	public static final char COMMENT = '#';
 	private boolean simpleFormat;
 
 	/**
-	 * Cross compiling
-	 * 
+	 * Cross compiling.
+	 *
 	 * @param parent   the parent Element
 	 * @param newValue the newValue
 	 * @return Itself
@@ -72,7 +79,7 @@ public class JsonTokener extends Tokener {
 		if (newValue instanceof SimpleKeyValueList<?, ?>) {
 			return parsingEntityXML((JsonObject) parent, (SimpleKeyValueList<?, ?>) newValue);
 		}
-		if (newValue instanceof Buffer == false) {
+		if (!(newValue instanceof Buffer)) {
 			return null;
 		}
 		Buffer buffer = (Buffer) newValue;
@@ -85,7 +92,6 @@ public class JsonTokener extends Tokener {
 	}
 
 	private EntityList parsingEntity(EntityList entityList, Buffer buffer) {
-		/* FIXME REMOVE */
 		if (buffer == null) {
 			return null;
 		}
@@ -297,7 +303,7 @@ public class JsonTokener extends Tokener {
 
 			for (i = 0; i < xmlEntity.size(); i++) {
 				BaseItem child = xmlEntity.getChild(i);
-				if (child instanceof XMLEntity == false) {
+				if (!(child instanceof XMLEntity)) {
 					continue;
 				}
 				XMLEntity xml = (XMLEntity) child;
@@ -309,6 +315,16 @@ public class JsonTokener extends Tokener {
 		return null;
 	}
 
+	/**
+	 * Next value.
+	 *
+	 * @param buffer the buffer
+	 * @param creator the creator
+	 * @param allowQuote the allow quote
+	 * @param allowDuppleMarks the allow dupple marks
+	 * @param stopChar the stop char
+	 * @return the object
+	 */
 	@Override
 	public Object nextValue(Buffer buffer, BaseItem creator, boolean allowQuote, boolean allowDuppleMarks,
 			char stopChar) {
@@ -344,6 +360,13 @@ public class JsonTokener extends Tokener {
 		return super.nextValue(buffer, creator, allowQuote, allowDuppleMarks, stopChar);
 	}
 
+	/**
+	 * Parses the entity.
+	 *
+	 * @param parent the parent
+	 * @param newValue the new value
+	 * @return the json object
+	 */
 	public JsonObject parseEntity(JsonObject parent, SimpleKeyValueList<?, ?> newValue) {
 		if (newValue instanceof XMLEntity) {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
@@ -359,7 +382,7 @@ public class JsonTokener extends Tokener {
 			}
 			for (i = 0; i < xmlEntity.size(); i++) {
 				BaseItem child = xmlEntity.getChild(i);
-				if (child instanceof XMLEntity == false) {
+				if (!(child instanceof XMLEntity)) {
 					continue;
 				}
 				XMLEntity xml = (XMLEntity) child;
@@ -395,6 +418,14 @@ public class JsonTokener extends Tokener {
 		}
 	}
 
+	/**
+	 * Decoding simple.
+	 *
+	 * @param jsonObject the json object
+	 * @param target the target
+	 * @param creator the creator
+	 * @return the object
+	 */
 	public Object decodingSimple(JsonObject jsonObject, Object target, SendableEntityCreator creator) {
 		if (jsonObject == null || target == null || creator == null) {
 			return null;
@@ -454,7 +485,7 @@ public class JsonTokener extends Tokener {
 		SendableEntityCreator typeInfo = grammar.getCreator(Grammar.READ, jsonObject, map, null);
 		if (typeInfo != null) {
 			Object result = null;
-			if (kid == false) {
+			if (!kid) {
 				map.withStrategy(jsonObject.getString(SimpleMap.TYPE));
 				result = map.getTarget();
 			}
@@ -582,7 +613,7 @@ public class JsonTokener extends Tokener {
 		if (map == null) {
 			return;
 		}
-		if (value == null && map.isStrategyNew() == false) {
+		if (value == null && !map.isStrategyNew()) {
 			return;
 		}
 		Filter filter = map.getFilter();
@@ -640,22 +671,47 @@ public class JsonTokener extends Tokener {
 		}
 	}
 
+	/**
+	 * With map.
+	 *
+	 * @param map the map
+	 * @return the json tokener
+	 */
 	@Override
 	public JsonTokener withMap(SimpleMap map) {
 		super.withMap(map);
 		return this;
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @return the entity
+	 */
 	@Override
 	public Entity newInstance() {
 		return new JsonObject();
 	}
 
+	/**
+	 * New instance list.
+	 *
+	 * @return the entity list
+	 */
 	@Override
 	public EntityList newInstanceList() {
 		return new JsonArray();
 	}
 
+	/**
+	 * Creates the link.
+	 *
+	 * @param parent the parent
+	 * @param property the property
+	 * @param className the class name
+	 * @param id the id
+	 * @return the entity
+	 */
 	public Entity createLink(Entity parent, String property, String className, String id) {
 		Entity child = newInstance();
 		child.put(SimpleMap.CLASS, className);
@@ -663,6 +719,12 @@ public class JsonTokener extends Tokener {
 		return child;
 	}
 
+	/**
+	 * With simple format.
+	 *
+	 * @param value the value
+	 * @return the json tokener
+	 */
 	public JsonTokener withSimpleFormat(boolean value) {
 		this.simpleFormat = value;
 		return this;

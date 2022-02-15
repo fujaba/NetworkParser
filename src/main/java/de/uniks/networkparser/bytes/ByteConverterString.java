@@ -26,7 +26,8 @@ THE SOFTWARE.
 import de.uniks.networkparser.buffer.BufferedBuffer;
 
 /**
- * Converter for Byte to String
+ * Converter for Byte to String.
+ *
  * @author Stefan Lindel
  */
 public class ByteConverterString extends ByteConverter {

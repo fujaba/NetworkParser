@@ -1,5 +1,6 @@
 package de.uniks.networkparser.interfaces;
 
+// TODO: Auto-generated Javadoc
 /*
 The MIT License
 
@@ -24,6 +25,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Interface AggregatedEntityCreator.
+ *
+ * @author Stefan
+ */
 public interface AggregatedEntityCreator extends SendableEntityCreator
 
 {

@@ -9,13 +9,33 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.xml.HTMLEntity;
 
+/**
+ * The Class I18NUtil.
+ *
+ * @author Stefan
+ */
 public class I18NUtil {
+	
+	/**
+	 * Export.
+	 *
+	 * @param fileName the file name
+	 * @param exportFile the export file
+	 * @return true, if successful
+	 */
 	public boolean export(String fileName, String exportFile) {
 		BaseItem buffer = FileBuffer.readBaseFile(fileName);
 		return export(buffer, exportFile);
 
 	}
 
+	/**
+	 * Export.
+	 *
+	 * @param buffer the buffer
+	 * @param exportFile the export file
+	 * @return true, if successful
+	 */
 	public boolean export(BaseItem buffer, String exportFile) {
 		if (buffer == null) {
 			return false;
@@ -53,6 +73,14 @@ public class I18NUtil {
 		return builder;
 	}
 
+	/**
+	 * Validate.
+	 *
+	 * @param sourceLanguage the source language
+	 * @param targetLanguage the target language
+	 * @param getMissedText the get missed text
+	 * @return true, if successful
+	 */
 	public boolean validate(String sourceLanguage, String targetLanguage, boolean getMissedText) {
 		if (sourceLanguage == null || targetLanguage == null) {
 			return false;
@@ -62,6 +90,15 @@ public class I18NUtil {
 		return validate(source, target, targetLanguage + "_neu.json", getMissedText);
 	}
 
+	/**
+	 * Validate.
+	 *
+	 * @param sourceLanguage the source language
+	 * @param targetLanguage the target language
+	 * @param targetFileName the target file name
+	 * @param getMissedText the get missed text
+	 * @return true, if successful
+	 */
 	public boolean validate(BaseItem sourceLanguage, BaseItem targetLanguage, String targetFileName,
 			boolean getMissedText) {
 		if (sourceLanguage == null || targetLanguage == null) {
@@ -80,6 +117,15 @@ public class I18NUtil {
 		return true;
 	}
 
+	/**
+	 * Validator.
+	 *
+	 * @param original the original
+	 * @param newLanguage the new language
+	 * @param prefix the prefix
+	 * @param addNewLanguage the add new language
+	 * @return true, if successful
+	 */
 	public boolean validator(Entity original, Entity newLanguage, String prefix, boolean addNewLanguage) {
 		if (original == null || newLanguage == null) {
 			return false;

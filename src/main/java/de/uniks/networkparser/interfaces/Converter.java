@@ -1,5 +1,6 @@
 package de.uniks.networkparser.interfaces;
 
+// TODO: Auto-generated Javadoc
 /*
 NetworkParser
 The MIT License
@@ -24,6 +25,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Interface Converter.
+ *
+ * @author Stefan
+ */
 public interface Converter {
+	
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @return the string
+	 */
 	public String encode(BaseItem entity);
 }

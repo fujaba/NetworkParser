@@ -30,28 +30,35 @@ import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /**
- * AbstractArray for any Collection
- * 
+ * AbstractArray for any Collection.
+ *
  * @author Stefan Lindel
  * @param <V> Value of Element in List
  */
 public abstract class AbstractArray<V> implements BaseItem {
-  /** Is Allow Duplicate Items in List */
+  
+  /**  Is Allow Duplicate Items in List. */
   public static final byte ALLOWDUPLICATE = 0x01;
-  /** Is Allow Empty Value in List (null) */
+  
+  /**  Is Allow Empty Value in List (null). */
   public static final byte ALLOWEMPTYVALUE = 0x02;
-  /** Is The List is Visible for Tree Editors */
+  
+  /**  Is The List is Visible for Tree Editors. */
   public static final byte VISIBLE = 0x04;
-  /** Is Key is String and is Allow Casesensitive */
+  
+  /**  Is Key is String and is Allow Casesensitive. */
   public static final byte CASESENSITIVE = 0x08;
-  /** Is List is ReadOnly */
+  
+  /**  Is List is ReadOnly. */
   public static final byte READONLY = 0x10;
 
-  /** Is The List has Key,Value */
+  /**  Is The List has Key,Value. */
   public static final byte MAP = 0x20;
-  /** Is List is Key,Value and Value, Key */
+  
+  /**  Is List is Key,Value and Value, Key. */
   public static final byte BIDI = 0x40;
-  /** REMOVED Element */
+  
+  /**  REMOVED Element. */
   public static final Integer REMOVED = -1;
 
   static final int MINHASHINGSIZE = 420; /* Minimum (SIZE_BIG: 5) */
@@ -97,10 +104,10 @@ public abstract class AbstractArray<V> implements BaseItem {
   int size;
 
   /**
-   * Init-List with Collection or single Object
+   * Init-List with Collection or single Object.
    *
-   * @param values add all new Items
    * @param <ST> Container Class
+   * @param values add all new Items
    * @return return self
    */
   @SuppressWarnings("unchecked")
@@ -120,12 +127,12 @@ public abstract class AbstractArray<V> implements BaseItem {
   }
 
   /**
-   * Init-List with Size-Integer
+   * Init-List with Size-Integer.
    *
+   * @param <ST> Container Class
    * @param items Array of the new List
    * @param size the new Size of the List
    * @param offset the startoffset of Items
-   * @param <ST> Container Class
    * @return return self
    */
   @SuppressWarnings("unchecked")
@@ -139,6 +146,13 @@ public abstract class AbstractArray<V> implements BaseItem {
     return (ST) this;
   }
 
+  /**
+   * With flag.
+   *
+   * @param <ST> the generic type
+   * @param value the value
+   * @return the st
+   */
   @SuppressWarnings("unchecked")
   public <ST extends AbstractArray<V>> ST withFlag(byte value) {
     this.setFlag((byte) (this.flag | value));
@@ -168,17 +182,27 @@ public abstract class AbstractArray<V> implements BaseItem {
     return 1;
   }
 
+  /**
+   * Flag.
+   *
+   * @return the byte
+   */
   public byte flag() {
     return flag;
   }
 
+  /**
+   * Size.
+   *
+   * @return the int
+   */
   @Override
 public int size() {
     return size;
   }
 
   /**
-   * If the List is Empty
+   * If the List is Empty.
    *
    * @return boolean of size
    */
@@ -187,7 +211,7 @@ public int size() {
   }
 
   /**
-   * Is Allow Duplicate Entity in the List
+   * Is Allow Duplicate Entity in the List.
    *
    * @return boolean if the List allow duplicate Entities
    */
@@ -195,6 +219,12 @@ public int size() {
     return (flag & ALLOWEMPTYVALUE) != 0;
   }
 
+  /**
+   * With allow empty value.
+   *
+   * @param value the value
+   * @return the base item
+   */
   public BaseItem withAllowEmptyValue(boolean value) {
     this.setFlag((byte) (this.flag | ALLOWEMPTYVALUE));
     if (value == false) {
@@ -204,7 +234,7 @@ public int size() {
   }
 
   /**
-   * Is Visible Entity
+   * Is Visible Entity.
    *
    * @return boolean if the List is Visible
    */
@@ -212,6 +242,12 @@ public int size() {
     return (flag & VISIBLE) != 0;
   }
 
+  /**
+   * With visible.
+   *
+   * @param value the value
+   * @return the abstract array
+   */
   public AbstractArray<V> withVisible(boolean value) {
 
     this.setFlag((byte) (this.flag | VISIBLE));
@@ -222,7 +258,7 @@ public int size() {
   }
 
   /**
-   * Is Item is CaseSensitive
+   * Is Item is CaseSensitive.
    *
    * @return boolean if the List is CaseSentive
    */
@@ -230,6 +266,13 @@ public int size() {
     return (flag & CASESENSITIVE) != 0;
   }
 
+  /**
+   * With case sensitive.
+   *
+   * @param <ST> the generic type
+   * @param value the value
+   * @return the st
+   */
   @SuppressWarnings("unchecked")
   public <ST extends AbstractArray<V>> ST withCaseSensitive(boolean value) {
     if (value) {
@@ -241,7 +284,7 @@ public int size() {
   }
 
   /**
-   * Is Allow Duplicate Entity in the List
+   * Is Allow Duplicate Entity in the List.
    *
    * @return boolean if the List allow duplicate Entities
    */
@@ -249,6 +292,13 @@ public int size() {
     return (flag & ALLOWDUPLICATE) != 0;
   }
 
+  /**
+   * With allow duplicate.
+   *
+   * @param <ST> the generic type
+   * @param value the value
+   * @return the st
+   */
   @SuppressWarnings("unchecked")
   public <ST extends AbstractArray<V>> ST withAllowDuplicate(boolean value) {
     if (value) {
@@ -260,7 +310,7 @@ public int size() {
   }
 
   /**
-   * Is Allow Duplicate Entity in the List
+   * Is Allow Duplicate Entity in the List.
    *
    * @return boolean if the List allow duplicate Entities
    */
@@ -268,6 +318,9 @@ public int size() {
     return (flag & READONLY) != 0;
   }
 
+  /**
+   * Reset.
+   */
   public void reset() {
     this.elements = null;
     this.size = 0;
@@ -275,6 +328,12 @@ public int size() {
     return;
   }
 
+  /**
+   * Reset.
+   *
+   * @param newSize the new size
+   * @param newIndex the new index
+   */
   public void reset(int newSize, int newIndex) {
     int i = 0;
     int arrayFlag = getArrayFlag(size);
@@ -293,6 +352,9 @@ public int size() {
     }
   }
 
+  /**
+   * Clear.
+   */
   public void clear() {
     int arrayFlag = getArrayFlag(size);
     if (arrayFlag < 1) {
@@ -338,10 +400,20 @@ public int size() {
     return (tmp < 0) ? -tmp : tmp;
   }
 
+  /**
+   * Comparator.
+   *
+   * @return the comparator
+   */
   public Comparator<Object> comparator() {
     return null;
   }
 
+  /**
+   * Checks if is comparator.
+   *
+   * @return true, if is comparator
+   */
   public boolean isComparator() {
     return false;
   }
@@ -592,6 +664,12 @@ public int size() {
     return size;
   }
 
+  /**
+   * Gets the key by index.
+   *
+   * @param index the index
+   * @return the key by index
+   */
   public Object getKeyByIndex(int index) {
     return getByIndex(SMALL_KEY, index + this.index, size);
   }
@@ -709,6 +787,11 @@ public int size() {
     return pos;
   }
 
+  /**
+   * To string.
+   *
+   * @return the string
+   */
   @Override
 public String toString() {
     StringBuilder sb = new StringBuilder();
@@ -740,12 +823,25 @@ public String toString() {
     return sb.toString();
   }
 
+  /**
+   * With.
+   *
+   * @param <ST> the generic type
+   * @param values the values
+   * @return the st
+   */
   @SuppressWarnings("unchecked")
   public <ST extends AbstractArray<V>> ST with(Object... values) {
     add(values);
     return (ST) this;
   }
 
+  /**
+   * Adds the.
+   *
+   * @param values the values
+   * @return true, if successful
+   */
   @Override
   public boolean add(Object... values) {
     if (values == null || values.length < 1) {
@@ -771,6 +867,12 @@ public String toString() {
     return changed;
   }
 
+  /**
+   * Raw add.
+   *
+   * @param values the values
+   * @return true, if successful
+   */
   @SuppressWarnings("unchecked")
   public boolean rawAdd(V... values) {
     if (values == null || values.length < 1) {
@@ -789,6 +891,13 @@ public String toString() {
     return changed;
   }
 
+  /**
+   * Without.
+   *
+   * @param <ST> the generic type
+   * @param values the values
+   * @return the st
+   */
   @SuppressWarnings("unchecked")
   public <ST extends AbstractArray<V>> ST without(Object... values) {
     if (values == null) {
@@ -820,6 +929,12 @@ public String toString() {
     return oldValue;
   }
 
+  /**
+   * With list.
+   *
+   * @param list the list
+   * @return the abstract array
+   */
   public AbstractArray<V> withList(Collection<?> list) {
     if (list == null || this.size + list.size() == 0) {
       return this;
@@ -915,6 +1030,13 @@ public String toString() {
     return REMOVED;
   }
 
+  /**
+   * Gets the position key.
+   *
+   * @param o the o
+   * @param last the last
+   * @return the position key
+   */
   public int getPositionKey(Object o, boolean last) {
     if (isComplex(size) == false) {
       if (last) {
@@ -1021,10 +1143,22 @@ public String toString() {
     return a.equals(b);
   }
 
+  /**
+   * Contains.
+   *
+   * @param o the o
+   * @return true, if successful
+   */
   public boolean contains(Object o) {
     return indexOf(o, size) >= 0;
   }
 
+  /**
+   * Contains all.
+   *
+   * @param c the c
+   * @return true, if successful
+   */
   public boolean containsAll(Collection<?> c) {
     if (c == null)
       return true;
@@ -1034,6 +1168,12 @@ public String toString() {
     return true;
   }
 
+  /**
+   * Contains any.
+   *
+   * @param c the c
+   * @return true, if successful
+   */
   public boolean containsAny(Object... c) {
     if (c == null || c.length < 1)
       return false;
@@ -1057,6 +1197,12 @@ public String toString() {
     return false;
   }
 
+  /**
+   * Contains all.
+   *
+   * @param keys the keys
+   * @return true, if successful
+   */
   public boolean containsAll(Object... keys) {
     if (keys == null)
       return true;
@@ -1097,6 +1243,12 @@ public String toString() {
     return modified;
   }
 
+  /**
+   * Removes the by object.
+   *
+   * @param key the key
+   * @return the int
+   */
   public int removeByObject(Object key) {
     int index = indexOf(key, size);
     if (index < 0) {
@@ -1230,6 +1382,11 @@ public String toString() {
 
   static final Object[] emptyArray = new Object[] {};
 
+  /**
+   * To array.
+   *
+   * @return the object[]
+   */
   public Object[] toArray() {
     if (elements == null) {
       return emptyArray;
@@ -1240,6 +1397,12 @@ public String toString() {
     return arrayCopy(elements, size);
   }
 
+  /**
+   * Gets the value.
+   *
+   * @param key the key
+   * @return the value
+   */
   public Object getValue(Object key) {
     int pos = indexOf(key);
     if (pos >= 0) {
@@ -1375,16 +1538,16 @@ public String toString() {
    * last element); the runtime type of the returned array is that of the specified array. If the list
    * fits in the specified array, it is returned therein. Otherwise, a new array is allocated with the
    * runtime type of the specified array and the size of this list.
-   *
+   * 
    * <p>
    * If the list fits in the specified array with room to spare (i.e., the array has more elements
    * than the list), the element in the array immediately following the end of the collection is set
    * to <code>null</code>. (This is useful in determining the length of the list <i>only</i> if the
    * caller knows that the list does not contain any null elements.)
    *
+   * @param <T> the ContainerClass
    * @param a the array into which the elements of the list are to be stored, if it is big enough;
    *        otherwise, a new array of the same runtime type is allocated for this purpose.
-   * @param <T> the ContainerClass
    * @return an array containing the elements of the list
    */
   public <T> T[] toArray(T[] a) {
@@ -1413,12 +1576,22 @@ public String toString() {
     return a;
   }
 
+  /**
+   * Gets the.
+   *
+   * @param index the index
+   * @return the v
+   */
   @SuppressWarnings("unchecked")
   public V get(int index) {
     return (V) getByIndex(SMALL_KEY, index + this.index, size);
   }
 
-  /** @return the First Element of the List */
+  /**
+   * First.
+   *
+   * @return the First Element of the List
+   */
   public V first() {
     if (this.size() > 0) {
       return this.get(0);
@@ -1426,7 +1599,11 @@ public String toString() {
     return null;
   }
 
-  /** @return the Last Element of the List */
+  /**
+   * Last.
+   *
+   * @return the Last Element of the List
+   */
   public V last() {
     if (this.size() > 0) {
       return this.get(this.size() - 1);
@@ -1461,6 +1638,13 @@ public String toString() {
     return newInstance;
   }
 
+  /**
+   * With size.
+   *
+   * @param <ST> the generic type
+   * @param size the size
+   * @return the st
+   */
   @SuppressWarnings("unchecked")
   public <ST extends AbstractArray<V>> ST withSize(int size) {
     if (size < this.size) {
@@ -1471,6 +1655,9 @@ public String toString() {
     return (ST) this;
   }
 
+  /**
+   * Pack.
+   */
   public void pack() {
     if (elements == null) {
       return;
@@ -1500,6 +1687,13 @@ public String toString() {
     return true;
   }
 
+  /**
+   * Move.
+   *
+   * @param from the from
+   * @param to the to
+   * @return true, if successful
+   */
   public boolean move(int from, int to) {
     if (from == to) {
       return true;
@@ -1560,6 +1754,7 @@ public String toString() {
    * Make a prettyprinted Text of this Entity.
    *
    * @param converter Converter for transform Item to String
+   * @return the string
    */
   @Override
   public String toString(Converter converter) {
@@ -1572,6 +1767,12 @@ public String toString() {
     return converter.encode(this);
   }
 
+  /**
+   * Sets the flag.
+   *
+   * @param value the value
+   * @return true, if successful
+   */
   public boolean setFlag(byte value) {
     if (value != this.flag) {
       this.flag = value;
@@ -1580,6 +1781,13 @@ public String toString() {
     return false;
   }
 
+  /**
+   * Replace all values.
+   *
+   * @param key the key
+   * @param search the search
+   * @param replace the replace
+   */
   public void replaceAllValues(Object key, String search, String replace) {
     for (int i = 0; i < this.size(); i++) {
       Object item = get(i);

@@ -26,51 +26,79 @@ THE SOFTWARE.
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.ByteConverter;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface ByteItem.
+ * @author Stefan
+ */
 public interface ByteItem extends BaseItem {
+	
+	/** The Constant BIT_STRING. */
 	public static final byte BIT_STRING = 0x53; /* S = String; */
+	
+	/** The Constant BIT_NUMBER. */
 	public static final byte BIT_NUMBER = 0x4E; /* N = Number */
+	
+	/** The Constant BIT_BYTE. */
 	public static final byte BIT_BYTE = 0x42; /* B = Byte */
+	
+	/** The Constant BIT_REFERENCE. */
 	public static final byte BIT_REFERENCE = 0x52; /* R = Reference */
 
 	/**
+	 * To string.
+	 *
 	 * @param converter ByteConverter for Format
 	 * @param isDynamic ByteStream for minimize output
 	 * @return the ByteItem as String
 	 */
-	public String toString(ByteConverter converter, boolean isDynamic);
+	String toString(ByteConverter converter, boolean isDynamic);
 
 	/**
+	 * Gets the bytes.
+	 *
 	 * @param isDynamic ByteStream for minimize output
 	 * @return ByteStream
 	 */
-	public ByteBuffer getBytes(boolean isDynamic);
+	ByteBuffer getBytes(boolean isDynamic);
 
 	/**
-	 * Write the Entity to the buffer
+	 * Write the Entity to the buffer.
 	 *
 	 * @param buffer      for writing
 	 * @param isDynamic   dynamic switsch
 	 * @param lastEntity  is the entity is the last of a list
 	 * @param isPrimitive need the entity no datatyp
 	 */
-	public void writeBytes(ByteBuffer buffer, boolean isDynamic, boolean lastEntity, boolean isPrimitive);
+	void writeBytes(ByteBuffer buffer, boolean isDynamic, boolean lastEntity, boolean isPrimitive);
 
 	/**
+	 * Calc length.
+	 *
 	 * @param isDynamic ByteStream for minimize output
 	 * @param isLast    is the Element is the Last of Group
 	 * @return the Size of Bytes
 	 */
-	public int calcLength(boolean isDynamic, boolean isLast);
-
-	public byte getType();
-
-	/** @return true if the ByteItem is Empty */
-	public boolean isEmpty();
+	int calcLength(boolean isDynamic, boolean isLast);
 
 	/**
-	 * Size of Item
-	 * 
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
+	byte getType();
+
+	/**
+	 * Checks if is empty.
+	 *
+	 * @return true if the ByteItem is Empty
+	 */
+	boolean isEmpty();
+
+	/**
+	 * Size of Item.
+	 *
 	 * @return the Size of the Item
 	 */
-	public int size();
+	int size();
 }

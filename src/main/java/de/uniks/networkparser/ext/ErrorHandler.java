@@ -25,51 +25,38 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class ErrorHandler.
+ *
+ * @author Stefan
+ */
 public class ErrorHandler implements Thread.UncaughtExceptionHandler {
+  
+  /** The Constant TYPE. */
   public static final String TYPE = "ERROR";
   private String path;
   private Object stage;
   private DateTimeEntity startDate = new DateTimeEntity();
   private SimpleList<ObjectCondition> list = new SimpleList<ObjectCondition>();
 
-  public String getIP() {
-    InetAddress addr;
-    try {
-      addr = InetAddress.getLocalHost();
-      return addr.getHostAddress();
-    } catch (UnknownHostException e) {
-      e.printStackTrace();
-    }
-    return null;
-  }
-
-  public String getMac() {
-    try {
-      InetAddress ip = InetAddress.getLocalHost();
-      NetworkInterface network = NetworkInterface.getByInetAddress(ip);
-      byte[] mac = network.getHardwareAddress();
-      StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < mac.length; i++) {
-        sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
-      }
-      return sb.toString();
-    } catch (SocketException e) {
-    } catch (UnknownHostException e) {
-    }
-    return null;
-  }
-
+  /**
+   * Save error file.
+   *
+   * @param prefix the prefix
+   * @param fileName the file name
+   * @param filePath the file path
+   * @param e the e
+   * @return true, if successful
+   */
   public boolean saveErrorFile(String prefix, String fileName, String filePath, Throwable e) {
     boolean success;
     try {
@@ -87,8 +74,8 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
       ps.println("Thread: " + Thread.currentThread().getName());
       ps.println("PID: " + getPID());
       ps.println("Version: " + SimpleController.getVersion());
-      ps.println("IP: " + getIP());
-      ps.println("MAC: " + getMac());
+      ps.println("IP: " + NodeProxyTCP.getIpAdress());
+      ps.println("MAC: " + NodeProxyTCP.getMacAdress());
 
       ps.println("------------ SYSTEM-INFO ------------");
       printProperty(ps, "java.class.version");
@@ -129,6 +116,12 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     return success;
   }
 
+  /**
+   * Save heap space.
+   *
+   * @param prefix the prefix
+   * @return true, if successful
+   */
   public boolean saveHeapSpace(String prefix) {
     String filepath = createDir(this.path);
     if (filepath == null) {
@@ -152,6 +145,11 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     return true;
   }
 
+  /**
+   * Gets the JVM start up.
+   *
+   * @return the JVM start up
+   */
   public DateTimeEntity getJVMStartUp() {
     DateTimeEntity item = new DateTimeEntity();
     if (ReflectionLoader.MANAGEMENTFACTORY == null) {
@@ -168,6 +166,11 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 
   }
 
+  /**
+   * Gets the pid.
+   *
+   * @return the pid
+   */
   public int getPID() {
     int pid = -1;
     if (ReflectionLoader.MANAGEMENTFACTORY == null) {
@@ -187,10 +190,24 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     return pid;
   }
 
+  /**
+   * Prints the property.
+   *
+   * @param ps the ps
+   * @param property the property
+   */
   public static void printProperty(PrintStream ps, String property) {
     ps.println(property + ": " + System.getProperty(property));
   }
 
+  /**
+   * Prints the sub trace.
+   *
+   * @param ps the ps
+   * @param prefix the prefix
+   * @param index the index
+   * @param e the e
+   */
   public static void printSubTrace(PrintStream ps, String prefix, int index, Throwable e) {
     if (prefix == null) {
       return;
@@ -211,6 +228,12 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     }
   }
 
+  /**
+   * Creates the dir.
+   *
+   * @param path the path
+   * @return the string
+   */
   public static String createDir(String path) {
     if (path == null) {
       return "";
@@ -227,11 +250,26 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     return null;
   }
 
+  /**
+   * With URL.
+   *
+   * @param value the value
+   * @return the error handler
+   */
   public ErrorHandler withURL(String value) {
     this.path = value;
     return this;
   }
 
+  /**
+   * Gets the file name.
+   *
+   * @param filepath the filepath
+   * @param prefix the prefix
+   * @param fileName the file name
+   * @return the file name
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   public File getFileName(String filepath, String prefix, String fileName) throws IOException {
     if (filepath == null) {
       return null;
@@ -262,6 +300,15 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     return file;
   }
 
+  /**
+   * Save screen shoot.
+   *
+   * @param prefix the prefix
+   * @param fileName the file name
+   * @param filePath the file path
+   * @param currentStage the current stage
+   * @return the exception
+   */
   public Exception saveScreenShoot(String prefix, String fileName, String filePath, Object currentStage) {
     /* Save Screenshot */
     if (currentStage == null) {
@@ -302,14 +349,32 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     return result;
   }
 
+  /**
+   * Save exception.
+   *
+   * @param e the e
+   */
   public void saveException(Throwable e) {
     saveException(e, this.stage, true);
   }
 
+  /**
+   * Save exception.
+   *
+   * @param e the e
+   * @param throwException the throw exception
+   */
   public void saveException(Throwable e, boolean throwException) {
     saveException(e, this.stage, throwException);
   }
 
+  /**
+   * Write output.
+   *
+   * @param output the output
+   * @param error the error
+   * @return true, if successful
+   */
   public boolean writeOutput(String output, boolean error) {
     String fullFileName = "";
     if (this.path != null) {
@@ -351,15 +416,34 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     return result;
   }
 
+  /**
+   * Uncaught exception.
+   *
+   * @param t the t
+   * @param e the e
+   */
   @Override
   public void uncaughtException(Thread t, Throwable e) {
     saveException(e, stage, true);
   }
 
+  /**
+   * Gets the prefix.
+   *
+   * @return the prefix
+   */
   public String getPrefix() {
     return new DateTimeEntity().toString("yyyymmdd_HHMMSS_");
   }
 
+  /**
+   * Save exception.
+   *
+   * @param e the e
+   * @param stage the stage
+   * @param throwException the throw exception
+   * @return true, if successful
+   */
   public boolean saveException(Throwable e, Object stage, boolean throwException) {
     /* Generate Error.txt */
     if (e == null) {
@@ -383,19 +467,40 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     return success;
   }
 
+  /**
+   * Gets the stage.
+   *
+   * @return the stage
+   */
   public Object getStage() {
     return stage;
   }
 
+  /**
+   * With stage.
+   *
+   * @param value the value
+   * @return the error handler
+   */
   public ErrorHandler withStage(Object value) {
     this.stage = value;
     return this;
   }
 
+  /**
+   * Adds the listener.
+   *
+   * @param world the world
+   */
   public void addListener(ObjectCondition world) {
     list.add(world);
   }
 
+  /**
+   * Gets the path.
+   *
+   * @return the path
+   */
   public String getPath() {
     return path;
   }

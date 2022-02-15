@@ -30,10 +30,13 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 
 /**
- * Node for Backup Modell
+ * Node for Backup Modell.
+ *
  * @author Stefan Lindel
  */
 public class NodeBackup implements Runnable {
+	
+	/** The Constant KEY. */
 	public static final String KEY = "Backup";
 	private SimpleEventCondition task;
 	private boolean runnable;
@@ -42,10 +45,19 @@ public class NodeBackup implements Runnable {
 	private SimpleEvent event;
 	private SimpleList<NodeProxy> queries;
 
+	/**
+	 * Enable.
+	 */
 	public void enable() {
 		this.runnable = true;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param nodeProxies the node proxies
+	 * @return the node backup
+	 */
 	public NodeBackup with(NodeProxy... nodeProxies) {
 		if (nodeProxies == null) {
 			return this;
@@ -59,17 +71,31 @@ public class NodeBackup implements Runnable {
 		return this;
 	}
 
+	/**
+	 * Close.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean close() {
 		runnable = false;
 		return true;
 	}
 
+	/**
+	 * With space.
+	 *
+	 * @param space the space
+	 * @return the node backup
+	 */
 	public NodeBackup withSpace(Space space) {
 		this.space = space;
 		this.event = new SimpleEvent(this, KEY, null, space);
 		return this;
 	}
 
+	/**
+	 * Run.
+	 */
 	public void run() {
 		if (task != null && runnable) {
 			this.sendtime = System.currentTimeMillis();
@@ -94,19 +120,40 @@ public class NodeBackup implements Runnable {
 		}
 	}
 
+	/**
+	 * Checks if is enable.
+	 *
+	 * @return true, if is enable
+	 */
 	public boolean isEnable() {
 		return runnable;
 	}
 
+	/**
+	 * Gets the sendtime.
+	 *
+	 * @return the sendtime
+	 */
 	public long getSendtime() {
 		return sendtime;
 	}
 
+	/**
+	 * With task.
+	 *
+	 * @param task the task
+	 * @return the node backup
+	 */
 	public NodeBackup withTask(SimpleEventCondition task) {
 		this.task = task;
 		return this;
 	}
 
+	/**
+	 * Gets the space.
+	 *
+	 * @return the space
+	 */
 	public Space getSpace() {
 		return space;
 	}

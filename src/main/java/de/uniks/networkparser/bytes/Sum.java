@@ -24,16 +24,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class Sum.
+ *
+ * @author Stefan
+ */
 public class Sum extends Checksum {
 	private boolean bsd;
 	private int order;
 
+	/**
+	 * Enable BSD.
+	 *
+	 * @return the sum
+	 */
 	public Sum enableBSD() {
 		order = 16;
 		bsd = true;
 		return this;
 	}
 
+	/**
+	 * With order.
+	 *
+	 * @param order the order
+	 * @return the sum
+	 */
 	public Sum withOrder(int order) {
 		this.bsd = false;
 		if (order == 8 || order == 16 || order == 24 || order == 32) {
@@ -44,6 +60,12 @@ public class Sum extends Checksum {
 		return this;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param data the data
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(int data) {
 		super.update(data);
@@ -57,6 +79,11 @@ public class Sum extends Checksum {
 		return true;
 	}
 
+	/**
+	 * Gets the order.
+	 *
+	 * @return the order
+	 */
 	@Override
 	public int getOrder() {
 		return order;

@@ -20,9 +20,10 @@ package de.uniks.networkparser.buffer;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/** Reader for Characters
+/**
+ * Reader for Characters.
  * @author Stefan Lindel
- *  */
+ */
 public class CharacterReader extends CharacterBuffer {
   /** The line. */
   protected int line;
@@ -33,15 +34,31 @@ public class CharacterReader extends CharacterBuffer {
   /** Is Last String is \"String\" or Text */
   private boolean isString = true;
 
+  /**
+   * Checks if is string.
+   *
+   * @return true, if is string
+   */
   public boolean isString() {
     return isString;
   }
 
+  /**
+   * With string.
+   *
+   * @param isString the is string
+   * @return the character reader
+   */
   public CharacterReader withString(boolean isString) {
     this.isString = isString;
     return this;
   }
 
+  /**
+   * Back.
+   *
+   * @return true, if successful
+   */
   public boolean back() {
     if (super.back()) {
       this.character -= 1;
@@ -50,6 +67,11 @@ public class CharacterReader extends CharacterBuffer {
     return false;
   }
 
+  /**
+   * Gets the char.
+   *
+   * @return the char
+   */
   @Override
   public char getChar() {
     char c = super.getChar();
@@ -62,6 +84,15 @@ public class CharacterReader extends CharacterBuffer {
     return c;
   }
 
+  /**
+   * Next string.
+   *
+   * @param sc the sc
+   * @param allowQuote the allow quote
+   * @param nextStep the next step
+   * @param quotes the quotes
+   * @return the character buffer
+   */
   @Override
   public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes) {
     if (quotes == null) {
@@ -96,6 +127,12 @@ public class CharacterReader extends CharacterBuffer {
     return sc;
   }
 
+  /**
+   * With.
+   *
+   * @param items the items
+   * @return the character reader
+   */
   public CharacterReader with(CharSequence... items) {
     super.with(items);
     return this;

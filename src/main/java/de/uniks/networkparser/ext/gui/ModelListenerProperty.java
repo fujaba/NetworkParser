@@ -38,10 +38,23 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class ModelListenerProperty.
+ *
+ * @author Stefan
+ */
 public class ModelListenerProperty implements ModelListenerInterface, SendableEntityCreator {
+	
+	/** The Constant PROPERTY_MODEL. */
 	public static final String PROPERTY_MODEL = "model";
+	
+	/** The Constant PROPERTY_PROPERTY. */
 	public static final String PROPERTY_PROPERTY = "property";
+	
+	/** The Constant PROPERTY_VIEW. */
 	public static final String PROPERTY_VIEW = "view";
+	
+	/** The Constant PROPERTY_CREATOR. */
 	public static final String PROPERTY_CREATOR = "creator";
 
 	protected Object model;
@@ -57,9 +70,20 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 	private Object viewProperty;
 	private Object proxy;
 
+	/**
+	 * Instantiates a new model listener property.
+	 */
 	public ModelListenerProperty() {
 	}
 
+	/**
+	 * Instantiates a new model listener property.
+	 *
+	 * @param creator the creator
+	 * @param item the item
+	 * @param property the property
+	 * @param type the type
+	 */
 	public ModelListenerProperty(SendableEntityCreator creator, Object item, String property, DataType type) {
 		this.creator = creator;
 		this.property = property;
@@ -68,6 +92,11 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		addPropertyChange(item);
 	}
 
+	/**
+	 * Adds the property change.
+	 *
+	 * @param item the item
+	 */
 	public void addPropertyChange(Object item) {
 		if (item == null) {
 			return;
@@ -103,10 +132,21 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		}
 	}
 
+	/**
+	 * Gets the bean.
+	 *
+	 * @return the bean
+	 */
 	public Object getBean() {
 		return model;
 	}
 
+	/**
+	 * Sets the bean.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setBean(Object value) {
 		if (value != this.model) {
 			this.model = value;
@@ -115,10 +155,20 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		return false;
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
 	public String getName() {
 		return property;
 	}
 
+	/**
+	 * Adds the listener.
+	 *
+	 * @param listener the listener
+	 */
 	public void addListener(Object listener) {
 		if(listener == null) {
 			return;
@@ -135,6 +185,11 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		}
 	}
 
+	/**
+	 * Removes the listener.
+	 *
+	 * @param listener the listener
+	 */
 	public void removeListener(Object listener) {
 		if(listener == null) {
 			return;
@@ -151,6 +206,12 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		}
 	}
 
+	/**
+	 * Bind.
+	 *
+	 * @param newObservable the new observable
+	 * @return true, if successful
+	 */
 	public boolean bind(Object newObservable) {
 		if (newObservable == null) {
 			return false;
@@ -164,6 +225,12 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		return true;
 	}
 
+	/**
+	 * Bind bidirectional.
+	 *
+	 * @param other the other
+	 * @return true, if successful
+	 */
 	public boolean bindBidirectional(Object other) {
 		if (other == null) {
 			return false;
@@ -173,10 +240,18 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		return true;
 	}
 
+	/**
+	 * Checks if is bound.
+	 *
+	 * @return true, if is bound
+	 */
 	public boolean isBound() {
 		return observable != null;
 	}
 
+	/**
+	 * Unbind.
+	 */
 	public void unbind() {
 		if (observable != null) {
 			ReflectionLoader.call(observable, "removeListener", ReflectionLoader.OBSERVABLEVALUE, this);
@@ -186,6 +261,12 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		}
 	}
 
+	/**
+	 * Unbind bidirectional.
+	 *
+	 * @param other the other
+	 * @return true, if successful
+	 */
 	public boolean unbindBidirectional(Object other) {
 		ReflectionLoader.call(other, "unbindBidirectional", ReflectionLoader.PROPERTY, this.getProxy());
 		this.view = null;
@@ -193,6 +274,11 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		return true;
 	}
 
+	/**
+	 * Gets the item value.
+	 *
+	 * @return the item value
+	 */
 	public Object getItemValue() {
 		if (creator == null) {
 			return null;
@@ -204,18 +290,38 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		return value;
 	}
 
+	/**
+	 * Gets the modell.
+	 *
+	 * @return the modell
+	 */
 	public Object getModell() {
 		return this.model;
 	}
 
+	/**
+	 * Gets the view.
+	 *
+	 * @return the view
+	 */
 	public Object getView() {
 		return this.view;
 	}
 
+	/**
+	 * Gets the view property.
+	 *
+	 * @return the view property
+	 */
 	public Object getViewProperty() {
 		return this.viewProperty;
 	}
 
+	/**
+	 * Property change.
+	 *
+	 * @param evt the evt
+	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		for (Object listener : listeners) {
@@ -231,6 +337,9 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		executeCallBack();
 	}
 
+	/**
+	 * Execute call back.
+	 */
 	public void executeCallBack() {
 		if (callBack != null) {
 			SimpleEvent event = new SimpleEvent(this.model, this.property, null, getItemValue());
@@ -240,18 +349,40 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		}
 	}
 
+	/**
+	 * With call back.
+	 *
+	 * @param listener the listener
+	 * @return the model listener property
+	 */
 	public ModelListenerProperty withCallBack(Condition<SimpleEvent> listener) {
 		this.callBack = listener;
 		return this;
 	}
 
+	/**
+	 * Invalidated.
+	 *
+	 * @param observable the observable
+	 */
 	public void invalidated(Object observable) {
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public Object getValue() {
 		return getItemValue();
 	}
 
+	/**
+	 * Parses the value.
+	 *
+	 * @param value the value
+	 * @return the object
+	 */
 	public Object parseValue(Object value) {
 		if (this.type == DataType.COLOR) {
 			if (value != null && ReflectionLoader.COLOR.isAssignableFrom(value.getClass())) {
@@ -301,6 +432,11 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		return value;
 	}
 
+	/**
+	 * Gets the proxy.
+	 *
+	 * @return the proxy
+	 */
 	public Object getProxy() {
 		if (this.proxy == null) {
 			this.proxy = ReflectionLoader.createProxy(this,
@@ -309,22 +445,47 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		return this.proxy;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param value the new value
+	 */
 	public void setValue(Object value) {
 		if (creator != null) {
 			creator.setValue(model, property, value, SendableEntityCreator.NEW);
 		}
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new ModelListenerProperty();
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { PROPERTY_MODEL, PROPERTY_CREATOR, PROPERTY_PROPERTY, PROPERTY_VIEW };
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (entity instanceof ModelListenerProperty == false) {
@@ -369,6 +530,13 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		return false;
 	}
 
+	/**
+	 * Register event.
+	 *
+	 * @param eventtype the eventtype
+	 * @param conditions the conditions
+	 * @return true, if successful
+	 */
 	public boolean registerEvent(Object eventtype, ObjectCondition conditions) {
 		if (eventtype != null && conditions != null) {
 			if (this.events == null) {
@@ -380,6 +548,13 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		return false;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (entity instanceof ModelListenerProperty == false || attribute == null) {

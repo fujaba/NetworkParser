@@ -24,12 +24,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class SimpleMapEntry.
+ *
+ * @author Stefan
+ * @param <K> the key type
+ * @param <V> the value type
+ */
 public class SimpleMapEntry<K, V> extends SimpleEntity<K, V> {
+	
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new SimpleMapEntry<K, V>();
 	}
 
+	/**
+	 * With key item.
+	 *
+	 * @param key the key
+	 * @return the simple map entry
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public SimpleMapEntry<K, V> withKeyItem(Object key) {
@@ -37,6 +57,12 @@ public class SimpleMapEntry<K, V> extends SimpleEntity<K, V> {
 		return this;
 	}
 
+	/**
+	 * With value item.
+	 *
+	 * @param value the value
+	 * @return the simple map entry
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public SimpleMapEntry<K, V> withValueItem(Object value) {

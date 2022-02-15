@@ -24,7 +24,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class BooleanList.
+ *
+ * @author Stefan
+ */
 public class BooleanList extends SimpleList<Boolean> {
+	
+	/**
+	 * And.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean and() {
 		for (Boolean value : this) {
 			if (value == false) {
@@ -34,6 +45,11 @@ public class BooleanList extends SimpleList<Boolean> {
 		return true;
 	}
 
+	/**
+	 * Or.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean or() {
 		for (Boolean value : this) {
 			if (value) {

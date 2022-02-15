@@ -71,6 +71,11 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 
+/**
+ * The Class DiagramEditor.
+ *
+ * @author Stefan
+ */
 public class DiagramEditor extends JavaAdapter implements ObjectCondition, Converter {
 	private static final String FILE404 = "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL was not found on this server.</p></body></html>";
 	private static final String METHOD_GENERATE = "generating";
@@ -88,14 +93,30 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 
 	private static DiagramEditor instance;
 
+	/**
+	 * Edobs.
+	 *
+	 * @param items the items
+	 * @return the diagram editor
+	 */
 	public static DiagramEditor edobs(Object... items) {
 		return edobs(false, items);
 	}
 
+	/**
+	 * Gets the logger.
+	 *
+	 * @return the logger
+	 */
 	public NetworkParserLog getLogger() {
 		return logger;
 	}
 	
+	/**
+	 * Instance.
+	 *
+	 * @return the diagram editor
+	 */
 	public static DiagramEditor instance() {
 		if(instance == null) {
 			instance = new DiagramEditor();
@@ -103,6 +124,13 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return instance;
 	}
 
+	/**
+	 * Edobs.
+	 *
+	 * @param all the all
+	 * @param items the items
+	 * @return the diagram editor
+	 */
 	public static DiagramEditor edobs(boolean all, Object... items) {
 		if (items == null) {
 			return null;
@@ -194,6 +222,12 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return instance();
 	}
 	
+	/**
+	 * Adds the graph type.
+	 *
+	 * @param resourceHandler the resource handler
+	 * @param entity the entity
+	 */
 	public static void addGraphType(Buffer resourceHandler, HTMLEntity entity) {
 		if(entity == null) {
 			return;
@@ -213,6 +247,14 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		}
 	}
 	
+	/**
+	 * Adds the graph type.
+	 *
+	 * @param resourceHandler the resource handler
+	 * @param entity the entity
+	 * @param type the type
+	 * @param allExtract the all extract
+	 */
 	public static void addGraphType(Buffer resourceHandler, HTMLEntity entity, String type, String allExtract) {
 		if(entity == null) {
 			return;
@@ -227,18 +269,53 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		}
 	}
 
+	/**
+	 * Convert to PNG.
+	 *
+	 * @param entity the entity
+	 * @param file the file
+	 * @param dimension the dimension
+	 * @return true, if successful
+	 */
 	public static boolean convertToPNG(HTMLEntity entity, String file, int... dimension) {
 		return converting(null, entity, file, true, true, dimension);
 	}
 
+	/**
+	 * Convert to PNG.
+	 *
+	 * @param url the url
+	 * @param file the file
+	 * @param dimension the dimension
+	 * @return true, if successful
+	 */
 	public static boolean convertToPNG(String url, String file, int... dimension) {
 		return converting(null, url, file, true, true, dimension);
 	}
 
+	/**
+	 * Convert to PNG.
+	 *
+	 * @param localFile the local file
+	 * @param file the file
+	 * @param dimension the dimension
+	 * @return true, if successful
+	 */
 	public static boolean convertToPNG(File localFile, String file, int... dimension) {
 		return converting(null, localFile, file, true, true, dimension);
 	}
 
+	/**
+	 * Converting.
+	 *
+	 * @param editor the editor
+	 * @param entity the entity
+	 * @param file the file
+	 * @param wait the wait
+	 * @param autoClose the auto close
+	 * @param dimension the dimension
+	 * @return true, if successful
+	 */
 	public static boolean converting(final DiagramEditor editor, final Object entity, final String file,
 			final boolean wait, final boolean autoClose, int... dimension) {
 		final int width, height;
@@ -276,6 +353,11 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return true;
 	}
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		NetworkParserLog logger = new NetworkParserLog().withListener(new StringPrintStream());
 		if (args != null && args.length > 0 && args[0] != null) {
@@ -477,6 +559,12 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		}
 	}
 
+	/**
+	 * Execute web server.
+	 *
+	 * @param msg the msg
+	 * @return true, if successful
+	 */
 	public boolean executeWebServer(Message msg) {
 		String request = msg.getMessage().toString();
 		if (request.startsWith("GET")) {
@@ -539,6 +627,12 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return false;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value == null) {
@@ -590,6 +684,11 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return false;
 	}
 
+	/**
+	 * Gets the JS editor.
+	 *
+	 * @return the JS editor
+	 */
 	public JSEditor getJSEditor() {
 		if (this.jsEditor == null) {
 			Object JSwin = super.executeScript("window", false);
@@ -599,10 +698,19 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return jsEditor;
 	}
 
+	/**
+	 * Exit.
+	 */
 	public void exit() {
 		ReflectionLoader.call(ReflectionLoader.PLATFORM, "exit");
 	}
 
+	/**
+	 * Save.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean save(Object value) {
 		JsonObject model;
 		if (value instanceof JsonObject) {
@@ -622,12 +730,23 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return FileBuffer.writeFile(name, model.toString()) >= 0;
 	}
 
+	/**
+	 * Log.
+	 *
+	 * @param value the value
+	 */
 	public void log(String value) {
 		if (this.owner != null) {
 			this.owner.logScript(value, 0, this, null);
 		}
 	}
 
+	/**
+	 * Generate.
+	 *
+	 * @param value the value
+	 * @return the string
+	 */
 	public String generate(String value) {
 		try {
 			Thread.currentThread().setUncaughtExceptionHandler(DiagramEditorTask.createException(this));
@@ -638,6 +757,12 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return "";
 	}
 
+	/**
+	 * Generating.
+	 *
+	 * @param model the model
+	 * @return true, if successful
+	 */
 	public boolean generating(JsonObject model) {
 		if (this.listener != null) {
 			SimpleEvent event = new SimpleEvent(model, METHOD_GENERATE, null, null);
@@ -743,6 +868,12 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return null;
 	}
 
+	/**
+	 * Load.
+	 *
+	 * @param item the item
+	 * @return true, if successful
+	 */
 	public boolean load(Object item) {
 		boolean result = super.load(item);
 		if (result) {
@@ -779,6 +910,13 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return true;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param stage the stage
+	 * @param url the url
+	 * @return the diagram editor
+	 */
 	public static DiagramEditor create(Object stage, String... url) {
 		DiagramEditor editor = new DiagramEditor();
 		editor.creating(stage, url, -1, -1);
@@ -816,10 +954,21 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return this;
 	}
 
+	/**
+	 * Show.
+	 *
+	 * @param waitFor the wait for
+	 */
 	public void show(boolean waitFor) {
 		controller.show(owner.getWebView(), waitFor, true);
 	}
 
+	/**
+	 * With listener.
+	 *
+	 * @param item the item
+	 * @return the diagram editor
+	 */
 	public DiagramEditor withListener(Object item) {
 		this.logic = item;
 		if (item instanceof SimpleEventCondition) {
@@ -828,6 +977,12 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return this;
 	}
 
+	/**
+	 * With icon.
+	 *
+	 * @param icon the icon
+	 * @return the diagram editor
+	 */
 	public DiagramEditor withIcon(String icon) {
 		if (controller != null) {
 			controller.withIcon(icon);
@@ -836,12 +991,20 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	}
 
 	/**
+	 * Gets the controller.
+	 *
 	 * @return the controller
 	 */
 	public SimpleController getController() {
 		return controller;
 	}
 
+	/**
+	 * Changed.
+	 *
+	 * @param evt the evt
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean changed(SimpleEvent evt) {
 		if (TYPE_CONTENT.equalsIgnoreCase(type) == false) {
@@ -856,6 +1019,11 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return true;
 	}
 
+	/**
+	 * Screendump.
+	 *
+	 * @param nameExtension the name extension
+	 */
 	public void screendump(String nameExtension) {
 		Object snapshotParametersClass = ReflectionLoader.getClass("javafx.scene.SnapshotParameters");
 		Object writableImageClass = ReflectionLoader.getClass("javafx.scene.image.WritableImage");
@@ -885,6 +1053,14 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		}
 	}
 
+	/**
+	 * Export.
+	 *
+	 * @param type the type
+	 * @param value the value
+	 * @param name the name
+	 * @param context the context
+	 */
 	public void export(String type, Object value, String name, String context) {
 		if (this.controller == null || value == null) {
 			return;
@@ -907,20 +1083,29 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		}
 	}
 
+	/**
+	 * Close.
+	 */
 	public void close() {
 		if (controller != null) {
 			controller.close();
 		}
 	}
 
+	/**
+	 * With logger.
+	 *
+	 * @param logger the logger
+	 * @return the diagram editor
+	 */
 	public DiagramEditor withLogger(NetworkParserLog logger) {
 		DiagramEditor.logger = logger;
 		return this;
 	}
 	
 	/**
-	 * Method for Save Model to Image
-	 * 
+	 * Method for Save Model to Image.
+	 *
 	 * @param entity is the Model
 	 * @return converted String
 	 */
@@ -943,6 +1128,12 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return fileName;
 	}
 
+	/**
+	 * Dump.
+	 *
+	 * @param values the values
+	 * @return the diagram editor
+	 */
 	public static final DiagramEditor dump(String... values) {
 		DiagramEditor editor = new DiagramEditor();
 		if (values != null && values.length > 0) {

@@ -3,11 +3,15 @@ package de.uniks.networkparser.parser.typescript;
 import de.uniks.networkparser.parser.Template;
 
 /**
- * Template for generate Typescript Attributes
+ * Template for generate Typescript Attributes.
+ *
  * @author Stefan Lindel
  */
 public class TypescriptAttribute extends Template {
 	/* TODO adjust java based attribute names to Number, String and boolean */
+	/**
+	 * Instantiates a new typescript attribute.
+	 */
 	/* TODO fix or statements to allow {{}}== {{}}== pattern */
 	public TypescriptAttribute() {
 		this.id = "attribute";

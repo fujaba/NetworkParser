@@ -31,15 +31,32 @@ import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class StringCondition.
+ *
+ * @author Stefan
+ */
 public class StringCondition implements ParserCondition {
+	
+	/** The Constant EQUALS. */
 	public static final String EQUALS = "equals";
+	
+	/** The Constant EQUALSIGNORECASE. */
 	public static final String EQUALSIGNORECASE = "equalsignoreCase";
+	
+	/** The Constant CONTAINS. */
 	public static final String CONTAINS = "contains";
 
 	private String attribute;
 	private String type;
 	private CharSequence value;
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (type != null) {
@@ -67,6 +84,12 @@ public class StringCondition implements ParserCondition {
 		return this.value != null;
 	}
 
+	/**
+	 * Creates the logic.
+	 *
+	 * @param sequence the sequence
+	 * @return the object condition
+	 */
 	public static final ObjectCondition createLogic(String sequence) {
 		if (sequence.startsWith("-")) {
 			return new Not().with(new StringCondition().withValue(sequence.substring(1)));
@@ -76,8 +99,8 @@ public class StringCondition implements ParserCondition {
 
 	/**
 	 * Method for generate Search Logic "A B" = A or B "(A B) = A and B -A = Not A
-	 * #Field Field for Searchign
-	 * 
+	 * #Field Field for Searchign.
+	 *
 	 * @param sequence of String
 	 * @return ObjectCondition
 	 */
@@ -85,6 +108,13 @@ public class StringCondition implements ParserCondition {
 		return createSearchIntern(sequence, new Or());
 	}
 
+	/**
+	 * Creates the search intern.
+	 *
+	 * @param sequence the sequence
+	 * @param container the container
+	 * @return the object condition
+	 */
 	public static final ObjectCondition createSearchIntern(CharacterBuffer sequence, ListCondition container) {
 		if (sequence == null) {
 			return null;
@@ -160,24 +190,54 @@ public class StringCondition implements ParserCondition {
 		return container;
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param value the value
+	 * @return the string condition
+	 */
 	public StringCondition withValue(CharSequence value) {
 		this.value = value;
 		return this;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param variables the variables
+	 * @return the value
+	 */
 	public CharSequence getValue(LocalisationInterface variables) {
 		return value;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param sequence the sequence
+	 * @return the string condition
+	 */
 	public static StringCondition create(CharSequence sequence) {
 		return new StringCondition().withValue(sequence);
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param buffer the buffer
+	 * @param parser the parser
+	 * @param customTemplate the custom template
+	 */
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		this.value = buffer;
 	}
 
+	/**
+	 * Checks if is expression.
+	 *
+	 * @return true, if is expression
+	 */
 	@Override
 	public boolean isExpression() {
 		if (value == null) {
@@ -187,11 +247,21 @@ public class StringCondition implements ParserCondition {
 		return item.equalsIgnoreCase("true");
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return null;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		if (attribute != null) {
@@ -204,11 +274,25 @@ public class StringCondition implements ParserCondition {
 		return value.toString();
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public StringCondition getSendableInstance(boolean prototyp) {
 		return new StringCondition();
 	}
 
+	/**
+	 * With filter.
+	 *
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return the string condition
+	 */
 	public StringCondition withFilter(String attribute, String value, String type) {
 		this.value = value;
 		this.attribute = attribute;
@@ -216,22 +300,55 @@ public class StringCondition implements ParserCondition {
 		return this;
 	}
 
+	/**
+	 * Creates the equals.
+	 *
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @return the string condition
+	 */
 	public static StringCondition createEquals(String attribute, String value) {
 		return new StringCondition().withFilter(attribute, value, EQUALS);
 	}
 
+	/**
+	 * Creates the equals ignore case.
+	 *
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @return the string condition
+	 */
 	public static StringCondition createEqualsIgnoreCase(String attribute, String value) {
 		return new StringCondition().withFilter(attribute, value, EQUALSIGNORECASE);
 	}
 
+	/**
+	 * Creates the contains.
+	 *
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @return the string condition
+	 */
 	public static StringCondition createContains(String attribute, String value) {
 		return new StringCondition().withFilter(attribute, value, CONTAINS);
 	}
 
+	/**
+	 * Clone.
+	 *
+	 * @param otherValue the other value
+	 * @return the string condition
+	 */
 	public StringCondition clone(String otherValue) {
 		return new StringCondition().withFilter(attribute, otherValue, this.type);
 	}
 
+	/**
+	 * Not.
+	 *
+	 * @param condition the condition
+	 * @return the object condition
+	 */
 	public static ObjectCondition Not(ObjectCondition condition) {
 		return Not.create(condition);
 	}

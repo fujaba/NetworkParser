@@ -31,12 +31,28 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class Control.
+ *
+ * @author Stefan
+ */
 public abstract class Control extends SimpleObject {
+	
+	/** The Constant PROPERTY. */
 	/* Constants */
 	public static final String PROPERTY = "property";
+	
+	/** The Constant PROPERTY_ELEMENTS. */
 	public static final String PROPERTY_ELEMENTS = "elements";
 	private SimpleKeyValueList<EventTypes, List<ObjectCondition>> events;
 
+	/**
+	 * Adds the event listener.
+	 *
+	 * @param type the type
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addEventListener(EventTypes type, ObjectCondition listener) {
 		if (events == null) {
 			events = new SimpleKeyValueList<EventTypes, List<ObjectCondition>>();
@@ -51,66 +67,162 @@ public abstract class Control extends SimpleObject {
 		return true;
 	}
 
+	/**
+	 * Adds the click listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addClickListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.CLICK, listener);
 	}
 
+	/**
+	 * Adds the double click listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addDoubleClickListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.DOUBLECLICK, listener);
 	}
 
+	/**
+	 * Adds the mouse up listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addMouseUpListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.MOUSEUP, listener);
 	}
 
+	/**
+	 * Adds the mouse down listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addMouseDownListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.MOUSEDOWN, listener);
 	}
 
+	/**
+	 * Adds the mouse enter listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addMouseEnterListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.MOUSEENTER, listener);
 	}
 
+	/**
+	 * Adds the mouse leave listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addMouseLeaveListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.MOUSELEAVE, listener);
 	}
 
+	/**
+	 * Adds the mouse move listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addMouseMoveListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.MOUSEMOVE, listener);
 	}
 
+	/**
+	 * Adds the key press listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addKeyPressListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.KEYPRESS, listener);
 	}
 
+	/**
+	 * Adds the key down listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addKeyDownListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.KEYDOWN, listener);
 	}
 
+	/**
+	 * Adds the key up listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addKeyUpListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.KEYUP, listener);
 	}
 
+	/**
+	 * Adds the resize listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addResizeListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.RESIZE, listener);
 	}
 
+	/**
+	 * Adds the drag start listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addDragStartListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.DRAGSTART, listener);
 	}
 
+	/**
+	 * Adds the drag over listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addDragOverListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.DRAGOVER, listener);
 	}
 
+	/**
+	 * Adds the drop listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addDropListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.DROP, listener);
 	}
 
+	/**
+	 * Adds the change listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addChangeListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.CHANGE, listener);
 	}
 
+	/**
+	 * Gets the events.
+	 *
+	 * @param type the type
+	 * @return the events
+	 */
 	public List<ObjectCondition> getEvents(EventTypes type) {
 		if (this.events == null) {
 			return null;
@@ -118,6 +230,9 @@ public abstract class Control extends SimpleObject {
 		return this.events.get(type);
 	}
 
+	/**
+	 * Instantiates a new control.
+	 */
 	public Control() {
 		this.addBaseElements(PROPERTY);
 	}
@@ -126,6 +241,8 @@ public abstract class Control extends SimpleObject {
 	protected String property;
 
 	/**
+	 * Gets the property.
+	 *
 	 * @return the property
 	 */
 	public String getProperty() {
@@ -133,6 +250,8 @@ public abstract class Control extends SimpleObject {
 	}
 
 	/**
+	 * Sets the property.
+	 *
 	 * @param value the property to set
 	 * @return success for setting
 	 */
@@ -142,6 +261,12 @@ public abstract class Control extends SimpleObject {
 		return firePropertyChange(PROPERTY, oldValue, value);
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param key the key
+	 * @return the value
+	 */
 	public Object getValue(String key) {
 		if (PROPERTY.equalsIgnoreCase(key)) {
 			return this.property;
@@ -149,6 +274,13 @@ public abstract class Control extends SimpleObject {
 		return super.getValue(key);
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(String key, Object value) {
 		key = key.trim();
@@ -158,5 +290,10 @@ public abstract class Control extends SimpleObject {
 		return super.setValue(key, value);
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @return the control
+	 */
 	public abstract Control newInstance();
 }

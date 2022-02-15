@@ -26,10 +26,16 @@ THE SOFTWARE.
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /**
- * Creator for Bit Fields
- * @author Stefan Lindel
+ * Creator for Bit Fields.
  *
+ * @author Stefan Lindel
  */
 public interface BitEntityCreator extends SendableEntityCreator {
+	
+	/**
+	 * Gets the bit properties.
+	 *
+	 * @return the bit properties
+	 */
 	public BitEntity[] getBitProperties();
 }

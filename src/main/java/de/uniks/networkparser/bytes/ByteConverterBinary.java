@@ -27,15 +27,29 @@ import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 
 /**
- * Converter for Byte to ByteStream
+ * Converter for Byte to ByteStream.
+ *
  * @author Stefan Lindel
  */
 public class ByteConverterBinary extends ByteConverter {
+	
+	/**
+	 * To string.
+	 *
+	 * @param value the value
+	 * @return the string
+	 */
 	public static String toString(byte value) {
 		ByteConverterBinary converter = new ByteConverterBinary();
 		return converter.toString(new ByteBuffer().with(value));
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param value the value
+	 * @return the string
+	 */
 	public static String toString(int value) {
 		return toString((byte) value);
 	}

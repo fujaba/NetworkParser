@@ -17,10 +17,13 @@ import de.uniks.networkparser.parser.ExcelRow;
 import de.uniks.networkparser.parser.ExcelSheet;
 
 /**
- * Conition with Pattern
+ * Conition with Pattern.
+ *
  * @author Stefan Lindel
  */
 public class PatternCondition implements ObjectCondition {
+	
+	/** The Constant CREATEPATTERN. */
 	public static final String CREATEPATTERN = "createpattern";
 	private String link;
 	private Object value;
@@ -28,30 +31,64 @@ public class PatternCondition implements ObjectCondition {
 	private Set<?> root;
 	private ExcelSheet excelSheet;
 
+	/**
+	 * With link name.
+	 *
+	 * @param value the value
+	 * @return the pattern condition
+	 */
 	public PatternCondition withLinkName(String value) {
 		this.link = value;
 		return this;
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param value the value
+	 * @return the pattern condition
+	 */
 	public PatternCondition withValue(Object value) {
 		this.value = value;
 		return this;
 	}
 
+	/**
+	 * With duplicate.
+	 *
+	 * @param value the value
+	 * @return the pattern condition
+	 */
 	public PatternCondition withDuplicate(boolean value) {
 		this.duplicate = value;
 		this.excelSheet = new ExcelSheet();
 		return this;
 	}
 
+	/**
+	 * Gets the duplicate.
+	 *
+	 * @return the duplicate
+	 */
 	public boolean getDuplicate() {
 		return duplicate;
 	}
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @return the new list
+	 */
 	public SimpleSet<Object> getNewList() {
 		return new SimpleSet<Object>();
 	}
 
+	/**
+	 * With root.
+	 *
+	 * @param values the values
+	 * @return the pattern condition
+	 */
 	@SuppressWarnings("unchecked")
 	public PatternCondition withRoot(Object... values) {
 		if (values == null) {
@@ -90,10 +127,21 @@ public class PatternCondition implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * Gets the root.
+	 *
+	 * @return the root
+	 */
 	public Set<?> getRoot() {
 		return root;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean update(Object value) {
@@ -227,20 +275,41 @@ public class PatternCondition implements ObjectCondition {
 		return false;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param linkName the link name
+	 * @return the pattern condition
+	 */
 	public static final PatternCondition create(String linkName) {
 		PatternCondition pattern = new PatternCondition();
 		pattern.withLinkName(linkName);
 		return pattern;
 	}
 
+	/**
+	 * Gets the link name.
+	 *
+	 * @return the link name
+	 */
 	public String getLinkName() {
 		return link;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public Object getValue() {
 		return value;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		if (this.excelSheet != null) {
@@ -252,10 +321,25 @@ public class PatternCondition implements ObjectCondition {
 		return super.toString();
 	}
 
+	/**
+	 * Creates the pattern pair.
+	 *
+	 * @param root the root
+	 * @return the pattern condition
+	 */
 	public static final PatternCondition createPatternPair(Object... root) {
 		return new PatternCondition().withDuplicate(true).withRoot(root);
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param patternObejct the pattern obejct
+	 * @param property the property
+	 * @param value the value
+	 * @param condition the condition
+	 * @return true, if successful
+	 */
 	public static boolean setValue(SimpleSet<?> patternObejct, String property, Object value, Object condition) {
 		return false;
 	}

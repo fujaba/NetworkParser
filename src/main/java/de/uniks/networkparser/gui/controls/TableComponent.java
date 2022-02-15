@@ -30,11 +30,18 @@ import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class TableComponent.
+ *
+ * @author Stefan
+ */
 public class TableComponent extends Control {
 	static final String TABLE = "table";
 
+	/** The Constant PROPERTY_COLUMNS. */
 	public static final String PROPERTY_COLUMNS = "columns";
 
+	/** The Constant PROPERTY_SEARCHCOLUMNS. */
 	public static final String PROPERTY_SEARCHCOLUMNS = "searchColumns";
 
 	protected IdMap map;
@@ -50,6 +57,9 @@ public class TableComponent extends Control {
 	/* bridge.load({class:"table", property:"talk", columns:[{id:'room'},
 	 {id:'day'}, {id:'talk'}, {id:'state'}], searchColumns:["day", "talk"]}); */
 
+	/**
+	 * Instantiates a new table component.
+	 */
 	public TableComponent() {
 		super();
 		this.className = TABLE;
@@ -58,15 +68,33 @@ public class TableComponent extends Control {
 		addBaseElements(PROPERTY_SEARCHCOLUMNS);
 	}
 
+	/**
+	 * Creates the from creator.
+	 *
+	 * @param creator the creator
+	 * @return true, if successful
+	 */
 	public boolean createFromCreator(SendableEntityCreator creator) {
 		return false;
 	}
 
+	/**
+	 * With column.
+	 *
+	 * @param columns the columns
+	 * @return the table component
+	 */
 	public TableComponent withColumn(Column... columns) {
 		addColumn(columns);
 		return this;
 	}
 
+	/**
+	 * Adds the column.
+	 *
+	 * @param columns the columns
+	 * @return true, if successful
+	 */
 	public boolean addColumn(Column... columns) {
 		if (columns == null) {
 			return false;
@@ -81,6 +109,12 @@ public class TableComponent extends Control {
 		return changed;
 	}
 
+	/**
+	 * Adds the search properties.
+	 *
+	 * @param elements the elements
+	 * @return true, if successful
+	 */
 	public boolean addSearchProperties(String... elements) {
 		if (elements == null) {
 			return false;
@@ -114,28 +148,65 @@ public class TableComponent extends Control {
 	/* loadColumns(JsonArray, boolean) */
 	/* addItemsFromPropertyChange(SendableEntity, String, String) */
 
+	/**
+	 * With map.
+	 *
+	 * @param map the map
+	 * @return the table component
+	 */
 	public TableComponent withMap(IdMap map) {
 		return this;
 	}
 
+	/**
+	 * With search properties.
+	 *
+	 * @param elements the elements
+	 * @return the table component
+	 */
 	public TableComponent withSearchProperties(String... elements) {
 		addSearchProperties(elements);
 		return this;
 	}
 
+	/**
+	 * With list.
+	 *
+	 * @param entity the entity
+	 * @param property the property
+	 * @return the table component
+	 */
 	public TableComponent withList(Object entity, String property) {
 		return this;
 	}
 
+	/**
+	 * With list.
+	 *
+	 * @param tableList the table list
+	 * @return the table component
+	 */
 	public TableComponent withList(Collection<Object> tableList) {
 		return this;
 	}
 
+	/**
+	 * With list.
+	 *
+	 * @param items the items
+	 * @return the table component
+	 */
 	public TableComponent withList(Object... items) {
 		addList(items);
 		return this;
 	}
 
+	/**
+	 * Adds the list.
+	 *
+	 * @param elements the elements
+	 * @return true, if successful
+	 */
 	public boolean addList(Object... elements) {
 		if (elements == null) {
 			return false;
@@ -150,14 +221,30 @@ public class TableComponent extends Control {
 		return changed;
 	}
 
+	/**
+	 * Gets the search column.
+	 *
+	 * @return the search column
+	 */
 	public SimpleList<String> getSearchColumn() {
 		return searchColumn;
 	}
 
+	/**
+	 * Gets the property.
+	 *
+	 * @return the property
+	 */
 	public String getProperty() {
 		return property;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param key the key
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(String key) {
 		if (PROPERTY_COLUMNS.equals(key)) {
@@ -170,6 +257,13 @@ public class TableComponent extends Control {
 		return super.getValue(key);
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(String key, Object value) {
 		if (PROPERTY_COLUMNS.equals(key)) {
@@ -207,6 +301,11 @@ public class TableComponent extends Control {
 		return super.setValue(key, value);
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @return the table component
+	 */
 	@Override
 	public TableComponent newInstance() {
 		return new TableComponent();

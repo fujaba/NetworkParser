@@ -11,24 +11,35 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.xml.HTMLEntity;
 
+/**
+ * The Class GraphModel.
+ *
+ * @author Stefan
+ */
 public abstract class GraphModel extends GraphEntity implements BaseItem {
+	
+	/** The Constant DEFAULTPACKAGE. */
 	public static final String DEFAULTPACKAGE = "i.love.networkparser";
+	
+	/** The Constant PROPERTY_CLAZZ. */
 	public static final String PROPERTY_CLAZZ = "clazz";
+	
+	/** The Constant PROPERTY_GENERATEDCLAZZ. */
 	public static final String PROPERTY_GENERATEDCLAZZ = "generatedclazz";
 	private String defaultAuthorName;
 	protected String genPath;
 	private boolean renameAttributes = true;
 
 	/**
-	 * get All GraphClazz
+	 * get All GraphClazz.
 	 *
 	 * @param filters Can Filter the List of Clazzes
 	 * @return all GraphClazz of a GraphModel
-	 *
+	 * 
 	 *         <pre>
-	 *			  one					   many
+	 * 			  one					   many
 	 * GraphModel ----------------------------------- GraphClazz
-	 *			  parent				   clazz
+	 * 			  parent				   clazz
 	 *         </pre>
 	 */
 	public ClazzSet getClazzes(Condition<?>... filters) {
@@ -52,6 +63,12 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return collection;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(String attribute) {
 		if (PROPERTY_CLAZZ.equalsIgnoreCase(attribute)) {
@@ -113,6 +130,12 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return true;
 	}
 
+	/**
+	 * Creates the clazz.
+	 *
+	 * @param name the name
+	 * @return the clazz
+	 */
 	public Clazz createClazz(String name) {
 		if (name == null || children == null
 				|| (children instanceof Clazz && name.equals(((Clazz) children).getName()))) {
@@ -137,6 +160,13 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return clazz;
 	}
 
+	/**
+	 * Creates the association.
+	 *
+	 * @param fromClazzName the from clazz name
+	 * @param targetClazzName the target clazz name
+	 * @return the association
+	 */
 	public Association createAssociation(String fromClazzName, String targetClazzName) {
 	   Clazz fromClazz = createClazz(fromClazzName);
 	   Clazz targetClazz = createClazz(targetClazzName);
@@ -156,18 +186,29 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return new Clazz(name);
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param name the name
+	 * @return the graph model
+	 */
 	@Override
 	public GraphModel with(String name) {
 		super.with(name);
 		return this;
 	}
 
+	/**
+	 * Gets the author name.
+	 *
+	 * @return the author name
+	 */
 	public String getAuthorName() {
 		return defaultAuthorName;
 	}
 
 	/**
-	 * Set the Default Author
+	 * Set the Default Author.
 	 *
 	 * @param value The Authorname
 	 * @return State for change the Autorname
@@ -181,10 +222,23 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return false;
 	}
 
+	/**
+	 * Generate.
+	 *
+	 * @param rootDir the root dir
+	 * @return the graph model
+	 */
 	public GraphModel generate(String... rootDir) {
 		return this;
 	}
 
+	/**
+	 * Dump HTML.
+	 *
+	 * @param diagramName the diagram name
+	 * @param write the write
+	 * @return the HTML entity
+	 */
 	public HTMLEntity dumpHTML(String diagramName, boolean... write) {
 		HTMLEntity html = new HTMLEntity();
 
@@ -201,6 +255,11 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return html;
 	}
 
+	/**
+	 * Fix class model.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean fixClassModel() {
 		Clazz[] classes = getClazzes().toArray(new Clazz[getClazzes().size()]);
 		SimpleSet<Clazz> visited = new SimpleSet<Clazz>();
@@ -260,6 +319,11 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return true;
 	}
 
+	/**
+	 * Gets the default package.
+	 *
+	 * @return the default package
+	 */
 	public String getDefaultPackage() {
 		return DEFAULTPACKAGE;
 	}
@@ -355,11 +419,22 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return this;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return toString(new YUMLConverter());
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param converter the converter
+	 * @return the string
+	 */
 	@Override
    public String toString(Converter converter) {
 		if (converter == null) {
@@ -368,6 +443,11 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return converter.encode(this);
 	}
 
+	/**
+	 * Size.
+	 *
+	 * @return the int
+	 */
 	@Override
    public int size() {
 		if (this.children == null) {

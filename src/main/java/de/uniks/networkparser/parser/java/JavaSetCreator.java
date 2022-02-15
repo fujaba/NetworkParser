@@ -16,7 +16,16 @@ import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.TemplateResultFile;
 
+/**
+ * The Class JavaSetCreator.
+ *
+ * @author Stefan
+ */
 public class JavaSetCreator extends Template {
+	
+	/**
+	 * Instantiates a new java set creator.
+	 */
 	public JavaSetCreator() {
 		this.id = TYPE_JAVA + ".set";
 		this.extension = "java";
@@ -225,6 +234,14 @@ public class JavaSetCreator extends Template {
 		this.addTemplate(new JavaSetMethod(), true);
 	}
 
+	/**
+	 * Execute clazz.
+	 *
+	 * @param clazz the clazz
+	 * @param parameters the parameters
+	 * @param isStandard the is standard
+	 * @return the template result file
+	 */
 	@Override
 	public TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters, boolean isStandard) {
 		FeatureSet features = getFeatures(parameters);

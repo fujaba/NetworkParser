@@ -24,6 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class ChoiceField.
+ *
+ * @author Stefan
+ */
 public class ChoiceField extends Input<String> {
 	/*
 	 * Constants
@@ -36,12 +41,19 @@ public class ChoiceField extends Input<String> {
 
 	protected static final String VALUE = "value";
 
+	/** The Constant ON. */
 	public static final String ON = "on";
 
+	/** The Constant OFF. */
 	public static final String OFF = "on";
 
 	private boolean checked = false;
 
+	/**
+	 * Instantiates a new choice field.
+	 *
+	 * @param multi the multi
+	 */
 	public ChoiceField(boolean multi) {
 		super();
 		this.addBaseElements(CHECKED);
@@ -52,10 +64,21 @@ public class ChoiceField extends Input<String> {
 		}
 	}
 
+	/**
+	 * Checks if is checked.
+	 *
+	 * @return true, if is checked
+	 */
 	public boolean isChecked() {
 		return checked;
 	}
 
+	/**
+	 * Sets the checked.
+	 *
+	 * @param checked the checked
+	 * @return true, if successful
+	 */
 	public boolean setChecked(boolean checked) {
 		boolean oldValue = this.checked;
 		this.checked = checked;
@@ -66,6 +89,12 @@ public class ChoiceField extends Input<String> {
 		return changed;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(String value) {
 		String oldValue = this.value;
@@ -77,6 +106,13 @@ public class ChoiceField extends Input<String> {
 		return changed;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(String key, Object value) {
 		if (CHECKED.equals(key)) {
@@ -85,6 +121,12 @@ public class ChoiceField extends Input<String> {
 		return super.setValue(key, value);
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param key the key
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(String key) {
 		if (CHECKED.equals(key)) {
@@ -93,6 +135,11 @@ public class ChoiceField extends Input<String> {
 		return super.getValue(key);
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @return the choice field
+	 */
 	@Override
 	public ChoiceField newInstance() {
 		return new ChoiceField(false);

@@ -25,12 +25,52 @@ THE SOFTWARE.
 */
 import java.util.Comparator;
 
+/**
+ * The listener interface for receiving jacocoColumn events.
+ * The class that is interested in processing a jacocoColumn
+ * event implements this interface, and the object created
+ * with that class is registered with a component using the
+ * component's <code>addJacocoColumnListener<code> method. When
+ * the jacocoColumn event occurs, that object's appropriate
+ * method is invoked.
+ *
+ * @author Stefan
+ */
 public interface JacocoColumnListener {
+	
+	/**
+	 * Inits the.
+	 *
+	 * @param items the items
+	 * @param total the total
+	 * @return true, if successful
+	 */
 	public boolean init(Object items, Object total);
 
+	/**
+	 * Footer.
+	 *
+	 * @param td the td
+	 * @param total the total
+	 * @param resources the resources
+	 * @param base the base
+	 */
 	public void footer(Object td, Object total, Object resources, Object base);
 
+	/**
+	 * Item.
+	 *
+	 * @param td the td
+	 * @param item the item
+	 * @param resources the resources
+	 * @param base the base
+	 */
 	public void item(Object td, Object item, Object resources, Object base);
 
+	/**
+	 * Gets the comparator.
+	 *
+	 * @return the comparator
+	 */
 	public Comparator<Object> getComparator();
 }

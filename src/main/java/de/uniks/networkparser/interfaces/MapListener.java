@@ -30,16 +30,62 @@ import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The listener interface for receiving map events.
+ * The class that is interested in processing a map
+ * event implements this interface, and the object created
+ * with that class is registered with a component using the
+ * component's <code>addMapListener</code> method. When
+ * the map event occurs, that object's appropriate
+ * method is invoked.
+ * @author Stefan
+ * @see UpdateCondition
+ */
 public interface MapListener extends PropertyChangeListener {
-	public Object execute(Entity updateMessage, Filter filter);
+	
+	/**
+	 * Execute.
+	 *
+	 * @param updateMessage the update message
+	 * @param filter the filter
+	 * @return the object
+	 */
+	Object execute(Entity updateMessage, Filter filter);
 
-	public MapListener withFilter(Filter filter);
+	/**
+	 * With filter.
+	 *
+	 * @param filter the filter
+	 * @return the map listener
+	 */
+	MapListener withFilter(Filter filter);
 
-	public Filter getFilter();
+	/**
+	 * Gets the filter.
+	 *
+	 * @return the filter
+	 */
+	Filter getFilter();
 
-	public boolean suspendNotification(UpdateCondition... accumulates);
+	/**
+	 * Suspend notification.
+	 *
+	 * @param accumulates the accumulates
+	 * @return true, if successful
+	 */
+	boolean suspendNotification(UpdateCondition... accumulates);
 
-	public SimpleList<UpdateCondition> resetNotification();
+	/**
+	 * Reset notification.
+	 *
+	 * @return the simple list
+	 */
+	SimpleList<UpdateCondition> resetNotification();
 
-	public Tokener getTokener();
+	/**
+	 * Gets the tokener.
+	 *
+	 * @return the tokener
+	 */
+	Tokener getTokener();
 }

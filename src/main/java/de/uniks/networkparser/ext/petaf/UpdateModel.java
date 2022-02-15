@@ -30,7 +30,8 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /**
- * UpdateModelChange
+ * UpdateModelChange.
+ *
  * @author Stefan Lindel
  */
 public class UpdateModel implements Callable<Object>, Runnable, Supplier<Object> {
@@ -39,6 +40,14 @@ public class UpdateModel implements Callable<Object>, Runnable, Supplier<Object>
 	private Object entity;
 	private ModelThread owner;
 
+	/**
+	 * Instantiates a new update model.
+	 *
+	 * @param owner the owner
+	 * @param element the element
+	 * @param property the property
+	 * @param newValue the new value
+	 */
 	public UpdateModel(ModelThread owner, Object element, String property, Object newValue) {
 		this.owner = owner;
 		this.entity = element;
@@ -46,16 +55,29 @@ public class UpdateModel implements Callable<Object>, Runnable, Supplier<Object>
 		this.newValue = newValue;
 	}
 
+	/**
+	 * Run.
+	 */
 	@Override
 	public void run() {
 		call();
 	}
 
+	/**
+	 * Gets the.
+	 *
+	 * @return the object
+	 */
 	@Override
 	public Object get() {
 		return call();
 	}
 
+	/**
+	 * Call.
+	 *
+	 * @return the object
+	 */
 	@Override
 	public Object call() {
 		try {

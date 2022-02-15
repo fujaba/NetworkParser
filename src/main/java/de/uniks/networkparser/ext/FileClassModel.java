@@ -35,20 +35,39 @@ import de.uniks.networkparser.parser.SimpleReverseEngineering;
 import de.uniks.networkparser.parser.SymTabEntry;
 import de.uniks.networkparser.xml.HTMLEntity;
 
+/**
+ * The Class FileClassModel.
+ *
+ * @author Stefan
+ */
 public class FileClassModel extends ClassModel {
 	/**
 	 * The suffix of a java file as constant for easer use
 	 */
 	private static final String JAVA_FILE_SUFFIX = ".java";
+	
+	/** The Constant RECURSIVE. */
 	public static final String RECURSIVE = "rekursive";
     private NetworkParserLog logger;
     private SortedSet<ParserEntity> packages = new SortedSet<>(ParserEntity.PROPERTY_FILENAME, new ParserEntity());
     private ObjectCondition reverseEngineering;
 
+	/**
+	 * Instantiates a new file class model.
+	 *
+	 * @param packageName the package name
+	 */
 	public FileClassModel(String packageName) {
 		with(packageName);
 	}
 
+	/**
+	 * Read files.
+	 *
+	 * @param path the path
+	 * @param conditions the conditions
+	 * @return the parser entity
+	 */
 	public ParserEntity readFiles(String path, ObjectCondition... conditions) {
 	    String name = this.getName();
         String pkgName = name.replace('.', '/');
@@ -62,6 +81,13 @@ public class FileClassModel extends ClassModel {
 		return readFiles(new File(path + pkgName), conditions);
 	}
 	
+   /**
+    * Read files.
+    *
+    * @param path the path
+    * @param conditions the conditions
+    * @return the parser entity
+    */
    public ParserEntity readFiles(File path, ObjectCondition... conditions) {
        ObjectCondition con = null;
        if(conditions != null && conditions.length>0) {
@@ -70,6 +96,11 @@ public class FileClassModel extends ClassModel {
        return getFiles(path, JAVA_FILE_SUFFIX, null, con);
     }
 
+	/**
+	 * Finish reverse engineering.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean finishReverseEngineering() {
 		SimpleEvent event = new SimpleEvent(this, "reverseengineering", null, this.packages);
 		boolean update = getReverseEngineering().update(event);
@@ -77,6 +108,12 @@ public class FileClassModel extends ClassModel {
 		return update;
 	}
 
+	/**
+	 * Analyse java doc.
+	 *
+	 * @param fullCheck the full check
+	 * @return the simple list
+	 */
 	public SimpleList<String> analyseJavaDoc(boolean fullCheck) {
 		SimpleList<String> errors = new SimpleList<>();
 		for (ParserEntity item : getParserEntities()) {
@@ -85,13 +122,18 @@ public class FileClassModel extends ClassModel {
 		return errors;
 	}
 	
+	/**
+	 * Gets the parser entities.
+	 *
+	 * @return the parser entities
+	 */
 	public SortedSet<ParserEntity> getParserEntities() {
         return packages;
 	}
 
 	/**
-	 * Validates a single java file for the java doc
-	 * 
+	 * Validates a single java file for the java doc.
+	 *
 	 * @param entity    Analyse JavaDoc
 	 * @param fullCheck FullCheck
 	 * @return List f Warnings and Errors
@@ -392,10 +434,22 @@ public class FileClassModel extends ClassModel {
 		return result.toString();
 	}
 
+	/**
+	 * Creates the parser entity.
+	 *
+	 * @param file the file
+	 * @param condition the condition
+	 * @return the parser entity
+	 */
 	public static ParserEntity createParserEntity(File file, ObjectCondition condition) {
 		return new ParserEntity().withFile(file.getAbsolutePath()).withCondition(condition);
 	}
 
+	/**
+	 * Gets the package list.
+	 *
+	 * @return the package list
+	 */
 	public SimpleKeyValueList<String, SimpleList<ParserEntity>> getPackageList() {
 	    SimpleKeyValueList<String, SimpleList<ParserEntity>> result = new SimpleKeyValueList<>();
 	    String searchKey = null;
@@ -414,6 +468,11 @@ public class FileClassModel extends ClassModel {
 	    return result;
 	}
 	
+	/**
+	 * Analyse bounds.
+	 *
+	 * @return the file class model
+	 */
 	public FileClassModel analyseBounds() {
 		String search = "import " + getName();
 		SimpleKeyValueList<Clazz, SimpleList<String>> assocs = new SimpleKeyValueList<>();
@@ -517,6 +576,11 @@ public class FileClassModel extends ClassModel {
 		return null;
 	}
 
+	/**
+	 * Analyse in bound links.
+	 *
+	 * @return the class model
+	 */
 	public ClassModel analyseInBoundLinks() {
 	    fixClassModel();
 		for (int i = 0; i < packages.size(); i++) {
@@ -555,6 +619,12 @@ public class FileClassModel extends ClassModel {
 		return this;
 	}
 
+	/**
+	 * Analyse mc cabe.
+	 *
+	 * @param item the item
+	 * @return the int
+	 */
 	public int analyseMcCabe(Object item) {
 		String methodBody = null;
 		Method owner = null;
@@ -602,6 +672,13 @@ public class FileClassModel extends ClassModel {
 		return mcCabe;
 	}
 
+	/**
+	 * Check quotes.
+	 *
+	 * @param allText the all text
+	 * @param index the index
+	 * @return true, if successful
+	 */
 	public boolean checkQuotes(String allText, int index) {
 		int quote = 0;
 		for (int i = 0; i < index; i++) {
@@ -617,6 +694,12 @@ public class FileClassModel extends ClassModel {
 		}
 	}
 
+	/**
+	 * Analyse lo C.
+	 *
+	 * @param item the item
+	 * @return the graph metric
+	 */
 	public GraphMetric analyseLoC(Object item) {
 		String methodBody = null;
 		GraphMember owner = null;
@@ -677,6 +760,11 @@ public class FileClassModel extends ClassModel {
 		return metric;
 	}
 
+	/**
+	 * Gets the reverse engineering.
+	 *
+	 * @return the reverse engineering
+	 */
 	public ObjectCondition getReverseEngineering() {
 		if (reverseEngineering == null) {
 			reverseEngineering = new SimpleReverseEngineering();
@@ -684,11 +772,23 @@ public class FileClassModel extends ClassModel {
 		return reverseEngineering;
 	}
 
+	/**
+	 * With reverse engineering.
+	 *
+	 * @param reverseEngineering the reverse engineering
+	 * @return the file class model
+	 */
 	public FileClassModel withReverseEngineering(ObjectCondition reverseEngineering) {
 		this.reverseEngineering = reverseEngineering;
 		return this;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(String attribute) {
 		if (PROPERTY_FILETYPE.equalsIgnoreCase(attribute)) {
@@ -697,12 +797,25 @@ public class FileClassModel extends ClassModel {
 		return super.getValue(attribute);
 	}
 
+	/**
+	 * Dump HTML.
+	 *
+	 * @param diagramName the diagram name
+	 * @param write the write
+	 * @return the HTML entity
+	 */
 	@Override
 	public HTMLEntity dumpHTML(String diagramName, boolean... write) {
 		finishReverseEngineering();
 		return super.dumpHTML(diagramName, write);
 	}
 
+	/**
+	 * Creates the feature.
+	 *
+	 * @param key the key
+	 * @return the feature condition
+	 */
 	public static final FeatureCondition createFeature(String key) {
 		FeatureCondition condition = new FeatureCondition();
 		Feature item = GraphUtil.createFeature(key);
@@ -710,6 +823,11 @@ public class FileClassModel extends ClassModel {
 		return condition;
 	}
 	
+	/**
+	 * Fix class model.
+	 *
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean fixClassModel() {
 	    boolean result = super.fixClassModel();
@@ -731,6 +849,12 @@ public class FileClassModel extends ClassModel {
 	    return result;
 	}
 
+	/**
+	 * Analyse.
+	 *
+	 * @param code the code
+	 * @return the source code
+	 */
 	public SourceCode analyse(SourceCode code) {
 		if(code == null) {
 			return code;
@@ -748,6 +872,12 @@ public class FileClassModel extends ClassModel {
 		}
 	}
 
+    /**
+     * With logger.
+     *
+     * @param value the value
+     * @return the file class model
+     */
     public FileClassModel withLogger(NetworkParserLog value) {
         this.logger = value;
         return this;

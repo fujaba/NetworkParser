@@ -9,7 +9,18 @@ import de.uniks.networkparser.interfaces.TemplateItem;
 import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.TemplateResultFile;
 
+/**
+ * The Class JavaCreatorCreator.
+ *
+ * @author Stefan
+ */
 public class JavaCreatorCreator extends Template {
+	
+	/**
+	 * Instantiates a new java creator creator.
+	 *
+	 * @param creatorPrefix the creator prefix
+	 */
 	public JavaCreatorCreator(String creatorPrefix) {
 		this.extension = "java";
 		this.path = "util";
@@ -38,6 +49,14 @@ public class JavaCreatorCreator extends Template {
 				"{{#template TEMPLATEEND}}}{{#endtemplate}}");
 	}
 
+	/**
+	 * Execute entity.
+	 *
+	 * @param entity the entity
+	 * @param parameters the parameters
+	 * @param isStandard the is standard
+	 * @return the template result file
+	 */
 	@Override
 	public TemplateResultFile executeEntity(TemplateItem entity, LocalisationInterface parameters, boolean isStandard) {
 		FeatureSet features = getFeatures(parameters);
@@ -54,6 +73,11 @@ public class JavaCreatorCreator extends Template {
 		return super.executeEntity(entity, parameters, isStandard);
 	}
 
+	/**
+	 * Gets the file name.
+	 *
+	 * @return the file name
+	 */
 	@Override
 	public String getFileName() {
 		return "CreatorCreator";

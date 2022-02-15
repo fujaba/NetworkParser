@@ -31,32 +31,59 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.parser.TemplateResultFragment;
 
-/** TemplateFragmentCondition 
+/**
+ * TemplateFragmentCondition.
  * {{#template PACKAGE {{CONDITION}}}}{{#endtemplate}}
  *
- * @author Stefan Lindel
+ * @author Stefan
  */
 public class TemplateFragmentCondition implements ParserCondition {
+	
+	/** The Constant PROPERTY_CLONE. */
 	public static final String PROPERTY_CLONE = "clone";
+	
+	/** The Constant PROPERTY_FILE. */
 	public static final String PROPERTY_FILE = "file";
+	
+	/** The Constant PROPERTY_KEY. */
 	public static final String PROPERTY_KEY = "key";
+	
+	/** The Constant PROPERTY_TEMPLATE. */
 	public static final String PROPERTY_TEMPLATE = "template";
+	
+	/** The Constant TAG. */
 	public static final String TAG = "template";
 
 	private String id;
 	private ObjectCondition condition;
 	private ObjectCondition child;
 
+	/**
+	 * Checks if is expression.
+	 *
+	 * @return true, if is expression
+	 */
 	@Override
 	public boolean isExpression() {
 		return true;
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return TAG;
 	}
 
+	/**
+	 * Gets the id key.
+	 *
+	 * @param id the id
+	 * @return the id key
+	 */
 	public static int getIdKey(String id) {
 		if ("PACKAGE".equalsIgnoreCase(id)) {
 			return TemplateParser.PACKAGE;
@@ -82,6 +109,12 @@ public class TemplateFragmentCondition implements ParserCondition {
 		return TemplateParser.DECLARATION;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof SendableEntityCreator) {
@@ -108,11 +141,24 @@ public class TemplateFragmentCondition implements ParserCondition {
 		return false;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param variables the variables
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(LocalisationInterface variables) {
 		return null;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param buffer the buffer
+	 * @param parser the parser
+	 * @param customTemplate the custom template
+	 */
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		CharacterBuffer id = buffer.nextToken(false, SPLITEND, SPACE);
@@ -134,10 +180,21 @@ public class TemplateFragmentCondition implements ParserCondition {
 		buffer.skipChar(SPLITEND);
 	}
 
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public TemplateFragmentCondition getSendableInstance(boolean prototyp) {
 		return new TemplateFragmentCondition();

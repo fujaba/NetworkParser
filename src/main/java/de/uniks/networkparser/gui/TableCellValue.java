@@ -25,12 +25,38 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * The Interface TableCellValue.
+ *
+ * @author Stefan
+ */
 public interface TableCellValue {
+	
+	/**
+	 * Gets the column.
+	 *
+	 * @return the column
+	 */
 	public Column getColumn();
 
+	/**
+	 * Gets the creator.
+	 *
+	 * @return the creator
+	 */
 	public SendableEntityCreator getCreator();
 
+	/**
+	 * Gets the item.
+	 *
+	 * @return the item
+	 */
 	public Object getItem();
 
+	/**
+	 * Gets the simple value.
+	 *
+	 * @return the simple value
+	 */
 	public Object getSimpleValue();
 }

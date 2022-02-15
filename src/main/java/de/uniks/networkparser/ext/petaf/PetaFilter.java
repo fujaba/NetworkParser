@@ -29,22 +29,40 @@ import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /**
- * Filter for Model Network Communication
+ * Filter for Model Network Communication.
+ *
  * @author Stefan Lindel
  */
 public class PetaFilter extends Filter {
+	
+	/** The Constant UPDATE. */
 	public static final String UPDATE = "update"; /* UPDATE only send basic info */
+	
+	/** The Constant ID. */
 	public static final String ID = "id"; /* UPDATE only send basic info */
+	
+	/** The Constant ATTRIBUTES. */
 	public static final String ATTRIBUTES = "attributes"; /* ATTRIBUTES send all Attributes of Remote Proxy */
+	
+	/** The Constant INFO. */
 	public static final String INFO = "info"; /* Info send more Infos */
 
 	private String typ = UPDATE;
 	private String oldTyp;
 
+	/**
+	 * Instantiates a new peta filter.
+	 */
 	public PetaFilter() {
 		withFormat(FORMAT_SHORTCLASS);
 	}
 
+	/**
+	 * Convert property.
+	 *
+	 * @param entity the entity
+	 * @param fullProp the full prop
+	 */
 	@Override
 	public void convertProperty(Object entity, String fullProp) {
 		super.convertProperty(entity, fullProp);
@@ -61,6 +79,12 @@ public class PetaFilter extends Filter {
 		}
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @param creator the creator
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties(SendableEntityCreator creator) {
 		if (creator instanceof NodeProxy) {
@@ -78,6 +102,12 @@ public class PetaFilter extends Filter {
 		return super.getProperties(creator);
 	}
 
+	/**
+	 * With typ.
+	 *
+	 * @param typ the typ
+	 * @return the peta filter
+	 */
 	public PetaFilter withTyp(String typ) {
 		this.typ = typ;
 		return this;

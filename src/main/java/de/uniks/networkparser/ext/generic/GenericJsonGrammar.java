@@ -29,7 +29,21 @@ import de.uniks.networkparser.SimpleGrammar;
 import de.uniks.networkparser.SimpleMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * The Class GenericJsonGrammar.
+ *
+ * @author Stefan
+ */
 public class GenericJsonGrammar extends SimpleGrammar {
+	
+	/**
+	 * Gets the super creator.
+	 *
+	 * @param map the map
+	 * @param searchForSuperCreator the search for super creator
+	 * @param modelItem the model item
+	 * @return the super creator
+	 */
 	@Override
 	public SendableEntityCreator getSuperCreator(SimpleMap map, boolean searchForSuperCreator, Object modelItem) {
 		if (modelItem == null && !searchForSuperCreator) {
@@ -55,6 +69,14 @@ public class GenericJsonGrammar extends SimpleGrammar {
 		return null;
 	}
 
+	/**
+	 * Gets the new entity.
+	 *
+	 * @param creator the creator
+	 * @param className the class name
+	 * @param prototype the prototype
+	 * @return the new entity
+	 */
 	@Override
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype) {
 		if (creator == null) {

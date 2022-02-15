@@ -33,9 +33,20 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class SQLStatement.
+ *
+ * @author Stefan
+ */
 public class SQLStatement {
+	
+	/** The Constant ID. */
 	public static final String ID = "_ID";
+	
+	/** The Constant VALUE. */
 	public static final String VALUE = "VALUE";
+	
+	/** The Constant PROP. */
 	public static final String PROP = "PROP";
 
 	protected SQLCommand command;
@@ -44,63 +55,136 @@ public class SQLStatement {
 	private boolean enable = true;
 	private AbstractArray<?> values;
 	private SimpleKeyValueList<String, Object> conditions;
+	
+	/** The Constant SPACE. */
 	public static final String SPACE = " ";
+	
+	/** The Constant EMPTY. */
 	public static final String EMPTY = "";
+	
+	/** The Constant QUOTE. */
 	public static final String QUOTE = "'";
 	private static final String DRIVER = "DRIVER";
 	private static final String DATABASE = "DATABASE";
 
+	/**
+	 * Instantiates a new SQL statement.
+	 *
+	 * @param command the command
+	 */
 	public SQLStatement(SQLCommand command) {
 		this.command = command;
 	}
 
+	/**
+	 * Instantiates a new SQL statement.
+	 *
+	 * @param command the command
+	 * @param table the table
+	 */
 	public SQLStatement(SQLCommand command, String table) {
 		this.command = command;
 		this.table = table;
 	}
 
+	/**
+	 * Instantiates a new SQL statement.
+	 *
+	 * @param command the command
+	 * @param table the table
+	 * @param id the id
+	 */
 	public SQLStatement(SQLCommand command, String table, String id) {
 		this.command = command;
 		this.table = table;
 		this.with(ID, id);
 	}
 
+	/**
+	 * Gets the command.
+	 *
+	 * @return the command
+	 */
 	public SQLCommand getCommand() {
 		return command;
 	}
 
+	/**
+	 * With command.
+	 *
+	 * @param command the command
+	 * @return the SQL statement
+	 */
 	public SQLStatement withCommand(SQLCommand command) {
 		this.command = command;
 		return this;
 	}
 
+	/**
+	 * Gets the table.
+	 *
+	 * @return the table
+	 */
 	public String getTable() {
 		return table;
 	}
 
+	/**
+	 * With table.
+	 *
+	 * @param value the value
+	 * @return the SQL statement
+	 */
 	public SQLStatement withTable(String value) {
 		this.table = value;
 		return this;
 	}
 
+	/**
+	 * Checks if is auto statement.
+	 *
+	 * @return true, if is auto statement
+	 */
 	public boolean isAutoStatement() {
 		return autoStatement;
 	}
 
+	/**
+	 * With auto statement.
+	 *
+	 * @param autoStatement the auto statement
+	 * @return the SQL statement
+	 */
 	public SQLStatement withAutoStatement(boolean autoStatement) {
 		this.autoStatement = autoStatement;
 		return this;
 	}
 
+	/**
+	 * Checks if is enable.
+	 *
+	 * @return true, if is enable
+	 */
 	public boolean isEnable() {
 		return enable;
 	}
 
+	/**
+	 * With enable.
+	 *
+	 * @param enable the enable
+	 * @return the SQL statement
+	 */
 	public SQLStatement withEnable(boolean enable) {
 		this.enable = enable;
 		return this;
 	}
 
+	/**
+	 * Auto disable.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean autoDisable() {
 		if (isAutoStatement()) {
 			this.withEnable(false);
@@ -109,6 +193,14 @@ public class SQLStatement {
 		return false;
 	}
 
+	/**
+	 * Connect.
+	 *
+	 * @param driver the driver
+	 * @param database the database
+	 * @param url the url
+	 * @return the SQL statement
+	 */
 	public static SQLStatement connect(String driver, String database, String url) {
 		SQLStatement connectStatement = new SQLStatement(SQLCommand.CONNECTION, url);
 		connectStatement.with(DRIVER, driver);
@@ -116,6 +208,15 @@ public class SQLStatement {
 		return connectStatement;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param table the table
+	 * @param id the id
+	 * @param property the property
+	 * @param newValue the new value
+	 * @return the SQL statement
+	 */
 	public static SQLStatement update(String table, String id, String property, Object newValue) {
 		SQLStatement updateStatement = new SQLStatement(SQLCommand.UPDATE, table);
 		updateStatement.withCondition(ID, id);
@@ -123,6 +224,13 @@ public class SQLStatement {
 		return updateStatement;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the SQL statement
+	 */
 	public SQLStatement with(String key, Object value) {
 		if (values == null) {
 			values = new SimpleKeyValueList<String, Object>();
@@ -133,6 +241,12 @@ public class SQLStatement {
 		return this;
 	}
 
+	/**
+	 * Without.
+	 *
+	 * @param key the key
+	 * @return the SQL statement
+	 */
 	public SQLStatement without(String key) {
 		if (values != null && values instanceof SimpleKeyValueList<?, ?>) {
 			((SimpleKeyValueList<?, ?>) values).without(key);
@@ -140,6 +254,12 @@ public class SQLStatement {
 		return this;
 	}
 
+	/**
+	 * With values.
+	 *
+	 * @param values the values
+	 * @return the SQL statement
+	 */
 	public SQLStatement withValues(Object... values) {
 		if (values == null) {
 			return this;
@@ -157,6 +277,13 @@ public class SQLStatement {
 		return this;
 	}
 
+	/**
+	 * With condition.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the SQL statement
+	 */
 	public SQLStatement withCondition(String key, Object value) {
 		if (conditions == null) {
 			conditions = new SimpleKeyValueList<String, Object>();
@@ -165,6 +292,11 @@ public class SQLStatement {
 		return this;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		/* CONNECTION */
@@ -332,10 +464,20 @@ public class SQLStatement {
 		}
 	}
 
+	/**
+	 * Gets the values.
+	 *
+	 * @return the values
+	 */
 	public AbstractArray<?> getValues() {
 		return values;
 	}
 
+	/**
+	 * Gets the primary id.
+	 *
+	 * @return the primary id
+	 */
 	public String getPrimaryId() {
 		SimpleIteratorSet<String, Object> i;
 		if (command == SQLCommand.SELECT) {
@@ -362,6 +504,12 @@ public class SQLStatement {
 		return null;
 	}
 
+	/**
+	 * Without condition.
+	 *
+	 * @param key the key
+	 * @return the SQL statement
+	 */
 	public SQLStatement withoutCondition(String key) {
 		if (conditions != null) {
 			conditions.remove(key);

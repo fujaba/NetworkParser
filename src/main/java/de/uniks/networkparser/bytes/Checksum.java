@@ -25,7 +25,8 @@ THE SOFTWARE.
 */
 
 /**
- * Checksum Abstract Class
+ * Checksum Abstract Class.
+ *
  * @author Stefan
  */
 public abstract class Checksum {
@@ -101,8 +102,8 @@ public abstract class Checksum {
 	/**
 	 * Returns the value of the checksum.
 	 *
-	 * @see #getByteArray()
 	 * @return the value of checksum
+	 * @see #getByteArray()
 	 */
 	public long getValue() {
 		int len = getOrder() / 8;
@@ -149,6 +150,8 @@ public abstract class Checksum {
 	}
 
 	/**
+	 * Gets the order.
+	 *
 	 * @return the Orderindex
 	 */
 	public abstract int getOrder();

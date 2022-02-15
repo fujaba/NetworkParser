@@ -3,7 +3,16 @@ package de.uniks.networkparser.parser.java;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.parser.Template;
 
+/**
+ * The Class JavaSetAttribute.
+ *
+ * @author Stefan
+ */
 public class JavaSetAttribute extends Template {
+	
+	/**
+	 * Instantiates a new java set attribute.
+	 */
 	public JavaSetAttribute() {
 		this.id = "attribute";
 		this.type = VALUE;

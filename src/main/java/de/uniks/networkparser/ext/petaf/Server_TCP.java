@@ -33,7 +33,8 @@ import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.Server;
 
 /**
- * Server for TCP-Connection
+ * Server for TCP-Connection.
+ *
  * @author Stefan Lindel
  */
 public class Server_TCP extends Thread implements Server {
@@ -44,7 +45,7 @@ public class Server_TCP extends Thread implements Server {
 	private Condition<Socket> handler;
 
 	/**
-	 * Fallback for simple Creating a Server without proxy
+	 * Fallback for simple Creating a Server without proxy.
 	 *
 	 * @param port Port of TCP-Server
 	 */
@@ -52,6 +53,11 @@ public class Server_TCP extends Thread implements Server {
 		this(NodeProxyTCP.createServer(port));
 	}
 
+	/**
+	 * Instantiates a new server TCP.
+	 *
+	 * @param proxy the proxy
+	 */
 	public Server_TCP(NodeProxyTCP proxy) {
 		this.proxy = proxy;
 		if(handler == null) {
@@ -62,10 +68,20 @@ public class Server_TCP extends Thread implements Server {
 		}
 	}
 
+	/**
+	 * Checks if is run.
+	 *
+	 * @return true, if is run
+	 */
 	public boolean isRun() {
 		return run;
 	}
 
+	/**
+	 * Close.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean close() {
 		this.run = false;
 		try {
@@ -79,6 +95,9 @@ public class Server_TCP extends Thread implements Server {
 		return true;
 	}
 
+	/**
+	 * Run.
+	 */
 	@Override
 	public void run() {
 		if (proxy.getUrl() != null) {
@@ -125,6 +144,8 @@ public class Server_TCP extends Thread implements Server {
 	}
 
 	/**
+	 * Checks if is search free port.
+	 *
 	 * @return the searchFreePort
 	 */
 	public boolean isSearchFreePort() {
@@ -132,6 +153,8 @@ public class Server_TCP extends Thread implements Server {
 	}
 
 	/**
+	 * With search free port.
+	 *
 	 * @param searchFreePort the searchFreePort to set
 	 * @return ThisComponent
 	 */
@@ -140,6 +163,12 @@ public class Server_TCP extends Thread implements Server {
 		return this;
 	}
 
+	/**
+	 * With handler.
+	 *
+	 * @param handler the handler
+	 * @return the server
+	 */
 	public Server withHandler(Condition<Socket> handler) {
 		this.handler = handler;
 		return this;

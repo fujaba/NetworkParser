@@ -23,21 +23,45 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import de.uniks.networkparser.buffer.CharacterBuffer;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.MathOperator;
+
+/**
+ * The Class RegCalculator.
+ *
+ * @author Stefan
+ */
 public class RegCalculator {
+  
+  /** The Constant LINE. */
   public static final int LINE = 1;
+  
+  /** The Constant POINT. */
   public static final int POINT = 2;
+  
+  /** The Constant POTENZ. */
   public static final int POTENZ = 3;
+  
+  /** The Constant FUNCTION. */
   public static final int FUNCTION = 4;
+  
+  /** The Constant BACKETSOPEN. */
   public static final String BACKETSOPEN = "([{";
+  
+  /** The Constant BACKETSCLOSE. */
   public static final String BACKETSCLOSE = ")]}";
   /** List of Operators */
-  private HashMap<String, Operator> operators = new HashMap<String, Operator>();
+  private HashMap<String, MathOperator> operators = new HashMap<String, MathOperator>();
 
   /** List of Constants */
   private Map<String, Double> constants = new HashMap<String, Double>();
 
+  /**
+   * With standard.
+   *
+   * @return the reg calculator
+   */
   public RegCalculator withStandard() {
     withOperator(new Addition());
     withOperator(new Subtract());
@@ -50,18 +74,37 @@ public class RegCalculator {
     return this;
   }
 
-  public RegCalculator withOperator(Operator value) {
+  /**
+   * With operator.
+   *
+   * @param value the value
+   * @return the reg calculator
+   */
+  public RegCalculator withOperator(MathOperator value) {
     if (value != null) {
       this.operators.put(value.getTag(), value);
     }
     return this;
   }
 
+  /**
+   * With constants.
+   *
+   * @param tag the tag
+   * @param value the value
+   * @return the reg calculator
+   */
   public RegCalculator withConstants(String tag, double value) {
     constants.put(tag, value);
     return this;
   }
 
+  /**
+   * Calculate.
+   *
+   * @param formular the formular
+   * @return the double
+   */
   public Double calculate(String formular) {
     Double[] values = calculateFields(formular);
     if (values.length < 1) {
@@ -70,6 +113,12 @@ public class RegCalculator {
     return values[0];
   }
 
+  /**
+   * Calculate fields.
+   *
+   * @param formular the formular
+   * @return the double[]
+   */
   public Double[] calculateFields(String formular) {
     CharacterBuffer tokener = new CharacterBuffer();
     tokener.with(formular);
@@ -161,11 +210,11 @@ public class RegCalculator {
       if (pos < 0) {
         /* Check for mathematical operators */
         if (z > 0) {
-          Operator operator = operators.get(parts.get(z - 1));
+            MathOperator operator = operators.get(parts.get(z - 1));
           if (operator != null && operator.getPriority() == LINE) {
             if (z > 1) {
               /* Exist Pre Pre */
-              Operator preOperator = operators.get(parts.get(z - 2));
+                MathOperator preOperator = operators.get(parts.get(z - 2));
               if (preOperator == null) {
                 z--;
                 continue;
@@ -186,7 +235,7 @@ public class RegCalculator {
       }
       if (pos > 0) {
         /* Function */
-        Operator operator = operators.get(parts.get(z).substring(0, parts.get(z).indexOf("(")));
+          MathOperator operator = operators.get(parts.get(z).substring(0, parts.get(z).indexOf("(")));
         Double[] values = calculateFields(parts.get(z).substring(pos + 1, parts.get(z).length() - 1));
         if (operator != null && values.length >= operator.getValues()) {
           parts.set(z, "" + operator.calculate(values));
@@ -198,7 +247,7 @@ public class RegCalculator {
     /* Point and Line Statement */
     for (int prio = 3; prio > 0; prio--) {
       for (int i = 0; i < parts.size(); i++) {
-        Operator operator = operators.get(parts.get(i));
+          MathOperator operator = operators.get(parts.get(i));
         if (operator != null && operator.getPriority() == prio) {
           parts.set(i - 1, "" + operator.calculate(
              Double.parseDouble(parts.get(i - 1)), Double.parseDouble(parts.get(i + 1))));

@@ -29,16 +29,45 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * A factory for creating ModelListener objects.
+ * @author Stefan
+ */
 public class ModelListenerFactory {
+	
+	/**
+	 * Creates the.
+	 *
+	 * @param node the node
+	 * @param item the item
+	 * @return the model listener property
+	 */
 	public static ModelListenerProperty create(Object node, Object item) {
 		return create(node, item, null);
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param node the node
+	 * @param item the item
+	 * @param field the field
+	 * @return the model listener property
+	 */
 	public static ModelListenerProperty create(Object node, Object item, String field) {
 		GenericCreator creator = new GenericCreator(item);
 		return create(node, creator, item, field);
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param node the node
+	 * @param map the map
+	 * @param item the item
+	 * @param field the field
+	 * @return the model listener property
+	 */
 	public static ModelListenerProperty create(Object node, IdMap map, Object item, String field) {
 		if(node != null || map != null) {
 			return create(node, map.getCreatorClass(item), item, field);
@@ -46,6 +75,15 @@ public class ModelListenerFactory {
 		return null;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param node the node
+	 * @param creator the creator
+	 * @param item the item
+	 * @param field the field
+	 * @return the model listener property
+	 */
 	public static ModelListenerProperty create(Object node, SendableEntityCreator creator, Object item, String field) {
 		if (node == null || ReflectionLoader.NODE == null
 				|| ReflectionLoader.NODE.isAssignableFrom(node.getClass()) == false) {
@@ -98,6 +136,12 @@ public class ModelListenerFactory {
 		return null;
 	}
 
+	/**
+	 * Gets the property.
+	 *
+	 * @param node the node
+	 * @return the property
+	 */
 	public static Object getProperty(Object node) {
 		if(node == null) {
 			return null;

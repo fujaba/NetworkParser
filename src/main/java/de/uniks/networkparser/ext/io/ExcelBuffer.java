@@ -43,7 +43,19 @@ import de.uniks.networkparser.parser.ExcelParser;
 import de.uniks.networkparser.parser.ExcelSheet;
 import de.uniks.networkparser.parser.ExcelWorkBook;
 
+/**
+ * The Class ExcelBuffer.
+ *
+ * @author Stefan
+ */
 public class ExcelBuffer {
+	
+	/**
+	 * Parses the.
+	 *
+	 * @param file the file
+	 * @return the excel sheet
+	 */
 	public ExcelSheet parse(File file) {
 		if (file == null) {
 			return null;
@@ -103,6 +115,13 @@ public class ExcelBuffer {
 		return out;
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param file the file
+	 * @param workbook the workbook
+	 * @return true, if successful
+	 */
 	public boolean encode(File file, ExcelWorkBook workbook) {
 		boolean result = false;
 		ZipOutputStream zos = null;
@@ -137,6 +156,14 @@ public class ExcelBuffer {
 		return result;
 	}
 
+	/**
+	 * Adds the to zip file.
+	 *
+	 * @param fileName the file name
+	 * @param content the content
+	 * @param zos the zos
+	 * @return true, if successful
+	 */
 	public boolean addToZipFile(String fileName, String content, ZipOutputStream zos) {
 		if (fileName == null || zos == null || fileName.length() < 1) {
 			return false;

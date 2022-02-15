@@ -31,42 +31,83 @@ import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.list.SimpleList;
 
 /**
- * AbstractClass for Os Detection
+ * AbstractClass for Os Detection.
+ *
  * @author Stefan Lindel
  */
 public class Os {
+	
+	/** The Constant WINDOWS. */
 	public static final String WINDOWS = "windows";
+	
+	/** The Constant MAC. */
 	public static final String MAC = "mac";
+	
+	/** The Constant UNIX. */
 	public static final String UNIX = "unix";
+	
+	/** The Constant ANDROID. */
 	public static final String ANDROID = "android";
+	
+	/** The Constant UNKNOWN. */
 	public static final String UNKNOWN = "unknown";
 
+	/**
+	 * Checks if is windows.
+	 *
+	 * @return true, if is windows
+	 */
 	public static final boolean isWindows() {
 		String os = System.getProperty("os.name").toLowerCase();
 		/* windows */
 		return (os.indexOf("win") >= 0);
 	}
 
+	/**
+	 * Checks if is mac.
+	 *
+	 * @return true, if is mac
+	 */
 	public static final boolean isMac() {
 		String os = System.getProperty("os.name").toLowerCase();
 		/* Mac */
 		return (os.indexOf("mac") >= 0);
 	}
 
+	/**
+	 * Checks if is ios.
+	 *
+	 * @return true, if is ios
+	 */
 	public static final boolean isIOS() {
 		String os = System.getProperty("os.name").toLowerCase();
 		/* IOS */
 		return (os.indexOf("ios") >= 0);
 	}
 
+	/**
+	 * Checks if is reflection test.
+	 *
+	 * @return true, if is reflection test
+	 */
 	public static final boolean isReflectionTest() {
 		return System.getProperty("Tester") != null;
 	}
 
+	/**
+	 * Gets the tester.
+	 *
+	 * @return the tester
+	 */
 	public static String getTester() {
 		return System.getProperty("Tester");
 	}
 
+	/**
+	 * Checks if is java FX.
+	 *
+	 * @return true, if is java FX
+	 */
 	public static final boolean isJavaFX() {
 		if (ReflectionLoader.PLATFORM == null || ReflectionLoader.PANE == null) {
 			return false;
@@ -85,11 +126,21 @@ public class Os {
 		return true;
 	}
 
+	/**
+	 * Checks if is generator.
+	 *
+	 * @return true, if is generator
+	 */
 	public static final boolean isGenerator() {
 		SimpleList<String> allowUser = new SimpleList<String>().with("Stefan");
 		return isEclipse() && allowUser.contains(System.getProperty("user.name")) && isJUnitTest();
 	}
 
+	/**
+	 * Checks if is j unit test.
+	 *
+	 * @return true, if is j unit test
+	 */
 	public static final boolean isJUnitTest() {
 		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 		List<StackTraceElement> list = Arrays.asList(stackTrace);
@@ -101,6 +152,11 @@ public class Os {
 		return false;
 	}
 
+	/**
+	 * Checks if is android.
+	 *
+	 * @return true, if is android
+	 */
 	public static boolean isAndroid() {
 		String property = System.getProperty("javafx.platform");
 		if (property == null) {
@@ -111,6 +167,11 @@ public class Os {
 		return ("android".equals(javafxPlatform) || "dalvik".equals(vmName));
 	}
 
+	/**
+	 * Checks if is eclipse and no reflection.
+	 *
+	 * @return true, if is eclipse and no reflection
+	 */
 	public static boolean isEclipseAndNoReflection() {
 		if (isReflectionTest()) {
 			return false;
@@ -118,6 +179,11 @@ public class Os {
 		return isEclipse();
 	}
 
+	/**
+	 * Checks if is eclipse.
+	 *
+	 * @return true, if is eclipse
+	 */
 	public static final boolean isEclipse() {
 		String fileName = Os.getFilename().toLowerCase();
 		if (fileName.endsWith(".jar") == false) {
@@ -127,6 +193,11 @@ public class Os {
 		return false;
 	}
 
+	/**
+	 * Checks if is unix.
+	 *
+	 * @return true, if is unix
+	 */
 	public static final boolean isUnix() {
 
 		String os = System.getProperty("os.name").toLowerCase();
@@ -134,6 +205,11 @@ public class Os {
 		return (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0);
 	}
 
+	/**
+	 * Checks if is solaris.
+	 *
+	 * @return true, if is solaris
+	 */
 	public static final boolean isSolaris() {
 
 		String os = System.getProperty("os.name").toLowerCase();
@@ -141,6 +217,11 @@ public class Os {
 		return (os.indexOf("sunos") >= 0);
 	}
 
+	/**
+	 * Gets the current platform.
+	 *
+	 * @return the current platform
+	 */
 	public static final String getCurrentPlatform() {
 		if (Os.isWindows())
 			return WINDOWS;
@@ -153,16 +234,32 @@ public class Os {
 		return UNKNOWN;
 	}
 
+	/**
+	 * Gets the filename.
+	 *
+	 * @return the filename
+	 */
 	public static final String getFilename() {
 		File jar = new File(Os.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 		return jar.getAbsoluteFile().getName();
 	}
 
+	/**
+	 * Checks if is utf8.
+	 *
+	 * @return true, if is utf8
+	 */
 	public static final boolean isUTF8() {
 		return ("UTF-8".equals(System.getProperty("file.encoding"))
 				|| "UTF8".equals(System.getProperty("file.encoding")));
 	}
 
+	/**
+	 * Checks if is not first thread.
+	 *
+	 * @param args the args
+	 * @return true, if is not first thread
+	 */
 	public static final boolean isNotFirstThread(String[] args) {
 		if (args != null) {
 			for (String item : args) {
@@ -174,6 +271,11 @@ public class Os {
 		return false;
 	}
 
+	/**
+	 * Check system tray.
+	 *
+	 * @return true, if successful
+	 */
 	public static final boolean checkSystemTray() {
 		if (isReflectionTest()) {
 			return false;
@@ -185,6 +287,11 @@ public class Os {
 		return false;
 	}
 
+	/**
+	 * Checks if is FX thread.
+	 *
+	 * @return true, if is FX thread
+	 */
 	public static final boolean isFXThread() {
 		if (isReflectionTest()) {
 			return false;
@@ -196,6 +303,11 @@ public class Os {
 		return false;
 	}
 	
+	/**
+	 * Checks if is headless.
+	 *
+	 * @return true, if is headless
+	 */
 	public static final boolean isHeadless()
 	{
 		Object result = ReflectionLoader.call(ReflectionLoader.getClass("java.awt.GraphicsEnvironment"), "isHeadless");
@@ -204,4 +316,5 @@ public class Os {
 		}
 		return true;
 	}
+
 }

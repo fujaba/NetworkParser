@@ -24,17 +24,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class TextField.
+ *
+ * @author Stefan
+ */
 public class TextField extends Input<String> {
 	/*
 	 * Constants
 	 */
 	protected static final String TEXT = "text";
 
+	/**
+	 * Instantiates a new text field.
+	 */
 	public TextField() {
 		super();
 		this.type = TEXT;
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @return the text field
+	 */
 	@Override
 	public TextField newInstance() {
 		return new TextField();

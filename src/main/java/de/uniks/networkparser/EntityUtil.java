@@ -11,13 +11,33 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class EntityUtil.
+ *
+ * @author Stefan
+ */
 public class EntityUtil {
+	
+	/** The Constant emfTypes. */
 	public static final String emfTypes = " EOBJECT EBIG_DECIMAL EBOOLEAN EBYTE EBYTE_ARRAY ECHAR EDATE EDOUBLE EFLOAT EINT EINTEGER ELONG EMAP ERESOURCE ESHORT ESTRING ";
 
+	/**
+	 * Checks if is EMF type.
+	 *
+	 * @param tag the tag
+	 * @return true, if is EMF type
+	 */
 	public static final boolean isEMFType(String tag) {
 		return emfTypes.indexOf(" " + ("" + tag).toUpperCase() + " ") >= 0;
 	}
 	
+	/**
+	 * Write byte header.
+	 *
+	 * @param buffer the buffer
+	 * @param type the type
+	 * @param valueLength the value length
+	 */
 	public static final void writeByteHeader(ByteBuffer buffer, byte type, int valueLength) {
 		if (buffer == null) {
 			return;
@@ -47,10 +67,25 @@ public class EntityUtil {
 		}
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @param group the group
+	 * @param subGroup the sub group
+	 * @return the type
+	 */
 	public static final byte getType(byte group, byte subGroup) {
 		return (byte) (group + subGroup);
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @param type the type
+	 * @param len the len
+	 * @param isLast the is last
+	 * @return the type
+	 */
 	public static final byte getType(byte type, int len, boolean isLast) {
 		if (isGroup(type)) {
 			if (isLast) {
@@ -70,6 +105,14 @@ public class EntityUtil {
 		return type;
 	}
 
+	/**
+	 * Gets the type len.
+	 *
+	 * @param type the type
+	 * @param len the len
+	 * @param isLast the is last
+	 * @return the type len
+	 */
 	public static final int getTypeLen(byte type, int len, boolean isLast) {
 		if (isGroup(type)) {
 			int ref = type % 16 - 10;
@@ -97,13 +140,19 @@ public class EntityUtil {
 		return 0;
 	}
 
+	/**
+	 * Checks if is primitive.
+	 *
+	 * @param type the type
+	 * @return true, if is primitive
+	 */
 	public static final boolean isPrimitive(byte type) {
 		return ((type >= ByteTokener.DATATYPE_SHORT && type <= ByteTokener.DATATYPE_BYTE)
 				|| type <= ByteTokener.DATATYPE_CHAR);
 	}
 
 	/**
-	 * Check if the Type is type of Group
+	 * Check if the Type is type of Group.
 	 *
 	 * @param type the the type of data
 	 * @return success
@@ -112,6 +161,12 @@ public class EntityUtil {
 		return (type & 0x08) == 0x08;
 	}
 
+	/**
+	 * Gets the string type.
+	 *
+	 * @param type the type
+	 * @return the string type
+	 */
 	public static final String getStringType(byte type) {
 		if (type == ByteTokener.DATATYPE_NULL) {
 			return "DATATYPE_NULL";
@@ -208,22 +263,57 @@ public class EntityUtil {
 		return null;
 	}
 
+	/**
+	 * Gets the group.
+	 *
+	 * @param type the type
+	 * @return the group
+	 */
 	public static final byte getGroup(byte type) {
 		return (byte) ((type / 16) * 16 + 10);
 	}
 
+	/**
+	 * Gets the sub group.
+	 *
+	 * @param type the type
+	 * @return the sub group
+	 */
 	public static final byte getSubGroup(byte type) {
 		return (byte) ((type % 16) - 10);
 	}
 	
+	/**
+	 * Compare entity.
+	 *
+	 * @param entityA the entity A
+	 * @param entityB the entity B
+	 * @return true, if successful
+	 */
 	public static final boolean compareEntity(Entity entityA, Entity entityB) {
 		return compareEntity(entityA, entityB, new TextDiff(), null);
 	}
 
+	/**
+	 * Compare entity.
+	 *
+	 * @param jsonA the json A
+	 * @param jsonB the json B
+	 * @return true, if successful
+	 */
 	public static final boolean compareEntity(Collection<?> jsonA, Collection<?> jsonB) {
 		return compareEntity(jsonA, jsonB, new TextDiff(), null);
 	}
 
+	/**
+	 * Compare entity.
+	 *
+	 * @param entityA the entity A
+	 * @param entityB the entity B
+	 * @param diffList the diff list
+	 * @param sameObject the same object
+	 * @return true, if successful
+	 */
 	public static final boolean compareEntity(Object entityA, Object entityB, TextDiff diffList, BaseItem sameObject) {
 		if (sameObject == null) {
 			if (entityA instanceof Entity) {
@@ -307,7 +397,7 @@ public class EntityUtil {
 					childrenA.add(xmlA.getChild(i));
 					childrenB.add(xmlB.getChild(i));
 				}
-				if (compareEntity(childrenA, childrenB) == false) {
+				if (!compareEntity(childrenA, childrenB)) {
 					return false;
 				}
 				if (entityA instanceof XMLEntity && entityB instanceof XMLEntity) {
@@ -386,6 +476,12 @@ public class EntityUtil {
 		return null;
 	}
 	
+	/**
+	 * Gets the excel range.
+	 *
+	 * @param tag the tag
+	 * @return the excel range
+	 */
 	public static final SimpleList<Pos> getExcelRange(String tag) {
 		SimpleList<Pos> range = new SimpleList<Pos>();
 		if (tag == null) {

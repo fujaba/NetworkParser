@@ -24,17 +24,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class PasswordField.
+ *
+ * @author Stefan
+ */
 public class PasswordField extends Input<String> {
 	/*
 	 * Constants
 	 */
 	protected static final String PASSWORD = "password";
 
+	/**
+	 * Instantiates a new password field.
+	 */
 	public PasswordField() {
 		super();
 		this.type = PASSWORD;
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @return the password field
+	 */
 	@Override
 	public PasswordField newInstance() {
 		return new PasswordField();

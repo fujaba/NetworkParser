@@ -25,21 +25,51 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class HTMLEntity.
+ *
+ * @author Stefan
+ */
 public class HTMLEntity implements BaseItem {
+	
+	/** The Constant PROPERTY_HEADER. */
 	public static final String PROPERTY_HEADER = "head";
+	
+	/** The Constant PROPERTY_BODY. */
 	public static final String PROPERTY_BODY = "body";
+	
+	/** The Constant IMAGEFORMAT. */
 	public static final String IMAGEFORMAT = " .bmp .jpg .jpeg .png .gif .svg ";
+	
+	/** The Constant SCRIPT. */
 	public static final String SCRIPT = "script";
+	
+	/** The Constant LINK. */
 	public static final String LINK = "link";
+	
+	/** The Constant KEY_HREF. */
 	public static final String KEY_HREF = "href";
+	
+	/** The Constant KEY_SRC. */
 	public static final String KEY_SRC = "src";
+	
+	/** The Constant GRAPH. */
 	public static final String GRAPH = "Graph";
+	
+	/** The Constant CLASSEDITOR. */
 	public static final String CLASSEDITOR = "ClassEditor";
+	
+	/** The Constant ACTION. */
 	public static final String ACTION = "action";
 	
+    /** The Constant GRAPH_RESOURCES. */
     //"diagramstyle.css", 
 	public static final String[] GRAPH_RESOURCES = new String[] {  "style.css", "diagram.js", "dagre.min.js", "jspdf.min.js" };
+	
+	/** The Constant CODE_RESOURCES. */
 	public static final String[] CODE_RESOURCES = new String[] { "highlight.pack.js", "highlightjs-line-numbers.min.js", };
+	
+	/** The Constant PROJECT_RESOURCES. */
 	public static final String[] PROJECT_RESOURCES = new String[] {"d3.min.js"};
 
 	private XMLEntity body = new XMLEntity().withType("body");
@@ -50,32 +80,70 @@ public class HTMLEntity implements BaseItem {
 	private String statusMessage;
 	private boolean plainBody = true;
 
+	/**
+	 * With plain.
+	 *
+	 * @param plain the plain
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withPlain(boolean plain) {
 		this.plainBody = plain;
 		return this;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return parseItem(new EntityStringConverter());
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param indentFactor the indent factor
+	 * @return the string
+	 */
 	public String toString(int indentFactor) {
 		return parseItem(new EntityStringConverter(indentFactor));
 	}
 
+	/**
+	 * Gets the header.
+	 *
+	 * @return the header
+	 */
 	public XMLEntity getHeader() {
 		return header;
 	}
 
+	/**
+	 * Gets the body.
+	 *
+	 * @return the body
+	 */
 	public XMLEntity getBody() {
 		return body;
 	}
 	
+	/**
+	 * Gets the body json object.
+	 *
+	 * @return the body json object
+	 */
 	public JsonObject getBodyJsonObject() {
 		return new JsonObject().withValue(body.getValue());
 	}
 
+	/**
+	 * With encoding.
+	 *
+	 * @param encoding the encoding
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withEncoding(String encoding) {
 		XMLEntity metaTag = new XMLEntity().withType("meta");
 		metaTag.withKeyValue("http-equiv", "Content-Type");
@@ -84,6 +152,11 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
+	/**
+	 * With page break.
+	 *
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withPageBreak() {
 		XMLEntity pageBreak = new XMLEntity().withType("div").withCloseTag();
 		pageBreak.put("style", "page-break-before:always");
@@ -91,16 +164,35 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
+	/**
+	 * With title.
+	 *
+	 * @param value the value
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withTitle(String value) {
 		XMLEntity titleTag = new XMLEntity().withType("title").withValue(value);
 		this.header.with(titleTag);
 		return this;
 	}
 
+	/**
+	 * With script.
+	 *
+	 * @param value the value
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withScript(CharSequence... value) {
 		return withScript(null, value);
 	}
 
+	/**
+	 * With script.
+	 *
+	 * @param parentNode the parent node
+	 * @param values the values
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withScript(XMLEntity parentNode, CharSequence... values) {
 		if (values != null) {
 			CharacterBuffer content = new CharacterBuffer();
@@ -118,6 +210,13 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
+	/**
+	 * Creates the script.
+	 *
+	 * @param value the value
+	 * @param parentNode the parent node
+	 * @return the XML entity
+	 */
 	public XMLEntity createScript(String value, XMLEntity parentNode) {
 		XMLEntity node = new XMLEntity().withType(SCRIPT).withKeyValue("language", "Javascript");
 		if (value == null) {
@@ -140,6 +239,12 @@ public class HTMLEntity implements BaseItem {
 		return node;
 	}
 
+	/**
+	 * With style.
+	 *
+	 * @param value the value
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withStyle(CharSequence value) {
 		if (value != null) {
 			String style = value.toString();
@@ -168,11 +273,23 @@ public class HTMLEntity implements BaseItem {
 		return sb.toString();
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param values the values
+	 * @return the HTML entity
+	 */
 	public HTMLEntity with(Object... values) {
 		add(values);
 		return this;
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean add(Object... values) {
 		if (values == null) {
@@ -241,6 +358,12 @@ public class HTMLEntity implements BaseItem {
 		return true;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param key the key
+	 * @return the value
+	 */
 	public Object getValue(Object key) {
 		Object result = this.header.getValue(key);
 		if (result != null) {
@@ -249,6 +372,12 @@ public class HTMLEntity implements BaseItem {
 		return this.body.getValue(key);
 	}
 
+	/**
+	 * With header.
+	 *
+	 * @param ref the ref
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withHeader(String ref) {
 		XMLEntity child = getChild(ref);
 		if (child != null) {
@@ -257,6 +386,12 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
+	/**
+	 * With base.
+	 *
+	 * @param path the path
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withBase(String path) {
 		XMLEntity child = XMLEntity.TAG("base");
 		child.add("href", path);
@@ -293,6 +428,12 @@ public class HTMLEntity implements BaseItem {
 		return child;
 	}
 
+	/**
+	 * With body.
+	 *
+	 * @param ref the ref
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withBody(String ref) {
 		XMLEntity child = getChild(ref);
 		if (child != null) {
@@ -301,84 +442,58 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
+    /**
+     * Create a new Tag as Child of Body Parent.
+     *
+     * @param tag    the new Tag
+     * @param values Optional May be a child of Body or Body or head
+     * @return the created XMLEntity Item
+     */
+    public XMLEntity createChild(String tag, String... values) {
+        return createChild(tag, null, values);
+    }
+
+    /**
+     * Create a new Tag as Child of Parent with HTML-Value.
+     *
+     * @param tag    Tag of Children can be a Refernce
+     * @param parentNode the parent node
+     * @param values Attribute of Children
+     * @return ThisComponent
+     */
+    public XMLEntity createChild(String tag, XMLEntity parentNode, String... values) {
+        if (parentNode == null) {
+            parentNode = this.body;
+        }
+        if (tag == null) {
+            return null;
+        }
+        String[] tags = tag.split("\\.");
+        for (int i = 0; i < tags.length; i++) {
+            if(i==tags.length - 1) {
+                // LAST One
+                parentNode = parentNode.createChild(tags[i], values);
+            } else {
+                parentNode = parentNode.createChild(tags[i]);
+            }
+        }
+        return parentNode;
+    }
+	
 	/**
-	 * Create a new Tag as Child of Body Parent
+	 * Creates the table.
 	 *
-	 * @param tag        the new Tag
-	 * @param values Optional May be a child of Body or Body or head
-	 * @return the created XMLEntity Item
+	 * @param parentNode the parent node
+	 * @param labels the labels
+	 * @return the XML entity
 	 */
-	public XMLEntity createBodyTag(String tag, String... values) {
-		if (tag == null) {
-			return null;
-		}
-		String[] tags = tag.split("\\.");
-		XMLEntity parent = this.body, child = null;
-		for (int i = tags.length - 1; i >= 0; i--) {
-			child = new XMLEntity().withType(tags[i]);
-			parent.withChild(child);
-			parent = child;
-		}
-		if(values != null && values.length>0) {
-			if(values.length == 1) {
-				parent.withValue(values[0]);
-			}else if(values.length % 2 == 0){
-				for(int i=0;i<values.length;i+=2) {
-					parent.withKeyValue(values[i], values[i+1]);
-				}
-			}
-		}
-		return parent;
-	}
-
-	/**
-	 * Create a new Tag as Child of Parent
-	 *
-	 * @param tag        the new Tag
-	 * @param parentNode Optional May be a child of Body or Body or head
-	 * @return the created XMLEntity Item
-	 */
-	public XMLEntity createTag(String tag, XMLEntity... parentNode) {
-		XMLEntity parentElement = null;
-		if (parentNode != null && parentNode.length > 0) {
-			parentElement = parentNode[0];
-		}
-		if (parentElement == null) {
-			parentElement = this.body;
-		}
-		if (tag == null) {
-			return null;
-		}
-		String[] tags = tag.split("\\.");
-		XMLEntity parent = null, child = null, firstChild = null;
-		for (int i = tags.length - 1; i >= 0; i--) {
-			child = parent;
-			parent = new XMLEntity().withType(tags[i]);
-			if (child != null) {
-				parent.withChild(child);
-			} else {
-				firstChild = parent;
-			}
-		}
-		parentElement.withChild(parent);
-		return firstChild;
-	}
-
-	public XMLEntity createTag(String tag, String innerHTML, XMLEntity... parentNode) {
-		XMLEntity element = createTag(tag, parentNode);
-		if (element != null) {
-			element.withValueItem(innerHTML);
-		}
-		return element;
-	}
-
 	public XMLEntity createTable(XMLEntity parentNode, String... labels) {
-		XMLEntity table = createTag("table", parentNode);
+		XMLEntity table = createChild("table", parentNode);
 		if (labels != null && labels.length > 0) {
 			table.with("style", labels[0]);
-			XMLEntity tr = createTag("tr", table);
+			XMLEntity tr = createChild("tr", table);
 			for (int i = 1; i < labels.length; i += 2) {
-				createTag("td", tr);
+			    createChild("td", tr);
 				table.with("style", labels[i]);
 				table.withValue(labels[i + 1]);
 			}
@@ -386,16 +501,29 @@ public class HTMLEntity implements BaseItem {
 		return table;
 	}
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new SimpleSet<XMLEntity>();
 	}
 
+	/**
+	 * Adds the style.
+	 *
+	 * @param name the name
+	 * @param style the style
+	 * @return the HTML entity
+	 */
 	public HTMLEntity addStyle(String name, String style) {
 		XMLEntity styleElement = null;
 		for (int i = 0; i < header.size(); i++) {
 			BaseItem child = header.getChild(i);
-			if (child instanceof XMLEntity == false) {
+			if (!(child instanceof XMLEntity)) {
 				continue;
 			}
 			XMLEntity xml = (XMLEntity) child;
@@ -412,6 +540,12 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
+	/**
+	 * With graph.
+	 *
+	 * @param value the value
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withGraph(GraphModel value) {
 		URL resource = GraphList.class.getResource("");
 		if (resource == null || value == null) {
@@ -428,6 +562,14 @@ public class HTMLEntity implements BaseItem {
 		return withGraph(value, resource.toString());
 	}
 
+	/**
+	 * Adds the resources.
+	 *
+	 * @param importFiles the import files
+	 * @param name the name
+	 * @param content the content
+	 * @return the HTML entity
+	 */
 	public HTMLEntity addResources(boolean importFiles, String name, String content) {
 		if (importFiles) {
 			this.withScript(this.getHeader(), content);
@@ -437,9 +579,16 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
+	/**
+	 * With graph.
+	 *
+	 * @param value the value
+	 * @param resource the resource
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withGraph(GraphModel value, String resource) {
 		String graphPath = GraphUtil.getGraphPath(value);
-		if (GRAPH.equals(graphPath) == false && CLASSEDITOR.equals(graphPath) == false) {
+		if (!GRAPH.equals(graphPath) && !CLASSEDITOR.equals(graphPath)) {
 			graphPath = GRAPH;
 		}
 		if (value != null) {
@@ -449,6 +598,12 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
+	/**
+	 * With graph.
+	 *
+	 * @param value the value
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withGraph(Entity value) {
 		URL resource = GraphList.class.getResource("");
 		if (resource == null || value == null) {
@@ -457,6 +612,14 @@ public class HTMLEntity implements BaseItem {
 		return withGraph(value.toString(2), resource.toString(), GRAPH);
 	}
 
+	/**
+	 * With graph.
+	 *
+	 * @param graph the graph
+	 * @param path the path
+	 * @param editor the editor
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withGraph(String graph, String path, String editor) {
 		XMLEntity script = new XMLEntity().withType(SCRIPT).withKeyValue("type", "text/javascript");
 		StringBuilder sb = new StringBuilder();
@@ -496,6 +659,12 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
+	/**
+	 * Gets the header.
+	 *
+	 * @param url the url
+	 * @return the header
+	 */
 	public XMLEntity getHeader(String url) {
 		if (url == null) {
 			return null;
@@ -521,6 +690,11 @@ public class HTMLEntity implements BaseItem {
 		return null;
 	}
 
+	/**
+	 * With new line.
+	 *
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withNewLine() {
 		XMLEntity child = new XMLEntity().withType("br").withCloseTag();
 		child.withValue(BaseItem.CRLF);
@@ -528,12 +702,24 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
+	/**
+	 * With text.
+	 *
+	 * @param text the text
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withText(String text) {
 		XMLEntity child = new XMLEntity().withValue(text);
 		this.body.withChild(child);
 		return this;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param converter the converter
+	 * @return the string
+	 */
 	@Override
 	public String toString(Converter converter) {
 		if (converter == null) {
@@ -545,11 +731,23 @@ public class HTMLEntity implements BaseItem {
 		return converter.encode(this);
 	}
 
+	/**
+	 * Size.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int size() {
 		return body.size();
 	}
 
+	/**
+	 * Gets the elements by.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the elements by
+	 */
 	public XMLEntity getElementsBy(String key, String value) {
 		XMLEntity item = new XMLEntity();
 		EntityList headerList = this.header.getElementsBy(key, value);
@@ -574,6 +772,13 @@ public class HTMLEntity implements BaseItem {
 		return item;
 	}
 
+	/**
+	 * Gets the element by.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the element by
+	 */
 	public BaseItem getElementBy(String key, String value) {
 		Entity item = this.header.getElementBy(key, value);
 		if (item != null) {
@@ -583,12 +788,18 @@ public class HTMLEntity implements BaseItem {
 		return item;
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param value the value
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withValue(String value) {
 		XMLEntity htmlPage = new XMLEntity().withValue(value);
 		/* All Children possible head and body */
 		for (int i = 0; i < htmlPage.sizeChildren(); i++) {
 			BaseItem item = htmlPage.getChild(i);
-			if (item instanceof XMLEntity == false) {
+			if (!(item instanceof XMLEntity)) {
 				continue;
 			}
 			XMLEntity child = (XMLEntity) item;
@@ -601,26 +812,56 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
+	/**
+	 * With status.
+	 *
+	 * @param code the code
+	 * @param message the message
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withStatus(int code, String message) {
 		this.statusCode = code;
 		this.statusMessage = message;
 		return this;
 	}
 
+	/**
+	 * Gets the status code.
+	 *
+	 * @return the status code
+	 */
 	public int getStatusCode() {
 		return statusCode;
 	}
 
+	/**
+	 * Gets the status message.
+	 *
+	 * @return the status message
+	 */
 	public String getStatusMessage() {
 		return statusMessage;
 	}
 
+	/**
+	 * With connection header.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withConnectionHeader(String key, String value) {
 		SimpleList<String> list = new SimpleList<String>().with(value);
 		this.conenctionHeader.put(key, list);
 		return this;
 	}
 
+	/**
+	 * With connection header.
+	 *
+	 * @param headerFields the header fields
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withConnectionHeader(Map<String, List<String>> headerFields) {
 		if (headerFields == null) {
 			return null;
@@ -632,10 +873,21 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
+	/**
+	 * Gets the connection header.
+	 *
+	 * @return the connection header
+	 */
 	public Map<String, List<String>> getConnectionHeader() {
 		return conenctionHeader;
 	}
 
+	/**
+	 * Gets the connection header.
+	 *
+	 * @param key the key
+	 * @return the connection header
+	 */
 	public String getConnectionHeader(String key) {
 		List<String> list = conenctionHeader.get(key);
 		if (list != null && list.size() == 1) {
@@ -644,10 +896,22 @@ public class HTMLEntity implements BaseItem {
 		return null;
 	}
 
+	/**
+	 * Gets the connection headers.
+	 *
+	 * @param key the key
+	 * @return the connection headers
+	 */
 	public List<String> getConnectionHeaders(String key) {
 		return conenctionHeader.get(key);
 	}
 
+	/**
+	 * Without header.
+	 *
+	 * @param string the string
+	 * @return the HTML entity
+	 */
 	public HTMLEntity withoutHeader(String string) {
 		if (header != null && string != null) {
 			String ext = null;
@@ -660,7 +924,7 @@ public class HTMLEntity implements BaseItem {
 			}
 			for (int z = 0; z < this.header.sizeChildren(); z++) {
 				BaseItem child = this.header.getChild(z);
-				if (child instanceof XMLEntity == false) {
+				if (!(child instanceof XMLEntity)) {
 					continue;
 				}
 				XMLEntity entity = (XMLEntity) child;
@@ -682,20 +946,32 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
+	/**
+	 * With action button.
+	 *
+	 * @param label the label
+	 * @param actionValue the action value
+	 * @param url the url
+	 * @return the XML entity
+	 */
 	public XMLEntity withActionButton(String label, String actionValue, String... url) {
-		XMLEntity actionTag = createTag("form").withKeyValue("method", "post");
+		XMLEntity actionTag = createChild("form").withKeyValue("method", "post");
 		if(url != null && url.length>0) {
 			actionTag.withKeyValue("action", url[0]);
 		}
-		actionTag.createChild("input", "type", "submit", "value", label);
+		actionTag.createChild("input", "type", "submit", "value", label, "class", "button");
 		actionTag.createChild("input", "type", "hidden", "id", ACTION, "name", ACTION, "value", actionValue);
 		return actionTag;
 	}
 	
-	public XMLEntity createChild(String tag, String...values) {
-		return this.createBodyTag(tag, values);
-	}
-
+	/**
+	 * Creates the input.
+	 *
+	 * @param label the label
+	 * @param name the name
+	 * @param value the value
+	 * @return the base item
+	 */
 	public BaseItem createInput(String label, String name, Object value) {
 		XMLEntity parent = new XMLEntity().withType("div").withKeyValue("class", "inputgroup");
 		parent.createChild("label", "for", name).withValueItem(label);

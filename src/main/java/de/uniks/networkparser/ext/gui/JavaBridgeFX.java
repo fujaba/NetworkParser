@@ -38,25 +38,61 @@ import de.uniks.networkparser.gui.controls.Label;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.logic.ChainCondition;
 
+/**
+ * The Class JavaBridgeFX.
+ *
+ * @author Stefan
+ */
 public class JavaBridgeFX extends JavaBridge {
+	
+	/**
+	 * Instantiates a new java bridge FX.
+	 */
 	public JavaBridgeFX() {
 		this(null);
 	}
 
+	/**
+	 * Instantiates a new java bridge FX.
+	 *
+	 * @param map the map
+	 */
 	public JavaBridgeFX(IdMap map) {
 		super(map, new JavaAdapter(), CONTENT_TYPE_INCLUDE);
 	}
 
+	/**
+	 * Instantiates a new java bridge FX.
+	 *
+	 * @param map the map
+	 * @param webView the web view
+	 * @param type the type
+	 */
 	public JavaBridgeFX(IdMap map, JavaViewAdapter webView, String type) {
 		super(map, webView, type);
 		this.resourceHandler = new FileBuffer();
 	}
 
+	/**
+	 * Adds the listener.
+	 *
+	 * @param c the c
+	 * @param type the type
+	 * @param methodName the method name
+	 * @param object the object
+	 */
 	@Override
 	public void addListener(Control c, EventTypes type, String methodName, Object object) {
 		addEventListener(c, type, new MethodCallbackListener(object, methodName));
 	}
 
+	/**
+	 * Adds the children.
+	 *
+	 * @param element the element
+	 * @param pos the pos
+	 * @param childrenValues the children values
+	 */
 	@SuppressWarnings("unchecked")
 	public static void addChildren(Object element, int pos, Object... childrenValues) {
 		Object children = ReflectionLoader.calling(element, "getChildren", false, null);
@@ -75,6 +111,12 @@ public class JavaBridgeFX extends JavaBridge {
 		}
 	}
 
+	/**
+	 * Removes the children.
+	 *
+	 * @param element the element
+	 * @param childrenValues the children values
+	 */
 	public static void removeChildren(Object element, Object... childrenValues) {
 		Object children = ReflectionLoader.calling(element, "getChildren", false, null);
 		if (children == null) {
@@ -88,6 +130,13 @@ public class JavaBridgeFX extends JavaBridge {
 		}
 	}
 
+	/**
+	 * Sets the style.
+	 *
+	 * @param element the element
+	 * @param clear the clear
+	 * @param stylesValues the styles values
+	 */
 	@SuppressWarnings("unchecked")
 	public static void setStyle(Object element, boolean clear, String... stylesValues) {
 		Object styles = ReflectionLoader.call(element, "getStyleClass");
@@ -102,6 +151,12 @@ public class JavaBridgeFX extends JavaBridge {
 		}
 	}
 
+	/**
+	 * Removes the style.
+	 *
+	 * @param element the element
+	 * @param stylesValues the styles values
+	 */
 	public static void removeStyle(Object element, String... stylesValues) {
 		Object styles = ReflectionLoader.call(element, "getStyleClass");
 		if (styles != null && styles instanceof List<?>) {
@@ -113,6 +168,14 @@ public class JavaBridgeFX extends JavaBridge {
 		}
 	}
 
+	/**
+	 * Adds the listener.
+	 *
+	 * @param element the element
+	 * @param method the method
+	 * @param proxyClass the proxy class
+	 * @param condition the condition
+	 */
 	public static void addListener(Object element, String method, Class<?> proxyClass, ObjectCondition condition) {
 		if(proxyClass != null && proxyClass != Object.class) {
 			GUIEvent event = new GUIEvent();
@@ -122,6 +185,13 @@ public class JavaBridgeFX extends JavaBridge {
 		}
 	}
 
+	/**
+	 * Convert.
+	 *
+	 * @param item the item
+	 * @param clearStyle the clear style
+	 * @return the object
+	 */
 	public static Object convert(Control item, boolean clearStyle) {
 		if (item instanceof Button) {
 			return convertButton((Button) item, clearStyle);

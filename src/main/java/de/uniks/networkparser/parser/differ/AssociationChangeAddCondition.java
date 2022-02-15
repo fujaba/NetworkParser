@@ -7,8 +7,16 @@ import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.GraphMatcher;
 
+/**
+ * The Class AssociationChangeAddCondition.
+ *
+ * @author Stefan
+ */
 public class AssociationChangeAddCondition extends MatchCondition {
 
+	/**
+	 * Instantiates a new association change add condition.
+	 */
 	public AssociationChangeAddCondition() {
 		super(true);
 	}
@@ -49,6 +57,11 @@ public class AssociationChangeAddCondition extends MatchCondition {
 		return true;
 	}
 
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
 	@Override
 	public String getAction() {
 		return SendableEntityCreator.NEW;

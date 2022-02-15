@@ -4,12 +4,19 @@ import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
-/** Advanced Encryption Standard (AES) 
- * @author Stefan Lindel */
+/**
+ * Advanced Encryption Standard (AES) .
+ *
+ * @author Stefan Lindel
+ */
 public class AES {
 	/** AES constants and variables. */
 	public static final int ROUNDS = 14; /* AES has 10-14 rounds */
+	
+	/** The Constant BLOCK_SIZE. */
 	public static final int BLOCK_SIZE = 16; /* AES uses 128-bit (16 byte) key */
+	
+	/** The Constant KEY_LENGTH. */
 	public static final int KEY_LENGTH = 32; /* AES uses 128/192/256-bit (16/24/32 byte) key */
 
 	/* Define key attributes for current AES instance */
@@ -70,7 +77,11 @@ public class AES {
 
 	/** Internal AES constants and variables. */
 	public static final int COL_SIZE = 4; /* depth of each column in AES state variable */
+	
+	/** The Constant NUM_COLS. */
 	public static final int NUM_COLS = BLOCK_SIZE / COL_SIZE; /* number of columns in AES state variable */
+	
+	/** The Constant ROOT. */
 	public static final int ROOT = 0x11B; /* generator polynomial used in GF(2^8) */
 
 	/** define ShiftRows transformation as shift amount for each row in state. */
@@ -132,6 +143,12 @@ public class AES {
 		return (a != 0 && b != 0) ? alog[(log[a & 0xFF] + log[b & 0xFF]) % 255] : 0;
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param plain the plain
+	 * @return the character buffer
+	 */
 	public CharacterBuffer encode(BufferedBuffer plain) {
 		CharacterBuffer result = new CharacterBuffer();
 		if (plain != null) {
@@ -149,6 +166,12 @@ public class AES {
 		return result;
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param data the data
+	 * @return the character buffer
+	 */
 	public CharacterBuffer encode(String data) {
 		CharacterBuffer string = new CharacterBuffer().with(data);
 		int rest = ((int) string.length() / 32) * 32;
@@ -282,6 +305,12 @@ public class AES {
 		return plain;
 	}
 
+	/**
+	 * Decode.
+	 *
+	 * @param data the data
+	 * @return the character buffer
+	 */
 	public CharacterBuffer decode(CharSequence data) {
 		CharacterBuffer string = new CharacterBuffer().with(data);
 		int rest = ((int) string.length() / 32) * 32;
@@ -302,6 +331,12 @@ public class AES {
 		return result.trim();
 	}
 
+	/**
+	 * Decode string.
+	 *
+	 * @param value the value
+	 * @return the byte[]
+	 */
 	public byte[] decodeString(CharSequence value) {
 		return decode(value).array(-2, true);
 	}
@@ -412,6 +447,12 @@ public class AES {
 		return cipher;
 	}
 
+	/**
+	 * With key.
+	 *
+	 * @param key the key
+	 * @return the aes
+	 */
 	public AES withKey(String key) {
 		withKey(converter.decode(key));
 		return this;

@@ -37,7 +37,7 @@ import de.uniks.networkparser.interfaces.Converter;
  * attr_list ] edgeRHS : edgeop (node_id | subgraph) [ edgeRHS ] node_stmt :
  * node_id [ attr_list ] node_id : ID [ port ] port : ':' ID [ ':' compass_pt ]
  * | ':' compass_pt subgraph : [ subgraph [ ID ] ] '{' stmt_list '}' compass_pt
- * : (n | ne | e | se | s | sw | w | nw | c | _)
+ * : (n | ne | e | se | s | sw | w | nw | c | _).
  *
  * @author Stefan Lindel
  */
@@ -46,21 +46,45 @@ public class DotConverter implements Converter {
 	private boolean showAssocInfo = true;
 	private boolean showNodeInfo = true;
 
+	/**
+	 * With remove package.
+	 *
+	 * @param value the value
+	 * @return the dot converter
+	 */
 	public DotConverter withRemovePackage(boolean value) {
 		this.removePackage = value;
 		return this;
 	}
 
+	/**
+	 * With show assoc info.
+	 *
+	 * @param value the value
+	 * @return the dot converter
+	 */
 	public DotConverter withShowAssocInfo(boolean value) {
 		this.showAssocInfo = value;
 		return this;
 	}
 
+	/**
+	 * With show node info.
+	 *
+	 * @param value the value
+	 * @return the dot converter
+	 */
 	public DotConverter withShowNodeInfo(boolean value) {
 		this.showNodeInfo = value;
 		return this;
 	}
 
+	/**
+	 * Decode.
+	 *
+	 * @param item the item
+	 * @return the graph list
+	 */
 	public GraphList decode(Object item) {
 		if (item instanceof CharacterBuffer) {
 			return decodeGraph((CharacterBuffer) item);
@@ -241,11 +265,24 @@ public class DotConverter implements Converter {
 		return "";
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @return the string
+	 */
 	@Override
 	public String encode(BaseItem entity) {
 		return encode(entity, removePackage);
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @param removePackage the remove package
+	 * @return the string
+	 */
 	public String encode(BaseItem entity, boolean removePackage) {
 		if (entity instanceof GraphModel == false) {
 			return "";
@@ -342,6 +379,12 @@ public class DotConverter implements Converter {
 		return graphType + sb.toString();
 	}
 
+   /**
+    * Replace invalid chars.
+    *
+    * @param entity the entity
+    * @param chars the chars
+    */
    public void replaceInvalidChars(GraphList entity, char... chars)
    {
       if (entity instanceof GraphModel == false || chars == null || chars.length%2==1) {

@@ -7,10 +7,20 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.parser.GraphMatcher;
 
+/**
+ * The Class MemberDiffer.
+ *
+ * @author Stefan
+ */
 public class MemberDiffer {
 
 	protected SimpleList<MatchCondition> memberConditions = new SimpleList<MatchCondition>();
 
+	/**
+	 * Instantiates a new member differ.
+	 *
+	 * @param memberMatches the member matches
+	 */
 	public MemberDiffer(MatchCondition... memberMatches) {
 		if (memberMatches != null) {
 			for (MatchCondition condition : memberMatches) {
@@ -20,6 +30,12 @@ public class MemberDiffer {
 
 	}
 
+	/**
+	 * Diff.
+	 *
+	 * @param matches the matches
+	 * @param memberMatches the member matches
+	 */
 	public void diff(GraphMatcher matches, List<Match> memberMatches) {
 		for (Match match : memberMatches) {
 			if (match.isMetaMatch()) {
@@ -34,6 +50,13 @@ public class MemberDiffer {
 		}
 	}
 
+	/**
+	 * Execute condition.
+	 *
+	 * @param action the action
+	 * @param memberConditions the member conditions
+	 * @param match the match
+	 */
 	public static void executeCondition(String action, List<MatchCondition> memberConditions, Match match) {
 		if (memberConditions != null && action != null) {
 			for (int i = 0; i < memberConditions.size(); i++) {

@@ -27,12 +27,19 @@ import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 /**
- * Converter for byteArray to AES Code
+ * Converter for byteArray to AES Code.
+ *
  * @author Stefan Lindel
  */
 public class ByteConverterAES extends ByteConverter {
 	private AES aes;
 
+	/**
+	 * With key.
+	 *
+	 * @param value the value
+	 * @return the byte converter AES
+	 */
 	public ByteConverterAES withKey(String value) {
 		if (this.aes == null) {
 			this.aes = new AES();
@@ -41,6 +48,12 @@ public class ByteConverterAES extends ByteConverter {
 		return this;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param values the values
+	 * @return the character buffer
+	 */
 	public CharacterBuffer toString(String values) {
 		if (this.aes != null) {
 			return aes.encode(values);
@@ -48,6 +61,12 @@ public class ByteConverterAES extends ByteConverter {
 		return null;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param values the values
+	 * @return the string
+	 */
 	@Override
 	public String toString(BufferedBuffer values) {
 		if (this.aes != null) {
@@ -56,6 +75,12 @@ public class ByteConverterAES extends ByteConverter {
 		return null;
 	}
 
+	/**
+	 * Decode.
+	 *
+	 * @param value the value
+	 * @return the byte[]
+	 */
 	@Override
 	public byte[] decode(CharSequence value) {
 		if (this.aes != null) {

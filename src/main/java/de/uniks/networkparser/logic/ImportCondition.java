@@ -9,21 +9,34 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleList;
 
 /**
- * For Template for Import a Class
- * 
- * @author Stefan FeatureCondition for ModelFilter
+ * For Template for Import a Class.
  *
+ * @author Stefan FeatureCondition for ModelFilter
+ * 
  *         Format {{#import value}}
  */
 public class ImportCondition implements ParserCondition {
+	
+	/** The Constant TAG. */
 	public static final String TAG = "import";
 	private ObjectCondition importExpression;
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return TAG;
 	}
 
+	/**
+	 * Parses the import.
+	 *
+	 * @param className the class name
+	 * @param imports the imports
+	 */
 	public void parseImport(String className, SimpleList<String> imports) {
 		if(className == null) {
 			return;
@@ -40,6 +53,12 @@ public class ImportCondition implements ParserCondition {
 		}
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param variables the variables
+	 * @return the value
+	 */
 	@Override
 	public CharSequence getValue(LocalisationInterface variables) {
 		if (variables instanceof SendableEntityCreator) {
@@ -66,6 +85,12 @@ public class ImportCondition implements ParserCondition {
 		return null;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof LocalisationInterface) {
@@ -74,6 +99,13 @@ public class ImportCondition implements ParserCondition {
 		return importExpression != null;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param buffer the buffer
+	 * @param parser the parser
+	 * @param customTemplate the custom template
+	 */
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		if(buffer == null) {
@@ -117,16 +149,32 @@ public class ImportCondition implements ParserCondition {
 		return false;
 	}
 
+	/**
+	 * Checks if is expression.
+	 *
+	 * @return true, if is expression
+	 */
 	@Override
 	public boolean isExpression() {
 		return true;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public ImportCondition getSendableInstance(boolean prototyp) {
 		return new ImportCondition();
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		if (this.importExpression != null) {

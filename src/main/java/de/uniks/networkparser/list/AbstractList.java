@@ -27,21 +27,32 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 
 /**
- * The Class is for generic implementation of List and Sets
- * 
- * @author Stefan
+ * The Class is for generic implementation of List and Sets.
  *
+ * @author Stefan
  * @param <V> generic Parameter for Simple-Collection
  */
 public abstract class AbstractList<V> extends AbstractArray<V> implements Iterable<V>, Cloneable {
   private Class<?> type;
 
+  /**
+   * With type.
+   *
+   * @param <ST> the generic type
+   * @param type the type
+   * @return the st
+   */
   @SuppressWarnings("unchecked")
   public <ST extends AbstractList<V>> ST withType(Class<?> type) {
     this.type = type;
     return (ST) this;
   }
 
+  /**
+   * Gets the typ class.
+   *
+   * @return the typ class
+   */
   public Class<?> getTypClass() {
     return type;
   }
@@ -54,6 +65,12 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
     return super.addKey(pos, element, size);
   }
 
+  /**
+   * Removes the.
+   *
+   * @param o the o
+   * @return true, if successful
+   */
   public boolean remove(Object o) {
     return this.removeByObject(o) >= 0;
   }
@@ -82,29 +99,64 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
     return modified;
   }
 
+  /**
+   * List iterator.
+   *
+   * @return the list iterator
+   */
   public ListIterator<V> listIterator() {
     return new SimpleIterator<V>(this);
   }
 
+  /**
+   * List iterator.
+   *
+   * @param index the index
+   * @return the list iterator
+   */
   public ListIterator<V> listIterator(int index) {
     return new SimpleIterator<V>(this, index);
   }
 
+  /**
+   * Iterator reverse.
+   *
+   * @return the list iterator
+   */
   public ListIterator<V> iteratorReverse() {
     return new SimpleIterator<V>(this, size());
   }
 
+  /**
+   * With list.
+   *
+   * @param values the values
+   * @return the abstract list
+   */
   @Override
   public AbstractList<V> withList(Collection<?> values) {
     super.withList(values);
     return this;
   }
 
+  /**
+   * Copy entity.
+   *
+   * @param target the target
+   * @param pos the pos
+   */
   public void copyEntity(BaseItem target, int pos) {
     if (target != null)
       target.add(get(pos));
   }
 
+  /**
+   * Sub set.
+   *
+   * @param fromElement the from element
+   * @param toElement the to element
+   * @return the base item
+   */
   public BaseItem subSet(V fromElement, V toElement) {
     BaseItem newList = getNewList(false);
     int end = indexOf(toElement);
@@ -116,8 +168,8 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
   }
 
   /**
-   * Get the next bigger Value of a Set
-   * 
+   * Get the next bigger Value of a Set.
+   *
    * @param element Element for check
    * @param sameElement boolean for switch return sameElement
    * @return the element or higher Element
@@ -137,8 +189,8 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
   }
 
   /**
-   * Get the before lower Value of a Set
-   * 
+   * Get the before lower Value of a Set.
+   *
    * @param element Element for check
    * @param sameElement boolean for switch return sameElement
    * @return the element or higher Element
@@ -154,6 +206,12 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
     return null;
   }
 
+  /**
+   * Adds the.
+   *
+   * @param index the index
+   * @param element the element
+   */
   public void add(int index, V element) {
     int pos = hasKey(element);
     if (pos >= 0) {
@@ -162,6 +220,13 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
     }
   }
 
+  /**
+   * Sets the.
+   *
+   * @param index the index
+   * @param element the element
+   * @return the v
+   */
   public V set(int index, V element) {
     if (index < 0 || index > size) {
       return null;
@@ -170,6 +235,12 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
     return element;
   }
 
+  /**
+   * Removes the.
+   *
+   * @param index the index
+   * @return the v
+   */
   @SuppressWarnings("unchecked")
   public V remove(int index) {
     if (index < 0 || index > size) {
@@ -178,6 +249,13 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
     return (V) removeByIndex(index, SMALL_KEY, this.index);
   }
 
+  /**
+   * Adds the all.
+   *
+   * @param index the index
+   * @param values the values
+   * @return true, if successful
+   */
   public boolean addAll(int index, Collection<? extends V> values) {
     if (values == null) {
       return false;
@@ -205,6 +283,13 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
     return (ST) filterCollection;
   }
 
+  /**
+   * Filter.
+   *
+   * @param <ST> the generic type
+   * @param newValue the new value
+   * @return the st
+   */
   @SuppressWarnings("unchecked")
   public <ST extends AbstractList<V>> ST filter(Condition<?> newValue) {
     ST filterList = (ST) getNewList(false);
@@ -212,14 +297,31 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
     return filterList;
   }
 
+  /**
+   * Iterator.
+   *
+   * @return the iterator
+   */
   public Iterator<V> iterator() {
     return new SimpleIterator<V>(this, true);
   }
 
+  /**
+   * Iterator.
+   *
+   * @param checkPointer the check pointer
+   * @return the iterator
+   */
   public Iterator<V> iterator(boolean checkPointer) {
     return new SimpleIterator<V>(this).withCheckPointer(checkPointer);
   }
 
+  /**
+   * Equals.
+   *
+   * @param obj the obj
+   * @return true, if successful
+   */
   @Override
   public boolean equals(Object obj) {
     if (obj instanceof Collection<?> == false) {

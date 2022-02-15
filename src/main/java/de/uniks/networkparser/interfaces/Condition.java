@@ -1,5 +1,6 @@
 package de.uniks.networkparser.interfaces;
 
+// TODO: Auto-generated Javadoc
 /*
 NetworkParser
 The MIT License
@@ -24,7 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 /**
- * Simple Generic Condition
+ * Simple Generic Condition.
  *
  * @author Stefan Lindel Condition.
  * @param <T> Value for Update @see SimpleEvent

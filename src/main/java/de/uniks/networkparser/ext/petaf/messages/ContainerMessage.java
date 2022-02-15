@@ -26,10 +26,18 @@ THE SOFTWARE.
 import de.uniks.networkparser.ext.petaf.Message;
 
 /**
- * ContainerMessage
+ * ContainerMessage.
+ *
  * @author Stefan Lindel
  */
 public class ContainerMessage extends Message {
+	
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new ContainerMessage();

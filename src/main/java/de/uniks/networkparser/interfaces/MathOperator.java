@@ -1,5 +1,6 @@
-package de.uniks.networkparser.calculator;
+package de.uniks.networkparser.interfaces;
 
+// TODO: Auto-generated Javadoc
 /*
 NetworkParser
 The MIT License
@@ -24,12 +25,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public interface Operator {
-	public int getPriority();
+/**
+ * The Interface MathOperator.
+ * @author Stefan
+ */
+public interface MathOperator {
+	
+	/**
+	 * Gets the priority.
+	 *
+	 * @return the priority
+	 */
+	int getPriority();
 
-	public int getValues();
+	/**
+	 * Gets the values.
+	 *
+	 * @return the values
+	 */
+	int getValues();
 
-	public double calculate(Double... values);
+	/**
+	 * Calculate.
+	 *
+	 * @param values the values
+	 * @return the double
+	 */
+	double calculate(Double... values);
 
-	public String getTag();
+	/**
+	 * Gets the tag.
+	 *
+	 * @return the tag
+	 */
+	String getTag();
 }

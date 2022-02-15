@@ -34,8 +34,15 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class TextItems.
+ *
+ * @author Stefan
+ */
 public class TextItems extends SimpleKeyValueList<String, Object>
 		implements SendableEntityCreator, LocalisationInterface {
+	
+	/** The Constant PROPERTY_VALUE. */
 	public static final String PROPERTY_VALUE = "value";
 	private LocalisationInterface customLanguage = null;
 	private ObjectCondition listener = null;
@@ -44,6 +51,7 @@ public class TextItems extends SimpleKeyValueList<String, Object>
 	private boolean templateReplace = true;
 	private boolean replaceEmptyString = true;
 
+	/** The Constant DEFAULT. */
 	public static final TextItems DEFAULT = new TextItems()
 			/* Month */
 			.with("JANUARY", "January").with("FEBRUARY", "February").with("MARCH", "March").with("APRIL", "April")
@@ -59,6 +67,13 @@ public class TextItems extends SimpleKeyValueList<String, Object>
 			.with("COPY", "Copy").with("PASTE", "Paste").with("SELECTALL", "Select all")
 			.with("TEXTSTATUSLINE", "Pos: %POS% / %LEN%  Line: %LINE% / %LINECOUNT%  ");
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (entity instanceof TextItems) {
@@ -67,13 +82,19 @@ public class TextItems extends SimpleKeyValueList<String, Object>
 		return null;
 	}
 
+	/**
+	 * Gets the.
+	 *
+	 * @param key the key
+	 * @return the string
+	 */
 	@Override
 	public String get(Object key) {
-		if (key == null || key instanceof String == false) {
+		if (key == null || !(key instanceof String)) {
 			return null;
 		}
 		String k = (String) key;
-		if (isCaseSensitive() == false) {
+		if (!isCaseSensitive()) {
 			k = k.toLowerCase();
 		}
 		Object object = super.get(k);
@@ -93,22 +114,39 @@ public class TextItems extends SimpleKeyValueList<String, Object>
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (entity instanceof TextItems == false) {
+		if (!(entity instanceof TextItems)) {
 			return false;
 		}
 		TextItems items = (TextItems) entity;
 		return items.add(attribute, value);
 	}
 
+	/**
+	 * Gets the text.
+	 *
+	 * @param label the label
+	 * @param model the model
+	 * @param gui the gui
+	 * @return the text
+	 */
 	@Override
 	public String getText(CharSequence label, Object model, Object gui) {
 		if (label == null) {
 			return null;
 		}
 		String text = null;
-		if (containsKey(label) == false) {
+		if (!containsKey(label)) {
 			CharacterBuffer buffer = new CharacterBuffer();
 			buffer.with(label);
 			for (int i = 0; i < buffer.length(); i++) {
@@ -136,12 +174,18 @@ public class TextItems extends SimpleKeyValueList<String, Object>
 		if (text != null) {
 			return text;
 		}
-		if (this.defaultLabel == false) {
+		if (!this.defaultLabel) {
 			return null;
 		}
 		return label.toString();
 	}
 
+	/**
+	 * Gets the label string.
+	 *
+	 * @param label the label
+	 * @return the label string
+	 */
 	public String getLabelString(CharSequence label) {
 		if (containsKey(label)) {
 			return get(label);
@@ -149,6 +193,12 @@ public class TextItems extends SimpleKeyValueList<String, Object>
 		return null;
 	}
 
+	/**
+	 * Gets the label value.
+	 *
+	 * @param label the label
+	 * @return the label value
+	 */
 	public Object getLabelValue(CharSequence label) {
 		if (containsKey(label)) {
 			return super.get(label);
@@ -156,20 +206,43 @@ public class TextItems extends SimpleKeyValueList<String, Object>
 		return null;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { PROPERTY_VALUE };
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new TextItems();
 	}
 
+	/**
+	 * Sets the custom language.
+	 *
+	 * @param value the new custom language
+	 */
 	public void setCustomLanguage(LocalisationInterface value) {
 		this.customLanguage = value;
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param label the label
+	 * @param object the object
+	 * @return the string
+	 */
 	@Override
 	public String put(String label, Object object) {
 		if (this.customLanguage != null) {
@@ -188,15 +261,33 @@ public class TextItems extends SimpleKeyValueList<String, Object>
 		return null;
 	}
 
+	/**
+	 * Checks if is default label.
+	 *
+	 * @return true, if is default label
+	 */
 	public boolean isDefaultLabel() {
 		return defaultLabel;
 	}
 
+	/**
+	 * With default label.
+	 *
+	 * @param value the value
+	 * @return the text items
+	 */
 	public TextItems withDefaultLabel(boolean value) {
 		this.defaultLabel = value;
 		return this;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param value the value
+	 * @param ignoreCase the ignore case
+	 * @return the text items
+	 */
 	public static TextItems create(Entity value, boolean ignoreCase) {
 		TextItems textItems = new TextItems();
 		if (value != null) {
@@ -250,33 +341,72 @@ public class TextItems extends SimpleKeyValueList<String, Object>
 		return true;
 	}
 
+	/**
+	 * Checks if is auto create.
+	 *
+	 * @return true, if is auto create
+	 */
 	public boolean isAutoCreate() {
 		return autoCreate;
 	}
 
+	/**
+	 * With auto create.
+	 *
+	 * @param autoCreate the auto create
+	 * @return the text items
+	 */
 	public TextItems withAutoCreate(boolean autoCreate) {
 		this.autoCreate = autoCreate;
 		return this;
 	}
 
+	/**
+	 * Checks if is template replace.
+	 *
+	 * @return true, if is template replace
+	 */
 	public boolean isTemplateReplace() {
 		return templateReplace;
 	}
 
+	/**
+	 * With template replace.
+	 *
+	 * @param templateReplace the template replace
+	 * @return the text items
+	 */
 	public TextItems withTemplateReplace(boolean templateReplace) {
 		this.templateReplace = templateReplace;
 		return this;
 	}
 
+	/**
+	 * Checks if is replace empty string.
+	 *
+	 * @return true, if is replace empty string
+	 */
 	public boolean isReplaceEmptyString() {
 		return replaceEmptyString;
 	}
 
+	/**
+	 * With replace empty string.
+	 *
+	 * @param replaceEmptyString the replace empty string
+	 * @return the text items
+	 */
 	public TextItems withReplaceEmptyString(boolean replaceEmptyString) {
 		this.replaceEmptyString = replaceEmptyString;
 		return this;
 	}
 
+	/**
+	 * With listener.
+	 *
+	 * @param value the value
+	 * @return the text items
+	 */
 	public TextItems withListener(ObjectCondition value) {
 		this.listener = value;
 		return this;

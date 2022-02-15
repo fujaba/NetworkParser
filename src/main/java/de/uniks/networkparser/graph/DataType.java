@@ -27,26 +27,61 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.StringUtil;
 
+/**
+ * The Class DataType.
+ *
+ * @author Stefan
+ */
 public class DataType {
+	
+	/** The Constant VOID. */
 	public static final DataType VOID = new DataType("void");
+	
+	/** The Constant INT. */
 	public static final DataType INT = new DataType("int");
+	
+	/** The Constant LONG. */
 	public static final DataType LONG = new DataType("long");
+	
+	/** The Constant FLOAT. */
 	public static final DataType FLOAT = new DataType("float");
+	
+	/** The Constant DOUBLE. */
 	public static final DataType DOUBLE = new DataType("double");
+	
+	/** The Constant STRING. */
 	public static final DataType STRING = new DataType("String");
+	
+	/** The Constant BOOLEAN. */
 	public static final DataType BOOLEAN = new DataType("boolean");
+	
+	/** The Constant OBJECT. */
 	public static final DataType OBJECT = new DataType("Object");
+	
+	/** The Constant CHAR. */
 	public static final DataType CHAR = new DataType("char");
+	
+	/** The Constant BYTE. */
 	public static final DataType BYTE = new DataType("byte");
+	
+	/** The Constant COLOR. */
 	public static final DataType COLOR = new DataType("color");
+	
+	/** The Constant CONSTRUCTOR. */
 	public static final DataType CONSTRUCTOR = new DataType("");
+	
+	/** The Constant DATE. */
 	public static final DataType DATE = DataType.create(Date.class).withExternal(true);
+	
+	/** The Constant ARRAY. */
 	public static final String ARRAY="[]";
 	protected Clazz value;
 	protected static final String PROPERTY_NAME = "name";
 	protected static final String PROPERTY_OBJECTNAME = "objectname";
 	protected static final String PROPERTY_CATEGORIE = "cat";
 	protected static final String PROPERTY_CLAZZ = "clazz";
+	
+	/** The Constant PROPERTY_CONTAINER. */
 	public static final String PROPERTY_CONTAINER = "container";
 	private boolean isArray;
 	
@@ -59,6 +94,12 @@ public class DataType {
 		this.value = value;
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @param shortName the short name
+	 * @return the name
+	 */
 	public String getName(boolean shortName) {
 		return getInternName(shortName, true);
 	}
@@ -88,10 +129,21 @@ public class DataType {
 		return result;
 	}
 
+	/**
+	 * Gets the clazz.
+	 *
+	 * @return the clazz
+	 */
 	public Clazz getClazz() {
 		return value;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param typ the typ
+	 * @return the data type
+	 */
 	public static DataType create(Object typ) {
 		if (typ instanceof DataType) {
 			return (DataType) typ;
@@ -108,6 +160,12 @@ public class DataType {
 		return null;
 	}
 
+	/**
+	 * With external.
+	 *
+	 * @param external the external
+	 * @return the data type
+	 */
 	public DataType withExternal(boolean external) {
 		if (this.value != null) {
 			this.value.withExternal(external);
@@ -115,6 +173,12 @@ public class DataType {
 		return this;
 	}
 	
+	/**
+	 * With array.
+	 *
+	 * @param value the value
+	 * @return the data type
+	 */
 	public DataType withArray(boolean value) {
 		if(value) {
 			DataType dataType = new DataType(this.getClazz());
@@ -124,6 +188,12 @@ public class DataType {
 		return this;
 	}
 	
+	/**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
 	public boolean equals(Object obj) {
 		if (obj instanceof String) {
 			return ((String) obj).equalsIgnoreCase(this.getName(false));
@@ -141,11 +211,22 @@ public class DataType {
 		return getName(false).equals(other.getName(false));
 	}
 
+	/**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param ref the ref
+	 * @return the string
+	 */
 	public String toString(boolean ref) {
 		String internName = this.getInternName(false, true);
 		if(StringUtil.isPrimitiveType(internName)) {
@@ -161,6 +242,11 @@ public class DataType {
 		}
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		String internName = this.getInternName(false, true);
@@ -174,6 +260,12 @@ public class DataType {
 		}
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param value the value
+	 * @return the value
+	 */
 	public Object getValue(String value) {
 		if (PROPERTY_CLAZZ.equals(value)) {
 			return getClazz();

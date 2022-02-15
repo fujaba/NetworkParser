@@ -5,16 +5,27 @@ import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleList;
 
 /**
- * Filter with Tree
+ * Filter with Tree.
+ *
  * @author Stefan Lindel
  */
 public class TreeFilter extends SendableItem {
+	
+	/** The Constant PROPERTY_CHILDREN. */
 	public static final String PROPERTY_CHILDREN = "children";
+	
+	/** The Constant PROPERTY_PARENT. */
 	public static final String PROPERTY_PARENT = "parent";
 	private SimpleList<TreeFilter> children;
 	private TreeFilter parent;
 	private Condition<?> filter;
 
+	/**
+	 * With children.
+	 *
+	 * @param children the children
+	 * @return the tree filter
+	 */
 	public TreeFilter withChildren(TreeFilter... children) {
 		if (children == null) {
 			return this;
@@ -34,6 +45,12 @@ public class TreeFilter extends SendableItem {
 		return this;
 	}
 
+	/**
+	 * Without children.
+	 *
+	 * @param children the children
+	 * @return the tree filter
+	 */
 	public TreeFilter withoutChildren(TreeFilter... children) {
 		if (children == null || this.children == null) {
 			return this;
@@ -47,6 +64,12 @@ public class TreeFilter extends SendableItem {
 		return this;
 	}
 
+	/**
+	 * With parent.
+	 *
+	 * @param parent the parent
+	 * @return the tree filter
+	 */
 	public TreeFilter withParent(TreeFilter parent) {
 		if (parent == this.parent) {
 			return this;
@@ -64,10 +87,21 @@ public class TreeFilter extends SendableItem {
 		return this;
 	}
 
+	/**
+	 * Gets the filter.
+	 *
+	 * @return the filter
+	 */
 	public Condition<?> getFilter() {
 		return filter;
 	}
 
+	/**
+	 * With filter.
+	 *
+	 * @param filter the filter
+	 * @return the tree filter
+	 */
 	public TreeFilter withFilter(Condition<?> filter) {
 		this.filter = filter;
 		return this;

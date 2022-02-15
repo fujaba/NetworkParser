@@ -29,7 +29,8 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /**
- * GetModel from NodeProxy
+ * GetModel from NodeProxy.
+ *
  * @author Stefan Lindel
  */
 public class GetModel implements Supplier<Object> {
@@ -37,11 +38,23 @@ public class GetModel implements Supplier<Object> {
 	private Object entity;
 	private ModelThread owner;
 
+	/**
+	 * Instantiates a new gets the model.
+	 *
+	 * @param owner the owner
+	 * @param entity the entity
+	 * @param property the property
+	 */
 	public GetModel(ModelThread owner, Object entity, String property) {
 		this.owner = owner;
 		this.property = property;
 	}
 
+	/**
+	 * Gets the.
+	 *
+	 * @return the object
+	 */
 	@Override
 	public Object get() {
 		try {

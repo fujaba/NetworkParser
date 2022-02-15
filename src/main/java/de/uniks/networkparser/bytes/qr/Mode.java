@@ -9,19 +9,36 @@ package de.uniks.networkparser.bytes.qr;
  * @author Sean Owen
  */
 public final class Mode {
+	
+	/** The Constant TERMINATOR. */
 	/* No, we can't use an enum here. J2ME doesn't support it. */
 	public static final Mode TERMINATOR = new Mode(new int[] { 0, 0, 0 }, 0x00,
 			"TERMINATOR"); /* Not really a mode... */
+	
+	/** The Constant NUMERIC. */
 	public static final Mode NUMERIC = new Mode(new int[] { 10, 12, 14 }, 0x01, "NUMERIC");
+	
+	/** The Constant ALPHANUMERIC. */
 	public static final Mode ALPHANUMERIC = new Mode(new int[] { 9, 11, 13 }, 0x02, "ALPHANUMERIC");
+	
+	/** The Constant STRUCTURED_APPEND. */
 	public static final Mode STRUCTURED_APPEND = new Mode(new int[] { 0, 0, 0 }, 0x03,
 			"STRUCTURED_APPEND"); /* Not supported */
+	
+	/** The Constant BYTE. */
 	public static final Mode BYTE = new Mode(new int[] { 8, 16, 16 }, 0x04, "BYTE");
+	
+	/** The Constant ECI. */
 	public static final Mode ECI = new Mode(null, 0x07, "ECI"); /* character */
 	/* counts don't */
+	/** The Constant KANJI. */
 	/* apply */
 	public static final Mode KANJI = new Mode(new int[] { 8, 10, 12 }, 0x08, "KANJI");
+	
+	/** The Constant FNC1_FIRST_POSITION. */
 	public static final Mode FNC1_FIRST_POSITION = new Mode(null, 0x05, "FNC1_FIRST_POSITION");
+	
+	/** The Constant FNC1_SECOND_POSITION. */
 	public static final Mode FNC1_SECOND_POSITION = new Mode(null, 0x09, "FNC1_SECOND_POSITION");
 	/** See GBT 18284-2000; "Hanzi" is a transliteration of this mode name. */
 	public static final Mode HANZI = new Mode(new int[] { 8, 10, 12 }, 0x0D, "HANZI");
@@ -37,8 +54,8 @@ public final class Mode {
 	}
 
 	/**
-	 * Get Mode for bit
-	 * 
+	 * Get Mode for bit.
+	 *
 	 * @param bits four bits encoding a QR Code data mode
 	 * @return Mode encoded by these bits
 	 * @throws IllegalArgumentException if bits do not correspond to a known mode
@@ -71,6 +88,8 @@ public final class Mode {
 	}
 
 	/**
+	 * Gets the character count bits.
+	 *
 	 * @param version version in question
 	 * @return number of bits used, in this QR Code symbol {@link Version}, to
 	 *         encode the count of characters that will follow encoded in this Mode
@@ -91,14 +110,29 @@ public final class Mode {
 		return characterCountBitsForVersions[offset];
 	}
 
+	/**
+	 * Gets the bits.
+	 *
+	 * @return the bits
+	 */
 	public int getBits() {
 		return bits;
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	public String toString() {
 		return name;
 	}

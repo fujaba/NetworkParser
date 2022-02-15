@@ -6,9 +6,9 @@ import java.io.InputStream;
 import de.uniks.networkparser.bytes.CRC;
 
 /**
- * Add InputStream for ZipFile with Password
- * @author Stefan Lindel
+ * Add InputStream for ZipFile with Password.
  *
+ * @author Stefan Lindel
  */
 public class ZipDecryptInputStream extends InputStream {
     private static final int DECRYPT_HEADER_SIZE = 12;
@@ -26,11 +26,23 @@ public class ZipDecryptInputStream extends InputStream {
     private int valueInc;
     private CRC crcCheck = new CRC().withCRC(32);
  
+    /**
+     * Instantiates a new zip decrypt input stream.
+     *
+     * @param stream the stream
+     * @param password the password
+     */
     public ZipDecryptInputStream(InputStream stream, String password) {
         this.delegate = stream;
         this.password = password;
     }
  
+    /**
+     * Read.
+     *
+     * @return the int
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     @Override
     public int read() throws IOException {
         int result = delegate.read();
@@ -126,6 +138,11 @@ public class ZipDecryptInputStream extends InputStream {
         return result;
     }
  
+    /**
+     * Close.
+     *
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     @Override
     public void close() throws IOException {
         delegate.close();

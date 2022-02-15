@@ -4,36 +4,70 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Feature;
 
+/**
+ * The Class ClassModelBuilder.
+ *
+ * @author Stefan
+ */
 public class ClassModelBuilder {
 	private ClassModel model;
 	private Clazz lastClazz;
+	
+	/** The Constant NOGEN. */
 	public static final String NOGEN = "NOGEN";
+	
+	/** The Constant ONE. */
 	public static final int ONE = 1;
+	
+	/** The Constant MANY. */
 	public static final int MANY = 42;
 
 	/**
-	 * Builds a classmodel builder for the given packageName
-	 * 
+	 * Builds a classmodel builder for the given packageName.
+	 *
 	 * @param packageName the PackageName
 	 */
 	public ClassModelBuilder(String packageName) {
 		model = new ClassModel(packageName);
 	}
 
+	/**
+	 * Builds the class.
+	 *
+	 * @param className the class name
+	 * @return the clazz
+	 */
 	public Clazz buildClass(String className) {
 		lastClazz = model.createClazz(className);
 		return lastClazz;
 	}
 
+	/**
+	 * Creates the class.
+	 *
+	 * @param className the class name
+	 * @return the class model builder
+	 */
 	public ClassModelBuilder createClass(String className) {
 		lastClazz = model.createClazz(className);
 		return this;
 	}
 
+	/**
+	 * Gets the model.
+	 *
+	 * @return the model
+	 */
 	public ClassModel getModel() {
 		return model;
 	}
 
+	/**
+	 * Builds the.
+	 *
+	 * @param params the params
+	 * @return the class model
+	 */
 	public ClassModel build(String... params) {
 		if (params == null) {
 			model.generate();
@@ -55,8 +89,8 @@ public class ClassModelBuilder {
 	}
 
 	/**
-	 * Create a Attribute for a Clazz
-	 * 
+	 * Create a Attribute for a Clazz.
+	 *
 	 * @param name    name of Attribute
 	 * @param type    name of Attribute
 	 * @param clazzes in which Clazz yout want to Create Attribtue
@@ -77,7 +111,7 @@ public class ClassModelBuilder {
 	}
 
 	/**
-	 * Create a Bidirectional Association
+	 * Create a Bidirectional Association.
 	 *
 	 * @param otherRoleName    The RoleName of Association
 	 * @param otherCardinality The Cardinality one or many
@@ -119,6 +153,12 @@ public class ClassModelBuilder {
 		return this;
 	}
 
+	/**
+	 * Sets the model set.
+	 *
+	 * @param type the type
+	 * @return the class model builder
+	 */
 	public ClassModelBuilder setModelSet(Class<?> type) {
 		if (model != null && type != null) {
 			Feature feature = model.getFeature(Feature.SETCLASS);

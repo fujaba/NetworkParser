@@ -7,8 +7,16 @@ import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.GraphMatcher;
 
+/**
+ * The Class ClazzChangeUpdateCondition.
+ *
+ * @author Stefan
+ */
 public class ClazzChangeUpdateCondition extends MatchCondition {
 
+	/**
+	 * Instantiates a new clazz change update condition.
+	 */
 	public ClazzChangeUpdateCondition() {
 		super(true);
 	}
@@ -214,6 +222,11 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 		return false;
 	}
 
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
 	@Override
 	public String getAction() {
 		return SendableEntityCreator.UPDATE;

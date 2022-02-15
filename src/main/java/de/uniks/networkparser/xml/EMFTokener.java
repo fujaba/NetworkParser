@@ -60,28 +60,77 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class EMFTokener.
+ *
+ * @author Stefan
+ */
 public class EMFTokener extends Tokener {
+	
+	/** The Constant ECORE. */
 	public static final String ECORE = "ecore";
+	
+	/** The Constant EPACKAGE. */
 	public static final String EPACKAGE = "ecore:EPackage";
+	
+	/** The Constant EAttribute. */
 	public static final String EAttribute = "eAttributes";
+	
+	/** The Constant ECLASS. */
 	public static final String ECLASS = "eClassifiers";
+	
+	/** The Constant EANNOTATIONS. */
 	public static final String EANNOTATIONS = "eAnnotations";
+	
+	/** The Constant EREFERENCE. */
 	public static final String EREFERENCE = "eReferences";
+	
+	/** The Constant ETYPE. */
 	public static final String ETYPE = "eType";
+	
+	/** The Constant EDATATYPE. */
 	public static final String EDATATYPE = "ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//";
+	
+	/** The Constant TYPE_ECLASS. */
 	public static final String TYPE_ECLASS = "ecore:EClass";
+	
+	/** The Constant TYPE_EAttribute. */
 	public static final String TYPE_EAttribute = "ecore:EAttribute";
+	
+	/** The Constant TYPE_EReferences. */
 	public static final String TYPE_EReferences = "ecore:EReference";
+	
+	/** The Constant TYPE_ESUPERTYPE. */
 	public static final String TYPE_ESUPERTYPE = "eSuperTypes";
+	
+	/** The Constant TYPE_EEnum. */
 	public static final String TYPE_EEnum = "ecore:EEnum";
+	
+	/** The Constant EOpposite. */
 	public static final String EOpposite = "eOpposite";
+	
+	/** The Constant ATTRIBUTE_URL. */
 	public static final String ATTRIBUTE_URL = "http://www.eclipse.org/emf/2002/Ecore#//";
+	
+	/** The Constant UPPERBOUND. */
 	public static final String UPPERBOUND = "upperBound";
+	
+	/** The Constant XMI_TYPE. */
 	public static final String XMI_TYPE = "xmi:type";
+	
+	/** The Constant XSI_TYPE. */
 	public static final String XSI_TYPE = "xsi:type";
+	
+	/** The Constant XMI_ID. */
 	public static final String XMI_ID = "xmi:id";
+	
+	/** The Constant NAME. */
 	public static final String NAME = "name";
+	
+	/** The Constant VALUE. */
 	public static final String VALUE = "value";
+	
+	/** The path. */
 	public SimpleKeyValueList<Object, String> path = new SimpleKeyValueList<Object, String>();
 
 	/**
@@ -98,6 +147,12 @@ public class EMFTokener extends Tokener {
 		buffer.nextClean(false);
 	}
 
+	/**
+	 * Skip header.
+	 *
+	 * @param buffer the buffer
+	 * @return the string
+	 */
 	public String skipHeader(Buffer buffer) {
 		if (buffer == null) {
 			return "";
@@ -127,6 +182,13 @@ public class EMFTokener extends Tokener {
 		return "";
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @param map the map
+	 * @return the base item
+	 */
 	public BaseItem encode(Object entity, MapEntity map) {
 		if (entity == null || map == null) {
 			return null;
@@ -147,6 +209,13 @@ public class EMFTokener extends Tokener {
 		return result;
 	}
 
+	/**
+	 * Encode class model.
+	 *
+	 * @param entity the entity
+	 * @param map the map
+	 * @return the XML entity
+	 */
 	public XMLEntity encodeClassModel(GraphList entity, MapEntity map) {
 		XMLContainer container = new XMLContainer();
 		container.withStandardPrefix();
@@ -252,7 +321,7 @@ public class EMFTokener extends Tokener {
 	}
 
 	/**
-	 * Decode a Element from EMF
+	 * Decode a Element from EMF.
 	 *
 	 * @param map    decoding runtime values
 	 * @param buffer Buffer for Values
@@ -280,7 +349,7 @@ public class EMFTokener extends Tokener {
 		}
 		if (ECORE.equalsIgnoreCase(splitTag[0]) || root instanceof GraphModel) {
 			GraphModel model;
-			if (root == null || root instanceof GraphModel == false) {
+			if (root == null || !(root instanceof GraphModel)) {
 				model = new GraphList();
 			} else {
 				model = (GraphModel) root;
@@ -334,7 +403,7 @@ public class EMFTokener extends Tokener {
 		SimpleKeyValueList<String, Clazz> items = new SimpleKeyValueList<String, Clazz>();
 		for (int c = 0; c < values.sizeChildren(); c++) {
 			BaseItem item = values.getChild(c);
-			if (item instanceof XMLEntity == false) {
+			if (!(item instanceof XMLEntity)) {
 				continue;
 			}
 			XMLEntity child = (XMLEntity) item;
@@ -497,7 +566,7 @@ public class EMFTokener extends Tokener {
 		}
 
 		this.map.put(rootId, entityObject, true);
-		if (xmlEntity.has(XMI_ID) == false) {
+		if (!xmlEntity.has(XMI_ID)) {
 			xmlEntity.put(XMI_ID, rootId);
 		}
 
@@ -591,10 +660,23 @@ public class EMFTokener extends Tokener {
 		}
 	}
 
+	/**
+	 * Decoding.
+	 *
+	 * @param content the content
+	 * @return the graph list
+	 */
 	public GraphList decoding(String content) {
 		return decoding(new XMLEntity().withValue(content), null);
 	}
 
+	/**
+	 * Decoding.
+	 *
+	 * @param content the content
+	 * @param buffer the buffer
+	 * @return the graph list
+	 */
 	public GraphList decoding(Tokener content, Buffer buffer) {
 		return decoding(new XMLEntity().withValue(this, buffer), null);
 	}
@@ -612,11 +694,11 @@ public class EMFTokener extends Tokener {
 		SimpleKeyValueList<Entity, EntityList> parentList = new SimpleKeyValueList<Entity, EntityList>();
 		for (int i = 0; i < ecore.sizeChildren(); i++) {
 			BaseItem eClassifier = ecore.getChild(i);
-			if (eClassifier instanceof XMLEntity == false) {
+			if (!(eClassifier instanceof XMLEntity)) {
 				continue;
 			}
 			XMLEntity xml = (XMLEntity) eClassifier;
-			if (xml.has(XSI_TYPE) == false) {
+			if (!xml.has(XSI_TYPE)) {
 				continue;
 			}
 
@@ -625,7 +707,7 @@ public class EMFTokener extends Tokener {
 				model.with(clazz);
 				for (int c = 0; c < xml.sizeChildren(); c++) {
 					BaseItem child = xml.getChild(c);
-					if (child instanceof Entity == false) {
+					if (!(child instanceof Entity)) {
 						continue;
 					}
 					Entity childItem = (Entity) child;
@@ -652,7 +734,7 @@ public class EMFTokener extends Tokener {
 				GraphUtil.setClazzType(graphEnum, Clazz.TYPE_ENUMERATION);
 				for (int c = 0; c < xml.sizeChildren(); c++) {
 					BaseItem child = ecore.getChild(i);
-					if (child instanceof Entity == false) {
+					if (!(child instanceof Entity)) {
 						continue;
 					}
 					Entity childItem = (Entity) child;
@@ -752,8 +834,8 @@ public class EMFTokener extends Tokener {
 	}
 
 	/**
-	 * Export to XMI File
-	 * 
+	 * Export to XMI File.
+	 *
 	 * @param list the GraphList
 	 * @return XMLEntity
 	 */
@@ -789,8 +871,8 @@ public class EMFTokener extends Tokener {
 	}
 
 	/**
-	 * To UML FileFormat
-	 * 
+	 * To UML FileFormat.
+	 *
 	 * @param list The GraphModel
 	 * @return The XMLEntity
 	 */
@@ -798,6 +880,12 @@ public class EMFTokener extends Tokener {
 		return toXMI(list);
 	}
 
+	/**
+	 * Encode packaged element class.
+	 *
+	 * @param root the root
+	 * @param clazz the clazz
+	 */
 	public void encodePackagedElementClass(XMLEntity root, Clazz clazz) {
 		if (clazz == null || root == null) {
 			return;
@@ -851,6 +939,12 @@ public class EMFTokener extends Tokener {
 		 */
 	}
 
+	/**
+	 * Encode owned value.
+	 *
+	 * @param root the root
+	 * @param value the value
+	 */
 	public void encodeOwnedValue(XMLEntity root, Value value) {
 		if (root == null || value == null) {
 			return;
@@ -883,6 +977,12 @@ public class EMFTokener extends Tokener {
 		child.withKeyValue(VALUE, "1");
 	}
 
+	/**
+	 * Encode owned operation.
+	 *
+	 * @param root the root
+	 * @param method the method
+	 */
 	public void encodeOwnedOperation(XMLEntity root, Method method) {
 		if (root == null || method == null) {
 			return;
@@ -899,7 +999,7 @@ public class EMFTokener extends Tokener {
 		}
 		/* return type */
 		DataType returnType = method.getReturnType();
-		if (returnType != null && returnType.equals(DataType.VOID) == false) {
+		if (returnType != null && !returnType.equals(DataType.VOID)) {
 			XMLEntity returnChild = root.createChild("ownedParameter");
 			returnChild.withKeyValue(XMI_ID, method.getReturnType().toString());
 			returnChild.withKeyValue("direction", "return");
@@ -923,6 +1023,12 @@ public class EMFTokener extends Tokener {
 		}
 	}
 
+	/**
+	 * Encode assoc.
+	 *
+	 * @param root the root
+	 * @param assoc the assoc
+	 */
 	public void encodeAssoc(XMLEntity root, Association assoc) {
 		if (root == null || assoc == null || assoc.getOther() == null) {
 			return;
@@ -940,6 +1046,12 @@ public class EMFTokener extends Tokener {
 		encodeSubAssoc(root, assoc.getOther());
 	}
 
+	/**
+	 * Encode sub assoc.
+	 *
+	 * @param root the root
+	 * @param assoc the assoc
+	 */
 	public void encodeSubAssoc(XMLEntity root, Association assoc) {
 		if (root == null || assoc == null || assoc.getClazz() == null) {
 			return;

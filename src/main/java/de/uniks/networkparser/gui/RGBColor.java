@@ -25,15 +25,38 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
+/**
+ * The Class RGBColor.
+ *
+ * @author Stefan
+ */
 public class RGBColor {
+	
+	/** The Constant WHITE. */
 	public static final RGBColor WHITE = new RGBColor().withValue(255, 255, 255);
+	
+	/** The Constant TANSPARENT. */
 	public static final RGBColor TANSPARENT = new RGBColor().withValue(0, 0, 0);
+	
+	/** The Constant BLACK. */
 	public static final RGBColor BLACK = new RGBColor().withValue(0, 0, 0);
+	
+	/** The Constant RED. */
 	public static final RGBColor RED = new RGBColor().withValue(255, 0, 0);
+	
+	/** The Constant GREEN. */
 	public static final RGBColor GREEN = new RGBColor().withValue(0, 255, 0);
+	
+	/** The Constant BLUE. */
 	public static final RGBColor BLUE = new RGBColor().withValue(0, 0, 255);
+	
+	/** The Constant PURPLE. */
 	public static final RGBColor PURPLE = new RGBColor().withValue(127.5f, 0, 127.5f);
+	
+	/** The Constant YELLOW. */
 	public static final RGBColor YELLOW = new RGBColor().withValue(255, 255, 0);
+	
+	/** The Constant ORANGE. */
 	public static final RGBColor ORANGE = new RGBColor().withValue(255, 127.5f, 0);
 
 	private int argb;
@@ -44,6 +67,14 @@ public class RGBColor {
 	private float magenta;
 	private float yellow;
 
+	/**
+	 * With value.
+	 *
+	 * @param red the red
+	 * @param green the green
+	 * @param blue the blue
+	 * @return the RGB color
+	 */
 	public RGBColor withValue(float red, float green, float blue) {
 		int a = 1;
 		int ia = (int) (255.0 * a);
@@ -58,6 +89,12 @@ public class RGBColor {
 		return this;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param value the value
+	 * @return the RGB color
+	 */
 	public static RGBColor create(String value) {
 		RGBColor color = new RGBColor();
 		if (value == null) {
@@ -73,12 +110,22 @@ public class RGBColor {
 		return color;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param red the red
+	 * @param green the green
+	 * @param blue the blue
+	 * @return the RGB color
+	 */
 	public static RGBColor create(float red, float green, float blue) {
 		RGBColor color = new RGBColor().withValue(red, green, blue);
 		return color;
 	}
 
 	/**
+	 * Gets the red.
+	 *
 	 * @return the red
 	 */
 	public int getRed() {
@@ -86,6 +133,8 @@ public class RGBColor {
 	}
 
 	/**
+	 * With red.
+	 *
 	 * @param red the red to set
 	 * @return thisComponent
 	 */
@@ -95,6 +144,8 @@ public class RGBColor {
 	}
 
 	/**
+	 * Gets the green.
+	 *
 	 * @return the green
 	 */
 	public int getGreen() {
@@ -102,6 +153,8 @@ public class RGBColor {
 	}
 
 	/**
+	 * With green.
+	 *
 	 * @param green the green to set
 	 * @return thisComponent
 	 */
@@ -111,6 +164,8 @@ public class RGBColor {
 	}
 
 	/**
+	 * Gets the blue.
+	 *
 	 * @return the blue
 	 */
 	public int getBlue() {
@@ -118,6 +173,8 @@ public class RGBColor {
 	}
 
 	/**
+	 * With blue.
+	 *
 	 * @param blue the blue to set
 	 * @return thisComponent
 	 */
@@ -127,6 +184,8 @@ public class RGBColor {
 	}
 
 	/**
+	 * Gets the argb.
+	 *
 	 * @return the argb
 	 */
 	public int getArgb() {
@@ -137,6 +196,12 @@ public class RGBColor {
 		return (a <= b) ? a : b;
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param second the second
+	 * @return the RGB color
+	 */
 	public RGBColor add(RGBColor second) {
 		RGBColor color = new RGBColor();
 		if (second == null) {
@@ -163,6 +228,12 @@ public class RGBColor {
 		}
 	}
 
+	/**
+	 * Minus.
+	 *
+	 * @param second the second
+	 * @return the RGB color
+	 */
 	public RGBColor minus(RGBColor second) {
 		RGBColor color = new RGBColor();
 		if (second == null) {
@@ -177,11 +248,20 @@ public class RGBColor {
 		return color;
 	}
 
+	/**
+	 * Minus.
+	 *
+	 * @param colorA the color A
+	 * @param colorB the color B
+	 * @return the RGB color
+	 */
 	public static RGBColor minus(String colorA, String colorB) {
 		return RGBColor.create(colorA).minus(RGBColor.create(colorB));
 	}
 
 	/**
+	 * Gets the cyan.
+	 *
 	 * @return the cyan
 	 */
 	public float getCyan() {
@@ -189,6 +269,8 @@ public class RGBColor {
 	}
 
 	/**
+	 * Gets the magenta.
+	 *
 	 * @return the magenta
 	 */
 	public float getMagenta() {
@@ -196,15 +278,23 @@ public class RGBColor {
 	}
 
 	/**
+	 * Gets the yellow.
+	 *
 	 * @return the yellow
 	 */
 	public float getYellow() {
 		return yellow;
 	}
 
+	/**
+	 * Equals.
+	 *
+	 * @param other the other
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean equals(Object other) {
-		if (other == null || other instanceof RGBColor == false) {
+		if (other == null || !(other instanceof RGBColor)) {
 			return false;
 		}
 		if (other.hashCode() == this.hashCode()) {
@@ -223,11 +313,21 @@ public class RGBColor {
 		return true;
 	}
 
+	/**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	public String toString() {
 		CharacterBuffer buffer = new CharacterBuffer().withBufferLength(7);
 		buffer.with("#");

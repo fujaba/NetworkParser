@@ -41,9 +41,20 @@ import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.SortedSet;
 import de.uniks.networkparser.logic.SimpleObjectFilter;
 
+/**
+ * The Class ModelHistory.
+ *
+ * @author Stefan
+ */
 public class ModelHistory implements ObjectCondition {
+	
+	/** The Constant PROPERTY_HISTORY. */
 	public static final String PROPERTY_HISTORY = "history";
+	
+	/** The Constant PROPERTY_LASTMODELCHANGE. */
 	public static final String PROPERTY_LASTMODELCHANGE = "lastmodelchange";
+	
+	/** The Constant PROPERTY_CHANGES. */
 	public static final String PROPERTY_CHANGES = "changes";
 
 	private SimpleSet<ModelChange> history = new SimpleSet<ModelChange>();
@@ -56,12 +67,22 @@ public class ModelHistory implements ObjectCondition {
 	private boolean isReading = false;
 	protected long currentStep;
 
+	/**
+	 * Gets the last model change.
+	 *
+	 * @return the last model change
+	 */
 	public ModelChange getLastModelChange() {
 		return history.last();
 	}
 
 	/* {"session":"42","class":"ChangeMessage","id":"da39a3ee5e6b4b0d3255bfef95601890afd80709","received":[...],"prevChange":"da39a3ee5e6b4b0d3255bfef95601890afd80709", "changeid":"S810276874033685","property":"name","new":"Alex","changeclass":"de.uniks.networkparser.test.model.Student"} */
 
+	/**
+	 * Refactoring history.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean refactoringHistory() {
 		SortedSet<NodeProxy> nodes = getSpace().getNodeProxies();
 		SimpleList<String> keys = new SimpleList<String>();
@@ -204,6 +225,12 @@ public class ModelHistory implements ObjectCondition {
 		}
 	}
 
+	/**
+	 * Gets the prev change id.
+	 *
+	 * @param change the change
+	 * @return the prev change id
+	 */
 	public String getPrevChangeId(String change) {
 		if (history.isEmpty()) {
 			return null;
@@ -215,6 +242,12 @@ public class ModelHistory implements ObjectCondition {
 		return last.getKey();
 	}
 
+	/**
+	 * Adds the history.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean addHistory(Message value) {
 		ModelChange change = new ModelChange();
 		NodeProxy proxy = value.getReceiver();
@@ -232,6 +265,12 @@ public class ModelHistory implements ObjectCondition {
 		return null;
 	}
 
+	/**
+	 * Adds the history.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean addHistory(ModelChange value) {
 		boolean success = true;
 		ModelChange historyChange = history.ceiling(value, true);
@@ -328,6 +367,13 @@ public class ModelHistory implements ObjectCondition {
 		return success;
 	}
 
+	/**
+	 * Gets the object.
+	 *
+	 * @param jsonObject the json object
+	 * @param fieldName the field name
+	 * @return the object
+	 */
 	public Entity getObject(Entity jsonObject, String fieldName) {
 		Object historyKid = jsonObject.getValue(fieldName);
 		if (historyKid == null) {
@@ -341,19 +387,43 @@ public class ModelHistory implements ObjectCondition {
 		return (Entity) historyKid;
 	}
 
+	/**
+	 * Gets the space.
+	 *
+	 * @return the space
+	 */
 	public Space getSpace() {
 		return space;
 	}
 
+	/**
+	 * With space.
+	 *
+	 * @param space the space
+	 * @return the model history
+	 */
 	public ModelHistory withSpace(Space space) {
 		this.space = space;
 		return this;
 	}
 
+	/**
+	 * Adds the first history.
+	 *
+	 * @param change the change
+	 */
 	public void addFirstHistory(ModelChange change) {
 		history.add(change);
 	}
 
+	/**
+	 * Creates the change.
+	 *
+	 * @param key the key
+	 * @param receiver the receiver
+	 * @param value the value
+	 * @return the model change
+	 */
 	public ModelChange createChange(int key, BaseItem receiver, Entity value) {
 		ModelChange modelChange = new ModelChange();
 		modelChange.withKey("" + key);
@@ -362,26 +432,58 @@ public class ModelHistory implements ObjectCondition {
 		return modelChange;
 	}
 
+	/**
+	 * Creates the change.
+	 *
+	 * @param value the value
+	 * @return the model change
+	 */
 	public ModelChange createChange(Entity value) {
 		ModelChange modelChange = new ModelChange();
 		modelChange.withChange(value);
 		return modelChange;
 	}
 
+	/**
+	 * Creates the change.
+	 *
+	 * @param key the key
+	 * @param receiver the receiver
+	 * @param value the value
+	 * @return the model change
+	 */
 	public ModelChange createChange(int key, String receiver, Entity value) {
 		NodeProxy proxy = this.space.getProxy(receiver);
 		JsonObject receiverObj = this.space.getMap().toJsonObject(proxy, Filter.regard(new SimpleObjectFilter()));
 		return createChange(key, receiverObj, value);
 	}
 
+	/**
+	 * Ceiling.
+	 *
+	 * @param element the element
+	 * @param sameElement the same element
+	 * @return the model change
+	 */
 	public ModelChange ceiling(ModelChange element, boolean sameElement) {
 		return this.history.ceiling(element, sameElement);
 	}
 
+	/**
+	 * Last.
+	 *
+	 * @return the model change
+	 */
 	public ModelChange last() {
 		return history.last();
 	}
 
+	/**
+	 * Check message.
+	 *
+	 * @param change the change
+	 * @return true, if successful
+	 */
 	public boolean checkMessage(Entity change) {
 		/* ups, the sender of this message has a previous change, I do not know about
 		   well, it might stem from before my alldata message. */
@@ -394,6 +496,11 @@ public class ModelHistory implements ObjectCondition {
 		return true;
 	}
 
+	/**
+	 * Gets the new msg no.
+	 *
+	 * @return the new msg no
+	 */
 	public long getNewMsgNo() {
 		if (this.space != null) {
 			NodeProxy myNode = this.space.getMyNode();
@@ -404,33 +511,71 @@ public class ModelHistory implements ObjectCondition {
 		return 0;
 	}
 
+	/**
+	 * Gets the all data msg no.
+	 *
+	 * @return the all data msg no
+	 */
 	/* TODO OLD METHOD WITH NUMERIC-CHANGES */
 	public long getAllDataMsgNo() {
 		return allDataMsgNo;
 	}
 
+	/**
+	 * With all data msg no.
+	 *
+	 * @param allDataMsgNo the all data msg no
+	 * @return the model history
+	 */
 	public ModelHistory withAllDataMsgNo(long allDataMsgNo) {
 		this.allDataMsgNo = allDataMsgNo;
 		return this;
 	}
 
+	/**
+	 * Adds the postponed changes.
+	 *
+	 * @param key the key
+	 * @param msg the msg
+	 */
 	public void addPostponedChanges(String key, JsonObject msg) {
 		postponedChanges.put(key, msg);
 	}
 
+	/**
+	 * Gets the postponed changes.
+	 *
+	 * @return the postponed changes
+	 */
 	public SimpleKeyValueList<String, JsonObject> getPostponedChanges() {
 		return postponedChanges;
 	}
 
+	/**
+	 * Lower.
+	 *
+	 * @param change the change
+	 * @return the model change
+	 */
 	public ModelChange lower(ModelChange change) {
 		return history.lower(change, false);
 	}
 
+	/**
+	 * Gets the history.
+	 *
+	 * @return the history
+	 */
 	public SimpleSet<ModelChange> getHistory() {
 		return history;
 	}
 
-	/** LOCAL HISTORY **/
+	/**
+	 *  LOCAL HISTORY *.
+	 *
+	 * @param map the map
+	 * @return the model history
+	 */
 	
 	/** create a LOcal History
 	 * 
@@ -450,19 +595,41 @@ public class ModelHistory implements ObjectCondition {
 		return history;
 	}
 
+	/**
+	 * Inits the.
+	 *
+	 * @return the model history
+	 */
 	public ModelHistory init() {
 		return this;
 	}
 
+	/**
+	 * Checks if is reading.
+	 *
+	 * @return true, if is reading
+	 */
 	public boolean isReading() {
 		return isReading;
 	}
 
+	/**
+	 * With reading.
+	 *
+	 * @param isReading the is reading
+	 * @return the model history
+	 */
 	public ModelHistory withReading(boolean isReading) {
 		this.isReading = isReading;
 		return this;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param event the event
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object event) {
 		if (isReading) {
@@ -484,6 +651,12 @@ public class ModelHistory implements ObjectCondition {
 		return true;
 	}
 
+	/**
+	 * Back.
+	 *
+	 * @param steps the steps
+	 * @return the model history
+	 */
 	public ModelHistory back(long steps) {
 		for (long l = 0; l < steps; l++) {
 			back();
@@ -491,6 +664,12 @@ public class ModelHistory implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * Forward.
+	 *
+	 * @param steps the steps
+	 * @return the model history
+	 */
 	public ModelHistory forward(long steps) {
 		for (long l = 0; l < steps; l++) {
 			forward();
@@ -498,6 +677,11 @@ public class ModelHistory implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * Forward.
+	 *
+	 * @return the model history
+	 */
 	public ModelHistory forward() {
 		if (currentStep >= history.size()) {
 			/* already at start */
@@ -515,6 +699,11 @@ public class ModelHistory implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * Back.
+	 *
+	 * @return the model history
+	 */
 	public ModelHistory back() {
 		if (currentStep <= 0) {
 			/* already at start */
@@ -562,6 +751,12 @@ public class ModelHistory implements ObjectCondition {
 		return this;
 	}
 
+	/**
+	 * Back.
+	 *
+	 * @param target the target
+	 * @return the model history
+	 */
 	public ModelHistory back(Object target) {
 		while (true) {
 			back();
@@ -586,6 +781,13 @@ public class ModelHistory implements ObjectCondition {
 		}
 	}
 
+	/**
+	 * Back.
+	 *
+	 * @param target the target
+	 * @param property the property
+	 * @return the model history
+	 */
 	public ModelHistory back(Object target, String property) {
 		while (true) {
 			back();

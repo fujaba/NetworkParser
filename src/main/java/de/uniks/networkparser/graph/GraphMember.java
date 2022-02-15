@@ -32,18 +32,47 @@ import de.uniks.networkparser.interfaces.TemplateItem;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class GraphMember.
+ *
+ * @author Stefan
+ */
 public abstract class GraphMember implements TemplateItem {
+	
+	/** The Constant PROPERTY_NAME. */
 	public static final String PROPERTY_NAME = "name";
+	
+	/** The Constant PROPERTY_CLASSNAME. */
 	public static final String PROPERTY_CLASSNAME = "className";
+	
+	/** The Constant PROPERTY_PARENT. */
 	public static final String PROPERTY_PARENT = "parent";
+	
+	/** The Constant PROPERTY_CHILD. */
 	public static final String PROPERTY_CHILD = "child";
+	
+	/** The Constant PROPERTY_CHILDTRANSITIVE. */
 	public static final String PROPERTY_CHILDTRANSITIVE = "childtransitive";
+	
+	/** The Constant PROPERTY_LITERAL. */
 	public static final String PROPERTY_LITERAL = "literal";
+	
+	/** The Constant PROPERTY_VISIBILITY. */
 	public static final String PROPERTY_VISIBILITY = "visibility";
+	
+	/** The Constant PROPERTY_MODIFIERS. */
 	public static final String PROPERTY_MODIFIERS = "modifiers";
+	
+	/** The Constant PROPERTY_THIS. */
 	public static final String PROPERTY_THIS = "this";
+	
+	/** The Constant PROPERTY_PATH. */
 	public static final String PROPERTY_PATH = "path";
+	
+	/** The Constant PROPERTY_ANNOTATION. */
 	public static final String PROPERTY_ANNOTATION = "annotation";
+	
+	/** The Constant PROPERTY_FILETYPE. */
 	public static final String PROPERTY_FILETYPE = "filetype";
 
 	protected String name;
@@ -61,6 +90,12 @@ public abstract class GraphMember implements TemplateItem {
 		return role;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	public Object getValue(String attribute) {
 		if (attribute == null) {
 			return null;
@@ -193,6 +228,11 @@ public abstract class GraphMember implements TemplateItem {
 		return result;
 	}
 
+	/**
+	 * Gets the clazz.
+	 *
+	 * @return the clazz
+	 */
 	public Clazz getClazz() {
 		if (this instanceof Clazz) {
 			return (Clazz) this;
@@ -250,8 +290,8 @@ public abstract class GraphMember implements TemplateItem {
 	}
 
 	/**
-	 * Set the name of Element
-	 * 
+	 * Set the name of Element.
+	 *
 	 * @param name The Name of Element
 	 * @return The Instance
 	 */
@@ -334,6 +374,11 @@ public abstract class GraphMember implements TemplateItem {
 		return graphDiff;
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
 	public String getName() {
 		return this.name;
 	}
@@ -380,6 +425,11 @@ public abstract class GraphMember implements TemplateItem {
 		return null;
 	}
 
+	/**
+	 * Gets the modifier.
+	 *
+	 * @return the modifier
+	 */
 	public Modifier getModifier() {
 		if (this.children == null) {
 			return null;
@@ -422,6 +472,12 @@ public abstract class GraphMember implements TemplateItem {
 		return this;
 	}
 
+	/**
+	 * Removes the.
+	 *
+	 * @param member the member
+	 * @return true, if successful
+	 */
 	public boolean remove(GraphMember member) {
 		if (member == null) {
 			return true;

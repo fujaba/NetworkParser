@@ -3,12 +3,23 @@ package de.uniks.networkparser.logic;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
+/**
+ * The Class VersionCondition.
+ *
+ * @author Stefan
+ */
 public class VersionCondition implements ObjectCondition, Comparable<VersionCondition> {
 	private int mayor;
 	private int minor;
 	private int revision;
 	private ObjectCondition children;
 
+	/**
+	 * With version.
+	 *
+	 * @param version the version
+	 * @return the version condition
+	 */
 	public VersionCondition withVersion(String version) {
 		if (version != null) {
 			String[] split = version.split("\\.");
@@ -43,11 +54,22 @@ public class VersionCondition implements ObjectCondition, Comparable<VersionCond
 		return this;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return this.mayor + "." + this.minor + "." + this.revision;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (!(value instanceof SimpleEvent)) {
@@ -61,6 +83,12 @@ public class VersionCondition implements ObjectCondition, Comparable<VersionCond
 		return true;
 	}
 
+	/**
+	 * Compare to.
+	 *
+	 * @param o the o
+	 * @return the int
+	 */
 	@Override
 	public int compareTo(VersionCondition o) {
 		if (o == null) {

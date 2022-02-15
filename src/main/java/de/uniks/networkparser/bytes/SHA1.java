@@ -26,7 +26,8 @@ THE SOFTWARE.
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 /**
- * Secure Hash Algorithm Version 1
+ * Secure Hash Algorithm Version 1.
+ *
  * @author Stefan Lindel
  */
 public class SHA1 extends Checksum {
@@ -36,15 +37,26 @@ public class SHA1 extends Checksum {
 	private int currentPos;
 	private long currentLen;
 
+	/**
+	 * Instantiates a new sha1.
+	 */
 	public SHA1() {
 		reset();
 	}
 
+	/**
+	 * Gets the order.
+	 *
+	 * @return the order
+	 */
 	@Override
 	public int getOrder() {
 		return 20;
 	}
 
+	/**
+	 * Reset.
+	 */
 	@Override
 	public void reset() {
 		H0 = 0x67452301;
@@ -62,6 +74,14 @@ public class SHA1 extends Checksum {
 		 */
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param bytes the bytes
+	 * @param offset the offset
+	 * @param length the length
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(byte[] bytes, int offset, int length) {
 		if (bytes == null || bytes.length < offset) {
@@ -159,6 +179,12 @@ public class SHA1 extends Checksum {
 		return true;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param b the b
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(byte b) {
 		int idx = currentPos >> 2;
@@ -184,6 +210,11 @@ public class SHA1 extends Checksum {
 		b[pos + 3] = (byte) val;
 	}
 
+	/**
+	 * Gets the byte array.
+	 *
+	 * @return the byte array
+	 */
 	@Override
 	public byte[] getByteArray() {
 		byte[] out = new byte[getOrder()];
@@ -294,17 +325,36 @@ public class SHA1 extends Checksum {
 		H4 += e;
 	}
 
+	/**
+	 * Value.
+	 *
+	 * @param value the value
+	 * @return the character buffer
+	 */
 	public static CharacterBuffer value(CharSequence value) {
 		SHA1 sha1 = new SHA1();
 		sha1.update(toByteArray(value));
 		return convertToHex(sha1.getByteArray());
 	}
+	
+	/**
+	 * Value.
+	 *
+	 * @param value the value
+	 * @return the character buffer
+	 */
 	public static CharacterBuffer value(byte[] value) {
 		SHA1 sha1 = new SHA1();
 		sha1.update(value);
 		return convertToHex(sha1.getByteArray());
 	}
 
+	/**
+	 * Convert to hex.
+	 *
+	 * @param data the data
+	 * @return the character buffer
+	 */
 	public static CharacterBuffer convertToHex(byte[] data) {
 		if (data == null) {
 			return null;
@@ -324,6 +374,12 @@ public class SHA1 extends Checksum {
 		return buf;
 	}
 
+	/**
+	 * To byte array.
+	 *
+	 * @param charSequence the char sequence
+	 * @return the byte[]
+	 */
 	public static byte[] toByteArray(CharSequence charSequence) {
 		if (charSequence == null) {
 			return null;

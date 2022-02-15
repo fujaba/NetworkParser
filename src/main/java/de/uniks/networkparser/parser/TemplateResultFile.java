@@ -39,13 +39,27 @@ import de.uniks.networkparser.interfaces.TemplateItem;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.SortedSet;
 
+/**
+ * The Class TemplateResultFile.
+ *
+ * @author Stefan
+ */
 public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		implements SendableEntityCreator, LocalisationInterface {
+	
+	/** The Constant PROPERTY_PARENT. */
 	public static final String PROPERTY_PARENT = "parent";
+	
+	/** The Constant PROPERTY_CHILD. */
 	public static final String PROPERTY_CHILD = "child";
+	
+	/** The Constant PROPERTY_MEMBER. */
 	public static final String PROPERTY_MEMBER = "member";
 
+	/** The Constant PROPERTY_NAME. */
 	public static final String PROPERTY_NAME = "name";
+	
+	/** The Constant PROPERTY_HEADERS. */
 	public static final String PROPERTY_HEADERS = "headers";
 	private String name;
 	private String postfix;
@@ -59,22 +73,45 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		super(true);
 	}
 
+	/**
+	 * Instantiates a new template result file.
+	 *
+	 * @param clazz the clazz
+	 * @param comparator the comparator
+	 */
 	public TemplateResultFile(TemplateItem clazz, boolean comparator) {
 		super(comparator);
 		this.withName(clazz);
 		this.withMember(clazz);
 	}
 
+	/**
+	 * Instantiates a new template result file.
+	 *
+	 * @param clazz the clazz
+	 * @param name the name
+	 * @param comparator the comparator
+	 */
 	public TemplateResultFile(TemplateItem clazz, String name, boolean comparator) {
 		super(comparator);
 		this.withName(name);
 		this.withMember(clazz);
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Gets the file name.
+	 *
+	 * @return the file name
+	 */
 	public String getFileName() {
 		CharacterBuffer buffer = new CharacterBuffer();
 		if (path != null) {
@@ -88,11 +125,23 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		return buffer.toString();
 	}
 
+	/**
+	 * With name.
+	 *
+	 * @param name the name
+	 * @return the template result file
+	 */
 	public TemplateResultFile withName(String name) {
 		this.name = name;
 		return this;
 	}
 
+	/**
+	 * With name.
+	 *
+	 * @param clazz the clazz
+	 * @return the template result file
+	 */
 	public TemplateResultFile withName(TemplateItem clazz) {
 		if (clazz != null && clazz.getName() != null) {
 			this.name = clazz.getName().replace(".", "/");
@@ -100,47 +149,92 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		return this;
 	}
 
+	/**
+	 * With postfix.
+	 *
+	 * @param value the value
+	 * @return the template result file
+	 */
 	public TemplateResultFile withPostfix(String value) {
 		this.postfix = value;
 		return this;
 	}
 
+	/**
+	 * With extension.
+	 *
+	 * @param value the value
+	 * @return the template result file
+	 */
 	public TemplateResultFile withExtension(String value) {
 		this.extension = value;
 		return this;
 	}
 
+	/**
+	 * With path.
+	 *
+	 * @param value the value
+	 * @return the template result file
+	 */
 	public TemplateResultFile withPath(String value) {
 		this.path = value;
 		return this;
 	}
 
+	/**
+	 * Adds the child.
+	 *
+	 * @param child the child
+	 * @return true, if successful
+	 */
 	public boolean addChild(SendableEntityCreator child) {
 		/* FIXME FOR NON COMPARATOR */
-		if (isComparator() == false && child instanceof TemplateResultFragment) {
+		if (!isComparator() && child instanceof TemplateResultFragment) {
 			TemplateResultFragment fragment = (TemplateResultFragment) child;
 			if (fragment.getKey() == Template.TEMPLATE) {
 				super.add(0, fragment);
 				return true;
 			}
 		}
-		if (super.add(child) == false) {
+		if (!super.add(child)) {
 			return false;
 		}
 		child.setValue(child, PROPERTY_PARENT, this, SendableEntityCreator.NEW);
 		return true;
 	}
 
+	/**
+	 * Gets the text.
+	 *
+	 * @param label the label
+	 * @param model the model
+	 * @param gui the gui
+	 * @return the text
+	 */
 	@Override
 	public String getText(CharSequence label, Object model, Object gui) {
 		return null;
 	}
 
+	/**
+	 * Put.
+	 *
+	 * @param label the label
+	 * @param object the object
+	 * @return the string
+	 */
 	@Override
 	public String put(String label, Object object) {
 		return null;
 	}
 
+	/**
+	 * Sets the parent.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setParent(SendableEntityCreator value) {
 		if (value != this.parent) {
 			this.parent = value;
@@ -149,23 +243,46 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		return false;
 	}
 
+	/**
+	 * Gets the parent.
+	 *
+	 * @return the parent
+	 */
 	public SendableEntityCreator getParent() {
 		return this.parent;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new TemplateResultFile();
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { PROPERTY_NAME, PROPERTY_PARENT };
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (entity instanceof TemplateResultFile == false) {
+		if (!(entity instanceof TemplateResultFile)) {
 			return null;
 		}
 		TemplateResultFile element = (TemplateResultFile) entity;
@@ -202,6 +319,15 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (PROPERTY_PARENT.equalsIgnoreCase(attribute)) {
@@ -213,6 +339,11 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		return false;
 	}
 
+	/**
+	 * Gets the code.
+	 *
+	 * @return the code
+	 */
 	public SourceCode getCode() {
 		if (this.member instanceof Clazz) {
 			Clazz clazz = (Clazz) this.member;
@@ -224,6 +355,11 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		return null;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		SourceCode code = getCode();
@@ -246,7 +382,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 			GraphSimpleSet children = GraphUtil.getChildren(this.member);
 
 			for (GraphMember member : children) {
-				if (member instanceof ModifyEntry == false) {
+				if (!(member instanceof ModifyEntry)) {
 					continue;
 				}
 				ModifyEntry modifierChild = (ModifyEntry) member;
@@ -347,24 +483,52 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		return buffer.toString();
 	}
 
+	/**
+	 * Gets the member.
+	 *
+	 * @return the member
+	 */
 	public TemplateItem getMember() {
 		return member;
 	}
 
+	/**
+	 * With member.
+	 *
+	 * @param member the member
+	 * @return the template result file
+	 */
 	public TemplateResultFile withMember(TemplateItem member) {
 		this.member = member;
 		return this;
 	}
 
+	/**
+	 * With meta model.
+	 *
+	 * @param value the value
+	 * @return the template result file
+	 */
 	public TemplateResultFile withMetaModel(boolean value) {
 		this.metaModell = value;
 		return this;
 	}
 
+	/**
+	 * Checks if is meta modell.
+	 *
+	 * @return true, if is meta modell
+	 */
 	public boolean isMetaModell() {
 		return metaModell;
 	}
 
+	/**
+	 * Creates the java.
+	 *
+	 * @param clazz the clazz
+	 * @return the template result file
+	 */
 	public static TemplateResultFile createJava(Clazz clazz) {
 		TemplateResultFile templateResult = new TemplateResultFile(clazz, true);
 		templateResult.withExtension(Template.TYPE_JAVA);

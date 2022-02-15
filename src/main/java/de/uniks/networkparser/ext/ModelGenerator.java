@@ -63,7 +63,8 @@ import de.uniks.networkparser.parser.java.JavaSetCreator;
 import de.uniks.networkparser.parser.typescript.TypescriptClazz;
 
 /**
- * Model Generator
+ * Model Generator.
+ *
  * @author Stefan Lindel
  */
 public class ModelGenerator extends SimpleGenerator {
@@ -75,6 +76,12 @@ public class ModelGenerator extends SimpleGenerator {
 	private String lastGenRoot;
 	private NetworkParserLog logger;
 
+	/**
+	 * Gets the templates.
+	 *
+	 * @param filter the filter
+	 * @return the templates
+	 */
 	public SimpleList<Template> getTemplates(String filter) {
 		if (templates == null) {
 			templates = new SimpleKeyValueList<String, Template>();
@@ -145,6 +152,13 @@ public class ModelGenerator extends SimpleGenerator {
 		return result;
 	}
 
+	/**
+	 * Adds the template.
+	 *
+	 * @param template the template
+	 * @param addOwner the add owner
+	 * @return true, if successful
+	 */
 	public boolean addTemplate(Template template, boolean addOwner) {
 		if (super.addTemplate(template, addOwner) == false) {
 			return false;
@@ -170,6 +184,13 @@ public class ModelGenerator extends SimpleGenerator {
 		return "src";
 	}
 
+	/**
+	 * Generate.
+	 *
+	 * @param rootDir the root dir
+	 * @param item the item
+	 * @return the sendable entity creator
+	 */
 	public SendableEntityCreator generate(String rootDir, GraphMember item) {
 		if (item instanceof GraphModel == false) {
 			return null;
@@ -177,6 +198,17 @@ public class ModelGenerator extends SimpleGenerator {
 		return generating(rootDir, (GraphModel) item, null, null, true, true);
 	}
 
+	/**
+	 * Generating.
+	 *
+	 * @param rootDir the root dir
+	 * @param model the model
+	 * @param parameters the parameters
+	 * @param type the type
+	 * @param writeFiles the write files
+	 * @param enableParser the enable parser
+	 * @return the sendable entity creator
+	 */
 	public SendableEntityCreator generating(String rootDir, GraphModel model, TextItems parameters, String type,
 			boolean writeFiles, boolean enableParser) {
 		if(model == null) {
@@ -271,6 +303,11 @@ public class ModelGenerator extends SimpleGenerator {
 		return resultModel;
 	}
 
+	/**
+	 * Gets the result model.
+	 *
+	 * @return the result model
+	 */
 	public TemplateResultModel getResultModel() {
 		TemplateResultModel resultModel = new TemplateResultModel();
 		resultModel.withTemplate(this.getCondition());
@@ -290,6 +327,13 @@ public class ModelGenerator extends SimpleGenerator {
 		return path;
 	}
 
+	/**
+	 * Write.
+	 *
+	 * @param rootPath the root path
+	 * @param entity the entity
+	 * @return true, if successful
+	 */
 	public boolean write(String rootPath, TemplateResultFile entity) {
 		if(rootPath == null || entity == null) {
 			return false;
@@ -316,6 +360,13 @@ public class ModelGenerator extends SimpleGenerator {
 		return FileBuffer.writeFile(rootPath + entity.getFileName(), newContent) >= 0;
 	}
 
+	/**
+	 * Parses the.
+	 *
+	 * @param rootPath the root path
+	 * @param entity the entity
+	 * @return the parser entity
+	 */
 	public ParserEntity parse(String rootPath, TemplateResultFile entity) {
 		/* check for each clazz, if a matching file already exists */
 		if (entity == null || entity.getMember() instanceof Clazz == false) {
@@ -342,14 +393,31 @@ public class ModelGenerator extends SimpleGenerator {
 		return null;
 	}
 
+	/**
+	 * Checks if is SDM lib parser.
+	 *
+	 * @return true, if is SDM lib parser
+	 */
 	public boolean isSDMLibParser() {
 		return useSDMLibParser;
 	}
 
+	/**
+	 * With enable SDM lib parser.
+	 *
+	 * @param value the value
+	 */
 	public void withEnableSDMLibParser(boolean value) {
 		this.useSDMLibParser = value;
 	}
 
+	/**
+	 * Gets the feature.
+	 *
+	 * @param value the value
+	 * @param clazzes the clazzes
+	 * @return the feature
+	 */
 	@Override
 	public Feature getFeature(Feature value, Clazz... clazzes) {
 		if (this.features != null) {
@@ -369,28 +437,54 @@ public class ModelGenerator extends SimpleGenerator {
 		return null;
 	}
 
+	/**
+	 * Without feature.
+	 *
+	 * @param feature the feature
+	 * @return the model generator
+	 */
 	public ModelGenerator withoutFeature(Feature feature) {
 		this.features.without(feature);
 		return this;
 	}
 
+	/**
+	 * With feature.
+	 *
+	 * @param featureSet the feature set
+	 * @return the model generator
+	 */
 	public ModelGenerator withFeature(FeatureSet featureSet) {
 		this.features.clear();
 		this.features.addAll(featureSet);
 		return this;
 	}
 
+	/**
+	 * With feature.
+	 *
+	 * @param feature the feature
+	 * @return the model generator
+	 */
 	public ModelGenerator withFeature(Feature... feature) {
 		this.features.with(feature);
 		return this;
 	}
 
+	/**
+	 * With default model.
+	 *
+	 * @param model the model
+	 * @return the model generator
+	 */
 	public ModelGenerator withDefaultModel(GraphModel model) {
 		this.defaultModel = model;
 		return this;
 	}
 
 	/**
+	 * Removes the and generate.
+	 *
 	 * @param param List of Params First is Type like TYPE_JAVA Second rootDir
 	 */
 
@@ -432,10 +526,23 @@ public class ModelGenerator extends SimpleGenerator {
 		}
 	}
 
+	/**
+	 * Gets the last gen root.
+	 *
+	 * @return the last gen root
+	 */
 	public String getLastGenRoot() {
 		return lastGenRoot;
 	}
 
+	/**
+	 * Removes the.
+	 *
+	 * @param model the model
+	 * @param rootDir the root dir
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	public boolean remove(GraphModel model, String rootDir, String type) {
 		if(rootDir == null || model == null) {
 			return false;
@@ -466,11 +573,25 @@ public class ModelGenerator extends SimpleGenerator {
 		return FileBuffer.deleteFile(fileName);
 	}
 
+	/**
+	 * Parses the template.
+	 *
+	 * @param templateString the template string
+	 * @param member the member
+	 * @return the template result fragment
+	 */
 	public TemplateResultFragment parseTemplate(String templateString, GraphMember member) {
 		Template template = new Template().withTemplate(templateString);
 		return parseTemplate(template, member);
 	}
 
+	/**
+	 * Parses the template.
+	 *
+	 * @param template the template
+	 * @param member the member
+	 * @return the template result fragment
+	 */
 	public TemplateResultFragment parseTemplate(Template template, GraphMember member) {
 		if(template == null) {
 			return null;
@@ -486,20 +607,44 @@ public class ModelGenerator extends SimpleGenerator {
 		return generate;
 	}
 
+	/**
+	 * Parses the source code.
+	 *
+	 * @param content the content
+	 * @return the clazz
+	 */
 	public Clazz parseSourceCode(CharacterBuffer content) {
 		Clazz clazz = ParserEntity.create(content);
 		return clazz;
 	}
 
+	/**
+	 * With root dir.
+	 *
+	 * @param rootDir the root dir
+	 * @return the model generator
+	 */
 	public ModelGenerator withRootDir(String rootDir) {
 		this.defaultRootDir = rootDir;
 		return this;
 	}
 
+	/**
+	 * Gets the root dir.
+	 *
+	 * @return the root dir
+	 */
 	public String getRootDir() {
 		return defaultRootDir;
 	}
 
+	/**
+	 * Find clazz.
+	 *
+	 * @param name the name
+	 * @param defaultValue the default value
+	 * @return the clazz
+	 */
 	public Clazz findClazz(String name, boolean defaultValue) {
 		if(defaultModel == null) {
 			return null;
@@ -530,6 +675,14 @@ public class ModelGenerator extends SimpleGenerator {
 		return null;
 	}
 
+	/**
+	 * Find attribute.
+	 *
+	 * @param clazz the clazz
+	 * @param name the name
+	 * @param defaultValue the default value
+	 * @return the attribute
+	 */
 	public Attribute findAttribute(Clazz clazz, String name, boolean defaultValue) {
 		if (name == null || clazz == null) {
 			if (defaultValue) {
@@ -550,6 +703,14 @@ public class ModelGenerator extends SimpleGenerator {
 		return null;
 	}
 
+	/**
+	 * Find association.
+	 *
+	 * @param clazz the clazz
+	 * @param name the name
+	 * @param defaultValue the default value
+	 * @return the association
+	 */
 	public Association findAssociation(Clazz clazz, String name, boolean defaultValue) {
 		if (name == null || clazz == null) {
 			if (defaultValue) {
@@ -570,6 +731,14 @@ public class ModelGenerator extends SimpleGenerator {
 		return null;
 	}
 
+	/**
+	 * Find method.
+	 *
+	 * @param clazz the clazz
+	 * @param name the name
+	 * @param defaultValue the default value
+	 * @return the method
+	 */
 	public Method findMethod(Clazz clazz, String name, boolean defaultValue) {
 		if (name == null) {
 			return null;
@@ -583,6 +752,14 @@ public class ModelGenerator extends SimpleGenerator {
 		return null;
 	}
 
+	/**
+	 * Find parameter.
+	 *
+	 * @param method the method
+	 * @param name the name
+	 * @param defaultValue the default value
+	 * @return the parameter
+	 */
 	public Parameter findParameter(Method method, String name, boolean defaultValue) {
 		if (name == null) {
 			return null;
@@ -596,6 +773,12 @@ public class ModelGenerator extends SimpleGenerator {
 		return null;
 	}
 
+	/**
+	 * Creates the clazz.
+	 *
+	 * @param name the name
+	 * @return the clazz
+	 */
 	public Clazz createClazz(String name) {
 		if(defaultModel != null) {
 			return this.defaultModel.createClazz(name);
@@ -603,6 +786,12 @@ public class ModelGenerator extends SimpleGenerator {
 		return null;
 	}
 
+	/**
+	 * Removes the clazz.
+	 *
+	 * @param clazz the clazz
+	 * @return true, if successful
+	 */
 	public boolean removeClazz(Clazz clazz) {
 		if(defaultModel != null) {
 			return this.defaultModel.remove(clazz);
@@ -610,12 +799,21 @@ public class ModelGenerator extends SimpleGenerator {
 		return false;
 	}
 
+	/**
+	 * Apply change.
+	 */
 	public void applyChange() {
 		if(defaultModel != null) {
 			generating(defaultRootDir, this.defaultModel, null, null, true, true);
 		}
 	}
 
+	/**
+	 * With logger.
+	 *
+	 * @param logger the logger
+	 * @return the model generator
+	 */
 	public ModelGenerator withLogger(NetworkParserLog logger) {
 		this.logger = logger;
 		return this;

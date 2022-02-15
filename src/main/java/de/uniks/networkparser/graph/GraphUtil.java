@@ -8,7 +8,7 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
 /**
- * Special Util for package Method
+ * Special Util for package Method.
  *
  * @author Stefan Lindel
  */
@@ -17,6 +17,12 @@ public class GraphUtil {
 			"salmon", "sheep", "trout");
 	private static SimpleList<String> oesDictionary = new SimpleList<String>().with("hero", "potato", "torpedo");
 
+	/**
+	 * Gets the plural.
+	 *
+	 * @param singular the singular
+	 * @return the plural
+	 */
 	public static String getPlural(String singular) {
 		/* Zischlaut */
 		if (singular == null || singular.length() < 1) {
@@ -47,6 +53,12 @@ public class GraphUtil {
 		return singular + "s";
 	}
 
+	/**
+	 * Checks if is plural.
+	 *
+	 * @param plural the plural
+	 * @return true, if is plural
+	 */
 	public static boolean isPlural(String plural) {
 		if (noneDictionary.contains(plural)) {
 			return true;
@@ -60,6 +72,13 @@ public class GraphUtil {
 		return true;
 	}
 
+	/**
+	 * Compare name.
+	 *
+	 * @param source the source
+	 * @param other the other
+	 * @return the double
+	 */
 	public static double compareName(String source, String other) {
 		if (source == null || other == null) {
 			return 0;
@@ -86,6 +105,12 @@ public class GraphUtil {
 		return score;
 	}
 
+	/**
+	 * Checks if is generate.
+	 *
+	 * @param member the member
+	 * @return true, if is generate
+	 */
 	public static final boolean isGenerate(GraphMember member) {
 		if (member == null) {
 			return false;
@@ -93,6 +118,13 @@ public class GraphUtil {
 		return member.isGenerate;
 	}
 
+	/**
+	 * Sets the generate.
+	 *
+	 * @param member the member
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public static final boolean setGenerate(GraphMember member, boolean value) {
 		if (member != null) {
 			member.isGenerate = value;
@@ -101,6 +133,13 @@ public class GraphUtil {
 		return false;
 	}
 
+	/**
+	 * Sets the role.
+	 *
+	 * @param member the member
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public static final boolean setRole(GraphMember member, ObjectCondition value) {
 		if (member != null) {
 			member.withRole(value);
@@ -109,6 +148,12 @@ public class GraphUtil {
 		return false;
 	}
 
+	/**
+	 * Gets the role.
+	 *
+	 * @param member the member
+	 * @return the role
+	 */
 	public static final ObjectCondition getRole(TemplateItem member) {
 		if (member != null && member instanceof GraphMember) {
 			return ((GraphMember) member).getRole();
@@ -116,6 +161,13 @@ public class GraphUtil {
 		return null;
 	}
 
+	/**
+	 * Compare type.
+	 *
+	 * @param sourceType the source type
+	 * @param otherType the other type
+	 * @return the double
+	 */
 	public static double compareType(String sourceType, String otherType) {
 		if (sourceType == null || otherType == null) {
 			return 1;
@@ -132,6 +184,12 @@ public class GraphUtil {
 		return -1;
 	}
 
+	/**
+	 * Gets the package.
+	 *
+	 * @param classObj the class obj
+	 * @return the package
+	 */
 	public static final String getPackage(Class<?> classObj) {
 		if (classObj != null) {
 			return getPackage(classObj.getName());
@@ -139,6 +197,12 @@ public class GraphUtil {
 		return "";
 	}
 
+	/**
+	 * Gets the package.
+	 *
+	 * @param name the name
+	 * @return the package
+	 */
 	public static final String getPackage(String name) {
 		if (name == null) {
 			return "";
@@ -150,6 +214,14 @@ public class GraphUtil {
 		return name;
 	}
 
+	/**
+	 * Gets the by object.
+	 *
+	 * @param item the item
+	 * @param clazz the clazz
+	 * @param fullName the full name
+	 * @return the by object
+	 */
 	public static final Clazz getByObject(GraphEntity item, String clazz, boolean fullName) {
 		if (clazz == null || item == null) {
 			return null;
@@ -157,6 +229,13 @@ public class GraphUtil {
 		return (Clazz) item.getByObject(clazz, fullName);
 	}
 
+	/**
+	 * Sets the gen path.
+	 *
+	 * @param model the model
+	 * @param path the path
+	 * @return the graph model
+	 */
 	public static final GraphModel setGenPath(GraphModel model, String path) {
 		if (model != null) {
 			model.genPath = path;
@@ -164,6 +243,12 @@ public class GraphUtil {
 		return model;
 	}
 
+	/**
+	 * Gets the gen path.
+	 *
+	 * @param model the model
+	 * @return the gen path
+	 */
 	public static final String getGenPath(GraphModel model) {
 		if (model != null) {
 			return model.genPath;
@@ -171,6 +256,12 @@ public class GraphUtil {
 		return "";
 	}
 
+	/**
+	 * Gets the annotations.
+	 *
+	 * @param item the item
+	 * @return the annotations
+	 */
 	public static final SimpleSet<Annotation> getAnnotations(GraphMember item) {
 		if (item == null) {
 			return null;
@@ -196,6 +287,13 @@ public class GraphUtil {
 		return collection;
 	}
 
+	/**
+	 * Sets the association.
+	 *
+	 * @param entry the entry
+	 * @param assoc the assoc
+	 * @return true, if successful
+	 */
 	public static final boolean setAssociation(GraphEntity entry, Association assoc) {
 		if (entry != null) {
 			entry.with(assoc);
@@ -204,6 +302,13 @@ public class GraphUtil {
 		return false;
 	}
 
+	/**
+	 * Sets the literal.
+	 *
+	 * @param clazz the clazz
+	 * @param literals the literals
+	 * @return true, if successful
+	 */
 	public static final boolean setLiteral(Clazz clazz, Literal... literals) {
 		if (clazz != null) {
 			clazz.with(literals);
@@ -212,6 +317,13 @@ public class GraphUtil {
 		return false;
 	}
 
+	/**
+	 * Sets the modifier entry.
+	 *
+	 * @param clazz the clazz
+	 * @param modifier the modifier
+	 * @return true, if successful
+	 */
 	public static final boolean setModifierEntry(Clazz clazz, ModifyEntry modifier) {
 		if (clazz != null) {
 			clazz.with(modifier);
@@ -220,6 +332,13 @@ public class GraphUtil {
 		return false;
 	}
 
+	/**
+	 * Sets the clazz type.
+	 *
+	 * @param clazz the clazz
+	 * @param clazzType the clazz type
+	 * @return true, if successful
+	 */
 	public static final boolean setClazzType(Clazz clazz, String clazzType) {
 		if (clazz != null) {
 			clazz.withType(clazzType);
@@ -228,6 +347,13 @@ public class GraphUtil {
 		return false;
 	}
 
+	/**
+	 * Sets the import.
+	 *
+	 * @param clazz the clazz
+	 * @param importClazzes the import clazzes
+	 * @return true, if successful
+	 */
 	public static final boolean setImport(Clazz clazz, Import... importClazzes) {
 		if (clazz != null) {
 			clazz.with(importClazzes);
@@ -236,6 +362,13 @@ public class GraphUtil {
 		return false;
 	}
 
+	/**
+	 * Sets the id.
+	 *
+	 * @param graphEntity the graph entity
+	 * @param id the id
+	 * @return true, if successful
+	 */
 	public static boolean setId(GraphEntity graphEntity, String id) {
 		if (graphEntity != null) {
 			return graphEntity.setId(id);
@@ -243,6 +376,12 @@ public class GraphUtil {
 		return false;
 	}
 
+	/**
+	 * Checks if is with no objects.
+	 *
+	 * @param clazz the clazz
+	 * @return true, if is with no objects
+	 */
 	public static final boolean isWithNoObjects(Clazz clazz) {
 		if (clazz == null) {
 			return false;
@@ -250,6 +389,12 @@ public class GraphUtil {
 		return (clazz.getModifier().has(Modifier.ABSTRACT) || Clazz.TYPE_INTERFACE.equals(clazz.getType()));
 	}
 
+	/**
+	 * Checks if is abstract.
+	 *
+	 * @param clazz the clazz
+	 * @return true, if is abstract
+	 */
 	public static boolean isAbstract(Clazz clazz) {
 		if (clazz == null) {
 			return false;
@@ -257,6 +402,12 @@ public class GraphUtil {
 		return clazz.getModifier().has(Modifier.ABSTRACT);
 	}
 
+	/**
+	 * Checks if is interface.
+	 *
+	 * @param clazz the clazz
+	 * @return true, if is interface
+	 */
 	public static final boolean isInterface(Clazz clazz) {
 		if (clazz == null) {
 			return false;
@@ -264,6 +415,12 @@ public class GraphUtil {
 		return Clazz.TYPE_INTERFACE.equals(clazz.getType());
 	}
 
+	/**
+	 * Checks if is enumeration.
+	 *
+	 * @param clazz the clazz
+	 * @return true, if is enumeration
+	 */
 	public static final boolean isEnumeration(Clazz clazz) {
 		if (clazz == null) {
 			return false;
@@ -271,6 +428,12 @@ public class GraphUtil {
 		return Clazz.TYPE_ENUMERATION.equals(clazz.getType());
 	}
 
+	/**
+	 * Checks if is undirectional.
+	 *
+	 * @param assoc the assoc
+	 * @return true, if is undirectional
+	 */
 	public static final boolean isUndirectional(Association assoc) {
 		if (assoc == null) {
 			return false;
@@ -283,6 +446,12 @@ public class GraphUtil {
 				|| assoc.getOtherType() == AssociationTypes.UNDIRECTIONAL) && assoc.getType() == AssociationTypes.EDGE;
 	}
 
+	/**
+	 * Checks if is association.
+	 *
+	 * @param assoc the assoc
+	 * @return true, if is association
+	 */
 	public static final boolean isAssociation(Association assoc) {
 		if (assoc == null || assoc.getOther() == null) {
 			return false;
@@ -294,6 +463,12 @@ public class GraphUtil {
 				&& assoc.getOther().getType() == AssociationTypes.ASSOCIATION);
 	}
 
+	/**
+	 * Checks if is interface association.
+	 *
+	 * @param assoc the assoc
+	 * @return true, if is interface association
+	 */
 	public static final boolean isInterfaceAssociation(Association assoc) {
 		if (assoc == null) {
 			return false;
@@ -304,6 +479,13 @@ public class GraphUtil {
 		return assoc.getOtherType() == AssociationTypes.IMPLEMENTS && assoc.getType() == AssociationTypes.EDGE;
 	}
 
+	/**
+	 * Gets the method parameters.
+	 *
+	 * @param method the method
+	 * @param shortName the short name
+	 * @return the method parameters
+	 */
 	public static final CharacterBuffer getMethodParameters(Method method, boolean shortName) {
 		if (method == null) {
 			return null;
@@ -311,6 +493,12 @@ public class GraphUtil {
 		return method.getParameterString(shortName, false, true);
 	}
 
+	/**
+	 * Gets the modifier.
+	 *
+	 * @param member the member
+	 * @return the modifier
+	 */
 	public static final ModifierSet getModifier(GraphMember member) {
 		ModifierSet set = new ModifierSet();
 		if (member == null) {
@@ -326,6 +514,12 @@ public class GraphUtil {
 		return set;
 	}
 
+	/**
+	 * Gets the other associations.
+	 *
+	 * @param clazz the clazz
+	 * @return the other associations
+	 */
 	public static final SimpleSet<Association> getOtherAssociations(Clazz clazz) {
 		SimpleSet<Association> collection = new SimpleSet<Association>();
 		if (clazz == null) {
@@ -337,6 +531,12 @@ public class GraphUtil {
 		return collection;
 	}
 
+	/**
+	 * Gets the visible.
+	 *
+	 * @param member the member
+	 * @return the visible
+	 */
 	public static final Modifier getVisible(GraphMember member) {
 		if (member == null) {
 			return Modifier.PACKAGE;
@@ -357,6 +557,12 @@ public class GraphUtil {
 		return Modifier.PACKAGE;
 	}
 
+	/**
+	 * Gets the children.
+	 *
+	 * @param item the item
+	 * @return the children
+	 */
 	public static final GraphSimpleSet getChildren(TemplateItem item) {
 		if (item instanceof GraphMember) {
 			return ((GraphMember) item).getChildren();
@@ -364,6 +570,13 @@ public class GraphUtil {
 		return null;
 	}
 
+	/**
+	 * Gets the graph diff.
+	 *
+	 * @param owner the owner
+	 * @param item the item
+	 * @return the graph diff
+	 */
 	public static final GraphSimpleSet getGraphDiff(GraphSimpleSet owner, GraphMember item) {
 		if (item == null) {
 			return owner;
@@ -382,6 +595,12 @@ public class GraphUtil {
 		return owner;
 	}
 
+	/**
+	 * Gets the seperator.
+	 *
+	 * @param item the item
+	 * @return the seperator
+	 */
 	public static final String getSeperator(Association item) {
 		if (item != null) {
 			return item.getSeperator();
@@ -389,6 +608,12 @@ public class GraphUtil {
 		return "";
 	}
 
+	/**
+	 * Gets the nodes.
+	 *
+	 * @param item the item
+	 * @return the nodes
+	 */
 	public static final SimpleSet<GraphEntity> getNodes(GraphMember item) {
 		if (item != null) {
 			return item.getNodes();
@@ -396,6 +621,12 @@ public class GraphUtil {
 		return null;
 	}
 
+	/**
+	 * Gets the difference.
+	 *
+	 * @param item the item
+	 * @return the difference
+	 */
 	public static final Match getDifference(GraphMember item) {
 		if (item != null) {
 			return item.getDiff();
@@ -403,6 +634,12 @@ public class GraphUtil {
 		return null;
 	}
 
+	/**
+	 * Removes the you.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public static final boolean removeYou(GraphMember value) {
 		if (value == null) {
 			return true;
@@ -430,6 +667,14 @@ public class GraphUtil {
 		return false;
 	}
 
+	/**
+	 * Contains clazz association.
+	 *
+	 * @param visited the visited
+	 * @param assoc the assoc
+	 * @param other the other
+	 * @return true, if successful
+	 */
 	public static final boolean containsClazzAssociation(SimpleList<GraphMember> visited, Association assoc,
 			Association other) {
 		boolean foundAssoc = false;
@@ -464,6 +709,12 @@ public class GraphUtil {
 		return foundAssoc;
 	}
 
+	/**
+	 * Gets the short assoc.
+	 *
+	 * @param assoc the assoc
+	 * @return the short assoc
+	 */
 	public static final String getShortAssoc(Association assoc) {
 		if (assoc == null) {
 			return "";
@@ -492,6 +743,12 @@ public class GraphUtil {
 		return sb.toString();
 	}
 
+	/**
+	 * Gets the graph model.
+	 *
+	 * @param member the member
+	 * @return the graph model
+	 */
 	public static final GraphModel getGraphModel(GraphMember member) {
 		if (member instanceof GraphModel) {
 			return (GraphModel) member;
@@ -508,6 +765,12 @@ public class GraphUtil {
 		return null;
 	}
 
+	/**
+	 * Gets the parent clazz.
+	 *
+	 * @param member the member
+	 * @return the parent clazz
+	 */
 	public static final Clazz getParentClazz(GraphMember member) {
 		if (member == null) {
 			return null;
@@ -527,6 +790,12 @@ public class GraphUtil {
 		return null;
 	}
 
+	/**
+	 * Creates the type.
+	 *
+	 * @param value the value
+	 * @return the string
+	 */
 	public static final String createType(String value) {
 		if (value == null) {
 			return Clazz.TYPE_CLASS;
@@ -550,6 +819,13 @@ public class GraphUtil {
 		return Clazz.TYPE_CLASS;
 	}
 
+	/**
+	 * Creates the clazz by id.
+	 *
+	 * @param model the model
+	 * @param id the id
+	 * @return the clazz
+	 */
 	public static final Clazz createClazzById(GraphModel model, String id) {
 		if (model == null || id == null) {
 			return null;
@@ -566,6 +842,13 @@ public class GraphUtil {
 		return clazz;
 	}
 
+	/**
+	 * Sets the external.
+	 *
+	 * @param entity the entity
+	 * @param value the value
+	 * @return the graph entity
+	 */
 	public static final GraphEntity setExternal(GraphEntity entity, boolean value) {
 		if (entity == null) {
 			return null;
@@ -574,6 +857,12 @@ public class GraphUtil {
 		return entity;
 	}
 
+	/**
+	 * Checks if is external.
+	 *
+	 * @param entity the entity
+	 * @return true, if is external
+	 */
 	public static final boolean isExternal(GraphEntity entity) {
 		if (entity == null) {
 			return false;
@@ -581,11 +870,25 @@ public class GraphUtil {
 		return entity.isExternal();
 	}
 
+	/**
+	 * Sets the clazz.
+	 *
+	 * @param type the type
+	 * @param value the value
+	 * @return the data type
+	 */
 	public static final DataType setClazz(DataType type, Clazz value) {
 		type.value = value;
 		return type;
 	}
 	
+	/**
+	 * Sets the name.
+	 *
+	 * @param entity the entity
+	 * @param name the name
+	 * @return the string
+	 */
 	public static final String setName(GraphMember entity, String name) {
 		if(entity.setName(name)) {
 			return name;
@@ -593,11 +896,23 @@ public class GraphUtil {
 		return null;
 	}
 	
+	/**
+	 * Creates the feature.
+	 *
+	 * @param key the key
+	 * @return the feature
+	 */
 	public static final Feature createFeature(String key) {
 	  Feature item= new Feature((String) key);
 	  return item;
 	}
 
+	/**
+	 * Creates the cardinality.
+	 *
+	 * @param value the value
+	 * @return the int
+	 */
 	public static final int createCardinality(String value) {
 		if ("one".equalsIgnoreCase(value) || "1".equalsIgnoreCase(value)) {
 			return Association.ONE;
@@ -608,6 +923,12 @@ public class GraphUtil {
 		return 0;
 	}
 
+	/**
+	 * Gets the graph path.
+	 *
+	 * @param value the value
+	 * @return the graph path
+	 */
 	public static final String getGraphPath(GraphModel value) {
 		if (value != null) {
 			return value.genPath;
@@ -615,6 +936,13 @@ public class GraphUtil {
 		return null;
 	}
 
+	/**
+	 * Sets the graph path.
+	 *
+	 * @param model the model
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public static final boolean setGraphPath(GraphModel model, String value) {
 		if (model != null) {
 			model.genPath = value;
@@ -623,12 +951,24 @@ public class GraphUtil {
 		return false;
 	}
 
+	/**
+	 * Removes the.
+	 *
+	 * @param model the model
+	 * @param child the child
+	 */
 	public static final void remove(GraphMember model, GraphMember child) {
 		if (model != null) {
 			model.withChildren(child);
 		}
 	}
 
+	/**
+	 * Gets the cardinaltiy.
+	 *
+	 * @param value the value
+	 * @return the cardinaltiy
+	 */
 	public static final String getCardinaltiy(int value) {
 		if (value == Association.ONE) {
 			return "ONE";
@@ -636,6 +976,13 @@ public class GraphUtil {
 		return "MANY";
 	}
 	
+	/**
+	 * Gets the value.
+	 *
+	 * @param type the type
+	 * @param value the value
+	 * @return the value
+	 */
 	public static Object getValue(DataType type, String value) {
 		if(value == null || type == null) {
 			return value;
@@ -650,6 +997,13 @@ public class GraphUtil {
 		return value;
 	}
 
+	/**
+	 * Sets the children.
+	 *
+	 * @param graphMember the graph member
+	 * @param children the children
+	 * @return true, if successful
+	 */
 	public static boolean setChildren(GraphMember graphMember, Object children) {
 		if (graphMember != null ) {
 			if(children instanceof GraphSimpleSet) {

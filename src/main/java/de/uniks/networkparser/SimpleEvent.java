@@ -8,9 +8,9 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /**
  * Event for Changes in IdMap
- *
- * typ the typ of Message: NEW UPDATE, REMOVE or SENDUPDATE
  * 
+ * typ the typ of Message: NEW UPDATE, REMOVE or SENDUPDATE.
+ *
  * @author Stefan Lindel
  */
 public class SimpleEvent extends PropertyChangeEvent {
@@ -22,13 +22,16 @@ public class SimpleEvent extends PropertyChangeEvent {
 	private String type;
 	private Object beforeElement;
 
+	/**
+	 * Instantiates a new simple event.
+	 */
 	public SimpleEvent() {
 		super("", "", null, null);
 	}
 
 	/**
-	 * Constructor for example Filter Regard or Convertable
-	 * 
+	 * Constructor for example Filter Regard or Convertable.
+	 *
 	 * @param source   List Container
 	 * @param property Property of Event
 	 * @param oldValue Old Element
@@ -41,8 +44,8 @@ public class SimpleEvent extends PropertyChangeEvent {
 	}
 	
 	/**
-	 * Constructor for example Filter Regard or Convertable
-	 * 
+	 * Constructor for example Filter Regard or Convertable.
+	 *
 	 * @param source   List Container
 	 * @param property Property of Event
 	 */
@@ -52,8 +55,8 @@ public class SimpleEvent extends PropertyChangeEvent {
 	}
 	
 	/**
-	 * Constructor for example Filter Regard or Convertable
-	 * 
+	 * Constructor for example Filter Regard or Convertable.
+	 *
 	 * @param source   List Container
 	 * @param property Property of Event
 	 * @param newValue new Element
@@ -65,8 +68,8 @@ public class SimpleEvent extends PropertyChangeEvent {
 	}
 
 	/**
-	 * Constructor for example Filter and UpdateJson
-	 * 
+	 * Constructor for example Filter and UpdateJson.
+	 *
 	 * @param type     typ of Event
 	 * @param entity   source Entity
 	 * @param source   List Container
@@ -81,8 +84,8 @@ public class SimpleEvent extends PropertyChangeEvent {
 	}
 
 	/**
-	 * Constructor for example UpdateJson
-	 * 
+	 * Constructor for example UpdateJson.
+	 *
 	 * @param type   typ of Event
 	 * @param entity source Entity
 	 * @param source source PropertyChange
@@ -96,8 +99,8 @@ public class SimpleEvent extends PropertyChangeEvent {
 	}
 
 	/**
-	 * Constructor for example Event of List
-	 * 
+	 * Constructor for example Event of List.
+	 *
 	 * @param type     typ of Event
 	 * @param source   List Container
 	 * @param property Property of Event
@@ -118,8 +121,8 @@ public class SimpleEvent extends PropertyChangeEvent {
 	}
 
 	/**
-	 * Constructor for example Event of List
-	 * 
+	 * Constructor for example Event of List.
+	 *
 	 * @param source        List Container
 	 * @param index         is the Index of EventEntity(List)
 	 * @param newCollection the new Collection
@@ -137,59 +140,127 @@ public class SimpleEvent extends PropertyChangeEvent {
 		return evt;
 	}
 
+	/**
+	 * Gets the index.
+	 *
+	 * @return the index
+	 */
 	public int getIndex() {
 		return depth;
 	}
 
+	/**
+	 * Gets the depth.
+	 *
+	 * @return the depth
+	 */
 	public int getDepth() {
 		return depth;
 	}
 	
+	/**
+	 * With value.
+	 *
+	 * @param value the value
+	 * @return the simple event
+	 */
 	public SimpleEvent withValue(int value) {
 		this.depth = value;
 		return this;
 	}
 
+	/**
+	 * Gets the entity.
+	 *
+	 * @return the entity
+	 */
 	public Entity getEntity() {
 		return entity;
 	}
 
+	/**
+	 * Gets the model value.
+	 *
+	 * @return the model value
+	 */
 	public Object getModelValue() {
 		return value;
 	}
 
+	/**
+	 * With model value.
+	 *
+	 * @param value the value
+	 * @return the simple event
+	 */
 	public SimpleEvent withModelValue(Object value) {
 		this.value = value;
 		return this;
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public String getType() {
 		return type;
 	}
 
+	/**
+	 * With type.
+	 *
+	 * @param value the value
+	 * @return the simple event
+	 */
 	public SimpleEvent withType(String value) {
 		this.type = value;
 		return this;
 	}
 
+	/**
+	 * Checks if is new event.
+	 *
+	 * @return true, if is new event
+	 */
 	public boolean isNewEvent() {
 		return SendableEntityCreator.NEW.equals(this.type);
 	}
 
+	/**
+	 * Checks if is id event.
+	 *
+	 * @return true, if is id event
+	 */
 	public boolean isIdEvent() {
 		return "id".equals(this.type);
 	}
 
+	/**
+	 * Checks if is update event.
+	 *
+	 * @return true, if is update event
+	 */
 	public boolean isUpdateEvent() {
 		return SendableEntityCreator.UPDATE.equals(this.type);
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param entity the entity
+	 * @return the simple event
+	 */
 	public SimpleEvent with(Entity entity) {
 		this.entity = entity;
 		return this;
 	}
 
-	/** @return the beforeElement */
+	/**
+	 * Gets the before element.
+	 *
+	 * @return the beforeElement
+	 */
 	public Object getBeforeElement() {
 		return beforeElement;
 	}

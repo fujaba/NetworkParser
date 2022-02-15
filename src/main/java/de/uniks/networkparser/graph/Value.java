@@ -26,17 +26,40 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class Value.
+ *
+ * @author Stefan
+ */
 public abstract class Value extends GraphMember {
+	
+	/** The Constant PROPERTY_INITIALIZATION. */
 	public static final String PROPERTY_INITIALIZATION = "initialization";
+	
+	/** The Constant PROPERTY_TYPE. */
 	public static final String PROPERTY_TYPE = "type";
+	
+	/** The Constant PROPERTY_TYPECAT. */
 	public static final String PROPERTY_TYPECAT = "typecat";
+	
+	/** The Constant PROPERTY_TYPECLAZZ. */
 	public static final String PROPERTY_TYPECLAZZ = "typeClazz";
+	
+	/** The Constant PROPERTY_NAMEGETTER. */
 	public static final String PROPERTY_NAMEGETTER = "namegetter";
+	
+	/** The Constant PROPERTY_VALUE. */
 	public static final String PROPERTY_VALUE = "value";
 
 	protected DataType type = null;
 	protected String value = null;
 
+	/**
+	 * With.
+	 *
+	 * @param value the value
+	 * @return the value
+	 */
 	public Value with(DataType value) {
 		if ((this.type == null && value != null) || (this.type != null && this.type != value)) {
 			this.type = value;
@@ -44,10 +67,21 @@ public abstract class Value extends GraphMember {
 		return this;
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public DataType getType() {
 		return type;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(String attribute) {
 		int pos = attribute.indexOf('.');
@@ -92,11 +126,22 @@ public abstract class Value extends GraphMember {
 		return super.getValue(attribute);
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param value the value
+	 * @return the value
+	 */
 	public Value withValue(String value) {
 		this.value = value;
 		return this;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public String getValue() {
 		return value;
 	}

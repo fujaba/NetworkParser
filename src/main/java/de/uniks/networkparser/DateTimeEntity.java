@@ -25,7 +25,14 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
+/**
+ * The Class DateTimeEntity.
+ *
+ * @author Stefan
+ */
 public class DateTimeEntity implements SendableEntityCreatorNoIndex {
+  
+  /** The Constant W3CDTF_FORMAT. */
   public static final String W3CDTF_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
   private boolean dirty;
   private Long time;
@@ -33,14 +40,14 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
   private SimpleKeyValueList<String, Long> fields = new SimpleKeyValueList<String, Long>();
   private TextItems items;
 
-  /** Month of the Year Default is German */
+  /**  Month of the Year Default is German. */
   public String[] monthOfYear = new String[] {TextItems.DEFAULT.get("JANUARY"), TextItems.DEFAULT.get("FEBRUARY"),
       TextItems.DEFAULT.get("MARCH"), TextItems.DEFAULT.get("APRIL"), TextItems.DEFAULT.get("MAY"),
       TextItems.DEFAULT.get("JUNE"), TextItems.DEFAULT.get("JULY"), TextItems.DEFAULT.get("AUGUST"),
       TextItems.DEFAULT.get("SEPTEMBER"), TextItems.DEFAULT.get("OCTOBER"), TextItems.DEFAULT.get("NOVEMBER"),
       TextItems.DEFAULT.get("DECEMBER")};
 
-  /** Days of the week */
+  /**  Days of the week. */
   public String[] weekDays = new String[] {TextItems.DEFAULT.get("SUNDAY"), TextItems.DEFAULT.get("MONDAY"),
       TextItems.DEFAULT.get("TUESDAY"), TextItems.DEFAULT.get("WEDNESDAY"), TextItems.DEFAULT.get("THURSDAY"),
       TextItems.DEFAULT.get("FRIDAY"), TextItems.DEFAULT.get("SATURDAY")};
@@ -48,32 +55,82 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 
   private static final int MONTH_LENGTH[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; /* 0-based */
 
+  /** The Constant ONE_SECOND. */
   public static final int ONE_SECOND = 1000;
+  
+  /** The Constant ONE_MINUTE. */
   public static final int ONE_MINUTE = 60 * ONE_SECOND;
+  
+  /** The Constant ONE_HOUR. */
   public static final int ONE_HOUR = 60 * ONE_MINUTE;
+  
+  /** The Constant ONE_DAY. */
   public static final long ONE_DAY = 24l * ONE_HOUR;
+  
+  /** The Constant ONE_WEEK. */
   public static final long ONE_WEEK = 7 * ONE_DAY;
+  
+  /** The Constant ONE_YEAR. */
   public static final long ONE_YEAR = ONE_DAY * 365;
+  
+  /** The Constant ONE_YEAR_LY. */
   public static final long ONE_YEAR_LY = ONE_DAY * 366;
 
+  /** The Constant MILLISECOND. */
   public static final String MILLISECOND = "MILLISECOND";
+  
+  /** The Constant MILLISECONDS. */
   public static final String MILLISECONDS = "MILLISECONDS";
+  
+  /** The Constant MILLISECONDSREAL. */
   public static final String MILLISECONDSREAL = "MILLISECONDSREAL";
+  
+  /** The Constant WINTERTIME. */
   public static final String WINTERTIME = "WINTERTIME";
+  
+  /** The Constant SUMMERTIME. */
   public static final String SUMMERTIME = "SUMMERTIME";
+  
+  /** The Constant MILLISECOND_OF_DAY. */
   public static final String MILLISECOND_OF_DAY = "MILLISECOND_OF_DAY";
+  
+  /** The Constant MILLISECOND_OF_YEAR. */
   public static final String MILLISECOND_OF_YEAR = "MILLISECOND_OF_YEAR";
+  
+  /** The Constant SECOND_OF_MINUTE. */
   public static final String SECOND_OF_MINUTE = "SECOND_OF_MINUTE";
+  
+  /** The Constant MINUTE_OF_HOUR. */
   public static final String MINUTE_OF_HOUR = "MINUTE_OF_HOUR";
+  
+  /** The Constant HOUR_OF_DAY. */
   public static final String HOUR_OF_DAY = "HOUR_OF_DAY";
+  
+  /** The Constant AMPM. */
   public static final String AMPM = "AMPM";
+  
+  /** The Constant TIME_ZONE. */
   public static final String TIME_ZONE = "TIMEZONE";
+  
+  /** The Constant DAY_OF_WEEK. */
   public static final String DAY_OF_WEEK = "DAY_OF_WEEK";
+  
+  /** The Constant DAY_OF_MONTH. */
   public static final String DAY_OF_MONTH = "DAY_OF_MONTH";
+  
+  /** The Constant DAY_OF_YEAR. */
   public static final String DAY_OF_YEAR = "DAY_OF_YEAR";
+  
+  /** The Constant WEEK_OF_MONTH. */
   public static final String WEEK_OF_MONTH = "WEEK_OF_MONTH";
+  
+  /** The Constant WEEK_OF_YEAR. */
   public static final String WEEK_OF_YEAR = "WEEK_OF_YEAR";
+  
+  /** The Constant MONTH. */
   public static final String MONTH = "MONTH";
+  
+  /** The Constant YEAR. */
   public static final String YEAR = "YEAR";
 
   /**
@@ -220,6 +277,11 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
     return false;
   }
 
+  /**
+   * Calculate.
+   *
+   * @return true, if successful
+   */
   public boolean calculate() {
     if (this.dirty) {
       Long value = getTimeWithTimeZone();
@@ -239,6 +301,12 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
     return true;
   }
 
+  /**
+   * Gets the.
+   *
+   * @param field the field
+   * @return the long
+   */
   public long get(String field) {
     if (time == null) {
       time = System.currentTimeMillis();
@@ -255,10 +323,9 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
   }
 
   /**
-   * Fix the TimeZone Offset so the Entity is a simpleCalendar item
-   * 
-   * @return The CurrentTime with TimeZone
+   * Fix the TimeZone Offset so the Entity is a simpleCalendar item.
    *
+   * @return The CurrentTime with TimeZone
    * @see java.util.Date#getTime()
    */
   public Long getTimeWithTimeZone() {
@@ -268,6 +335,12 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
     return time;
   }
 
+  /**
+   * With time.
+   *
+   * @param value the value
+   * @return the date time entity
+   */
   public DateTimeEntity withTime(Long value) {
     if (value == null || !value.equals(this.time)) {
       this.time = value;
@@ -276,6 +349,12 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
     return this;
   }
 
+  /**
+   * Adds the time.
+   *
+   * @param value the value
+   * @return the date time entity
+   */
   public DateTimeEntity addTime(long value) {
     if (value != 0 && time != null) {
       this.time += value;
@@ -284,6 +363,11 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
     return this;
   }
 
+  /**
+   * Gets the timezone.
+   *
+   * @return the timezone
+   */
   public byte getTimezone() {
     if (this.timeZone == null) {
       return 0;
@@ -291,6 +375,12 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
     return this.timeZone;
   }
 
+  /**
+   * With timezone.
+   *
+   * @param value the value
+   * @return the date time entity
+   */
   public DateTimeEntity withTimezone(Byte value) {
     if ((this.timeZone == null && value != null) || (this.timeZone != null && !this.timeZone.equals(value))) {
       this.timeZone = value;
@@ -299,21 +389,40 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
     return this;
   }
 
+  /**
+   * Checks if is dirty.
+   *
+   * @return true, if is dirty
+   */
   public boolean isDirty() {
     return dirty;
   }
 
+  /**
+   * Adds the.
+   *
+   * @param field the field
+   * @param value the value
+   * @return true, if successful
+   */
   public boolean add(String field, int value) {
     Long oldValue = get(field);
     return set(field, oldValue + value);
   }
 
+  /**
+   * Sets the.
+   *
+   * @param field the field
+   * @param value the value
+   * @return true, if successful
+   */
   public boolean set(String field, int value) {
     return set(field, (long) value);
   }
 
   /**
-   * set to the date the amount value for the field
+   * set to the date the amount value for the field.
    *
    * @param field dateTimeField
    * @param value value of changes
@@ -338,7 +447,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
   }
 
   /**
-   * Setter with milliseconds
+   * Setter with milliseconds.
    *
    * @param milliseconds milliseconds since 01.01.1970
    * @return Itself
@@ -349,7 +458,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
   }
 
   /**
-   * Setter with day, month and year
+   * Setter with day, month and year.
    *
    * @param year year of the date
    * @param month month of the date
@@ -364,7 +473,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
   }
 
   /**
-   * Setter with date-String
+   * Setter with date-String.
    *
    * @param date date as String
    * @return Itself
@@ -383,7 +492,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
   }
   
   /**
-   * Setter with date-String
+   * Setter with date-String.
    *
    * @param date date as String
    * @param format Format of DateTime
@@ -418,7 +527,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
   }
 
   /**
-   * Setter with date
+   * Setter with date.
    *
    * @param date with new date
    * @return Itself
@@ -431,7 +540,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
   }
 
   /**
-   * Set new TimeStamp
+   * Set new TimeStamp.
    *
    * @param date a new Date
    * @return Itself
@@ -442,6 +551,8 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
   }
 
   /**
+   * With text items.
+   *
    * @param items The new TextItem for text
    * @return Itself
    */
@@ -468,7 +579,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
   }
 
   /**
-   * erase the time of the date
+   * erase the time of the date.
    */
   public void setMidnight() {
     long result = this.getTime() % ONE_DAY;
@@ -497,7 +608,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
   }
 
   /**
-   * format a date with the formatString
+   * format a date with the formatString.
    *
    * @param format The Format
    * @return a String of Date
@@ -593,6 +704,11 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 		}
 	}
 
+  /**
+   * To string.
+   *
+   * @return the string
+   */
   @Override
   public String toString() {
     if (this.isDirty()) {
@@ -601,6 +717,11 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
     return this.get(DAY_OF_MONTH) + "." + this.fields.get(MONTH) + "." + this.fields.get(YEAR);
   }
 
+  /**
+   * To GMT string.
+   *
+   * @return the string
+   */
   public String toGMTString() {
     /* d MMM yyyy HH:mm:ss 'GMT' */
     return this.toString("ddd, dd mmm yyyy HH:MM:SS 'GMT'");
@@ -608,7 +729,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 
   /* SETTER */
   /**
-   * set a new year for the date
+   * set a new year for the date.
    *
    * @param value the newYear
    * @return Itself
@@ -619,7 +740,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
   }
 
   /**
-   * set a new month for the Date
+   * set a new month for the Date.
    *
    * @param value The new Month
    * @return Itself
@@ -629,26 +750,55 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
     return this;
   }
 
+  /**
+   * With date.
+   *
+   * @param value the value
+   * @return the date time entity
+   */
   public DateTimeEntity withDate(int value) {
     set(DAY_OF_MONTH, value);
     return this;
   }
 
+  /**
+   * With hour.
+   *
+   * @param value the value
+   * @return the date time entity
+   */
   public DateTimeEntity withHour(int value) {
     set(HOUR_OF_DAY, value);
     return this;
   }
 
+  /**
+   * With minute.
+   *
+   * @param value the value
+   * @return the date time entity
+   */
   public DateTimeEntity withMinute(int value) {
     set(MINUTE_OF_HOUR, value);
     return this;
   }
 
+  /**
+   * With second.
+   *
+   * @param value the value
+   * @return the date time entity
+   */
   public DateTimeEntity withSecond(int value) {
     set(SECOND_OF_MINUTE, value);
     return this;
   }
 
+  /**
+   * Gets the time.
+   *
+   * @return the time
+   */
   /* GETTER */
   public long getTime() {
     if (time == null) {
@@ -662,7 +812,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
    * Supported Values are MILLISECOND, MILLISECONDS, MILLISECOND_OF_YEAR,
    * MILLISECOND_OF_DAY,MILLISECONDSREAL SECOND_OF_MINUTE, SECOND_OF_DAY, SECOND_OF_YEAR
    * MINUTE_OF_HOUR HOUR_OF_DAY DAY_OF_WEEK, DAY_OF_MONTH, DAY_OF_YEAR AMPM, WEEK_OF_MONTH,
-   * WEEK_OF_YEAR YEAR
+   * WEEK_OF_YEAR YEAR.
    *
    * @param field The Field for get
    * @return the Value As Milliseconds
@@ -702,18 +852,36 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
   /** The Constant VALUE. */
   public static final String VALUE = "value";
 
+  /**
+   * Gets the properties.
+   *
+   * @return the properties
+   */
   /* return the Properties */
   @Override
   public String[] getProperties() {
     return new String[] {VALUE};
   }
 
+  /**
+   * Gets the sendable instance.
+   *
+   * @param reference the reference
+   * @return the sendable instance
+   */
   /* Create new Instance of Date */
   @Override
   public Object getSendableInstance(boolean reference) {
     return new Date();
   }
 
+  /**
+   * Gets the value.
+   *
+   * @param entity the entity
+   * @param attribute the attribute
+   * @return the value
+   */
   /* Getter for java.util.Date */
   @Override
   public Object getValue(Object entity, String attribute) {
@@ -723,6 +891,15 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
     return null;
   }
 
+  /**
+   * Sets the value.
+   *
+   * @param entity the entity
+   * @param attribute the attribute
+   * @param value the value
+   * @param typ the typ
+   * @return true, if successful
+   */
   /* Setter for java.util.Date */
   @Override
   public boolean setValue(Object entity, String attribute, Object value, String typ) {

@@ -32,15 +32,38 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleList;
 
+/**
+ * The Class ArtifactFile.
+ *
+ * @author Stefan
+ */
 public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Comparable<ArtifactFile> {
+	
+	/** The Constant PROPERTY_MODELVERSION. */
 	public static final String PROPERTY_MODELVERSION = "modelVersion?";
+	
+	/** The Constant PROPERTY_GROUPID. */
 	public static final String PROPERTY_GROUPID = "groupId?";
+	
+	/** The Constant PROPERTY_ARTIFACTID. */
 	public static final String PROPERTY_ARTIFACTID = "artifactId?";
+	
+	/** The Constant PROPERTY_VERSION. */
 	public static final String PROPERTY_VERSION = "version?";
+	
+	/** The Constant PROPERTY_SCOPE. */
 	public static final String PROPERTY_SCOPE = "scope?";
+	
+	/** The Constant PROPERTY_DEPENDENCIES. */
 	public static final String PROPERTY_DEPENDENCIES = "dependencies";
+	
+	/** The Constant PROPERTY_DEPENDENCY. */
 	public static final String PROPERTY_DEPENDENCY = "dependency";
+	
+	/** The Constant PROPERTY_CLASSIFIER. */
 	public static final String PROPERTY_CLASSIFIER = "classifier";
+	
+	/** The Constant PROPERTY_LICENCES. */
 	public static final String PROPERTY_LICENCES = "licenses";
 
 	private static final String TAG = "project";
@@ -54,10 +77,14 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	private SimpleList<Licence> licences = new SimpleList<>();
 	private SimpleList<ArtifactFile> dependencies;
 
+	/** The prefix. */
 	/* SCOPE public String branch = ""; */
 	public String prefix = "";
+	
+	/** The latest. */
 	public boolean latest;
 
+	/** The Constant SNAPSHOT. */
 	public static final String SNAPSHOT = "SNAPSHOT";
 	private boolean isSnapshot;
 	private SimpleList<String> classifier;
@@ -67,6 +94,11 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 			0 };/* First 3 Number are Max next 3 Number are Current Number of Six is Index */
 	private boolean simpleFormat;
 
+	/**
+	 * To GIT string.
+	 *
+	 * @return the string
+	 */
 	public String toGITString() {
 		if (System.getenv().get("BUILD_NUMBER") != null) {
 			try {
@@ -82,6 +114,11 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return pomNumber[3] + "." + pomNumber[4] + "." + pomNumber[5];
 	}
 
+	/**
+	 * Checks if is master.
+	 *
+	 * @return true, if is master
+	 */
 	public boolean isMaster() {
 		if (scope == null) {
 			return false;
@@ -89,6 +126,11 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return scope.contains("master");
 	}
 
+	/**
+	 * Checks if is release.
+	 *
+	 * @return true, if is release
+	 */
 	public boolean isRelease() {
 		if (scope == null) {
 			return false;
@@ -96,33 +138,72 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return scope.contains("release");
 	}
 
+	/**
+	 * With model version.
+	 *
+	 * @param value the value
+	 * @return the artifact file
+	 */
 	public ArtifactFile withModelVersion(String value) {
 		this.modelVersion = value;
 		return this;
 	}
 
+	/**
+	 * Gets the model version.
+	 *
+	 * @return the model version
+	 */
 	public String getModelVersion() {
 		return modelVersion;
 	}
 
+	/**
+	 * With group id.
+	 *
+	 * @param value the value
+	 * @return the artifact file
+	 */
 	public ArtifactFile withGroupId(String value) {
 		this.groupId = value;
 		return this;
 	}
 
+	/**
+	 * Gets the group id.
+	 *
+	 * @return the group id
+	 */
 	public String getGroupId() {
 		return groupId;
 	}
 
+	/**
+	 * With artifact id.
+	 *
+	 * @param value the value
+	 * @return the artifact file
+	 */
 	public ArtifactFile withArtifactId(String value) {
 		this.artifactId = value;
 		return this;
 	}
 
+	/**
+	 * Gets the artifact id.
+	 *
+	 * @return the artifact id
+	 */
 	public String getArtifactId() {
 		return artifactId;
 	}
 
+	/**
+	 * With version.
+	 *
+	 * @param value the value
+	 * @return the artifact file
+	 */
 	public ArtifactFile withVersion(String value) {
 		this.version = value;
 		if (value != null) {
@@ -147,6 +228,12 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return this;
 	}
 
+	/**
+	 * Calculate pom number.
+	 *
+	 * @param newSize the new size
+	 * @return true, if successful
+	 */
 	public boolean calculatePomNumber(int... newSize) {
 		int i;
 		boolean change = false;
@@ -196,37 +283,80 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return change;
 	}
 
+	/**
+	 * Gets the pom number.
+	 *
+	 * @return the pom number
+	 */
 	public int[] getPomNumber() {
 		return pomNumber;
 	}
 
+	/**
+	 * Gets the pom max.
+	 *
+	 * @return the pom max
+	 */
 	public int getPomMax() {
 		return pomNumber[6];
 	}
 
+	/**
+	 * Gets the version.
+	 *
+	 * @return the version
+	 */
 	public String getVersion() {
 		return version;
 	}
 
+	/**
+	 * With scope.
+	 *
+	 * @param value the value
+	 * @return the artifact file
+	 */
 	public ArtifactFile withScope(String value) {
 		this.scope = value;
 		return this;
 	}
 
+	/**
+	 * Gets the scope.
+	 *
+	 * @return the scope
+	 */
 	public String getScope() {
 		return scope;
 	}
 
+	/**
+	 * With tag.
+	 *
+	 * @param value the value
+	 * @return the artifact file
+	 */
 	public ArtifactFile withTag(String value) {
 		this.tag = value;
 		return this;
 	}
 
+	/**
+	 * Gets the tag.
+	 *
+	 * @return the tag
+	 */
 	@Override
 	public String getTag() {
 		return tag;
 	}
 
+	/**
+	 * With dependency.
+	 *
+	 * @param value the value
+	 * @return the artifact file
+	 */
 	public ArtifactFile withDependency(ArtifactFile value) {
 		if (value == null) {
 			return this;
@@ -239,6 +369,12 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return this;
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean add(Object... values) {
 		if (values == null || values.length % 2 == 1) {
@@ -252,11 +388,22 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return true;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return toString(0, 0);
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param indentFactor the indent factor
+	 * @return the string
+	 */
 	public String toString(int indentFactor) {
 		return toString(indentFactor, 0);
 	}
@@ -276,6 +423,14 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		}
 	}
 
+	/**
+	 * With artifact.
+	 *
+	 * @param groupId the group id
+	 * @param artifactId the artifact id
+	 * @param version the version
+	 * @return the artifact file
+	 */
 	public ArtifactFile withArtifact(String groupId, String artifactId, String version) {
 		withGroupId(groupId);
 		withArtifactId(artifactId);
@@ -314,26 +469,56 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return sb.toString();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param key the key
+	 * @return the value
+	 */
 	public Object getValue(Object key) {
 		return getValue(this, "" + key);
 	}
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new ArtifactFile();
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new ArtifactFile();
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { PROPERTY_MODELVERSION, PROPERTY_GROUPID, PROPERTY_ARTIFACTID, PROPERTY_VERSION,
 				PROPERTY_SCOPE, PROPERTY_LICENCES, PROPERTY_DEPENDENCIES};
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (PROPERTY_MODELVERSION.equals(attribute)) {
@@ -354,6 +539,15 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (PROPERTY_MODELVERSION.equals(attribute)) {
@@ -379,6 +573,12 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return false;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param converter the converter
+	 * @return the string
+	 */
 	@Override
 	public String toString(Converter converter) {
 		if (converter instanceof EntityStringConverter) {
@@ -416,16 +616,33 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return null;
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param value the value
+	 * @return the artifact file
+	 */
 	public ArtifactFile withValue(String value) {
 		XMLEntity xmlEntity = new XMLEntity().withValue(value);
 		return withValue(xmlEntity);
 	}
 	
 	
+	/**
+	 * Gets the licences.
+	 *
+	 * @return the licences
+	 */
 	public SimpleList<Licence> getLicences() {
 		return this.licences;
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param xmlEntity the xml entity
+	 * @return the artifact file
+	 */
 	public ArtifactFile withValue(XMLEntity xmlEntity) {
 		for (String property : getProperties()) {
 			Object child = getChild(xmlEntity, property);
@@ -451,6 +668,11 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return this;
 	}
 
+	/**
+	 * Size.
+	 *
+	 * @return the int
+	 */
 	public int size() {
 		if(this.dependencies == null) {
 			return 0;
@@ -458,10 +680,20 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return this.dependencies.size();
 	}
 
+	/**
+	 * Gets the dependencies.
+	 *
+	 * @return the dependencies
+	 */
 	public SimpleList<ArtifactFile> getDependencies() {
 		return dependencies;
 	}
 
+	/**
+	 * Checks if is valid.
+	 *
+	 * @return true, if is valid
+	 */
 	public boolean isValid() {
 		boolean valid = true;
 		for (ArtifactFile dep : dependencies) {
@@ -472,6 +704,12 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return valid;
 	}
 	
+	/**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if(!(obj instanceof ArtifactFile)) {
@@ -482,14 +720,30 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return refA.equals(refB);
 	}
 	
+	/**
+	 * Gets the gradle string.
+	 *
+	 * @return the gradle string
+	 */
 	public String getGradleString() {
 		return ""+ this.groupId +":"+ this.artifactId + ":"+this.version;
 	}
 	
+	/**
+	 * Gets the full string.
+	 *
+	 * @return the full string
+	 */
 	public String getFullString() {
 		return ""+ this.groupId +":"+ this.artifactId + ":"+this.version + (scope != null ? (":"+scope): "");
 	}
 
+	/**
+	 * Compare to.
+	 *
+	 * @param o the o
+	 * @return the int
+	 */
 	@Override
 	public int compareTo(ArtifactFile o) {
 		if (o == null) {
@@ -516,6 +770,11 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return classifier1.compareTo(classifier2);
 	}
 
+	/**
+	 * Gets the classifier.
+	 *
+	 * @return the classifier
+	 */
 	public String getClassifier() {
 		if (this.classifier == null || this.classifier.size() < 0) {
 			return "";
@@ -524,16 +783,31 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	}
 
 	/**
+	 * Checks if is snapshot.
+	 *
 	 * @return the isSnapshot
 	 */
 	public boolean isSnapshot() {
 		return isSnapshot;
 	}
 
+	/**
+	 * Gets the index.
+	 *
+	 * @return the index
+	 */
 	public String getIndex() {
 		return index;
 	}
 
+	/**
+	 * Creates the context.
+	 *
+	 * @param fileName the file name
+	 * @param groupId the group id
+	 * @param time the time
+	 * @return the artifact file
+	 */
 	public static final ArtifactFile createContext(String fileName, String groupId, String time) {
 		ArtifactFile artifactFile = new ArtifactFile();
 		if (fileName == null) {
@@ -594,15 +868,31 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return artifactFile;
 	}
 
+	/**
+	 * With file.
+	 *
+	 * @param name the name
+	 * @return the artifact file
+	 */
 	public ArtifactFile withFile(String name) {
 		this.fileName = name;
 		return this;
 	}
 
+	/**
+	 * Gets the file name.
+	 *
+	 * @return the file name
+	 */
 	public String getFileName() {
 		return fileName;
 	}
 
+	/**
+	 * To path.
+	 *
+	 * @return the string
+	 */
 	public String toPath() {
 		CharacterBuffer path = new CharacterBuffer();
 		if (groupId != null) {
@@ -620,10 +910,21 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return path.toString();
 	}
 
+	/**
+	 * Gets the classifiers.
+	 *
+	 * @return the classifiers
+	 */
 	public SimpleList<String> getClassifiers() {
 		return classifier;
 	}
 
+	/**
+	 * Adds the classifier.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean addClassifier(String value) {
 		if(this.classifier == null) {
 			this.classifier = new SimpleList<String>();
@@ -631,6 +932,13 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return this.classifier.add(value);
 	}
 
+	/**
+	 * To file.
+	 *
+	 * @param groupPath the group path
+	 * @param classifier the classifier
+	 * @return the string
+	 */
 	public String toFile(boolean groupPath, String... classifier) {
 		CharacterBuffer file = new CharacterBuffer();
 		file.with(this.artifactId);
@@ -660,6 +968,11 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return file.toString();
 	}
 
+	/**
+	 * Gets the builds the number.
+	 *
+	 * @return the builds the number
+	 */
 	public String getBuildNumber() {
 		if (this.version == null) {
 			return "0";
@@ -671,6 +984,11 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return version.substring(pos + 1);
 	}
 
+	/**
+	 * Gets the extension.
+	 *
+	 * @return the extension
+	 */
 	public String getExtension() {
 		if (fileName != null) {
 			int pos = fileName.lastIndexOf(".");
@@ -681,6 +999,12 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return "jar";
 	}
 
+	/**
+	 * Gets the time.
+	 *
+	 * @param defaultTime the default time
+	 * @return the time
+	 */
 	public String getTime(String defaultTime) {
 		if (time != null) {
 			return time;
@@ -688,6 +1012,11 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return defaultTime;
 	}
 
+	/**
+	 * Gets the path.
+	 *
+	 * @return the path
+	 */
 	public String getPath() {
 		if (fileName != null) {
 			fileName = fileName.replace('\\', '/');
@@ -699,6 +1028,12 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return "";
 	}
 
+	/**
+	 * With simple format.
+	 *
+	 * @param simpleFormat the simple format
+	 * @return the artifact file
+	 */
 	public ArtifactFile withSimpleFormat(boolean simpleFormat) {
 		this.simpleFormat = simpleFormat;
 		return this;

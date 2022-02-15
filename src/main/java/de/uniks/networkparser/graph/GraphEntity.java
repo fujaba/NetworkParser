@@ -2,13 +2,30 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.interfaces.Condition;
 
+/**
+ * The Class GraphEntity.
+ *
+ * @author Stefan
+ */
 public abstract class GraphEntity extends GraphMember {
+	
+	/** The Constant PROPERTY_PACKAGENAME. */
 	public static final String PROPERTY_PACKAGENAME = "packageName";
+	
+	/** The Constant PROPERTY_EXTERNAL. */
 	public static final String PROPERTY_EXTERNAL = "external";
+	
+	/** The Constant PROPERTY_ID. */
 	public static final String PROPERTY_ID = "id";
 	private boolean external;
 	protected String id;
 
+	/**
+	 * Gets the name.
+	 *
+	 * @param shortName the short name
+	 * @return the name
+	 */
 	public String getName(boolean shortName) {
 		if (this.name == null) {
 			return null;
@@ -38,6 +55,11 @@ public abstract class GraphEntity extends GraphMember {
 		return false;
 	}
 
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
 	public String getId() {
 		return id;
 	}
@@ -245,6 +267,13 @@ public abstract class GraphEntity extends GraphMember {
 		return this;
 	}
 
+	/**
+	 * Gets the child by name.
+	 *
+	 * @param name the name
+	 * @param subClass the sub class
+	 * @return the child by name
+	 */
 	public GraphMember getChildByName(String name, Class<?> subClass) {
 		if (this.children == null || subClass == null ) {
 			return null;
@@ -265,6 +294,13 @@ public abstract class GraphEntity extends GraphMember {
 		return null;
 	}
 
+    /**
+     * Gets the child by class.
+     *
+     * @param <T> the generic type
+     * @param subClass the sub class
+     * @return the child by class
+     */
     public <T> T getChildByClass(Class<T> subClass) {
         if (this.children == null || subClass == null) {
             return null;
@@ -279,11 +315,11 @@ public abstract class GraphEntity extends GraphMember {
     }
 
 	/**
-	 * get all Associations
-	 * 
+	 * get all Associations.
+	 *
 	 * @param filters Can Filter the List of Attributes
 	 * @return all Attributes of a Clazz
-	 *
+	 * 
 	 *         <pre>
 	 * Clazz  --------------------- Association
 	 * one                          many
@@ -293,10 +329,21 @@ public abstract class GraphEntity extends GraphMember {
 		return getEdges(AssociationTypes.EDGE, filters);
 	}
 
+	/**
+	 * Gets the annotation.
+	 *
+	 * @return the annotation
+	 */
 	public Annotation getAnnotation() {
 		return super.getAnnotation();
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param value the value
+	 * @return the graph entity
+	 */
 	public GraphEntity with(Annotation value) {
 		withAnnotation(value);
 		return this;
@@ -307,6 +354,12 @@ public abstract class GraphEntity extends GraphMember {
 		return this;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	public Object getValue(String attribute) {
 		if (attribute == null) {
 			return null;

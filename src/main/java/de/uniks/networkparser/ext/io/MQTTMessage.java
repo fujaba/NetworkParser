@@ -29,33 +29,69 @@ import java.net.SocketTimeoutException;
 import de.uniks.networkparser.buffer.ByteBuffer;
 
 /**
- * MQTT Message
+ * MQTT Message.
+ *
  * @author Stefan Lindel
  */
 public class MQTTMessage {
+	
+	/** The Constant MESSAGE_TYPE_CONNECT. */
 	public static final byte MESSAGE_TYPE_CONNECT = 1;
+	
+	/** The Constant MESSAGE_TYPE_CONNACK. */
 	public static final byte MESSAGE_TYPE_CONNACK = 2;
+	
+	/** The Constant MESSAGE_TYPE_PUBLISH. */
 	public static final byte MESSAGE_TYPE_PUBLISH = 3;
+	
+	/** The Constant MESSAGE_TYPE_PUBACK. */
 	public static final byte MESSAGE_TYPE_PUBACK = 4;
+	
+	/** The Constant MESSAGE_TYPE_PUBREC. */
 	public static final byte MESSAGE_TYPE_PUBREC = 5;
+	
+	/** The Constant MESSAGE_TYPE_PUBREL. */
 	public static final byte MESSAGE_TYPE_PUBREL = 6;
+	
+	/** The Constant MESSAGE_TYPE_PUBCOMP. */
 	public static final byte MESSAGE_TYPE_PUBCOMP = 7;
+	
+	/** The Constant MESSAGE_TYPE_SUBSCRIBE. */
 	public static final byte MESSAGE_TYPE_SUBSCRIBE = 8;
+	
+	/** The Constant MESSAGE_TYPE_SUBACK. */
 	public static final byte MESSAGE_TYPE_SUBACK = 9;
+	
+	/** The Constant MESSAGE_TYPE_UNSUBSCRIBE. */
 	public static final byte MESSAGE_TYPE_UNSUBSCRIBE = 10;
+	
+	/** The Constant MESSAGE_TYPE_UNSUBACK. */
 	public static final byte MESSAGE_TYPE_UNSUBACK = 11;
+	
+	/** The Constant MESSAGE_TYPE_PINGREQ. */
 	public static final byte MESSAGE_TYPE_PINGREQ = 12;
+	
+	/** The Constant MESSAGE_TYPE_PINGRESP. */
 	public static final byte MESSAGE_TYPE_PINGRESP = 13;
+	
+	/** The Constant MESSAGE_TYPE_DISCONNECT. */
 	public static final byte MESSAGE_TYPE_DISCONNECT = 14;
 
 	private byte type;
 	protected int msgId;
 	protected boolean duplicate = false;
 
+	/** The Constant KEY_CONNACK. */
 	/* Sub Variable */
 	public static final String KEY_CONNACK = "Con";
+	
+	/** The Constant KEY_DISCONNECT. */
 	public static final String KEY_DISCONNECT = "Disc";
+	
+	/** The Constant KEY_PING. */
 	public static final String KEY_PING = "Ping";
+	
+	/** The Constant KEY_CONNECT. */
 	public static final String KEY_CONNECT = "Con";
 	/** Mqtt Version 3.1.1 */
 	public static final int MQTT_VERSION_3_1_1 = 4;
@@ -71,11 +107,22 @@ public class MQTTMessage {
 	private byte[] messagePayload;
 	private boolean messageRetained = false;
 
+	/**
+	 * With type.
+	 *
+	 * @param type the type
+	 * @return the MQTT message
+	 */
 	public MQTTMessage withType(byte type) {
 		this.type = type;
 		return this;
 	}
 
+	/**
+	 * Gets the header.
+	 *
+	 * @return the header
+	 */
 	public ByteBuffer getHeader() {
 		byte first = (byte) (((getType() & 0x0f) << 4) ^ (getMessageInfo() & 0x0f));
 		byte[] varHeader = getVariableHeader();
@@ -112,7 +159,11 @@ public class MQTTMessage {
 		}
 	}
 
-	/** @return the type of the message. */
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type of the message.
+	 */
 	public byte getType() {
 		return type;
 	}
@@ -225,6 +276,12 @@ public class MQTTMessage {
 		return 0;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param type the type
+	 * @return the MQTT message
+	 */
 	public static MQTTMessage create(byte type) {
 		return create(type, (byte) 0, null);
 	}
@@ -245,6 +302,12 @@ public class MQTTMessage {
 		return new String(encodedString);
 	}
 
+	/**
+	 * With names.
+	 *
+	 * @param names the names
+	 * @return the MQTT message
+	 */
 	public MQTTMessage withNames(String... names) {
 		this.names = names;
 		if (names != null) {
@@ -253,6 +316,14 @@ public class MQTTMessage {
 		return this;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param type the type
+	 * @param info the info
+	 * @param variableHeader the variable header
+	 * @return the MQTT message
+	 */
 	public static MQTTMessage create(byte type, byte info, byte[] variableHeader) {
 		MQTTMessage message = new MQTTMessage().withType(type);
 		if (type == MESSAGE_TYPE_DISCONNECT) {
@@ -388,6 +459,12 @@ public class MQTTMessage {
 		} while ((no > 0) && (numBytes < 4));
 	}
 
+	/**
+	 * Read from.
+	 *
+	 * @param in the in
+	 * @return the MQTT message
+	 */
 	public static MQTTMessage readFrom(DataInputStream in) {
 		if (in == null) {
 			return null;
@@ -437,32 +514,68 @@ public class MQTTMessage {
 		return message;
 	}
 
+	/**
+	 * With code.
+	 *
+	 * @param value the value
+	 * @return the MQTT message
+	 */
 	public MQTTMessage withCode(int value) {
 		this.code = value;
 		return this;
 	}
 
+	/**
+	 * With QOS.
+	 *
+	 * @param qos the qos
+	 * @return the MQTT message
+	 */
 	public MQTTMessage withQOS(int... qos) {
 		this.data = qos;
 		return this;
 	}
 
+	/**
+	 * With keep alive interval.
+	 *
+	 * @param value the value
+	 * @return the MQTT message
+	 */
 	public MQTTMessage withKeepAliveInterval(int value) {
 		this.keepAliveInterval = value;
 		return this;
 	}
 
+	/**
+	 * With session.
+	 *
+	 * @param value the value
+	 * @return the MQTT message
+	 */
 	public MQTTMessage withSession(boolean value) {
 		this.session = value;
 		return this;
 	}
 
+	/**
+	 * Creates the channel open.
+	 *
+	 * @param topic the topic
+	 * @return the MQTT message
+	 */
 	public static MQTTMessage createChannelOpen(String topic) {
 		MQTTMessage msg = new MQTTMessage().withType(MESSAGE_TYPE_SUBSCRIBE);
 		msg.withNames(topic).withQOS(1);
 		return msg;
 	}
 
+	/**
+	 * Creates the message.
+	 *
+	 * @param content the content
+	 * @return the MQTT message
+	 */
 	public MQTTMessage createMessage(String content) {
 		if (content != null) {
 			this.messagePayload = content.getBytes();
@@ -474,6 +587,8 @@ public class MQTTMessage {
 	}
 
 	/**
+	 * Checks if is message id required.
+	 *
 	 * @return whether or not this message needs to include a message ID.
 	 */
 	public boolean isMessageIdRequired() {
@@ -494,21 +609,39 @@ public class MQTTMessage {
 	}
 
 	/**
+	 * Gets the message id.
+	 *
 	 * @return the MQTT message ID.
 	 */
 	public int getMessageId() {
 		return msgId;
 	}
 
+	/**
+	 * Gets the message QOS.
+	 *
+	 * @return the message QOS
+	 */
 	public int getMessageQOS() {
 		return messageQOS;
 	}
 
+	/**
+	 * With message id.
+	 *
+	 * @param value the value
+	 * @return the MQTT message
+	 */
 	public MQTTMessage withMessageId(int value) {
 		this.msgId = value;
 		return this;
 	}
 
+	/**
+	 * Gets the text.
+	 *
+	 * @return the text
+	 */
 	public String getText() {
 		if (type == MESSAGE_TYPE_PUBLISH) {
 			return new String(this.messagePayload);
@@ -516,6 +649,11 @@ public class MQTTMessage {
 		return null;
 	}
 
+	/**
+	 * Gets the names.
+	 *
+	 * @return the names
+	 */
 	public String[] getNames() {
 		return names;
 	}

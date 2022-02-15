@@ -71,13 +71,20 @@ public class EntityComparator<V> implements Comparator<V> {
 		return this;
 	}
 
+	/**
+	 * Compare.
+	 *
+	 * @param o1 the o 1
+	 * @param o2 the o 2
+	 * @return the int
+	 */
 	@Override
 	public int compare(Object o1, Object o2) {
 		return direction.getDirection() * compareValue(o2, o1);
 	}
 
 	/**
-	 * Compare Values
+	 * Compare Values.
 	 *
 	 * @param o1 object for compare
 	 * @param o2 object for compare
@@ -218,7 +225,11 @@ public class EntityComparator<V> implements Comparator<V> {
 		return -1;
 	}
 
-	/** @return The Sortdirection */
+	/**
+	 * Gets the direction.
+	 *
+	 * @return The Sortdirection
+	 */
 	public SortingDirection getDirection() {
 		return direction;
 	}
@@ -234,12 +245,18 @@ public class EntityComparator<V> implements Comparator<V> {
 		return this;
 	}
 
-	/** @return The Current Column */
+	/**
+	 * Gets the column.
+	 *
+	 * @return The Current Column
+	 */
 	public String getColumn() {
 		return column;
 	}
 
 	/**
+	 * With column.
+	 *
 	 * @param value The new Column for checking
 	 * @return EntityComparator Instance
 	 */
@@ -249,6 +266,8 @@ public class EntityComparator<V> implements Comparator<V> {
 	}
 
 	/**
+	 * With column.
+	 *
 	 * @param value The new Column for checking
 	 * @param creator Creator
 	 * @return EntityComparator Instance
@@ -271,6 +290,8 @@ public class EntityComparator<V> implements Comparator<V> {
 	}
 
 	/**
+	 * Gets the map.
+	 *
 	 * @return The Current IdMap.
 	 */
 	public SimpleMap getMap() {
@@ -278,6 +299,8 @@ public class EntityComparator<V> implements Comparator<V> {
 	}
 
 	/**
+	 * Gets the cell creator.
+	 *
 	 * @return Return the Current Cell Creator.
 	 */
 	public EntityValueFactory getCellCreator() {
@@ -295,7 +318,11 @@ public class EntityComparator<V> implements Comparator<V> {
 		return this;
 	}
 
-	/** @return Change SortDiraction */
+	/**
+	 * Change direction.
+	 *
+	 * @return Change SortDiraction
+	 */
 	public SortingDirection changeDirection() {
 		if (direction != null) {
 			this.direction = direction.changeDirection();
@@ -303,6 +330,11 @@ public class EntityComparator<V> implements Comparator<V> {
 		return direction;
 	}
 
+	/**
+	 * Creates the comparator.
+	 *
+	 * @return the entity comparator
+	 */
 	public static EntityComparator<Object> createComparator() {
 		EntityComparator<Object> cpr = new EntityComparator<Object>().withColumn(EntityComparator.VALUES)
 				.withDirection(SortingDirection.ASC);

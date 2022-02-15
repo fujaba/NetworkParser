@@ -29,7 +29,16 @@ import java.beans.PropertyChangeSupport;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.parser.Template;
 
+/**
+ * The Class JavaClazz.
+ *
+ * @author Stefan
+ */
 public class JavaClazz extends Template {
+	
+	/**
+	 * Instantiates a new java clazz.
+	 */
 	public JavaClazz() {
 		this.id = TYPE_JAVA + ".clazz";
 		this.metaModel = true;

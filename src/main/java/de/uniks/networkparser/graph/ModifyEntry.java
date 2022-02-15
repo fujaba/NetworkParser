@@ -24,25 +24,57 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class ModifyEntry.
+ *
+ * @author Stefan
+ */
 public class ModifyEntry extends GraphMember {
+	
+	/** The Constant TYPE_DELETE. */
 	public static final String TYPE_DELETE = "delete";
+	
+	/** The Constant TYPE_MODIFIER. */
 	public static final String TYPE_MODIFIER = "modifier";
 	private String type;
 
+	/**
+	 * With entry.
+	 *
+	 * @param child the child
+	 * @return the modify entry
+	 */
 	public ModifyEntry withEntry(GraphMember child) {
 		super.withChildren(child);
 		return this;
 	}
 
+	/**
+	 * With modifier.
+	 *
+	 * @param type the type
+	 * @return the modify entry
+	 */
 	public ModifyEntry withModifier(String type) {
 		this.type = type;
 		return this;
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public String getType() {
 		return type;
 	}
 
+	/**
+	 * Creates the delete.
+	 *
+	 * @param child the child
+	 * @return the modify entry
+	 */
 	public static ModifyEntry createDelete(GraphMember child) {
 		ModifyEntry result = new ModifyEntry();
 		result.withModifier(TYPE_DELETE);
@@ -50,6 +82,12 @@ public class ModifyEntry extends GraphMember {
 		return result;
 	}
 
+	/**
+	 * Creates the modifier.
+	 *
+	 * @param child the child
+	 * @return the modify entry
+	 */
 	public static ModifyEntry createModifier(GraphMember child) {
 		ModifyEntry result = new ModifyEntry();
 		result.withModifier(TYPE_MODIFIER);
@@ -57,6 +95,11 @@ public class ModifyEntry extends GraphMember {
 		return result;
 	}
 
+	/**
+	 * Gets the entry.
+	 *
+	 * @return the entry
+	 */
 	public GraphMember getEntry() {
 		if (children == null) {
 			return null;

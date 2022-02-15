@@ -38,8 +38,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 /**
- * A Entity for Map
- * 
+ * A Entity for Map.
+ *
  * @author Stefan MapEntity for IdMap
  */
 public class MapEntity extends AbstractList<Object> {
@@ -49,6 +49,8 @@ public class MapEntity extends AbstractList<Object> {
 	/** The show line. */
 	protected byte tokenerFlag;
 	private SimpleMap map;
+	
+	/** The map flag. */
 	public byte mapFlag;
 	private Grammar grammar;
 	private Tokener tokener;
@@ -58,6 +60,14 @@ public class MapEntity extends AbstractList<Object> {
 	private SimpleList<String> tags = new SimpleList<String>();
 	private SimpleKeyValueList<String, SimpleSet<String>> childProperties = new SimpleKeyValueList<String, SimpleSet<String>>();
 
+	/**
+	 * Instantiates a new map entity.
+	 *
+	 * @param filter the filter
+	 * @param flag the flag
+	 * @param map the map
+	 * @param tokener the tokener
+	 */
 	public MapEntity(Filter filter, byte flag, SimpleMap map, Tokener tokener) {
 		if (filter != null) {
 			this.filter = filter;
@@ -70,6 +80,11 @@ public class MapEntity extends AbstractList<Object> {
 		this.tokener = tokener;
 	}
 
+	/**
+	 * Instantiates a new map entity.
+	 *
+	 * @param map the map
+	 */
 	public MapEntity(SimpleMap map) {
 		if (map != null) {
 			this.filter = map.getFilter();
@@ -79,14 +94,30 @@ public class MapEntity extends AbstractList<Object> {
 		this.map = map;
 	}
 
+	/**
+	 * Gets the grammar.
+	 *
+	 * @return the grammar
+	 */
 	public Grammar getGrammar() {
 		return grammar;
 	}
 
+	/**
+	 * Gets the filter.
+	 *
+	 * @return the filter
+	 */
 	public Filter getFilter() {
 		return filter;
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @return the entity
+	 */
 	public Entity encode(Object entity) {
 		if (tokener == null || tokener.getMap() == null) {
 			return null;
@@ -94,19 +125,40 @@ public class MapEntity extends AbstractList<Object> {
 		return tokener.getMap().encode(entity, this);
 	}
 
+	/**
+	 * Gets the deep.
+	 *
+	 * @return the deep
+	 */
 	public int getDeep() {
 		return deep;
 	}
 
+	/**
+	 * Checks if is id.
+	 *
+	 * @param target the target
+	 * @return true, if is id
+	 */
 	public boolean isId(Object target) {
 		String className = target.getClass().getName();
 		return filter.isId(target, className, map);
 	}
 
+	/**
+	 * Checks if is search for super class.
+	 *
+	 * @return true, if is search for super class
+	 */
 	public boolean isSearchForSuperClass() {
 		return (mapFlag & SimpleMap.FLAG_SEARCHFORSUPERCLASS) != 0;
 	}
 
+	/**
+	 * Checks if is simple format.
+	 *
+	 * @return true, if is simple format
+	 */
 	public boolean isSimpleFormat() {
 		boolean result = (mapFlag & SimpleMap.FLAG_SIMPLEFORMAT) != 0;
 		if (result) {
@@ -119,6 +171,8 @@ public class MapEntity extends AbstractList<Object> {
 	}
 
 	/**
+	 * Gets the target.
+	 *
 	 * @return the target
 	 */
 	public Object getTarget() {
@@ -126,6 +180,8 @@ public class MapEntity extends AbstractList<Object> {
 	}
 
 	/**
+	 * With target.
+	 *
 	 * @param target the target to set
 	 * @return The Target Object
 	 */
@@ -134,6 +190,12 @@ public class MapEntity extends AbstractList<Object> {
 		return this;
 	}
 
+	/**
+	 * With strategy.
+	 *
+	 * @param value the value
+	 * @return the map entity
+	 */
 	public MapEntity withStrategy(String value) {
 		if (value != null) {
 			this.filter.withStrategy(value);
@@ -141,16 +203,33 @@ public class MapEntity extends AbstractList<Object> {
 		return this;
 	}
 
+	/**
+	 * With deep.
+	 *
+	 * @param value the value
+	 * @return the map entity
+	 */
 	public MapEntity withDeep(int value) {
 		this.deep = value;
 		return this;
 	}
 
+	/**
+	 * Adds the deep.
+	 *
+	 * @return the int
+	 */
 	public int addDeep() {
 		deep++;
 		return deep;
 	}
 
+	/**
+	 * Gets the clone by entity.
+	 *
+	 * @param value the value
+	 * @return the clone by entity
+	 */
 	public Object getCloneByEntity(Object value) {
 		for (int i = 0; i < size(); i += 2) {
 			if (get(i) == value) {
@@ -160,6 +239,12 @@ public class MapEntity extends AbstractList<Object> {
 		return null;
 	}
 
+	/**
+	 * Gets the entity by clone.
+	 *
+	 * @param value the value
+	 * @return the entity by clone
+	 */
 	public Object getEntityByClone(Object value) {
 		for (int i = 1; i < size(); i += 2) {
 			if (get(i) == value) {
@@ -170,11 +255,26 @@ public class MapEntity extends AbstractList<Object> {
 	}
 
 
+	/**
+	 * Push stack.
+	 *
+	 * @param className the class name
+	 * @param entity the entity
+	 * @param creator the creator
+	 */
 	public void pushStack(String className, Object entity, SendableEntityCreator creator) {
 		this.withStack(className, entity, creator);
 		this.deep = this.deep + 1;
 	}
 
+	/**
+	 * Gets the prefix properties.
+	 *
+	 * @param creator the creator
+	 * @param entity the entity
+	 * @param className the class name
+	 * @return the prefix properties
+	 */
 	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Object entity, String className) {
 		CharacterBuffer result = new CharacterBuffer();
 		if (this.isSimpleFormat() || grammar.isFlatFormat()) {
@@ -188,19 +288,33 @@ public class MapEntity extends AbstractList<Object> {
 		return result;
 	}
 
+	/**
+	 * With filter.
+	 *
+	 * @param filter the filter
+	 * @return the map entity
+	 */
 	public MapEntity withFilter(Filter filter) {
 		this.filter = filter;
 		return this;
 	}
+	
+	/**
+	 * Gets the id.
+	 *
+	 * @param entity the entity
+	 * @param className the class name
+	 * @return the id
+	 */
 	/* Method for Filter */
 	public String getId(Object entity, String className) {
 		if (filter == null) {
 			return null;
 		}
-		if (filter.isId(entity, className, map) == false) {
+		if (!filter.isId(entity, className, map)) {
 			this.with(entity);
 		} else {
-			boolean newMessage = SendableEntityCreator.UPDATE.equals(this.getFilter().getStrategy()) == false;
+			boolean newMessage = !SendableEntityCreator.UPDATE.equals(this.getFilter().getStrategy());
 			String id = map.getId(entity, newMessage);
 			this.with(id);
 			return id;
@@ -208,6 +322,16 @@ public class MapEntity extends AbstractList<Object> {
 		return null;
 	}
 
+	/**
+	 * Write basic value.
+	 *
+	 * @param creator the creator
+	 * @param entity the entity
+	 * @param parent the parent
+	 * @param className the class name
+	 * @param id the id
+	 * @return the entity
+	 */
 	public Entity writeBasicValue(SendableEntityCreator creator, Entity entity, BaseItem parent, String className,
 			String id) {
 		if ((mapFlag & SimpleMap.FLAG_ID) == 0) {
@@ -224,6 +348,8 @@ public class MapEntity extends AbstractList<Object> {
 	}
 
 	/**
+	 * Checks if is adds the owner link.
+	 *
 	 * @param value Is Association To Parent
 	 * @return the addOwnerLink
 	 */
@@ -234,6 +360,12 @@ public class MapEntity extends AbstractList<Object> {
 		return getPrevItem() != value;
 	}
 
+	/**
+	 * Gets the index of clazz.
+	 *
+	 * @param clazzName the clazz name
+	 * @return the index of clazz
+	 */
 	public int getIndexOfClazz(String clazzName) {
 		if (clazzName == null) {
 			return -1;
@@ -249,6 +381,12 @@ public class MapEntity extends AbstractList<Object> {
 		return -1;
 	}
 
+	/**
+	 * Gets the index visited objects.
+	 *
+	 * @param element the element
+	 * @return the index visited objects
+	 */
 	public int getIndexVisitedObjects(Object element) {
 		int pos = 0;
 		for (Iterator<Object> i = this.iterator(); i.hasNext();) {
@@ -261,6 +399,12 @@ public class MapEntity extends AbstractList<Object> {
 		return -1;
 	}
 
+	/**
+	 * Gets the visited objects.
+	 *
+	 * @param index the index
+	 * @return the visited objects
+	 */
 	public Object getVisitedObjects(int index) {
 		if (index >= 0 && index < size()) {
 			return get(index);
@@ -268,6 +412,12 @@ public class MapEntity extends AbstractList<Object> {
 		return null;
 	}
 
+	/**
+	 * Gets the clazz.
+	 *
+	 * @param pos the pos
+	 * @return the clazz
+	 */
 	public String getClazz(int pos) {
 		if (pos < 0 || pos > size()) {
 			return null;
@@ -279,6 +429,11 @@ public class MapEntity extends AbstractList<Object> {
 		return null;
 	}
 
+	/**
+	 * Gets the last clazz.
+	 *
+	 * @return the last clazz
+	 */
 	public String getLastClazz() {
 		Object item = last();
 		if (item != null) {
@@ -287,6 +442,13 @@ public class MapEntity extends AbstractList<Object> {
 		return null;
 	}
 
+	/**
+	 * Convert property.
+	 *
+	 * @param property the property
+	 * @param parent the parent
+	 * @return the entity
+	 */
 	public Entity convertProperty(CharacterBuffer property, BaseItem parent) {
 		BaseItem child = parent;
 		if (property == null) {
@@ -323,6 +485,8 @@ public class MapEntity extends AbstractList<Object> {
 	}
 
 	/**
+	 * Checks if is flag.
+	 *
 	 * @param flag is the Flag is Set
 	 * @return the type
 	 */
@@ -330,11 +494,23 @@ public class MapEntity extends AbstractList<Object> {
 		return (this.mapFlag & flag) != 0;
 	}
 
+	/**
+	 * With tokener flag.
+	 *
+	 * @param flag the flag
+	 * @return the map entity
+	 */
 	public MapEntity withTokenerFlag(byte flag) {
 		this.tokenerFlag = (byte) (this.tokenerFlag | flag);
 		return this;
 	}
 
+	/**
+	 * Without tokener flag.
+	 *
+	 * @param flag the flag
+	 * @return the map entity
+	 */
 	public MapEntity withoutTokenerFlag(byte flag) {
 		this.tokenerFlag = (byte) (this.tokenerFlag | flag);
 		this.tokenerFlag -= flag;
@@ -342,6 +518,8 @@ public class MapEntity extends AbstractList<Object> {
 	}
 
 	/**
+	 * Checks if is tokener flag.
+	 *
 	 * @param flag is the Flag is Set
 	 * @return the type
 	 */
@@ -349,15 +527,31 @@ public class MapEntity extends AbstractList<Object> {
 		return (this.tokenerFlag & flag) != 0;
 	}
 
+	/**
+	 * Gets the map.
+	 *
+	 * @return the map
+	 */
 	public SimpleMap getMap() {
 		return map;
 	}
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
 	@Override
 	public MapEntity getNewList(boolean keyValue) {
 		return new MapEntity(null);
 	}
 
+	/**
+	 * Gets the tokener.
+	 *
+	 * @return the tokener
+	 */
 	public Tokener getTokener() {
 		if (tokener == null && map != null) {
 			tokener = map.getJsonTokener();
@@ -365,6 +559,11 @@ public class MapEntity extends AbstractList<Object> {
 		return this.tokener;
 	}
 
+	/**
+	 * Checks if is strategy new.
+	 *
+	 * @return true, if is strategy new
+	 */
 	public boolean isStrategyNew() {
 		if (this.filter == null) {
 			return true;
@@ -373,7 +572,7 @@ public class MapEntity extends AbstractList<Object> {
 	}
 
     /**
-     * Remove The Last Element
+     * Remove The Last Element.
      */
     public void popStack() {
         this.stackItems.removePos(this.stackItems.size() - 1);
@@ -381,17 +580,26 @@ public class MapEntity extends AbstractList<Object> {
         this.tags.remove(this.tags.size() - 1);
     }
 
-    /** @return The StackSize */
+    /**
+     * Gets the stack size.
+     *
+     * @return The StackSize
+     */
     public int getStackSize() {
         return this.stackItems.size();
     }
 
+    /**
+     * Gets the tags.
+     *
+     * @return the tags
+     */
     public SimpleList<String> getTags() {
         return tags;
     }
 
     /**
-     * Get the current Element
+     * Get the current Element.
      *
      * @return The Stack Element - offset
      */
@@ -400,8 +608,8 @@ public class MapEntity extends AbstractList<Object> {
     }
 
     /**
-     * Get the previous Element
-     * 
+     * Get the previous Element.
+     *
      * @return The Stack Element - offset
      */
     public Object getPrevItem() {
@@ -451,7 +659,7 @@ public class MapEntity extends AbstractList<Object> {
     }
 
     /**
-     * Get the Current Creator for the MapEntity
+     * Get the Current Creator for the MapEntity.
      *
      * @return The Stack Element - offset
      */
@@ -459,6 +667,12 @@ public class MapEntity extends AbstractList<Object> {
         return this.stackItems.getValueByIndex(this.stackItems.size() - 1);
     }
 
+    /**
+     * Sets the value.
+     *
+     * @param key the key
+     * @param value the value
+     */
     public void setValue(String key, String value) {
         SimpleSet<String> set = childProperties.get(key);
         if (set != null) {
@@ -483,7 +697,7 @@ public class MapEntity extends AbstractList<Object> {
             if (entity.charAt(end) == SimpleMap.ENTITYSPLITTER) {
                 String item = entity.substring(end + 1, start);
                 String tag = tags.get(pos);
-                if (tag == null || tag.equals(item) == false) {
+                if (tag == null || !tag.equals(item)) {
                     return -1;
                 }
                 start = end;
@@ -493,6 +707,11 @@ public class MapEntity extends AbstractList<Object> {
         return pos;
     }
 
+    /**
+     * Gets the current tag.
+     *
+     * @return the current tag
+     */
     public String getCurrentTag() {
         if (this.tags.size() > 0) {
             return this.tags.get(this.tags.size() - 1);

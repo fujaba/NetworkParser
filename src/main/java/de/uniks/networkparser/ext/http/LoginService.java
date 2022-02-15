@@ -8,15 +8,25 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class LoginService.
+ *
+ * @author Stefan
+ */
 public class LoginService implements SimpleUpdateListener {
 	private SimpleList<User> users;
 	private JsonToken tokener;
 	private boolean writeCookie;
 
+	/**
+	 * Gets the login.
+	 *
+	 * @return the login
+	 */
 	public HTMLEntity getLogin() {
 		HTMLEntity entity = new HTMLEntity();
-		entity.createTag("h1", "Anmeldung");
-		XMLEntity formTag = entity.createTag("form").withKeyValue("action", "/auth").withKeyValue("method", "post")
+		entity.createChild("h1", "Anmeldung");
+		XMLEntity formTag = entity.createChild("form").withKeyValue("action", "/auth").withKeyValue("method", "post")
 				.withKeyValue("enctype", "application/json");
 		formTag.createChild("input", "name", "username");
 		formTag.createChild("input", "name", "password", "type", "password");
@@ -24,6 +34,12 @@ public class LoginService implements SimpleUpdateListener {
 		return entity;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(SimpleEvent value) {
 		if (value == null || value.getSource() instanceof HTTPRequest == false) {
@@ -69,6 +85,12 @@ public class LoginService implements SimpleUpdateListener {
 		return false;
 	}
 
+	/**
+	 * With user.
+	 *
+	 * @param user the user
+	 * @return the login service
+	 */
 	public LoginService withUser(User user) {
 		if (this.users == null) {
 			this.users = new SimpleList<User>();
@@ -77,11 +99,23 @@ public class LoginService implements SimpleUpdateListener {
 		return this;
 	}
 
+	/**
+	 * With json token.
+	 *
+	 * @param tokener the tokener
+	 * @return the login service
+	 */
 	public LoginService withJsonToken(JsonToken tokener) {
 		this.tokener = tokener;
 		return this;
 	}
 
+	/**
+	 * Validate user.
+	 *
+	 * @param values the values
+	 * @return the user
+	 */
 	public User validateUser(String... values) {
 		if (values == null || values.length < 1) {
 			return null;
@@ -118,10 +152,21 @@ public class LoginService implements SimpleUpdateListener {
 		return null;
 	}
 
+	/**
+	 * Checks if is write cookie.
+	 *
+	 * @return true, if is write cookie
+	 */
 	public boolean isWriteCookie() {
 		return writeCookie;
 	}
 
+	/**
+	 * With write cookie.
+	 *
+	 * @param writeCookie the write cookie
+	 * @return the login service
+	 */
 	public LoginService withWriteCookie(boolean writeCookie) {
 		this.writeCookie = writeCookie;
 		return this;

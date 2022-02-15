@@ -25,8 +25,8 @@ THE SOFTWARE.
 */
 /**
  * Integrate this Interface to your Modellentity to disable the creating of Id
- * of the serialized elements and no creating for subelement for Props
- * 
+ * of the serialized elements and no creating for subelement for Props.
+ *
  * @author Stefan Lindel
  */
 public interface SendableEntityCreatorNoIndex extends SendableEntityCreator {

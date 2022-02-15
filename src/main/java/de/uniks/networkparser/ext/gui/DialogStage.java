@@ -25,28 +25,53 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 
+/**
+ * The Class DialogStage.
+ *
+ * @author Stefan
+ */
 public class DialogStage implements Runnable {
+	
+	/** The parent. */
 	public DialogBox parent;
 	private Object stage;
 	private Object owner;
 
+	/**
+	 * Instantiates a new dialog stage.
+	 */
 	public DialogStage() {
 	}
 
+	/**
+	 * Instantiates a new dialog stage.
+	 *
+	 * @param parent the parent
+	 * @param owner the owner
+	 */
 	public DialogStage(DialogBox parent, Object owner) {
 		this.parent = parent;
 		this.owner = owner;
 	}
 
+	/**
+	 * Show and wait.
+	 */
 	public void showAndWait() {
 		centerOnScreen();
 		ReflectionLoader.call(stage, "showAndWait");
 	}
 
+	/**
+	 * Show.
+	 */
 	public void show() {
 		ReflectionLoader.call(stage, "show");
 	}
 
+	/**
+	 * Run.
+	 */
 	@Override
 	public void run() {
 		Object transparent = ReflectionLoader.getField(ReflectionLoader.STAGESTYLE, "TRANSPARENT");
@@ -79,6 +104,9 @@ public class DialogStage implements Runnable {
 		this.show();
 	}
 
+	/**
+	 * Center on screen.
+	 */
 	public void centerOnScreen() {
 		Object scene = ReflectionLoader.call(owner, "getScene");
 		if (scene != null) {

@@ -27,43 +27,106 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 
+/**
+ * The Class TileObject.
+ *
+ * @author Stefan
+ */
 public class TileObject implements SendableEntityCreatorTag {
+	
+	/** The Constant TAG. */
 	public static final String TAG = "object";
+	
+	/** The Constant PROPERTY_ID. */
 	public static final String PROPERTY_ID = "id";
+	
+	/** The Constant PROPERTY_NAME. */
 	public static final String PROPERTY_NAME = "name";
+	
+	/** The Constant PROPERTY_GID. */
 	public static final String PROPERTY_GID = "gid";
+	
+	/** The Constant PROPERTY_WIDTH. */
 	public static final String PROPERTY_WIDTH = "width";
+	
+	/** The Constant PROPERTY_HEIGHT. */
 	public static final String PROPERTY_HEIGHT = "height";
+	
+	/** The Constant PROPERTY_SOURCE. */
 	public static final String PROPERTY_SOURCE = "source";
 
+	/** The Constant PROPERTY_X. */
 	public static final String PROPERTY_X = "x";
+	
+	/** The Constant PROPERTY_Y. */
 	public static final String PROPERTY_Y = "y";
+	
+	/** The id. */
 	public String id;
+	
+	/** The name. */
 	public String name;
+	
+	/** The source. */
 	public String source;
+	
+	/** The gid. */
 	public int gid;
+	
+	/** The x. */
 	public int x;
+	
+	/** The y. */
 	public int y;
+	
+	/** The width. */
 	public int width;
+	
+	/** The height. */
 	public int height;
+	
+	/** The count. */
 	public int count;
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new TileObject();
 	}
 
+	/**
+	 * Gets the tag.
+	 *
+	 * @return the tag
+	 */
 	@Override
 	public String getTag() {
 		return TAG;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { PROPERTY_ID, PROPERTY_NAME, PROPERTY_GID, PROPERTY_WIDTH, PROPERTY_HEIGHT, PROPERTY_X,
 				PROPERTY_Y };
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (!(entity instanceof TileObject)) {
@@ -97,6 +160,15 @@ public class TileObject implements SendableEntityCreatorTag {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (!(entity instanceof TileObject)) {
@@ -138,6 +210,12 @@ public class TileObject implements SendableEntityCreatorTag {
 		return false;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param entity the entity
+	 * @return the tile object
+	 */
 	public static TileObject create(Entity entity) {
 		TileObject element = new TileObject();
 		for (String item : element.getProperties()) {

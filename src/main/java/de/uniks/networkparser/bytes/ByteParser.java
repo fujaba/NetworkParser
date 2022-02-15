@@ -31,10 +31,19 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
- * Parser for ByteStreams
+ * Parser for ByteStreams.
+ *
  * @author Stefan Lindel
  */
 public class ByteParser {
+	
+	/**
+	 * Decode.
+	 *
+	 * @param buffer the buffer
+	 * @param creator the creator
+	 * @return the object
+	 */
 	public Object decode(ByteBuffer buffer, BitEntityCreator creator) {
 		if (creator == null) {
 			return null;
@@ -51,6 +60,14 @@ public class ByteParser {
 		return newInstance;
 	}
 
+	/**
+	 * Gets the entity.
+	 *
+	 * @param buffer the buffer
+	 * @param entry the entry
+	 * @param values the values
+	 * @return the entity
+	 */
 	public Object getEntity(ByteBuffer buffer, BitEntity entry, SimpleKeyValueList<String, Object> values) {
 		if (entry == null) {
 			return null;

@@ -35,7 +35,8 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Server;
 
 /**
- * Server for UPD
+ * Server for UPD.
+ *
  * @author Stefan Lindel
  */
 public class Server_UPD extends Thread implements Server {
@@ -44,6 +45,11 @@ public class Server_UPD extends Thread implements Server {
 	protected DatagramSocket socket;
 	private NodeProxyTCP proxy;
 
+	/**
+	 * Instantiates a new server UPD.
+	 *
+	 * @param proxy the proxy
+	 */
 	public Server_UPD(NodeProxyTCP proxy) {
 		this.proxy = proxy;
 		if (init()) {
@@ -53,6 +59,11 @@ public class Server_UPD extends Thread implements Server {
 		}
 	}
 	
+	/**
+	 * With start.
+	 *
+	 * @return the server UPD
+	 */
 	public Server_UPD withStart() {
 		if(this.startReady) {
 			startReady = false;
@@ -61,6 +72,11 @@ public class Server_UPD extends Thread implements Server {
 		return this;
 	}
 
+	/**
+	 * Close.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean close() {
 		this.run = false;
 		if (socket != null) {
@@ -70,11 +86,19 @@ public class Server_UPD extends Thread implements Server {
 		return true;
 	}
 
+	/**
+	 * Checks if is run.
+	 *
+	 * @return true, if is run
+	 */
 	@Override
 	public boolean isRun() {
 		return socket != null && !socket.isClosed();
 	}
 
+	/**
+	 * Run.
+	 */
 	@Override
 	public void run() {
 		if (NodeProxy.isInput(proxy.getType())) {
@@ -85,6 +109,12 @@ public class Server_UPD extends Thread implements Server {
 		}
 	}
 
+	/**
+	 * Creates the send packet.
+	 *
+	 * @param port the port
+	 * @return the datagram packet
+	 */
 	public DatagramPacket createSendPacket(int port) {
 		byte[] sendData = new byte[proxy.getBufferSize()];
 		if (proxy.getSpace() != null) {
@@ -98,6 +128,11 @@ public class Server_UPD extends Thread implements Server {
 		return new DatagramPacket(sendData, sendData.length, IPAddress, port);
 	}
 
+	/**
+	 * Run client.
+	 *
+	 * @return the datagram packet
+	 */
 	public DatagramPacket runClient() {
 		DatagramPacket message = createSendPacket(proxy.getReceivePort());
 		DatagramPacket receivePacket;
@@ -113,6 +148,9 @@ public class Server_UPD extends Thread implements Server {
 		return receivePacket;
 	}
 
+	/**
+	 * Run server.
+	 */
 	public void runServer() {
 		Thread.currentThread().setName(proxy.getPort() + " broadcast server");
 		while (!isInterrupted() && this.run) {

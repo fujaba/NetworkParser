@@ -39,10 +39,21 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 
+/**
+ * The Class StoryStepDiagram.
+ *
+ * @author Stefan
+ */
 public class StoryStepDiagram implements ObjectCondition {
 	private GraphModel model;
 	private StoryObjectFilter filter;
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof SimpleEvent == false) {
@@ -100,15 +111,31 @@ public class StoryStepDiagram implements ObjectCondition {
 		return true;
 	}
 
+	/**
+	 * With model.
+	 *
+	 * @param model the model
+	 * @return the story step diagram
+	 */
 	public StoryStepDiagram withModel(GraphModel model) {
 		this.model = model;
 		return this;
 	}
 
+	/**
+	 * With filter.
+	 *
+	 * @param filter the filter
+	 */
 	public void withFilter(StoryObjectFilter filter) {
 		this.filter = filter;
 	}
 
+	/**
+	 * Creates the use case diagram.
+	 *
+	 * @return the graph model
+	 */
 	public GraphModel createUseCaseDiagram() {
 		GraphList useCase = new GraphList();
 		this.model = useCase;
@@ -116,6 +143,11 @@ public class StoryStepDiagram implements ObjectCondition {
 		return model;
 	}
 
+	/**
+	 * Cretae actor.
+	 *
+	 * @return the graph custom item
+	 */
 	public GraphCustomItem cretaeActor() {
 	  GraphCustomItem actor = GraphCustomItem.createActorImage();
 		if (this.model != null) {
@@ -124,6 +156,12 @@ public class StoryStepDiagram implements ObjectCondition {
 		return actor;
 	}
 
+	/**
+	 * Creates the element.
+	 *
+	 * @param value the value
+	 * @return the graph node
+	 */
 	public GraphNode createElement(String value) {
 		GraphNode node = new GraphNode().with(value);
 		if (this.model != null) {

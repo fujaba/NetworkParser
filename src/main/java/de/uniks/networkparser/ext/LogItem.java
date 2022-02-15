@@ -26,15 +26,32 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-/** LogItem 
- * @author Stefan Lindel */
+/**
+ * LogItem Sinle Item of Log.
+ *
+ * @author Stefan Lindel
+ */
 public class LogItem extends SendableItem implements SendableEntityCreator {
+	
+	/** The Constant INCOMING. */
 	public static final String INCOMING = "Empfange";
+	
+	/** The Constant OUTGOING. */
 	public static final String OUTGOING = "Sende";
+	
+	/** The Constant PROPERTY_TYPE. */
 	public static final String PROPERTY_TYPE = "type";
+	
+	/** The Constant PROPERTY_TIMESTAMP. */
 	public static final String PROPERTY_TIMESTAMP = "timestamp";
+	
+	/** The Constant PROPERTY_CURRENTTIME. */
 	public static final String PROPERTY_CURRENTTIME = "currenttime";
+	
+	/** The Constant PROPERTY_THREADNAME. */
 	public static final String PROPERTY_THREADNAME = "threadName";
+	
+	/** The Constant PROPERTY_MESSAGE. */
 	public static final String PROPERTY_MESSAGE = "message";
 	private final String[] properties = new String[] { LogItem.PROPERTY_CURRENTTIME, LogItem.PROPERTY_TIMESTAMP,
 			LogItem.PROPERTY_THREADNAME, LogItem.PROPERTY_TYPE, LogItem.PROPERTY_MESSAGE, };
@@ -47,6 +64,12 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 	private String message;
 	private String threadName;
 
+	/**
+	 * Instantiates a new log item.
+	 *
+	 * @param message the message
+	 * @param type the type
+	 */
 	public LogItem(String message, String type) {
 		long currentTimeMillis = System.currentTimeMillis();
 		this.timestamp = currentTimeMillis - STARTTIME;
@@ -56,26 +79,55 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 		this.message = message;
 	}
 
+	/**
+	 * Instantiates a new log item.
+	 *
+	 * @param message the message
+	 */
 	public LogItem(String message) {
 		this(message, NetworkParserLog.INFO);
 	}
 
+	/**
+	 * Instantiates a new log item.
+	 */
 	public LogItem() {
 		this("", NetworkParserLog.INFO);
 	}
 
+	/**
+	 * Gets the timestamp.
+	 *
+	 * @return the timestamp
+	 */
 	public long getTimestamp() {
 		return this.timestamp;
 	}
 
+	/**
+	 * Gets the current time.
+	 *
+	 * @return the current time
+	 */
 	public long getCurrentTime() {
 		return currentTime;
 	}
 
+	/**
+	 * Gets the thread name.
+	 *
+	 * @return the thread name
+	 */
 	public String getThreadName() {
 		return this.threadName;
 	}
 
+	/**
+	 * Sets the thread name.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setThreadName(String value) {
 		if(this.threadName != value || (this.threadName != null && this.threadName.equals(value) == false)) {
 			String oldValue = this.threadName;
@@ -86,15 +138,32 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * With thread name.
+	 *
+	 * @param value the value
+	 * @return the log item
+	 */
 	public LogItem withThreadName(String value) {
 		setThreadName(value);
 		return this;
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public String getType() {
 		return this.type;
 	}
 
+	/**
+	 * Sets the type.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setType(String value) {
 		if(this.type != value || (this.type != null && this.type.equals(value) == false)) {
 			String oldValue = this.type;
@@ -105,15 +174,32 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * With type.
+	 *
+	 * @param value the value
+	 * @return the log item
+	 */
 	public LogItem withType(String value) {
 		setType(value);
 		return this;
 	}
 
+	/**
+	 * Gets the message.
+	 *
+	 * @return the message
+	 */
 	public String getMessage() {
 		return this.message;
 	}
 
+	/**
+	 * Sets the message.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setMessage(String value) {
 		if(this.message != value || (this.message != null && this.message.equals(value) == false)) {
 			String oldValue = this.message;
@@ -124,16 +210,34 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * With message.
+	 *
+	 * @param value the value
+	 * @return the log item
+	 */
 	public LogItem withMessage(String value) {
 		setMessage(value);
 		return this;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return properties;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (attribute == null || entity instanceof LogItem == false) {
@@ -165,10 +269,24 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 		return null;
 	}
 
+	/**
+	 * Gets the current date.
+	 *
+	 * @return the current date
+	 */
 	public DateTimeEntity getCurrentDate() {
 		return new DateTimeEntity().withNewDate(getCurrentTime());
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (attribute == null || entity instanceof LogItem == false) {
@@ -197,6 +315,12 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new LogItem();

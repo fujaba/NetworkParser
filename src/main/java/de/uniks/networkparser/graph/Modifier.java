@@ -26,20 +26,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 /**
- * Modifier for Methods and Class
- * 
+ * Modifier for Methods and Class.
+ *
  * @author Stefan Lindel
  */
 
 public class Modifier extends GraphMember {
+	
+	/** The Constant PUBLIC. */
 	public static final Modifier PUBLIC = new Modifier("public");
+	
+	/** The Constant PACKAGE. */
 	public static final Modifier PACKAGE = new Modifier("");
+	
+	/** The Constant PROTECTED. */
 	public static final Modifier PROTECTED = new Modifier("protected");
+	
+	/** The Constant PRIVATE. */
 	public static final Modifier PRIVATE = new Modifier("private");
 
+	/** The Constant FINAL. */
 	public static final Modifier FINAL = new Modifier("final");
+	
+	/** The Constant ABSTRACT. */
 	public static final Modifier ABSTRACT = new Modifier("abstract");
+	
+	/** The Constant STATIC. */
 	public static final Modifier STATIC = new Modifier("static");
+	
+	/** The Constant DEFAULT. */
 	public static final Modifier DEFAULT = new Modifier("default");
 
 	Modifier(String value) {
@@ -50,16 +65,34 @@ public class Modifier extends GraphMember {
 		this.setName(value.getName());
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param name the name
+	 * @return the modifier
+	 */
 	@Override
 	public Modifier with(String name) {
 		super.with(name);
 		return this;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param value the value
+	 * @return the modifier
+	 */
 	public static Modifier create(String value) {
 		return new Modifier(value);
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param values the values
+	 * @return the modifier
+	 */
 	public static Modifier create(Modifier... values) {
 		if (values == null || values.length < 1 || values[0] == null) {
 			return null;
@@ -69,6 +102,12 @@ public class Modifier extends GraphMember {
 		return mod;
 	}
 
+	/**
+	 * Checks for.
+	 *
+	 * @param other the other
+	 * @return true, if successful
+	 */
 	public boolean has(Modifier other) {
 		if (this.getName() == null || other == null) {
 			return false;
@@ -90,10 +129,20 @@ public class Modifier extends GraphMember {
 
 	}
 
+	/**
+	 * Gets the parent.
+	 *
+	 * @return the parent
+	 */
 	public GraphMember getParent() {
 		return (GraphMember) parentNode;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		CharacterBuffer buffer = new CharacterBuffer();
@@ -121,6 +170,12 @@ public class Modifier extends GraphMember {
 		return buffer.toString();
 	}
 
+	/**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
@@ -135,6 +190,11 @@ public class Modifier extends GraphMember {
 		return super.equals(obj);
 	}
 
+	/**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int hashCode() {
 		return super.hashCode();

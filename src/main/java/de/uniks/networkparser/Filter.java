@@ -28,7 +28,8 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
 /**
- * Fitler for Serialization or Deserializaition
+ * Fitler for Serialization or Deserializaition.
+ *
  * @author Stefan Lindel
  */
 public class Filter {
@@ -57,13 +58,19 @@ public class Filter {
 	private String strategy = SendableEntityCreator.UPDATE;
 	private boolean simpleFormat;
 
+	/**
+	 * With id filter.
+	 *
+	 * @param idFilter the id filter
+	 * @return the filter
+	 */
 	public Filter withIdFilter(ObjectCondition idFilter) {
 		this.idFilter = idFilter;
 		return this;
 	}
 
 	/**
-	 * Filter for encoding ID of Element
+	 * Filter for encoding ID of Element.
 	 *
 	 * @param entity    Entity for Show Id
 	 * @param className ClassName
@@ -82,40 +89,64 @@ public class Filter {
 		return true;
 	}
 
+	/**
+	 * Checks if is simple format.
+	 *
+	 * @param entity the entity
+	 * @param creator the creator
+	 * @param className the class name
+	 * @param map the map
+	 * @return true, if is simple format
+	 */
 	public boolean isSimpleFormat(Object entity, SendableEntityCreator creator, String className, SimpleMap map) {
 		if (this.isSimpleFormat()) {
 			return true;
 		}
-		if (creator instanceof SendableEntityCreatorNoIndex || isId(entity, className, map) == false) {
+		if (creator instanceof SendableEntityCreatorNoIndex || !isId(entity, className, map)) {
 			return true;
 		}
 		return false;
 	}
 
 	/**
-	 * Serialization the Full object inclusive null value
-	 * 
+	 * Serialization the Full object inclusive null value.
+	 *
 	 * @return boolean for serialization the full object
 	 */
 	public boolean isFullSerialization() {
 		return (format % FORMAT_SHORTCLASS) >= FORMAT_FULL;
 	}
 
+	/**
+	 * Checks if is typ save.
+	 *
+	 * @return true, if is typ save
+	 */
 	public boolean isTypSave() {
 		return (format % FORMAT_SHORTCLASS) >= FORMAT_TYPESAVE;
 	}
 
+	/**
+	 * Checks if is null check.
+	 *
+	 * @return true, if is null check
+	 */
 	public boolean isNullCheck() {
 		return (format % FORMAT_SHORTCLASS) >= FORMAT_NULL;
 	}
 
+	/**
+	 * Checks if is short class.
+	 *
+	 * @return true, if is short class
+	 */
 	public boolean isShortClass() {
 		return format >= FORMAT_SHORTCLASS;
 	}
 
 	/**
-	 * Serialization the Full object inclusive null value
-	 * 
+	 * Serialization the Full object inclusive null value.
+	 *
 	 * @param format for serialization the full object
 	 * @return self instance
 	 */
@@ -124,18 +155,30 @@ public class Filter {
 		return this;
 	}
 
+	/**
+	 * With property regard.
+	 *
+	 * @param property the property
+	 * @return the filter
+	 */
 	public Filter withPropertyRegard(ObjectCondition property) {
 		this.property = property;
 		return this;
 	}
 
+	/**
+	 * With convertable.
+	 *
+	 * @param convertable the convertable
+	 * @return the filter
+	 */
 	public Filter withConvertable(ObjectCondition convertable) {
 		this.convertable = convertable;
 		return this;
 	}
 
 	/**
-	 * Convert the Entity
+	 * Convert the Entity.
 	 *
 	 * @param entity   The Entity
 	 * @param property The Property to Convert
@@ -143,32 +186,42 @@ public class Filter {
 	 * @param map      IdMap
 	 * @param deep     Deep
 	 * @return Number for Convert 1 for Convert 0 for Reference -1 for not Convert
-	 *
 	 */
 	public int convert(Object entity, String property, Object value, SimpleMap map, int deep) {
 		if (this.convertable == null && this.property == null) {
 			return 1;
 		}
 		SimpleEvent event = new SimpleEvent(this.strategy, map, property, deep, null, entity, value, null);
-		if (this.property != null && this.property.update(event) == false) {
+		if (this.property != null && !this.property.update(event)) {
 			return -1;
 		}
-		if (this.convertable != null && this.convertable.update(event) == false) {
+		if (this.convertable != null && !this.convertable.update(event)) {
 			return 0;
 		}
 		return 1;
 	}
 
+	/**
+	 * Checks if is convertable.
+	 *
+	 * @param event the event
+	 * @return true, if is convertable
+	 */
 	public boolean isConvertable(SimpleEvent event) {
 		return this.convertable == null || this.convertable.update(event);
 	}
 
+	/**
+	 * Gets the property regard.
+	 *
+	 * @return the property regard
+	 */
 	public ObjectCondition getPropertyRegard() {
 		return property;
 	}
 
 	/**
-	 * Create a new Filter for Regard Filter (Encoding Object or remove link)
+	 * Create a new Filter for Regard Filter (Encoding Object or remove link).
 	 *
 	 * @param convertable Condition
 	 * @return a new Filter for regard the model
@@ -179,7 +232,7 @@ public class Filter {
 
 	/**
 	 * Create a new Filter for Converting Filter (Encoding Object or set only the
-	 * Id)
+	 * Id).
 	 *
 	 * @param convertable Condition
 	 * @return a new Filter for Filter with Convertable Items
@@ -188,6 +241,12 @@ public class Filter {
 		return new Filter().withConvertable(convertable);
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @param creator the creator
+	 * @return the properties
+	 */
 	public String[] getProperties(SendableEntityCreator creator) {
 		if (creator == null) {
 			return new String[0];
@@ -196,35 +255,55 @@ public class Filter {
 	}
 
 	/**
-	 * Strategy for setting property value in model
-	 * 
+	 * Strategy for setting property value in model.
+	 *
 	 * @return String type of set Value
 	 */
 	public String getStrategy() {
 		return strategy;
 	}
 
+	/**
+	 * With strategy.
+	 *
+	 * @param strategy the strategy
+	 * @return the filter
+	 */
 	public Filter withStrategy(String strategy) {
 		this.strategy = strategy;
 		return this;
 	}
 
+	/**
+	 * Checks if is simple format.
+	 *
+	 * @return true, if is simple format
+	 */
 	public boolean isSimpleFormat() {
 		return simpleFormat;
 	}
 
+	/**
+	 * With simple format.
+	 *
+	 * @param value the value
+	 * @return the filter
+	 */
 	public Filter withSimpleFormat(boolean value) {
 		this.simpleFormat = value;
 		return this;
 	}
 
+	/**
+	 * Suspend notification.
+	 */
 	public void suspendNotification() {
 		this.strategy = SendableEntityCreator.NEW;
 	}
 
 	/**
-	 * Full Serialization
-	 * 
+	 * Full Serialization.
+	 *
 	 * @return a Filter for Full Serialization
 	 */
 	public static Filter createFull() {
@@ -232,8 +311,8 @@ public class Filter {
 	}
 
 	/**
-	 * Full Serialization
-	 * 
+	 * Full Serialization.
+	 *
 	 * @return a Filter for Full Serialization
 	 */
 	public static Filter createChange() {
@@ -241,8 +320,8 @@ public class Filter {
 	}
 
 	/**
-	 * Simple Serialization
-	 * 
+	 * Simple Serialization.
+	 *
 	 * @return a Filter for Simple Serialization
 	 */
 	public static Filter createSimple() {
@@ -250,8 +329,8 @@ public class Filter {
 	}
 
 	/**
-	 * Null Check Serialization
-	 * 
+	 * Null Check Serialization.
+	 *
 	 * @return a Filter for Null-Check Serialization
 	 */
 	public static Filter createNull() {
@@ -259,14 +338,20 @@ public class Filter {
 	}
 
 	/**
-	 * TypeSave Serialization
-	 * 
+	 * TypeSave Serialization.
+	 *
 	 * @return a Filter for TypeSave Serialization
 	 */
 	public static Filter createTypSave() {
 		return new Filter().withFormat(FORMAT_TYPESAVE);
 	}
 
+	/**
+	 * Convert property.
+	 *
+	 * @param entity the entity
+	 * @param fullProp the full prop
+	 */
 	public void convertProperty(Object entity, String fullProp) {
 	}
 }

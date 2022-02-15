@@ -25,44 +25,84 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
+/**
+ * The Class Button.
+ *
+ * @author Stefan
+ */
 public class Button extends Input<String> {
 	/* Constants */
 	protected static final String BUTTON = "button";
 
 	private String actionType;
 
+	/** The Constant MINIMIZE. */
 	public static final String MINIMIZE = "minimize";
 
+	/** The Constant CLOSE. */
 	public static final String CLOSE = "close";
 
+	/** The Constant MAXIMIZE. */
 	public static final String MAXIMIZE = "maximize";
 
+	/**
+	 * Instantiates a new button.
+	 */
 	public Button() {
 		super();
 		/* Set variables of parent class */
 		this.type = BUTTON;
 	}
 
+	/**
+	 * Gets the action type.
+	 *
+	 * @return the action type
+	 */
 	public String getActionType() {
 		return actionType;
 	}
 
+	/**
+	 * With action type.
+	 *
+	 * @param graphicType the graphic type
+	 * @return the button
+	 */
 	public Button withActionType(String graphicType) {
 		this.actionType = graphicType;
 		return this;
 	}
 
+	/**
+	 * With action type.
+	 *
+	 * @param graphicType the graphic type
+	 * @param conditon the conditon
+	 * @return the button
+	 */
 	public Button withActionType(String graphicType, ObjectCondition conditon) {
 		this.actionType = graphicType;
 		this.addClickListener(conditon);
 		return this;
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param value the value
+	 * @return the button
+	 */
 	public Button withValue(String value) {
 		super.setValue(value);
 		return this;
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @return the button
+	 */
 	@Override
 	public Button newInstance() {
 		return new Button();

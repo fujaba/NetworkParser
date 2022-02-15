@@ -28,7 +28,8 @@ THE SOFTWARE.
 import de.uniks.networkparser.DateTimeEntity;
 
 /**
- * Simple Execution
+ * Simple Execution.
+ *
  * @author Stefan Lindel
  */
 public class SimpleExecutor implements TaskExecutor {
@@ -36,6 +37,14 @@ public class SimpleExecutor implements TaskExecutor {
 	private Space space;
 	private ExecutorService executor;
 
+	/**
+	 * Execute task.
+	 *
+	 * @param task the task
+	 * @param delay the delay
+	 * @param interval the interval
+	 * @return the object
+	 */
 	@Override
 	public Object executeTask(Runnable task, int delay, int interval) {
 		try {
@@ -51,6 +60,13 @@ public class SimpleExecutor implements TaskExecutor {
 		return null;
 	}
 
+	/**
+	 * Execute task.
+	 *
+	 * @param task the task
+	 * @param delay the delay
+	 * @return the object
+	 */
 	@Override
 	public Object executeTask(Runnable task, int delay) {
 		try {
@@ -70,6 +86,12 @@ public class SimpleExecutor implements TaskExecutor {
 		return null;
 	}
 
+	/**
+	 * Handle msg.
+	 *
+	 * @param message the message
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean handleMsg(Message message) {
 		if (space != null) {
@@ -78,26 +100,51 @@ public class SimpleExecutor implements TaskExecutor {
 		return false;
 	}
 
+	/**
+	 * Shutdown.
+	 */
 	@Override
 	public void shutdown() {
 	}
 
+	/**
+	 * With space.
+	 *
+	 * @param space the space
+	 * @return the simple executor
+	 */
 	@Override
 	public SimpleExecutor withSpace(Space space) {
 		this.space = space;
 		return this;
 	}
 
+	/**
+	 * Gets the space.
+	 *
+	 * @return the space
+	 */
 	@Override
 	public Space getSpace() {
 		return space;
 	}
 
+	/**
+	 * Gets the last run.
+	 *
+	 * @return the last run
+	 */
 	@Override
 	public DateTimeEntity getLastRun() {
 		return lastRun;
 	}
 
+	/**
+	 * With executor service.
+	 *
+	 * @param executor the executor
+	 * @return the task executor
+	 */
 	public TaskExecutor withExecutorService(ExecutorService executor) {
 		this.executor = executor;
 		return this;

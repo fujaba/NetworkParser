@@ -24,6 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class StoryUtil.
+ *
+ * @author Stefan
+ */
 public class StoryUtil {
 	@SuppressWarnings("unchecked")
 	private static <T extends Throwable> void throwException(Throwable exception, Object dummy) throws T {
@@ -32,10 +37,22 @@ public class StoryUtil {
 		}
 	}
 
+	/**
+	 * Throw exception.
+	 *
+	 * @param exception the exception
+	 */
 	public static void throwException(Throwable exception) {
 		StoryUtil.<RuntimeException>throwException(exception, null);
 	}
 
+	/**
+	 * With break on assert.
+	 *
+	 * @param story the story
+	 * @param value the value
+	 * @return the story
+	 */
 	public static Story withBreakOnAssert(Story story, boolean value) {
 		story.withBreakOnAssert(value);
 		return story;

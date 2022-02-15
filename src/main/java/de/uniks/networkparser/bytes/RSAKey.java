@@ -27,17 +27,31 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 
 /**
- * Random sequential adsorption
+ * Random sequential adsorption.
+ *
  * @author Stefan Lindel
  */
 public class RSAKey {
+  
+  /** The Constant BEGINPUBLICKEY. */
   public static final String BEGINPUBLICKEY = "-----BEGIN PUBLIC RSA KEY-----\n";
+  
+  /** The Constant ENDPUBLICKEY. */
   public static final String ENDPUBLICKEY = "-----END PUBLIC RSA KEY-----";
+  
+  /** The Constant BEGINPRIVATEKEY. */
   public static final String BEGINPRIVATEKEY = "-----BEGIN PRIVATE RSA KEY-----\n";
+  
+  /** The Constant ENDPRIVATEKEY. */
   public static final String ENDPRIVATEKEY = "-----END PRIVATE RSA KEY-----";
 
+  /** The Constant RSABYTE. */
   public static final Byte RSABYTE = 48;
+  
+  /** The Constant SAFESIZE. */
   public static final int SAFESIZE = 1024;
+  
+  /** The Constant TAG. */
   public static final String TAG = "RSA";
   private BigInteger e;
   private BigInteger d;
@@ -45,28 +59,60 @@ public class RSAKey {
   private BigInteger N;
   private static Random rand = new Random();
 
+  /**
+   * Instantiates a new RSA key.
+   *
+   * @param N the n
+   */
   public RSAKey(BigInteger N) {
     this.N = N;
   }
 
+  /**
+   * With public key.
+   *
+   * @param value the value
+   * @return the RSA key
+   */
   public RSAKey withPublicKey(BigInteger value) {
     this.e = value;
     return this;
   }
 
+  /**
+   * Gets the public key.
+   *
+   * @return the public key
+   */
   public BigInteger getPublicKey() {
     return e;
   }
 
+  /**
+   * With private key.
+   *
+   * @param value the value
+   * @return the RSA key
+   */
   public RSAKey withPrivateKey(BigInteger value) {
     this.d = value;
     return this;
   }
 
+  /**
+   * Gets the private key.
+   *
+   * @return the private key
+   */
   public BigInteger getPrivateKey() {
     return d;
   }
 
+  /**
+   * Gets the modulus.
+   *
+   * @return the modulus
+   */
   public BigInteger getModulus() {
     return N;
   }
@@ -125,6 +171,12 @@ public class RSAKey {
     return encrypt(value, value.length());
   }
 
+  /**
+   * Decrypt.
+   *
+   * @param message the message
+   * @return the character buffer
+   */
   public CharacterBuffer decrypt(String message) {
     if (message != null) {
       try {
@@ -164,6 +216,12 @@ public class RSAKey {
     return sb;
   }
 
+  /**
+   * Sign.
+   *
+   * @param value the value
+   * @return the entity
+   */
   public Entity sign(Entity value) {
     if (value != null) {
       String string = value.toString();
@@ -175,6 +233,13 @@ public class RSAKey {
     return null;
   }
 
+  /**
+   * Encrypt.
+   *
+   * @param value the value
+   * @param group the group
+   * @return the character buffer
+   */
   public CharacterBuffer encrypt(String value, int group) {
     if (value == null) {
       return null;
@@ -265,18 +330,45 @@ public class RSAKey {
     return (value == null);
   }
 
+  /**
+   * Generate key.
+   *
+   * @param p the p
+   * @param q the q
+   * @param max the max
+   * @return the RSA key
+   */
   public static RSAKey generateKey(int p, int q, int max) {
     return generateKey(BigInteger.valueOf(p), BigInteger.valueOf(q), max);
   }
 
+  /**
+   * Generate key.
+   *
+   * @return the RSA key
+   */
   public static RSAKey generateKey() {
     return generateKey(SAFESIZE);
   }
 
+  /**
+   * Generate key.
+   *
+   * @param max the max
+   * @return the RSA key
+   */
   public static RSAKey generateKey(int max) {
     return generateKey(BigInteger.ZERO, BigInteger.ZERO, max);
   }
 
+  /**
+   * Generate key.
+   *
+   * @param p the p
+   * @param q the q
+   * @param max the max
+   * @return the RSA key
+   */
   public static RSAKey generateKey(BigInteger p, BigInteger q, int max) {
     if (p == null || q == null) {
       return null;
@@ -337,12 +429,24 @@ public class RSAKey {
     return null;
   }
 
+  /**
+   * Gets the decrypt key.
+   *
+   * @param n the n
+   * @param privateKey the private key
+   * @return the decrypt key
+   */
   public static RSAKey getDecryptKey(BigInteger n, BigInteger privateKey) {
     RSAKey key = new RSAKey(n);
     key.withPrivateKey(privateKey);
     return key;
   }
 
+  /**
+   * To string.
+   *
+   * @return the string
+   */
   @Override
   public String toString() {
     CharacterBuffer sb = new CharacterBuffer();
@@ -359,14 +463,30 @@ public class RSAKey {
     return sb.toString();
   }
 
+  /**
+   * Gets the public stream.
+   *
+   * @return the public stream
+   */
   public DERBuffer getPublicStream() {
     return getStream(e);
   }
 
+  /**
+   * Gets the private stream.
+   *
+   * @return the private stream
+   */
   public DERBuffer getPrivateStream() {
     return getStream(d);
   }
 
+  /**
+   * Gets the stream.
+   *
+   * @param key the key
+   * @return the stream
+   */
   public DERBuffer getStream(BigInteger key) {
     DERBuffer bitString = new DERBuffer();
 

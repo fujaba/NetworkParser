@@ -29,22 +29,45 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class StoryStepText.
+ *
+ * @author Stefan
+ */
 public class StoryStepText implements ObjectCondition {
 	private String value;
 	private String tag = "p";
 	private boolean isStep = true;
 
+	/**
+	 * With text.
+	 *
+	 * @param text the text
+	 * @return the story step text
+	 */
 	public StoryStepText withText(String text) {
 		this.value = text;
 		return this;
 	}
 
+	/**
+	 * With HTML code.
+	 *
+	 * @param text the text
+	 * @return the story step text
+	 */
 	public StoryStepText withHTMLCode(String text) {
 		this.value = StringUtil.encode(text);
 		this.tag = "pre";
 		return this;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof SimpleEvent == false) {
@@ -55,7 +78,7 @@ public class StoryStepText implements ObjectCondition {
 		Story story = (Story) evt.getSource();
 		if (this.value != null && isStep) {
 			int counter = story.getCounter();
-			XMLEntity textItem = element.createTag(tag, element.getBody());
+			XMLEntity textItem = element.createChild(tag, element.getBody());
 			textItem.add("class", "step");
 			String textValue = "";
 			if (counter >= 0) {
@@ -68,10 +91,21 @@ public class StoryStepText implements ObjectCondition {
 		return true;
 	}
 
+	/**
+	 * Gets the text.
+	 *
+	 * @return the text
+	 */
 	public String getText() {
 		return this.value;
 	}
 
+	/**
+	 * Sets the step.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setStep(boolean value) {
 		if (this.isStep != value) {
 			this.isStep = value;

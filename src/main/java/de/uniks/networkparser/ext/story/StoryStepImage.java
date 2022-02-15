@@ -28,9 +28,20 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * The Class StoryStepImage.
+ *
+ * @author Stefan
+ */
 public class StoryStepImage implements ObjectCondition {
 	private String file;
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof SimpleEvent == false) {
@@ -39,12 +50,18 @@ public class StoryStepImage implements ObjectCondition {
 		SimpleEvent evt = (SimpleEvent) value;
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
 		if (this.file != null) {
-			XMLEntity image = element.createTag("img", element.getBody());
+			XMLEntity image = element.createChild("img", element.getBody());
 			image.put("src", file);
 		}
 		return true;
 	}
 
+	/**
+	 * With file.
+	 *
+	 * @param value the value
+	 * @return the story step image
+	 */
 	public StoryStepImage withFile(String value) {
 		this.file = value;
 		return this;

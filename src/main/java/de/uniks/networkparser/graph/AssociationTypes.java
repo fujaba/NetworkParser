@@ -30,29 +30,55 @@ THE SOFTWARE.
  * back Assoc Undirectional - Edge : Undirectional Association Aggregation -
  * Undirectional : Undirectional Aggregation Aggregation - Edge : Aggregation
  * Composition - Edge : Composition Generalisation - Edge : Generalisation
- * Implements - Edge : Implements Dependency - Edge : Dependency
+ * Implements - Edge : Implements Dependency - Edge : Dependency.
  *
  * @author Stefan
- *
  */
 public class AssociationTypes {
+	
+	/** The Constant ASSOCIATION. */
 	public static final AssociationTypes ASSOCIATION = new AssociationTypes("Assoc");
+	
+	/** The Constant EDGE. */
 	public static final AssociationTypes EDGE = new AssociationTypes("edge");
+	
+	/** The Constant GENERALISATION. */
 	public static final AssociationTypes GENERALISATION = new AssociationTypes("Generalisation");
+	
+	/** The Constant IMPLEMENTS. */
 	public static final AssociationTypes IMPLEMENTS = new AssociationTypes("implements");
+	
+	/** The Constant UNDIRECTIONAL. */
 	public static final AssociationTypes UNDIRECTIONAL = new AssociationTypes("unidirectional");
+	
+	/** The Constant AGGREGATION. */
 	public static final AssociationTypes AGGREGATION = new AssociationTypes("aggregation");
+	
+	/** The Constant COMPOSITION. */
 	public static final AssociationTypes COMPOSITION = new AssociationTypes("composition");
+	
+	/** The Constant DEPENDENCY. */
 	public static final AssociationTypes DEPENDENCY = new AssociationTypes("dependency");
 
 	private AssociationTypes(String value) {
 		this.value = value;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public String getValue() {
 		return value;
 	}
 
+	/**
+	 * Checks if is edge.
+	 *
+	 * @param value the value
+	 * @return true, if is edge
+	 */
 	public static boolean isEdge(AssociationTypes value) {
 		if (value == null) {
 			return false;
@@ -61,6 +87,12 @@ public class AssociationTypes {
 				|| value.equals(AGGREGATION) || value.equals(COMPOSITION));
 	}
 
+	/**
+	 * Checks if is same.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean IsSame(Object value) {
 		if (value instanceof AssociationTypes) {
 			return this == value;
@@ -71,6 +103,12 @@ public class AssociationTypes {
 		return false;
 	}
 
+	/**
+	 * Checks if is implements.
+	 *
+	 * @param value the value
+	 * @return true, if is implements
+	 */
 	public static boolean isImplements(AssociationTypes value) {
 		if (value == null) {
 			return false;
@@ -80,11 +118,22 @@ public class AssociationTypes {
 
 	private String value;
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return this.value;
 	}
 
+	/**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
@@ -96,6 +145,12 @@ public class AssociationTypes {
 		return super.equals(obj);
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param value the value
+	 * @return the association types
+	 */
 	public static AssociationTypes create(String value) {
 		if (ASSOCIATION.equals(value)) {
 			return ASSOCIATION;

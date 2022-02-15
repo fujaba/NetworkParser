@@ -6,9 +6,20 @@ import java.beans.PropertyChangeSupport;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
+/**
+ * The Class User.
+ *
+ * @author Stefan
+ */
 public class User implements SendableEntityCreator {
+	
+	/** The Constant PROPERTY_NAME. */
 	public static final String PROPERTY_NAME = "name";
+	
+	/** The Constant PROPERTY_PASSWORD. */
 	public static final String PROPERTY_PASSWORD = "password";
+	
+	/** The Constant properties. */
 	public static final String[] properties = new String[] { PROPERTY_NAME, PROPERTY_PASSWORD };
 	private String name;
 	private String password;
@@ -16,6 +27,14 @@ public class User implements SendableEntityCreator {
 
 	protected PropertyChangeSupport listeners = null;
 
+	/**
+	 * Fire property change.
+	 *
+	 * @param propertyName the property name
+	 * @param oldValue the old value
+	 * @param newValue the new value
+	 * @return true, if successful
+	 */
 	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
 		if (listeners != null) {
 			listeners.firePropertyChange(propertyName, oldValue, newValue);
@@ -24,6 +43,12 @@ public class User implements SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * Adds the property change listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
 		if (listeners == null) {
 			listeners = new PropertyChangeSupport(this);
@@ -32,6 +57,13 @@ public class User implements SendableEntityCreator {
 		return true;
 	}
 
+	/**
+	 * Adds the property change listener.
+	 *
+	 * @param propertyName the property name
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		if (listeners == null) {
 			listeners = new PropertyChangeSupport(this);
@@ -40,6 +72,12 @@ public class User implements SendableEntityCreator {
 		return true;
 	}
 
+	/**
+	 * Removes the property change listener.
+	 *
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
 		if (listeners != null) {
 			listeners.removePropertyChangeListener(listener);
@@ -47,6 +85,13 @@ public class User implements SendableEntityCreator {
 		return true;
 	}
 
+	/**
+	 * Removes the property change listener.
+	 *
+	 * @param propertyName the property name
+	 * @param listener the listener
+	 * @return true, if successful
+	 */
 	public boolean removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		if (listeners != null) {
 			listeners.removePropertyChangeListener(propertyName, listener);
@@ -54,10 +99,21 @@ public class User implements SendableEntityCreator {
 		return true;
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
 	public String getName() {
 		return this.name;
 	}
 
+	/**
+	 * Sets the name.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setName(String value) {
 		if (this.name != value) {
 			String oldValue = this.name;
@@ -68,15 +124,32 @@ public class User implements SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * With name.
+	 *
+	 * @param value the value
+	 * @return the user
+	 */
 	public User withName(String value) {
 		setName(value);
 		return this;
 	}
 
+	/**
+	 * Gets the password.
+	 *
+	 * @return the password
+	 */
 	public String getPassword() {
 		return this.password;
 	}
 
+	/**
+	 * Sets the password.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setPassword(String value) {
 		if (this.password != value) {
 			String oldValue = this.password;
@@ -87,21 +160,45 @@ public class User implements SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * With password.
+	 *
+	 * @param value the value
+	 * @return the user
+	 */
 	public User withPassword(String value) {
 		setPassword(value);
 		return this;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return properties;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new User();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (attribute == null || entity instanceof User == false) {
@@ -116,6 +213,15 @@ public class User implements SendableEntityCreator {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (attribute == null || entity instanceof User == false) {
@@ -130,12 +236,26 @@ public class User implements SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param name the name
+	 * @param password the password
+	 * @return the user
+	 */
 	public User with(String name, String password) {
 		this.setName(name);
 		this.setPassword(password);
 		return this;
 	}
 
+	/**
+	 * Adds the token.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean addToken(String key, String value) {
 		if (tokens == null) {
 			tokens = new SimpleKeyValueList<String, String>();
@@ -143,6 +263,13 @@ public class User implements SendableEntityCreator {
 		return tokens.add(key, value);
 	}
 
+	/**
+	 * Contains.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean contains(String key, String value) {
 		if (tokens == null) {
 			return false;

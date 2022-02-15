@@ -40,11 +40,22 @@ import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 
+/**
+ * The Class VariableCondition.
+ *
+ * @author Stefan
+ */
 public class VariableCondition implements ParserCondition {
 	private CharSequence value;
 	private boolean expression;
 	private boolean defaultStringValue;
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof ObjectCondition) {
@@ -61,21 +72,30 @@ public class VariableCondition implements ParserCondition {
 		return this.value.equals(value);
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param value the value
+	 * @return the variable condition
+	 */
 	public VariableCondition withValue(CharSequence value) {
 		this.value = value;
 		return this;
 	}
-	/** GetValue
-	* key = Variable
-	* value = String
-	* variable = string
-	* Variable = String
-	* VARIABLE = STRING
-	* vAriable = nix
-	* Variable#Function
-	* @param value text Dictionary
-	* @return The EvaluationValue
-	**/
+	
+	/**
+	 *  GetValue
+	 * key = Variable
+	 * value = String
+	 * variable = string
+	 * Variable = String
+	 * VARIABLE = STRING
+	 * vAriable = nix
+	 * Variable#Function.
+	 *
+	 * @param value text Dictionary
+	 * @return The EvaluationValue
+	 */
 	public Object getValue(LocalisationInterface value) {
 		if (value instanceof SendableEntityCreator) {
 			SendableEntityCreator variables = (SendableEntityCreator) value;
@@ -168,6 +188,14 @@ public class VariableCondition implements ParserCondition {
 		return null;
 	}
 
+	/**
+	 * Adds the annotation.
+	 *
+	 * @param anno the anno
+	 * @param buffer the buffer
+	 * @param param the param
+	 * @param variables the variables
+	 */
 	public void addAnnotation(Annotation anno, CharacterBuffer buffer, String param, SendableEntityCreator variables) {
 		if (anno == null || buffer == null) {
 			return;
@@ -189,6 +217,14 @@ public class VariableCondition implements ParserCondition {
 		buffer.with('@').with(anno.toString());
 	}
 
+	/**
+	 * Replace text.
+	 *
+	 * @param name the name
+	 * @param format the format
+	 * @param value the value
+	 * @return the string
+	 */
 	public String replaceText(String name, String format, String value) {
 		if (name == null) {
 			return name;
@@ -251,40 +287,87 @@ public class VariableCondition implements ParserCondition {
 		return value;
 	}
 
+	/**
+	 * With expression.
+	 *
+	 * @param value the value
+	 * @return the variable condition
+	 */
 	public VariableCondition withExpression(boolean value) {
 		this.expression = value;
 		return this;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param sequence the sequence
+	 * @param expression the expression
+	 * @return the variable condition
+	 */
 	public static VariableCondition create(CharSequence sequence, boolean expression) {
 		return new VariableCondition().withValue(sequence).withExpression(expression);
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param buffer the buffer
+	 * @param parser the parser
+	 * @param customTemplate the custom template
+	 */
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		this.value = buffer.nextToken(true, ' ', '}');
 	}
 
+	/**
+	 * Checks if is expression.
+	 *
+	 * @return true, if is expression
+	 */
 	@Override
 	public boolean isExpression() {
 		return expression;
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return null;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return "{{" + this.value + "}}";
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public VariableCondition getSendableInstance(boolean prototyp) {
 		return new VariableCondition();
 	}
 
+	/**
+	 * With default string value.
+	 *
+	 * @param value the value
+	 * @return the variable condition
+	 */
 	public VariableCondition withDefaultStringValue(boolean value) {
 		this.defaultStringValue = value;
 		return this;

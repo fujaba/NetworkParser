@@ -25,25 +25,54 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface TemplateParser.
+ * @author Stefan
+ */
 public interface TemplateParser {
+	
+	/** The Constant DECLARATION. */
 	public static final int DECLARATION = 0;
 
+	/** The Constant PACKAGE. */
 	public static final int PACKAGE = 1;
 
+	/** The Constant IMPORT. */
 	public static final int IMPORT = 2;
 
+	/** The Constant TEMPLATE. */
 	public static final int TEMPLATE = 3;
 
+	/** The Constant FIELD. */
 	public static final int FIELD = 4;
 
+	/** The Constant VALUE. */
 	public static final int VALUE = 5;
 
+	/** The Constant METHOD. */
 	public static final int METHOD = 6;
 
+	/** The Constant TEMPLATEEND. */
 	public static final int TEMPLATEEND = Integer.MAX_VALUE;
 	
-	public String[] getLastStopWords();
+	/**
+	 * Gets the last stop words.
+	 *
+	 * @return the last stop words
+	 */
+	String[] getLastStopWords();
 
-	public ObjectCondition parsing(CharacterBuffer template, LocalisationInterface customTemplate, boolean isExpression,
+	/**
+	 * Parsing.
+	 *
+	 * @param template the template
+	 * @param customTemplate the custom template
+	 * @param isExpression the is expression
+	 * @param allowSpace the allow space
+	 * @param stopWords the stop words
+	 * @return the object condition
+	 */
+	ObjectCondition parsing(CharacterBuffer template, LocalisationInterface customTemplate, boolean isExpression,
 			boolean allowSpace, String... stopWords);
 }

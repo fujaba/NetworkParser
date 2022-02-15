@@ -18,14 +18,27 @@ import de.uniks.networkparser.xml.XMLContainer;
 import de.uniks.networkparser.xml.XMLEntity;
 
 /**
- * MavenXML Generation
+ * MavenXML Generation.
+ *
  * @author Stefan Lindel
  */
 public class MavenXML {
+	
+	/** The Constant CRLF. */
 	public static final String CRLF = "\r\n";
+	
+	/** The Constant JSFILE. */
 	public static final String JSFILE = "diagram.js";
+	
+	/** The Constant UPDATE. */
 	public static final String UPDATE = "\"update\":\"";
 
+	/**
+	 * Check for update.
+	 *
+	 * @param url the url
+	 * @return true, if successful
+	 */
 	public static boolean checkForUpdate(String url) {
 		boolean updated = false;
 		if (url == null) {
@@ -56,6 +69,13 @@ public class MavenXML {
 		return updated;
 	}
 
+	/**
+	 * Write index html.
+	 *
+	 * @param startingDirectory the starting directory
+	 * @param fullList the full list
+	 * @return true, if successful
+	 */
 	public boolean writeIndexHtml(File startingDirectory, ArtifactList fullList) {
 		if (fullList == null || fullList.size() < 1) {
 			return false;
@@ -67,6 +87,12 @@ public class MavenXML {
 
 	}
 
+	/**
+	 * Pom file.
+	 *
+	 * @param file the file
+	 * @return the string
+	 */
 	public String pomFile(ArtifactFile file) {
 		if(file != null) {
 			return file.toString();
@@ -74,6 +100,12 @@ public class MavenXML {
 		return null;
 	}
 
+	/**
+	 * Meta file.
+	 *
+	 * @param list the list
+	 * @return the XML container
+	 */
 	public XMLContainer metaFile(ArtifactList list) {
 		XMLContainer entity = new XMLContainer().withStandardPrefix();
 		XMLEntity metadata = entity.createChild("metadata");
@@ -131,6 +163,12 @@ public class MavenXML {
 		return true;
 	}
 
+	/**
+	 * Write maven meta file.
+	 *
+	 * @param list the list
+	 * @param path the path
+	 */
 	public void writeMavenMetaFile(ArtifactList list, File path) {
 		if (list != null && list.size() > 0) {
 			XMLContainer metaFile = metaFile(list);
@@ -148,6 +186,12 @@ public class MavenXML {
 		}
 	}
 
+	/**
+	 * Write SHA 1.
+	 *
+	 * @param file the file
+	 * @return true, if successful
+	 */
 	public boolean writeSHA1(File file) {
 		if(file == null) {
 			return false;
@@ -173,6 +217,12 @@ public class MavenXML {
 		return true;
 	}
 
+	/**
+	 * Write MD 5.
+	 *
+	 * @param file the file
+	 * @return true, if successful
+	 */
 	public boolean writeMD5(File file) {
 		if(file == null) {
 			return false;
@@ -225,6 +275,14 @@ public class MavenXML {
 				+ classifier;
 	}
 
+	/**
+	 * Indexer.
+	 *
+	 * @param srcPath the src path
+	 * @param groupId the group id
+	 * @param extension the extension
+	 * @return the artifact list
+	 */
 	public ArtifactList indexer(String srcPath, String groupId, String... extension) {
 		ArtifactList list = new ArtifactList();
 		File[] listFiles = null;
@@ -257,6 +315,15 @@ public class MavenXML {
 		return list;
 	}
 
+	/**
+	 * Builds the maven.
+	 *
+	 * @param srcPath the src path
+	 * @param groupId the group id
+	 * @param target the target
+	 * @param extension the extension
+	 * @return the artifact list
+	 */
 	public ArtifactList buildMaven(String srcPath, String groupId, String target, String... extension) {
 		ArtifactList list = indexer(srcPath, groupId, extension);
 		if (list != null && target != null) {

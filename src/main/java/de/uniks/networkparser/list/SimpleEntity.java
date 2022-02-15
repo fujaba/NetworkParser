@@ -51,6 +51,14 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntity
 	/** The Variable of Value. */
 	private V value;
 
+	/**
+	 * With.
+	 *
+	 * @param <ST> the generic type
+	 * @param key the key
+	 * @param value the value
+	 * @return the st
+	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleEntity<K, V>> ST with(K key, V value) {
 		this.key = key;
@@ -58,12 +66,24 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntity
 		return (ST) this;
 	}
 
+	/**
+	 * With key item.
+	 *
+	 * @param key the key
+	 * @return the simple entity
+	 */
 	@SuppressWarnings("unchecked")
 	public SimpleEntity<K, V> withKeyItem(Object key) {
 		withKey((K) key);
 		return this;
 	}
 
+	/**
+	 * With value item.
+	 *
+	 * @param value the value
+	 * @return the simple entity
+	 */
 	@SuppressWarnings("unchecked")
 	public SimpleEntity<K, V> withValueItem(Object value) {
 		withValue((V) value);
@@ -71,7 +91,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntity
 	}
 
 	/**
-	 * add the Values of the map to AbstractKeyValueEntry&lt;K, V&gt;
+	 * add the Values of the map to AbstractKeyValueEntry&lt;K, V&gt;.
 	 *
 	 * @param collection a map of key-values
 	 * @return Itself
@@ -91,11 +111,21 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntity
 		return this;
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public K getKey() {
 		return key;
 	}
 
+	/**
+	 * Gets the key string.
+	 *
+	 * @return the key string
+	 */
 	public String getKeyString() {
 		if (key instanceof String) {
 			return "" + key;
@@ -103,11 +133,22 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntity
 		return null;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	@Override
 	public V getValue() {
 		return value;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param value the value
+	 * @return the v
+	 */
 	@Override
 	public V setValue(V value) {
 		this.value = value;
@@ -124,11 +165,23 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntity
 		this.key = (K) key;
 	}
 
+	/**
+	 * Sets the key.
+	 *
+	 * @param value the value
+	 * @return the k
+	 */
 	public K setKey(K value) {
 		this.key = value;
 		return value;
 	}
 
+	/**
+	 * Equals.
+	 *
+	 * @param o the o
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Map.Entry == false ) {
@@ -138,21 +191,43 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntity
 		return eq(key, e.getKey()) && eq(value, e.getValue());
 	}
 
+	/**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int hashCode() {
 		return ((key == null) ? 0 : key.hashCode()) ^ ((value == null) ? 0 : value.hashCode());
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return key + "=" + value;
 	}
 
+	/**
+	 * With key.
+	 *
+	 * @param key the key
+	 * @return the simple entity
+	 */
 	public SimpleEntity<K, V> withKey(K key) {
 		this.key = key;
 		return this;
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param value the value
+	 * @return the simple entity
+	 */
 	public SimpleEntity<K, V> withValue(V value) {
 		this.value = value;
 		return this;
@@ -162,11 +237,23 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntity
 		return (o1 == null ? o2 == null : o1.equals(o2));
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] {PROPERTY_KEY, PROPERTY_VALUE};
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		Entry<?, ?> obj = ((Entry<?, ?>) entity);
@@ -178,6 +265,15 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntity
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (entity instanceof SimpleEntity) {
@@ -203,11 +299,23 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntity
 		return false;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new SimpleEntity<K, V>();
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean add(Object... values) {
 		if (values == null) {
@@ -220,11 +328,23 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntity
 		return true;
 	}
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new SimpleEntity<K, V>();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param key the key
+	 * @return the value
+	 */
 	public Object getValue(Object key) {
 		if (PROPERTY_KEY.equals(key)) {
 			return this.key;
@@ -235,6 +355,12 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntity
 		return null;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param converter the converter
+	 * @return the string
+	 */
 	@Override
 	public String toString(Converter converter) {
 		if (converter == null) {
@@ -243,6 +369,11 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntity
 		return converter.encode(this);
 	}
 
+	/**
+	 * Size.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int size() {
 		if (key != null) {

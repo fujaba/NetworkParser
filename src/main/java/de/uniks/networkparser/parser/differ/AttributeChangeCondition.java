@@ -5,8 +5,16 @@ import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.GraphMatcher;
 
+/**
+ * The Class AttributeChangeCondition.
+ *
+ * @author Stefan
+ */
 public class AttributeChangeCondition extends MatchCondition {
 
+	/**
+	 * Instantiates a new attribute change condition.
+	 */
 	public AttributeChangeCondition() {
 		changeConditions.add(new ChangeRenameCondition());
 		changeConditions.add(new ChangeAddCondition());
@@ -51,6 +59,11 @@ public class AttributeChangeCondition extends MatchCondition {
 		return true;
 	}
 
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
 	@Override
 	public String getAction() {
 		return SendableEntityCreator.UPDATE;

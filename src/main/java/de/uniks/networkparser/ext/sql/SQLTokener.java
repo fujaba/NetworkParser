@@ -24,13 +24,28 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class SQLTokener.
+ *
+ * @author Stefan
+ */
 public class SQLTokener extends Tokener {
 	private SQLStatement sqlConnection;
 	private Connection connection;
+	
+	/** The Constant TABLE_FLAT. */
 	public static final String TABLE_FLAT = "table";
+	
+	/** The Constant TABLE_PRIVOTISIERUNG. */
 	public static final String TABLE_PRIVOTISIERUNG = "pivotisierung";
+	
+	/** The Constant FLAG_NONE. */
 	public static final byte FLAG_NONE = 0x00;
+	
+	/** The Constant FLAG_CREATE. */
 	public static final byte FLAG_CREATE = 0x01;
+	
+	/** The Constant FLAG_DROP. */
 	public static final byte FLAG_DROP = 0x02;
 	private static final String TYPE_INTEGER = "INTEGER";
 	private static final String TYPE_STRING = "STRING";
@@ -38,15 +53,32 @@ public class SQLTokener extends Tokener {
 	private byte flag = FLAG_CREATE;
 	private String stragety = TABLE_FLAT;
 
+	/**
+	 * Instantiates a new SQL tokener.
+	 *
+	 * @param connection the connection
+	 */
 	public SQLTokener(SQLStatement connection) {
 		this.sqlConnection = connection;
 	}
 
+	/**
+	 * Instantiates a new SQL tokener.
+	 *
+	 * @param connection the connection
+	 * @param stragety the stragety
+	 */
 	public SQLTokener(SQLStatement connection, String stragety) {
 		this.sqlConnection = connection;
 		this.stragety = stragety;
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param model the model
+	 * @return the SQL statement list
+	 */
 	public SQLStatementList encode(GraphList model) {
 		SQLStatementList result = new SQLStatementList();
 		result.add(sqlConnection);
@@ -85,10 +117,24 @@ public class SQLTokener extends Tokener {
 		}
 	}
 
+	/**
+	 * Execute statements.
+	 *
+	 * @param statements the statements
+	 * @return true, if successful
+	 */
 	public boolean executeStatements(SQLStatementList statements) {
 		return executeStatements(statements, null, false);
 	}
 
+	/**
+	 * Execute statements.
+	 *
+	 * @param statements the statements
+	 * @param results the results
+	 * @param dynamicTable the dynamic table
+	 * @return true, if successful
+	 */
 	public boolean executeStatements(SQLStatementList statements, SimpleList<SQLTable> results, boolean dynamicTable) {
 		boolean result = true;
 		Connection connection = null;
@@ -144,6 +190,12 @@ public class SQLTokener extends Tokener {
 		return result;
 	}
 
+	/**
+	 * Disconnect.
+	 *
+	 * @param connection the connection
+	 * @return true, if successful
+	 */
 	public boolean disconnect(Connection connection) {
 		try {
 			if (connection != null) {
@@ -155,6 +207,11 @@ public class SQLTokener extends Tokener {
 		return true;
 	}
 
+	/**
+	 * Close.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean close() {
 		if (this.connection == null) {
 			return true;
@@ -164,6 +221,12 @@ public class SQLTokener extends Tokener {
 		return this.disconnect(con);
 	}
 
+	/**
+	 * Connect.
+	 *
+	 * @param connect the connect
+	 * @return the connection
+	 */
 	public Connection connect(SQLStatement connect) {
 		if (connect == null) {
 			return null;
@@ -180,15 +243,33 @@ public class SQLTokener extends Tokener {
 		return null;
 	}
 
+	/**
+	 * With connection.
+	 *
+	 * @param connection the connection
+	 * @return the SQL tokener
+	 */
 	public SQLTokener withConnection(Connection connection) {
 		this.connection = connection;
 		return this;
 	}
 
+	/**
+	 * Gets the connection.
+	 *
+	 * @return the connection
+	 */
 	public Connection getConnection() {
 		return connection;
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @param map the map
+	 * @return the SQL statement list
+	 */
 	@Override
 	public SQLStatementList encode(Object entity, MapEntity map) {
 		SQLStatementList statements = new SQLStatementList();
@@ -200,6 +281,15 @@ public class SQLTokener extends Tokener {
 		return statements;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param entity the entity
+	 * @param id the id
+	 * @param property the property
+	 * @param newValue the new value
+	 * @return the SQL statement list
+	 */
 	public SQLStatementList update(Object entity, String id, String property, Object newValue) {
 		SQLStatementList statements = new SQLStatementList();
 		statements.add(sqlConnection);
@@ -391,6 +481,13 @@ public class SQLTokener extends Tokener {
 		}
 	}
 
+	/**
+	 * Validate statements.
+	 *
+	 * @param result the result
+	 * @param results the results
+	 * @return true, if successful
+	 */
 	public boolean validateStatements(SQLStatementList result, SimpleList<SQLTable> results) {
 		SimpleKeyValueList<String, SelectSearcher> foundKeys = new SimpleKeyValueList<String, SelectSearcher>();
 
@@ -540,6 +637,8 @@ public class SQLTokener extends Tokener {
 	}
 
 	/**
+	 * Gets the flag.
+	 *
 	 * @return the flag
 	 */
 	public byte getFlag() {
@@ -547,6 +646,8 @@ public class SQLTokener extends Tokener {
 	}
 
 	/**
+	 * With flag.
+	 *
 	 * @param flag the flag to set
 	 * @return thisComponent
 	 */

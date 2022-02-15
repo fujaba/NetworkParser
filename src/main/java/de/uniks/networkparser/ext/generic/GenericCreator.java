@@ -34,6 +34,11 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleSet;
 
+/**
+ * The Class GenericCreator.
+ *
+ * @author Stefan
+ */
 public class GenericCreator implements SendableEntityCreator {
 	private Object item;
 	private Class<?> clazz;
@@ -41,6 +46,9 @@ public class GenericCreator implements SendableEntityCreator {
 	private String id;
 	private static final SimpleSet<String> badProperties = new SimpleSet<String>();
 
+	/**
+	 * Instantiates a new generic creator.
+	 */
 	public GenericCreator() {
 		badProperties.add("getClass");
 		badProperties.add("getPropertyChangeSupport");
@@ -48,24 +56,51 @@ public class GenericCreator implements SendableEntityCreator {
 		badProperties.add("withDynamicValue");
 	}
 
+	/**
+	 * Instantiates a new generic creator.
+	 *
+	 * @param item the item
+	 */
 	public GenericCreator(Object item) {
 		this();
 		withItem(item);
 	}
 
+	/**
+	 * With id.
+	 *
+	 * @param id the id
+	 * @return the generic creator
+	 */
 	public GenericCreator withId(String id) {
 		this.id = id;
 		return this;
 	}
 
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * Gets the item.
+	 *
+	 * @return the item
+	 */
 	public Object getItem() {
 		return item;
 	}
 
+	/**
+	 * With class.
+	 *
+	 * @param value the value
+	 * @return the generic creator
+	 */
 	public GenericCreator withClass(String value) {
 		try {
 			if (value != null) {
@@ -76,11 +111,23 @@ public class GenericCreator implements SendableEntityCreator {
 		return this;
 	}
 
+	/**
+	 * With class.
+	 *
+	 * @param clazz the clazz
+	 * @return the generic creator
+	 */
 	public GenericCreator withClass(Class<?> clazz) {
 		this.clazz = clazz;
 		return this;
 	}
 
+	/**
+	 * With item.
+	 *
+	 * @param value the value
+	 * @return the generic creator
+	 */
 	public GenericCreator withItem(Object value) {
 		this.item = value;
 
@@ -103,11 +150,22 @@ public class GenericCreator implements SendableEntityCreator {
 		return this;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return properties;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototype the prototype
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototype) {
 		if (item != null) {
@@ -125,6 +183,13 @@ public class GenericCreator implements SendableEntityCreator {
 		return value.substring(0, 1).toUpperCase() + value.substring(1);
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (entity == null || this.clazz == null) {
@@ -194,6 +259,15 @@ public class GenericCreator implements SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (entity == null || this.clazz == null) {
@@ -253,6 +327,13 @@ public class GenericCreator implements SendableEntityCreator {
 		return name;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param map the map
+	 * @param className the class name
+	 * @return the generic creator
+	 */
 	public static GenericCreator create(IdMap map, String className) {
 		try {
 			if (className != null && className.length() > 0) {
@@ -263,6 +344,13 @@ public class GenericCreator implements SendableEntityCreator {
 		return null;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param map the map
+	 * @param instance the instance
+	 * @return the generic creator
+	 */
 	public static GenericCreator create(IdMap map, Class<?> instance) {
 		if (map == null || instance == null) {
 			return null;

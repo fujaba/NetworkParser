@@ -22,6 +22,11 @@ import de.uniks.networkparser.logic.InstanceOf;
 import de.uniks.networkparser.logic.StringCondition;
 import de.uniks.networkparser.parser.Token;
 
+/**
+ * The Class CucumberStdRule.
+ *
+ * @author Stefan
+ */
 public class CucumberStdRule implements ObjectCondition {
 	private Cucumber cucumber;
 	private SimpleKeyValueList<String, ClazzSet> assocs = new SimpleKeyValueList<String, ClazzSet>();
@@ -29,6 +34,12 @@ public class CucumberStdRule implements ObjectCondition {
 	private GraphList model;
 	private ClazzSet attributeSet;
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof Cucumber) {
@@ -37,6 +48,12 @@ public class CucumberStdRule implements ObjectCondition {
 		return false;
 	}
 
+	/**
+	 * Analyse cucumber.
+	 *
+	 * @param cucumber the cucumber
+	 * @return true, if successful
+	 */
 	public boolean analyseCucumber(Cucumber cucumber) {
 		this.cucumber = cucumber;
 
@@ -555,6 +572,11 @@ public class CucumberStdRule implements ObjectCondition {
 		return clazz;
 	}
 	
+	/**
+	 * Gets the model.
+	 *
+	 * @return the model
+	 */
 	public GraphModel getModel() {
 		return model;
 	}

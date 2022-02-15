@@ -31,37 +31,59 @@ import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
+/**
+ * The Class Column.
+ *
+ * @author Stefan
+ */
 public class Column implements SendableEntityCreatorNoIndex, CellHandler {
+	
+	/** The Constant AUTOWIDTH. */
 	public static final int AUTOWIDTH = -1;
 
+	/** The Constant PROPERTY_ID. */
 	public static final String PROPERTY_ID = "id";
 
+	/** The Constant PROPERTY_STYLE. */
 	public static final String PROPERTY_STYLE = "style";
 
+	/** The Constant PROPERTY_ACTIVESTYLE. */
 	public static final String PROPERTY_ACTIVESTYLE = "activeStyle";
 
+	/** The Constant PROPERTY_ATTRIBUTE. */
 	public static final String PROPERTY_ATTRIBUTE = "attribute";
 
+	/** The Constant PROPERTY_NUMBERFORMAT. */
 	public static final String PROPERTY_NUMBERFORMAT = "numberformat";
 
+	/** The Constant PROPERTY_EDITCOLUMN. */
 	public static final String PROPERTY_EDITCOLUMN = "editColumn";
 
+	/** The Constant PROPERTY_LABEL. */
 	public static final String PROPERTY_LABEL = "label";
 
+	/** The Constant PROPERTY_DEFAULTTEXT. */
 	public static final String PROPERTY_DEFAULTTEXT = "defaulttext";
 
+	/** The Constant PROPERTY_RESIZE. */
 	public static final String PROPERTY_RESIZE = "resize";
 
+	/** The Constant PROPERTY_VISIBLE. */
 	public static final String PROPERTY_VISIBLE = "visible";
 
+	/** The Constant PROPERTY_MOVABLE. */
 	public static final String PROPERTY_MOVABLE = "movable";
 
+	/** The Constant PROPERTY_ALTTEXT. */
 	public static final String PROPERTY_ALTTEXT = "altText";
 
+	/** The Constant PROPERTY_BROWSERID. */
 	public static final String PROPERTY_BROWSERID = "browserid";
 
+	/** The Constant PROPERTY_FIELDTYP. */
 	public static final String PROPERTY_FIELDTYP = "fieldTyp";
 
+	/** The Constant FORMAT_DATE. */
 	public static final String FORMAT_DATE = "HH:MM:SS";
 
 	private static final String[] properties = new String[] { Column.PROPERTY_ID, Column.PROPERTY_ATTRIBUTE,
@@ -103,6 +125,7 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 	private Comparator<TableCellValue> comparator;
 
 	/**
+	 * Gets the id.
 	 *
 	 * @return the ID
 	 */
@@ -111,6 +134,7 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 	}
 
 	/**
+	 * With ID.
 	 *
 	 * @param id the new id
 	 * @return itself
@@ -121,12 +145,19 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 	}
 
 	/**
+	 * Gets the label.
+	 *
 	 * @return the label
 	 */
 	public String getLabel() {
 		return label;
 	}
 
+	/**
+	 * Gets the label or attr name.
+	 *
+	 * @return the label or attr name
+	 */
 	public String getLabelOrAttrName() {
 		if (label == null) {
 			return attrName;
@@ -135,6 +166,8 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 	}
 
 	/**
+	 * With label.
+	 *
 	 * @param label the label to set
 	 * @return Itself
 	 */
@@ -143,12 +176,18 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 		return this;
 	}
 
-	/** @return the Attribute Name for display */
+	/**
+	 * Gets the attr name.
+	 *
+	 * @return the Attribute Name for display
+	 */
 	public String getAttrName() {
 		return attrName;
 	}
 
 	/**
+	 * With attribute.
+	 *
 	 * @param attrName Attribute Name for display
 	 * @return Itself
 	 */
@@ -158,6 +197,8 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 	}
 
 	/**
+	 * With attribute.
+	 *
 	 * @param attrName Attribute Name for display
 	 * @param edit     is the Column is editable
 	 * @return Itself
@@ -172,6 +213,8 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 	}
 
 	/**
+	 * Gets the number format.
+	 *
 	 * @return the NumberFormat
 	 */
 	public String getNumberFormat() {
@@ -179,6 +222,8 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 	}
 
 	/**
+	 * With number format.
+	 *
 	 * @param value the NumberFormat to set
 	 * @return Itself
 	 */
@@ -188,6 +233,8 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 	}
 
 	/**
+	 * Checks if is editable.
+	 *
 	 * @return the editColumn
 	 */
 	public boolean isEditable() {
@@ -195,6 +242,8 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 	}
 
 	/**
+	 * With editable.
+	 *
 	 * @param value the editColumn to set
 	 * @return Itself
 	 */
@@ -203,73 +252,160 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 		return this;
 	}
 
+	/**
+	 * Checks if is resizable.
+	 *
+	 * @return true, if is resizable
+	 */
 	public boolean isResizable() {
 		return isResizable;
 	}
 
+	/**
+	 * With resizable.
+	 *
+	 * @param isResizable the is resizable
+	 * @return the column
+	 */
 	public Column withResizable(boolean isResizable) {
 		this.isResizable = isResizable;
 		return this;
 	}
 
+	/**
+	 * Checks if is visible.
+	 *
+	 * @return true, if is visible
+	 */
 	public boolean isVisible() {
 		return isVisible;
 	}
 
+	/**
+	 * With visible.
+	 *
+	 * @param isVisible the is visible
+	 * @return the column
+	 */
 	public Column withVisible(boolean isVisible) {
 		this.isVisible = isVisible;
 		return this;
 	}
 
+	/**
+	 * With alt attribute.
+	 *
+	 * @param altAttribute the alt attribute
+	 * @return the column
+	 */
 	public Column withAltAttribute(String altAttribute) {
 		this.altAttribute = altAttribute;
 		return this;
 	}
 
+	/**
+	 * Gets the alt attribute.
+	 *
+	 * @return the alt attribute
+	 */
 	public String getAltAttribute() {
 		return altAttribute;
 	}
 
+	/**
+	 * Checks if is movable.
+	 *
+	 * @return true, if is movable
+	 */
 	public boolean isMovable() {
 		return isMovable;
 	}
 
+	/**
+	 * With movable.
+	 *
+	 * @param isMovable the is movable
+	 * @return the column
+	 */
 	public Column withMovable(boolean isMovable) {
 		this.isMovable = isMovable;
 		return this;
 	}
 
+	/**
+	 * Gets the browser id.
+	 *
+	 * @return the browser id
+	 */
 	public GUIPosition getBrowserId() {
 		return browserId;
 	}
 
+	/**
+	 * With browser id.
+	 *
+	 * @param browserId the browser id
+	 * @return the column
+	 */
 	public Column withBrowserId(GUIPosition browserId) {
 		this.browserId = browserId;
 		return this;
 	}
 
+	/**
+	 * Gets the field typ.
+	 *
+	 * @return the field typ
+	 */
 	public FieldTyp getFieldTyp() {
 		return fieldTyp;
 	}
 
+	/**
+	 * With field typ.
+	 *
+	 * @param fieldTyp the field typ
+	 * @return the column
+	 */
 	public Column withFieldTyp(FieldTyp fieldTyp) {
 		this.fieldTyp = fieldTyp;
 		return this;
 	}
 
+	/**
+	 * Gets the default text.
+	 *
+	 * @return the default text
+	 */
 	public String getDefaultText() {
 		return defaultText;
 	}
 
+	/**
+	 * With default text.
+	 *
+	 * @param defaultText the default text
+	 * @return the column
+	 */
 	public Column withDefaultText(String defaultText) {
 		this.defaultText = defaultText;
 		return this;
 	}
 
+	/**
+	 * Gets the style.
+	 *
+	 * @return the style
+	 */
 	public Style getStyle() {
 		return style;
 	}
 
+	/**
+	 * Gets the or create style.
+	 *
+	 * @return the or create style
+	 */
 	public Style getOrCreateStyle() {
 		if (style == null) {
 			style = new Style();
@@ -277,25 +413,53 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 		return style;
 	}
 
+	/**
+	 * With style.
+	 *
+	 * @param value the value
+	 * @return the column
+	 */
 	public Column withStyle(Style value) {
 		this.style = value;
 		return this;
 	}
 
+	/**
+	 * Gets the active style.
+	 *
+	 * @return the active style
+	 */
 	public Style getActiveStyle() {
 		return activestyle;
 	}
 
+	/**
+	 * With active style.
+	 *
+	 * @param activestyle the activestyle
+	 * @return the column
+	 */
 	public Column withActiveStyle(Style activestyle) {
 		this.activestyle = activestyle;
 		return this;
 	}
 
+	/**
+	 * With action handler.
+	 *
+	 * @param handler the handler
+	 * @return the column
+	 */
 	public Column withActionHandler(CellHandler handler) {
 		this.handler = handler;
 		return this;
 	}
 
+	/**
+	 * Gets the listener.
+	 *
+	 * @return the listener
+	 */
 	public CellHandler getListener() {
 		if (handler == null) {
 			handler = this;
@@ -303,19 +467,41 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 		return handler;
 	}
 
+	/**
+	 * Checks if is listener.
+	 *
+	 * @return true, if is listener
+	 */
 	public boolean isListener() {
 		return handler != null;
 	}
 
+	/**
+	 * Gets the comparator.
+	 *
+	 * @return the comparator
+	 */
 	public Comparator<TableCellValue> getComparator() {
 		return comparator;
 	}
 
+	/**
+	 * With comparator.
+	 *
+	 * @param comparator the comparator
+	 * @return the column
+	 */
 	public Column withComparator(Comparator<TableCellValue> comparator) {
 		this.comparator = comparator;
 		return this;
 	}
 
+	/**
+	 * With combo value.
+	 *
+	 * @param value the value
+	 * @return the column
+	 */
 	public Column withComboValue(String value) {
 		if (this.numberFormat == null || !this.numberFormat.startsWith("[") || numberFormat.length() == 2) {
 			this.numberFormat = "[" + value + "]";
@@ -325,19 +511,37 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 		return this;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return properties;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new Column();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (entity instanceof Column == false || attribute == null) {
+		if (!(entity instanceof Column) || attribute == null) {
 			return null;
 		}
 		String attrName;
@@ -379,9 +583,18 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (entity instanceof Column == false || attribute == null) {
+		if (!(entity instanceof Column) || attribute == null) {
 			return false;
 		}
 		Column that = (Column) entity;
@@ -457,6 +670,13 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 		return false;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param creator the creator
+	 * @return the value
+	 */
 	public Object getValue(Object entity, SendableEntityCreator creator) {
 		String attrName = getAttrName();
 		if (attrName != null) {
@@ -480,6 +700,15 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param controll the controll
+	 * @param entity the entity
+	 * @param creator the creator
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean setValue(Object controll, Object entity, SendableEntityCreator creator, Object value) {
 		if (creator == null) {
 			return false;
@@ -487,11 +716,26 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 		return creator.setValue(entity, getAttrName(), value, SendableEntityCreator.UPDATE);
 	}
 
+	/**
+	 * With listener.
+	 *
+	 * @param eventHandler the event handler
+	 * @return the column
+	 */
 	public Column withListener(CellHandler eventHandler) {
 		this.handler = eventHandler;
 		return this;
 	}
 
+	/**
+	 * On action.
+	 *
+	 * @param entity the entity
+	 * @param creator the creator
+	 * @param x the x
+	 * @param y the y
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean onAction(Object entity, SendableEntityCreator creator, double x, double y) {
 		return isEditable;

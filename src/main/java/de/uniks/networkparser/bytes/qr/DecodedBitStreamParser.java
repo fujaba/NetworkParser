@@ -22,7 +22,10 @@ import de.uniks.networkparser.interfaces.BaseItem;
  */
 final class DecodedBitStreamParser {
 
+  /** The Constant SHIFT_JIS. */
   public static final String SHIFT_JIS = "SJIS";
+  
+  /** The Constant GB2312. */
   public static final String GB2312 = "GB2312";
 
   /**

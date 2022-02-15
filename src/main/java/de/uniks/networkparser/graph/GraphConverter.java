@@ -39,26 +39,65 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.parser.TemplateResultFragment;
 
+/**
+ * The Class GraphConverter.
+ *
+ * @author Stefan
+ */
 public class GraphConverter implements Converter {
+	
+	/** The Constant TYPE. */
 	public static final String TYPE = "type";
+	
+	/** The Constant ID. */
 	public static final String ID = "id";
 
+	/** The Constant NODE. */
 	public static final String NODE = "node";
+	
+	/** The Constant CLASS. */
 	public static final String CLASS = "class";
+	
+	/** The Constant PATTERN. */
 	public static final String PATTERN = "pattern";
+	
+	/** The Constant SUBGRAPH. */
 	public static final String SUBGRAPH = "subgraph";
 
+	/** The Constant ATTRIBUTES. */
 	public static final String ATTRIBUTES = "attributes";
+	
+	/** The Constant METHODS. */
 	public static final String METHODS = "methods";
+	
+	/** The Constant NODES. */
 	public static final String NODES = "nodes";
+	
+	/** The Constant LABEL. */
 	public static final String LABEL = "label";
+	
+	/** The Constant EDGES. */
 	public static final String EDGES = "edges";
+	
+	/** The Constant SOURCE. */
 	public static final String SOURCE = "source";
+	
+	/** The Constant TARGET. */
 	public static final String TARGET = "target";
+	
+	/** The Constant CARDINALITY. */
 	public static final String CARDINALITY = "cardinality";
+	
+	/** The Constant PROPERTY. */
 	public static final String PROPERTY = "property";
+	
+	/** The Constant HEAD. */
 	public static final String HEAD = "head";
+	
+	/** The Constant SRC. */
 	public static final String SRC = "src";
+	
+	/** The Constant OPTIONS. */
 	public static final String OPTIONS = "options";
 	private static final String STYLE = "style";
 	private static final String INFO = "info";
@@ -70,6 +109,13 @@ public class GraphConverter implements Converter {
 	private Entity factory = new JsonObject();
 	private boolean full = false;
 
+	/**
+	 * Convert graph list.
+	 *
+	 * @param type the type
+	 * @param list the list
+	 * @return the graph list
+	 */
 	public GraphList convertGraphList(String type, EntityList list) {
 		GraphList root = new GraphList().withType(type);
 		if (list == null) {
@@ -86,11 +132,26 @@ public class GraphConverter implements Converter {
 		return root;
 	}
 
+	/**
+	 * Convert to json.
+	 *
+	 * @param type the type
+	 * @param list the list
+	 * @param removePackage the remove package
+	 * @return the entity
+	 */
 	public Entity convertToJson(String type, EntityList list, boolean removePackage) {
 		GraphList root = convertGraphList(type, list);
 		return convertToJson(root, removePackage, false);
 	}
 
+	/**
+	 * Parses the json object.
+	 *
+	 * @param root the root
+	 * @param node the node
+	 * @return the clazz
+	 */
 	public Clazz parseJsonObject(GraphList root, Entity node) {
 		if (root == null || node == null) {
 			return null;
@@ -195,6 +256,13 @@ public class GraphConverter implements Converter {
 		return graphNode;
 	}
 
+	/**
+	 * Convert to test code.
+	 *
+	 * @param model the model
+	 * @param createModel the create model
+	 * @return the template result fragment
+	 */
 	public TemplateResultFragment convertToTestCode(GraphModel model, boolean createModel) {
 		TemplateResultFragment code = new TemplateResultFragment();
 		if (model == null) {
@@ -227,10 +295,25 @@ public class GraphConverter implements Converter {
 		return code;
 	}
 
+	/**
+	 * Convert to json.
+	 *
+	 * @param list the list
+	 * @param removePackage the remove package
+	 * @return the entity
+	 */
 	public Entity convertToJson(EntityList list, boolean removePackage) {
 		return convertToJson(GraphTokener.OBJECTDIAGRAM, list, removePackage);
 	}
 
+	/**
+	 * Convert to json.
+	 *
+	 * @param root the root
+	 * @param removePackage the remove package
+	 * @param removeParameterNames the remove parameter names
+	 * @return the entity
+	 */
 	public Entity convertToJson(GraphModel root, boolean removePackage, boolean removeParameterNames) {
 		if (root == null) {
 			return null;
@@ -269,6 +352,13 @@ public class GraphConverter implements Converter {
 		return jsonRoot;
 	}
 
+	/**
+	 * Convert from json.
+	 *
+	 * @param model the model
+	 * @param reference the reference
+	 * @return the graph model
+	 */
 	public GraphModel convertFromJson(Entity model, GraphModel reference) {
 		if (model == null || model.has(NODES) == false) {
 			return null;
@@ -538,6 +628,15 @@ public class GraphConverter implements Converter {
 		return result;
 	}
 
+	/**
+	 * Parses the entities.
+	 *
+	 * @param type the type
+	 * @param nodes the nodes
+	 * @param shortName the short name
+	 * @param removeParameterNames the remove parameter names
+	 * @return the entity list
+	 */
 	public EntityList parseEntities(String type, GraphEntity nodes, boolean shortName, boolean removeParameterNames) {
 		EntityList result = (EntityList) factory.getNewList(false);
 		ArrayList<String> ids = new ArrayList<String>();
@@ -564,6 +663,15 @@ public class GraphConverter implements Converter {
 		return result;
 	}
 
+	/**
+	 * Parses the entity.
+	 *
+	 * @param type the type
+	 * @param entity the entity
+	 * @param shortName the short name
+	 * @param removeParameterNames the remove parameter names
+	 * @return the entity
+	 */
 	public Entity parseEntity(String type, GraphMember entity, boolean shortName, boolean removeParameterNames) {
 		if (type == null) {
 			type = GraphTokener.OBJECTDIAGRAM;
@@ -630,6 +738,12 @@ public class GraphConverter implements Converter {
 		}
 	}
 
+	/**
+	 * Gets the node header.
+	 *
+	 * @param entity the entity
+	 * @return the node header
+	 */
 	public GraphCustomItem getNodeHeader(GraphEntity entity) {
 		GraphSimpleSet children = GraphUtil.getChildren(entity);
 		if (children != null) {
@@ -714,6 +828,12 @@ public class GraphConverter implements Converter {
 		return result;
 	}
 
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @return the string
+	 */
 	@Override
 	public String encode(BaseItem entity) {
 		if (entity instanceof GraphModel) {
@@ -731,16 +851,34 @@ public class GraphConverter implements Converter {
 		return null;
 	}
 
+	/**
+	 * Convert model.
+	 *
+	 * @param model the model
+	 * @return the entity
+	 */
 	public static Entity convertModel(GraphModel model) {
 		GraphConverter converter = new GraphConverter();
 		return converter.convertToJson(model, false, true);
 	}
 
+	/**
+	 * With full.
+	 *
+	 * @param value the value
+	 * @return the graph converter
+	 */
 	public GraphConverter withFull(boolean value) {
 		this.full = value;
 		return this;
 	}
 
+	/**
+	 * Convert to advanced.
+	 *
+	 * @param fragment the fragment
+	 * @return the template result fragment
+	 */
 	public TemplateResultFragment convertToAdvanced(TemplateResultFragment fragment) {
 		if (fragment == null) {
 			return null;
@@ -950,6 +1088,14 @@ public class GraphConverter implements Converter {
 		return fragment;
 	}
 
+	/**
+	 * Convert to meta text.
+	 *
+	 * @param model the model
+	 * @param full the full
+	 * @param useImport the use import
+	 * @return the template result fragment
+	 */
 	public TemplateResultFragment convertToMetaText(GraphModel model, boolean full, boolean useImport) {
 		TemplateResultFragment fragment = TemplateResultFragment.create(model, useImport, true);
 		if (full == false || model == null) {

@@ -25,10 +25,17 @@ THE SOFTWARE.
 */
 import java.util.Comparator;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface EntityList.
+ *
+ * @author Stefan
+ */
 public interface EntityList extends BaseItem {
+	
 	/**
-	 * Return a Element from list
-	 * 
+	 * Return a Element from list.
+	 *
 	 * @param index index of Element
 	 * @return a Element
 	 */
@@ -47,14 +54,40 @@ public interface EntityList extends BaseItem {
 	 */
 	public String toString(int indentFactor);
 
+	/**
+	 * Checks if is comparator.
+	 *
+	 * @return true, if is comparator
+	 */
 	public boolean isComparator();
 
+	/**
+	 * Comparator.
+	 *
+	 * @return the comparator
+	 */
 	public Comparator<Object> comparator();
 
+	/**
+	 * With value.
+	 *
+	 * @param values the values
+	 * @return the base item
+	 */
 	public BaseItem withValue(BufferItem values);
 
+	/**
+	 * Size children.
+	 *
+	 * @return the int
+	 */
 	public int sizeChildren();
 	
+	/**
+	 * First child.
+	 *
+	 * @return the base item
+	 */
 	public BaseItem firstChild();
 	
 	

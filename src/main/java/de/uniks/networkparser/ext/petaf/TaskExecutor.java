@@ -26,21 +26,63 @@ THE SOFTWARE.
 import de.uniks.networkparser.DateTimeEntity;
 
 /**
- * Interfae for Execution
+ * Interfae for Execution.
+ *
  * @author Stefan Lindel
  */
 public interface TaskExecutor {
+	
+	/**
+	 * Execute task.
+	 *
+	 * @param task the task
+	 * @param delay the delay
+	 * @param interval the interval
+	 * @return the object
+	 */
 	public Object executeTask(Runnable task, int delay, int interval);
 
+	/**
+	 * Execute task.
+	 *
+	 * @param task the task
+	 * @param delay the delay
+	 * @return the object
+	 */
 	public Object executeTask(Runnable task, int delay);
 
+	/**
+	 * Handle msg.
+	 *
+	 * @param message the message
+	 * @return true, if successful
+	 */
 	public boolean handleMsg(Message message);
 
+	/**
+	 * Shutdown.
+	 */
 	public void shutdown();
 
+	/**
+	 * With space.
+	 *
+	 * @param space the space
+	 * @return the task executor
+	 */
 	public TaskExecutor withSpace(Space space);
 
+	/**
+	 * Gets the space.
+	 *
+	 * @return the space
+	 */
 	public Space getSpace();
 
+	/**
+	 * Gets the last run.
+	 *
+	 * @return the last run
+	 */
 	public DateTimeEntity getLastRun();
 }

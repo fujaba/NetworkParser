@@ -28,32 +28,73 @@ import java.beans.PropertyChangeEvent;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * The Class CompareTo.
+ *
+ * @author Stefan
+ */
 public class CompareTo implements ObjectCondition, SendableEntityCreator {
+	
+	/** The Constant VALUE. */
 	public static final String VALUE = "value";
+	
+	/** The Constant COMPARE. */
 	public static final String COMPARE = "compare";
+	
+	/** The Constant GREATER. */
 	public static final int GREATER = 1;
+	
+	/** The Constant LOWER. */
 	public static final int LOWER = -1;
 	private Comparable<Object> value;
 	private int compare;
 
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	public Comparable<?> getValue() {
 		return value;
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param value the value
+	 * @return the compare to
+	 */
 	public CompareTo withValue(Comparable<Object> value) {
 		this.value = value;
 		return this;
 	}
 
+	/**
+	 * Gets the compare.
+	 *
+	 * @return the compare
+	 */
 	public int getCompare() {
 		return compare;
 	}
 
+	/**
+	 * With compare.
+	 *
+	 * @param compare the compare
+	 * @return the compare to
+	 */
 	public CompareTo withCompare(int compare) {
 		this.compare = compare;
 		return this;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		PropertyChangeEvent evt = (PropertyChangeEvent) value;
@@ -71,16 +112,34 @@ public class CompareTo implements ObjectCondition, SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { COMPARE, VALUE };
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new CompareTo();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (COMPARE.equalsIgnoreCase(attribute)) {
@@ -92,6 +151,15 @@ public class CompareTo implements ObjectCondition, SendableEntityCreator {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean setValue(Object entity, String attribute, Object value, String type) {

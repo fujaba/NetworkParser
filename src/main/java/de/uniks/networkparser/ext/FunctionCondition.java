@@ -10,30 +10,65 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.parser.ParserEntity;
 import de.uniks.networkparser.parser.TemplateResultFragment;
 
+/**
+ * The Class FunctionCondition.
+ *
+ * @author Stefan
+ */
 public class FunctionCondition implements ParserCondition {
+	
+	/** The Constant KEY. */
 	public static final String KEY = "func";
 	private ObjectCondition value;
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return KEY;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param isExpression the is expression
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean isExpression) {
 		return new FunctionCondition();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param variables the variables
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(LocalisationInterface variables) {
 		return null;
 	}
 
+	/**
+	 * Checks if is expression.
+	 *
+	 * @return true, if is expression
+	 */
 	@Override
 	public boolean isExpression() {
 		return false;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param evt the evt
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object evt) {
 		if (evt instanceof TemplateResultFragment) {
@@ -47,6 +82,12 @@ public class FunctionCondition implements ParserCondition {
 		return true;
 	}
 
+	/**
+	 * Exeute template.
+	 *
+	 * @param fragment the fragment
+	 * @return true, if successful
+	 */
 	public boolean exeuteTemplate(TemplateResultFragment fragment) {
 		if (fragment == null || this.value == null) {
 			return false;
@@ -114,6 +155,13 @@ public class FunctionCondition implements ParserCondition {
 		return item;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param buffer the buffer
+	 * @param parser the parser
+	 * @param customTemplate the custom template
+	 */
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		/* Parsing */

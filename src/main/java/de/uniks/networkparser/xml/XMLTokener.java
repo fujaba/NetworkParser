@@ -39,12 +39,18 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
+/**
+ * The Class XMLTokener.
+ *
+ * @author Stefan
+ */
 public class XMLTokener extends Tokener {
   /** The Constant ENDTAG. */
   public static final char ENDTAG = '/';
 
   private static final char[] TOKEN = new char[] {' ', XMLEntity.START, ENDTAG, XMLEntity.END};
 
+  /** The Constant CHILDREN. */
   public static final String CHILDREN = "<CHILDREN>";
 
   private SendableEntityCreator defaultFactory;
@@ -52,6 +58,7 @@ public class XMLTokener extends Tokener {
   /** The stopwords. */
   private ArrayList<String> stopwords = new ArrayList<String>();
 
+  /** The Constant SIMPLECONVERTER. */
   public static final EntityStringConverter SIMPLECONVERTER = new EntityStringConverter();
 
   private boolean isAllowQuote;
@@ -66,10 +73,11 @@ public class XMLTokener extends Tokener {
   /**
    * Get the next value. The value can be a Boolean, Double, Integer, BaseEntity, Long, or String.
    *
+   * @param buffer the buffer
    * @param creator The new Creator
    * @param allowQuote is in Text allow Quote
+   * @param allowDuppleMarks the allow dupple marks
    * @param c The Terminate Char
-   *
    * @return An object.
    */
   @Override
@@ -93,6 +101,13 @@ public class XMLTokener extends Tokener {
     return super.nextValue(buffer, creator, allowQuote, allowDuppleMarks, c);
   }
 
+  /**
+   * Parses the to entity.
+   *
+   * @param entity the entity
+   * @param source the source
+   * @return the base item
+   */
   @Override
   public BaseItem parseToEntity(BaseItem entity, Object source) {
     if (!(source instanceof Buffer)) {
@@ -221,6 +236,12 @@ public class XMLTokener extends Tokener {
     buffer.nextClean(false);
   }
 
+  /**
+   * Skip header.
+   *
+   * @param buffer the buffer
+   * @return the string
+   */
   public String skipHeader(Buffer buffer) {
     boolean skip = false;
     CharacterBuffer tag;
@@ -245,16 +266,31 @@ public class XMLTokener extends Tokener {
     return item;
   }
 
+  /**
+   * To string.
+   *
+   * @return the string
+   */
   @Override
   public String toString() {
     return "XMLTokener";
   }
 
+  /**
+   * New instance.
+   *
+   * @return the entity
+   */
   @Override
   public Entity newInstance() {
     return new XMLEntity();
   }
 
+  /**
+   * New instance list.
+   *
+   * @return the entity list
+   */
   @Override
   public EntityList newInstanceList() {
     return new XMLEntity();
@@ -523,6 +559,15 @@ public class XMLTokener extends Tokener {
     return valueItem;
   }
 
+  /**
+   * Creates the link.
+   *
+   * @param parent the parent
+   * @param property the property
+   * @param className the class name
+   * @param id the id
+   * @return the entity
+   */
   public Entity createLink(Entity parent, String property, String className, String id) {
     if (parent != null) {
       parent.put(property, id);
@@ -544,13 +589,20 @@ public class XMLTokener extends Tokener {
     return entity;
   }
 
+  /**
+   * Transform value.
+   *
+   * @param value the value
+   * @param reference the reference
+   * @return the object
+   */
   @Override
   public Object transformValue(Object value, BaseItem reference) {
     return StringUtil.valueToString(value, true, reference, SIMPLECONVERTER);
   }
 
   /**
-   * Get the DefaultFactory for Creating Element for Serialization
+   * Get the DefaultFactory for Creating Element for Serialization.
    *
    * @return the get The DefaultFactory
    */
@@ -559,7 +611,7 @@ public class XMLTokener extends Tokener {
   }
 
   /**
-   * Add a DefaultFactoriy for creating Elements for Serialization
+   * Add a DefaultFactoriy for creating Elements for Serialization.
    *
    * @param defaultFactory the defaultFactory to set
    * @return ThisComponent
@@ -569,15 +621,33 @@ public class XMLTokener extends Tokener {
     return this;
   }
 
+  /**
+   * Checks if is child.
+   *
+   * @param writeValue the write value
+   * @return true, if is child
+   */
   public boolean isChild(Object writeValue) {
     return writeValue instanceof BaseItem;
   }
 
+  /**
+   * With allow quote.
+   *
+   * @param value the value
+   * @return the XML tokener
+   */
   public XMLTokener withAllowQuote(boolean value) {
     this.isAllowQuote = value;
     return this;
   }
 
+  /**
+   * With map.
+   *
+   * @param map the map
+   * @return the XML tokener
+   */
   @Override
   public XMLTokener withMap(SimpleMap map) {
     super.withMap(map);

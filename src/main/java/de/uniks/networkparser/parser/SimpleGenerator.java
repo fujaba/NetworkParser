@@ -9,10 +9,13 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
 /**
- * Class for Simple Codegenertation
+ * Class for Simple Codegenertation.
+ *
  * @author Stefan Lindel
  */
 public class SimpleGenerator extends Template {
+	
+	/** The custom template. */
 	public SimpleKeyValueList<String, ParserCondition> customTemplate;
 
 	protected boolean addParserCondition(ParserCondition condition) {
@@ -26,6 +29,11 @@ public class SimpleGenerator extends Template {
 		return false;
 	}
 
+	/**
+	 * Gets the condition.
+	 *
+	 * @return the condition
+	 */
 	public SimpleKeyValueList<String, ParserCondition> getCondition() {
 
 		if (customTemplate == null) {
@@ -38,10 +46,24 @@ public class SimpleGenerator extends Template {
 		return customTemplate;
 	}
 
+	/**
+	 * Generate.
+	 *
+	 * @param model the model
+	 * @return the template result model
+	 */
 	public TemplateResultModel generate(TemplateItem model) {
 		return generate(model, new TextItems(), null);
 	}
 
+	/**
+	 * Generate.
+	 *
+	 * @param model the model
+	 * @param parameters the parameters
+	 * @param creator the creator
+	 * @return the template result model
+	 */
 	public TemplateResultModel generate(TemplateItem model, LocalisationInterface parameters,
 			SendableEntityCreator creator) {
 		TemplateResultModel resultModel = new TemplateResultModel();

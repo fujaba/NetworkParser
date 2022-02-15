@@ -12,21 +12,16 @@ public final class ErrorCorrectionLevel {
 
 	/* No, we can not use an enum here. J2ME does not support it. */
 
-	/**
-	 * L = ~7% correction
-	 */
+	/** L = ~7% correction. */
 	public static final ErrorCorrectionLevel L = new ErrorCorrectionLevel(0, 0x01, "L");
-	/**
-	 * M = ~15% correction
-	 */
+	
+	/** M = ~15% correction. */
 	public static final ErrorCorrectionLevel M = new ErrorCorrectionLevel(1, 0x00, "M");
-	/**
-	 * Q = ~25% correction
-	 */
+	
+	/** Q = ~25% correction. */
 	public static final ErrorCorrectionLevel Q = new ErrorCorrectionLevel(2, 0x03, "Q");
-	/**
-	 * H = ~30% correction
-	 */
+	
+	/** H = ~30% correction. */
 	public static final ErrorCorrectionLevel H = new ErrorCorrectionLevel(3, 0x02, "H");
 
 	private static final ErrorCorrectionLevel[] FOR_BITS = { M, L, H, Q };
@@ -41,25 +36,45 @@ public final class ErrorCorrectionLevel {
 		this.name = name;
 	}
 
+	/**
+	 * Ordinal.
+	 *
+	 * @return the int
+	 */
 	public int ordinal() {
 		return ordinal;
 	}
 
+	/**
+	 * Gets the bits.
+	 *
+	 * @return the bits
+	 */
 	public int getBits() {
 		return bits;
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	public String toString() {
 		return name;
 	}
 
 	/**
-	 * Get ErrorCorrectionLevel for encoded bit
-	 * 
+	 * Get ErrorCorrectionLevel for encoded bit.
+	 *
 	 * @param bits int containing the two bits encoding a QR Code's error correction
 	 *             level
 	 * @return ErrorCorrectionLevel representing the encoded error correction level

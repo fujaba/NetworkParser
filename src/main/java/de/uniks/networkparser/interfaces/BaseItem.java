@@ -1,5 +1,6 @@
 package de.uniks.networkparser.interfaces;
 
+// TODO: Auto-generated Javadoc
 /*
 NetworkParser
 The MIT License
@@ -28,27 +29,30 @@ THE SOFTWARE.
  * 
  * @author Stefan Lindel
  */
-
 public interface BaseItem {
-	/** Standard Encoding */
+	
+	/**  Standard Encoding. */
 	public static final String ENCODING = "utf-8";
 
+	/**
+	 * CRLF Constant for newLine.
+	 */
 	public static final String CRLF = "\r\n";
 
 	/** The Constant CLASS. */
 	public static final String CLASS = "class";
 
 	/**
-	 * Convert Element to String
-	 * 
+	 * Convert Element to String.
+	 *
 	 * @return the Item as String
 	 */
 	@Override
 	public String toString();
 	
 	/**
-	 * Convert Element to String
-	 * 
+	 * Convert Element to String.
+	 *
 	 * @param converter Converter for Format
 	 * @return the Item as String with converter
 	 */
@@ -56,18 +60,24 @@ public interface BaseItem {
 
 	/**
 	 * Add Elements to List or KeyValue if param Modulo 2 the Params can be
-	 * Key,Value or add all Values to List
-	 * 
+	 * Key,Value or add all Values to List.
+	 *
 	 * @param values Items to Add to List
 	 * @return this Component
 	 */
 	boolean add(Object... values);
 
-	public BaseItem getNewList(boolean keyValue);
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
+	BaseItem getNewList(boolean keyValue);
 
 	/**
-	 * Get the Size of Elements
-	 * 
+	 * Get the Size of Elements.
+	 *
 	 * @return the size
 	 */
 	public int size();

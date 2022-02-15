@@ -29,17 +29,39 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+/**
+ * The Class SimpleEntrySet.
+ *
+ * @author Stefan
+ * @param <K> the key type
+ * @param <V> the value type
+ */
 public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 	private SimpleKeyValueList<K, V> map;
 
+	/**
+	 * Instantiates a new simple entry set.
+	 *
+	 * @param value the value
+	 */
 	public SimpleEntrySet(SimpleKeyValueList<K, V> value) {
 		this.map = value;
 	}
 
+	/**
+	 * Gets the map.
+	 *
+	 * @return the map
+	 */
 	public Map<K, V> getMap() {
 		return map;
 	}
 
+	/**
+	 * Size.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int size() {
 		if (map == null) {
@@ -48,6 +70,11 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 		return this.map.size();
 	}
 
+	/**
+	 * Checks if is empty.
+	 *
+	 * @return true, if is empty
+	 */
 	@Override
 	public boolean isEmpty() {
 		if (map == null) {
@@ -56,6 +83,12 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 		return this.map.isEmpty();
 	}
 
+	/**
+	 * Contains.
+	 *
+	 * @param o the o
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean contains(Object o) {
 		if (map == null) {
@@ -64,11 +97,21 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 		return this.map.contains(o);
 	}
 
+	/**
+	 * Iterator.
+	 *
+	 * @return the iterator
+	 */
 	@Override
 	public Iterator<Entry<K, V>> iterator() {
 		return new SimpleIteratorSet<K, V>(map);
 	}
 
+	/**
+	 * To array.
+	 *
+	 * @return the object[]
+	 */
 	@Override
 	public Object[] toArray() {
 		if (map == null) {
@@ -86,6 +129,13 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 		return info;
 	}
 
+	/**
+	 * To array.
+	 *
+	 * @param <T> the generic type
+	 * @param a the a
+	 * @return the t[]
+	 */
 	@Override
 	public <T> T[] toArray(T[] a) {
 		if (map == null) {
@@ -94,6 +144,12 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 		return this.map.toArray(a);
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param e the e
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean add(Entry<K, V> e) {
 		if (map == null) {
@@ -102,6 +158,12 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 		return this.map.add(e.getKey(), e.getValue());
 	}
 
+	/**
+	 * Removes the.
+	 *
+	 * @param o the o
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean remove(Object o) {
 		if (map == null) {
@@ -110,6 +172,12 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 		return this.map.removeByObject(o) >= 0;
 	}
 
+	/**
+	 * Contains all.
+	 *
+	 * @param c the c
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean containsAll(Collection<?> c) {
 		if (map == null) {
@@ -118,6 +186,12 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 		return this.map.containsAll(c);
 	}
 
+	/**
+	 * Adds the all.
+	 *
+	 * @param collection the collection
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean addAll(Collection<? extends Entry<K, V>> collection) {
 		boolean result = true;
@@ -130,6 +204,12 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 		return result;
 	}
 
+	/**
+	 * Retain all.
+	 *
+	 * @param collection the collection
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean retainAll(Collection<?> collection) {
 		if (map == null) {
@@ -138,6 +218,12 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 		return this.map.retainAll(collection);
 	}
 
+	/**
+	 * Removes the all.
+	 *
+	 * @param collection the collection
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean removeAll(Collection<?> collection) {
 		if (map == null) {
@@ -146,6 +232,9 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 		return this.map.removeAll(collection);
 	}
 
+	/**
+	 * Clear.
+	 */
 	@Override
 	public void clear() {
 		if (map == null) {

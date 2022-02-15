@@ -26,7 +26,8 @@ THE SOFTWARE.
 import de.uniks.networkparser.ext.ErrorHandler;
 
 /**
- * ReceivingTimerTask 
+ * ReceivingTimerTask .
+ *
  * @author Stefan Lindel
  */
 public abstract class ReceivingTimerTask extends Message implements Runnable {
@@ -34,12 +35,21 @@ public abstract class ReceivingTimerTask extends Message implements Runnable {
 	protected Runnable task;
 	protected Space space;
 
+	/**
+	 * With space.
+	 *
+	 * @param space the space
+	 * @return the receiving timer task
+	 */
 	public ReceivingTimerTask withSpace(Space space) {
 		handler.addListener(space);
 		this.space = space;
 		return this;
 	}
 
+	/**
+	 * Run.
+	 */
 	@Override
 	public void run() {
 		try {
@@ -49,10 +59,20 @@ public abstract class ReceivingTimerTask extends Message implements Runnable {
 		}
 	}
 
+	/**
+	 * Gets the space.
+	 *
+	 * @return the space
+	 */
 	public Space getSpace() {
 		return space;
 	}
 
+	/**
+	 * Run task.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean runTask() {
 		if (this.task != null) {
 			task.run();

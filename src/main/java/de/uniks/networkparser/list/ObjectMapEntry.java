@@ -24,18 +24,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * The Class ObjectMapEntry.
+ *
+ * @author Stefan
+ */
 public class ObjectMapEntry extends SimpleEntity<Object, Object> {
+	
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new ObjectMapEntry();
 	}
 
+	/**
+	 * With key item.
+	 *
+	 * @param key the key
+	 * @return the object map entry
+	 */
 	@Override
 	public ObjectMapEntry withKeyItem(Object key) {
 		withKey(key);
 		return this;
 	}
 
+	/**
+	 * With value item.
+	 *
+	 * @param value the value
+	 * @return the object map entry
+	 */
 	@Override
 	public ObjectMapEntry withValueItem(Object value) {
 		this.withValue(value);

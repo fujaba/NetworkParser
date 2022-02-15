@@ -24,42 +24,82 @@ import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.list.SimpleList;
 
 /**
- * Interface for Buffer For Tokener to parse some Values
+ * Interface for Buffer For Tokener to parse some Values.
+ *
  * @author Stefan
  */
 public abstract class Buffer implements BufferItem {
+  
+  /** The Constant STOPCHARSJSON. */
   public static final String STOPCHARSJSON = ",:]}/\\\"[{;=# ";
+  
+  /** The Constant STOPCHARSXML. */
   public static final String STOPCHARSXML = ",]}/\\\"[{;=# ";
+  
+  /** The Constant STOPCHARSXMLEND. */
   public static final char[] STOPCHARSXMLEND = new char[] {'"', ',', ']', '}', '/', '\\', '[', '{', ';', '=', '#',
       '>', '\r', '\n', ' '};
+  
+  /** The Constant ENDLINE. */
   public static final char ENDLINE = '\n';
 
   /** The index. */
   protected int position;
 
+  /**
+   * Gets the short.
+   *
+   * @return the short
+   */
   public short getShort() {
     byte[] bytes = array(Short.SIZE / Byte.SIZE, false);
     short result = (short) ((bytes[0] << 8) + bytes[1]);
     return result;
   }
 
+  /**
+   * Gets the int.
+   *
+   * @return the int
+   */
   public int getInt() {
     byte[] bytes = array(Integer.SIZE / Byte.SIZE, false);
     return (int) ((bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + bytes[3]);
   }
 
+  /**
+   * Gets the unsigned int.
+   *
+   * @return the unsigned int
+   */
   public int getUnsignedInt() {
     byte[] bytes = array(Integer.SIZE / Byte.SIZE, false);
     return (int) (((bytes[0] & 0xff) << 24) + ((bytes[1] & 0xff) << 16) + ((bytes[2] & 0xff) << 8)
         + (bytes[3] & 0xff));
   }
 
+  /**
+   * Gets the char.
+   *
+   * @return the char
+   */
   public abstract char getChar();
 
+  /**
+   * Read resource.
+   *
+   * @param file the file
+   * @return the character buffer
+   */
   public CharacterBuffer readResource(String file) {
     return new CharacterBuffer();
   }
 
+  /**
+   * Gets the long.
+   *
+   * @return the long
+   */
   public long getLong() {
     byte[] bytes = array(Long.SIZE / Byte.SIZE, false);
     long result = bytes[0];
@@ -73,24 +113,53 @@ public abstract class Buffer implements BufferItem {
     return result;
   }
 
+  /**
+   * Gets the float.
+   *
+   * @return the float
+   */
   public float getFloat() {
     int asInt = getInt();
     return Float.intBitsToFloat(asInt);
   }
 
+  /**
+   * Substring.
+   *
+   * @param values the values
+   * @return the string
+   */
   public String substring(int... values) {
     return "";
   }
 
+  /**
+   * Next.
+   *
+   * @param positions the positions
+   * @return the string
+   */
   public String next(int... positions) {
     return "";
   }
 
+  /**
+   * Gets the double.
+   *
+   * @return the double
+   */
   public double getDouble() {
     long asLong = getLong();
     return Double.longBitsToDouble(asLong);
   }
 
+  /**
+   * Array.
+   *
+   * @param len the len
+   * @param current the current
+   * @return the byte[]
+   */
   public byte[] array(int len, boolean current) {
     if (len == -1) {
       len = remaining();
@@ -117,21 +186,41 @@ public abstract class Buffer implements BufferItem {
     return result;
   }
 
+  /**
+   * Gets the byte.
+   *
+   * @return the byte
+   */
   @Override
   public byte getByte() {
     return (byte) getChar();
   }
 
+  /**
+   * Gets the boolean.
+   *
+   * @return the boolean
+   */
   public boolean getBoolean() {
     int ch = getChar();
     return ch != 1 && ch != 0;
   }
 
+  /**
+   * Position.
+   *
+   * @return the int
+   */
   @Override
   public int position() {
     return position;
   }
 
+  /**
+   * Remaining.
+   *
+   * @return the int
+   */
   @Override
   public int remaining() {
     int remaining = length() - position();
@@ -141,16 +230,32 @@ public abstract class Buffer implements BufferItem {
     return 0;
   }
 
+  /**
+   * Checks if is empty.
+   *
+   * @return true, if is empty
+   */
   @Override
   public boolean isEmpty() {
     return length() == 0;
   }
 
+  /**
+   * Checks if is end.
+   *
+   * @return true, if is end
+   */
   @Override
   public boolean isEnd() {
     return position() >= length();
   }
 
+  /**
+   * Gets the string.
+   *
+   * @param len the len
+   * @return the string
+   */
   public CharacterBuffer getString(int len) {
     CharacterBuffer result = new CharacterBuffer();
     if (len < 1) {
@@ -167,6 +272,11 @@ public abstract class Buffer implements BufferItem {
     return result;
   }
 
+  /**
+   * Read line.
+   *
+   * @return the character buffer
+   */
   public CharacterBuffer readLine() {
     CharacterBuffer line = new CharacterBuffer();
     char character = getCurrentChar();
@@ -183,6 +293,12 @@ public abstract class Buffer implements BufferItem {
     return line;
   }
 
+  /**
+   * Next clean.
+   *
+   * @param currentValid the current valid
+   * @return the char
+   */
   @Override
   public char nextClean(boolean currentValid) {
     if (position < 0) {
@@ -198,6 +314,12 @@ public abstract class Buffer implements BufferItem {
     return c;
   }
 
+  /**
+   * Next string.
+   *
+   * @param quotes the quotes
+   * @return the character buffer
+   */
   @Override
   public CharacterBuffer nextString(char... quotes) {
     if (quotes == null) {
@@ -206,6 +328,11 @@ public abstract class Buffer implements BufferItem {
     return nextString(new CharacterBuffer(), false, false, quotes);
   }
 
+  /**
+   * Next string.
+   *
+   * @return the character buffer
+   */
   public CharacterBuffer nextString() {
     nextClean(true);
     boolean isQuote = getCurrentChar() == QUOTES;
@@ -220,6 +347,15 @@ public abstract class Buffer implements BufferItem {
     return result;
   }
 
+  /**
+   * Next string.
+   *
+   * @param sc the sc
+   * @param allowQuote the allow quote
+   * @param nextStep the next step
+   * @param quotes the quotes
+   * @return the character buffer
+   */
   @Override
   public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes) {
     if (getCurrentChar() == 0 || quotes == null) {
@@ -320,6 +456,15 @@ public abstract class Buffer implements BufferItem {
     return sb.trim();
   }
 
+  /**
+   * Next value.
+   *
+   * @param creator the creator
+   * @param allowQuote the allow quote
+   * @param allowDuppleMark the allow dupple mark
+   * @param c the c
+   * @return the object
+   */
   @Override
   public Object nextValue(BaseItem creator, boolean allowQuote, boolean allowDuppleMark, char c) {
     CharacterBuffer value = nextValue(c, allowDuppleMark);
@@ -349,7 +494,7 @@ public abstract class Buffer implements BufferItem {
       try {
         if (value.indexOf('.') > -1 || value.indexOf('e') > -1 || value.indexOf('E') > -1) {
           d = Double.valueOf(value.toString());
-          if (d.isInfinite() == false && !d.isNaN()) {
+          if (!d.isInfinite() && !d.isNaN()) {
             return d;
           }
         } else {
@@ -366,6 +511,13 @@ public abstract class Buffer implements BufferItem {
     return value;
   }
 
+  /**
+   * Skip to.
+   *
+   * @param search the search
+   * @param notEscape the not escape
+   * @return true, if successful
+   */
   @Override
   public boolean skipTo(char search, boolean notEscape) {
     int len = length();
@@ -386,6 +538,14 @@ public abstract class Buffer implements BufferItem {
     return false;
   }
 
+  /**
+   * Skip to.
+   *
+   * @param search the search
+   * @param order the order
+   * @param notEscape the not escape
+   * @return true, if successful
+   */
   @Override
   public boolean skipTo(String search, boolean order, boolean notEscape) {
     if (position() < 0) {
@@ -423,6 +583,12 @@ public abstract class Buffer implements BufferItem {
     return false;
   }
 
+  /**
+   * Skip.
+   *
+   * @param pos the pos
+   * @return true, if successful
+   */
   @Override
   public boolean skip(int pos) {
     while (pos > 0) {
@@ -434,11 +600,23 @@ public abstract class Buffer implements BufferItem {
     return true;
   }
 
+  /**
+   * Skip.
+   *
+   * @return true, if successful
+   */
   @Override
   public boolean skip() {
     return getChar() != 0;
   }
 
+  /**
+   * Next token.
+   *
+   * @param current the current
+   * @param stopWords the stop words
+   * @return the character buffer
+   */
   @Override
   public CharacterBuffer nextToken(boolean current, char... stopWords) {
     nextClean(current);
@@ -453,6 +631,12 @@ public abstract class Buffer implements BufferItem {
     return characterBuffer;
   }
 
+  /**
+   * Check values.
+   *
+   * @param items the items
+   * @return true, if successful
+   */
   @Override
   public boolean checkValues(char... items) {
     char current = getCurrentChar();
@@ -464,6 +648,11 @@ public abstract class Buffer implements BufferItem {
     return false;
   }
 
+  /**
+   * Gets the string list.
+   *
+   * @return the string list
+   */
   @Override
   public SimpleList<String> getStringList() {
     SimpleList<String> list = new SimpleList<String>();
@@ -482,6 +671,12 @@ public abstract class Buffer implements BufferItem {
     return list;
   }
 
+  /**
+   * Skip char.
+   *
+   * @param quotes the quotes
+   * @return the char
+   */
   @Override
   public char skipChar(char... quotes) {
     char c = getCurrentChar();
@@ -505,6 +700,13 @@ public abstract class Buffer implements BufferItem {
     return c;
   }
 
+  /**
+   * Skip if.
+   *
+   * @param allowSpace the allow space
+   * @param quotes the quotes
+   * @return true, if successful
+   */
   public boolean skipIf(boolean allowSpace, char... quotes) {
     char c = getCurrentChar();
     if (quotes == null) {
@@ -524,6 +726,12 @@ public abstract class Buffer implements BufferItem {
     return true;
   }
   
+  /**
+   * Skip for.
+   *
+   * @param quotes the quotes
+   * @return true, if successful
+   */
   public boolean skipFor(char... quotes) {
       char c = getChar();
       if (quotes == null) {
@@ -545,6 +753,11 @@ public abstract class Buffer implements BufferItem {
       return true;
     }
 
+  /**
+   * Prints the error.
+   *
+   * @param msg the msg
+   */
   public void printError(String msg) {
     if (msg != null && msg.length() > 0) {
       System.err.println(msg);

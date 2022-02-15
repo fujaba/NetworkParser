@@ -1,5 +1,7 @@
 package de.uniks.networkparser.calculator;
 
+import de.uniks.networkparser.interfaces.MathOperator;
+
 /*
 NetworkParser
 The MIT License
@@ -24,12 +26,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public class Multiply implements Operator {
+/**
+ * The Class Multiply.
+ *
+ * @author Stefan
+ */
+public class Multiply implements MathOperator {
+	
+	/**
+	 * Gets the priority.
+	 *
+	 * @return the priority
+	 */
 	@Override
 	public int getPriority() {
 		return RegCalculator.POINT;
 	}
 
+	/**
+	 * Calculate.
+	 *
+	 * @param values the values
+	 * @return the double
+	 */
 	@Override
 	public double calculate(Double... values) {
 		if (values == null) {
@@ -47,11 +66,21 @@ public class Multiply implements Operator {
 		return result;
 	}
 
+	/**
+	 * Gets the tag.
+	 *
+	 * @return the tag
+	 */
 	@Override
 	public String getTag() {
 		return "*";
 	}
 
+	/**
+	 * Gets the values.
+	 *
+	 * @return the values
+	 */
 	@Override
 	public int getValues() {
 		return 2;

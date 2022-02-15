@@ -50,8 +50,10 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	/** The children. */
 	private SimpleList<BaseItem> children;
 
+	/** The Constant START. */
 	public static final char START = '<';
 
+	/** The Constant END. */
 	public static final char END = '>';
 
 	/** The tag. */
@@ -122,6 +124,11 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return this.children.get(index);
 	}
 
+	/**
+	 * Size children.
+	 *
+	 * @return the int
+	 */
 	public int sizeChildren() {
 		if (this.children == null) {
 			return 0;
@@ -196,6 +203,11 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return this.tag;
 	}
 
+	/**
+	 * Clear children.
+	 *
+	 * @return the XML entity
+	 */
 	public XMLEntity clearChildren() {
 		this.children = null;
 		return this;
@@ -236,11 +248,22 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return this.valueItem;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		return parseItem(new EntityStringConverter());
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @param indentFactor the indent factor
+	 * @return the string
+	 */
 	@Override
 	public String toString(int indentFactor) {
 		return parseItem(new EntityStringConverter(indentFactor));
@@ -316,6 +339,11 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		}
 	}
 
+	/**
+	 * With close tag.
+	 *
+	 * @return the XML entity
+	 */
 	public XMLEntity withCloseTag() {
 		if (this.valueItem == null) {
 			this.valueItem = "";
@@ -323,11 +351,21 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return this;
 	}
 
-	/** @return a new Instance of MapEntry */
+	/**
+	 * Gets the new entity.
+	 *
+	 * @return a new Instance of MapEntry
+	 */
 	public MapEntry getNewEntity() {
 		return new MapEntry();
 	}
 
+	/**
+	 * Gets the new list.
+	 *
+	 * @param keyValue the key value
+	 * @return the new list
+	 */
 	@Override
 	public XMLEntity getNewList(boolean keyValue) {
 		return new XMLEntity();
@@ -343,22 +381,47 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return new XMLEntity().withType(tag);
 	}
 
+	/**
+	 * With key value.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the XML entity
+	 */
 	@Override
 	public XMLEntity withKeyValue(Object key, Object value) {
 		super.withKeyValue(key, value);
 		return this;
 	}
 
+	/**
+	 * Without.
+	 *
+	 * @param key the key
+	 * @return the XML entity
+	 */
 	public XMLEntity without(String key) {
 		remove(key);
 		return this;
 	}
 
+	/**
+	 * Checks for.
+	 *
+	 * @param key the key
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean has(String key) {
 		return containsKey(key);
 	}
 
+	/**
+	 * With value.
+	 *
+	 * @param values the values
+	 * @return the XML entity
+	 */
 	@Override
 	public XMLEntity withValue(BufferItem values) {
 		Tokener tokener = new XMLTokener();
@@ -377,8 +440,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	}
 
 	/**
-	 * Return first Children with Filter
-	 * 
+	 * Return first Children with Filter.
+	 *
 	 * @param key   The key of Filter
 	 * @param value The Value of Filter
 	 * @return first Children where match the Filter
@@ -411,7 +474,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 					return item;
 				}
 			}
-			if (entity instanceof Entity == false) {
+			if (!(entity instanceof Entity)) {
 				continue;
 			}
 			Entity item = (Entity) entity;
@@ -423,8 +486,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	}
 
 	/**
-	 * Return first Children with Filter
-	 * 
+	 * Return first Children with Filter.
+	 *
 	 * @param key   The key of Filter
 	 * @param value The Value of Filter
 	 * @return first Children where match the Filter
@@ -490,7 +553,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 					}
 				}
 			}else {
-				if (entity instanceof Entity == false) {
+				if (!(entity instanceof Entity)) {
 					continue;
 				}
 				Entity item = (Entity) entity;
@@ -509,14 +572,21 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return children;
 	}
 
+	/**
+	 * With child.
+	 *
+	 * @param tag the tag
+	 * @param values the values
+	 * @return the XML entity
+	 */
 	public XMLEntity withChild(String tag, String... values) {
 		createChild(tag, values);
 		return this;
 	}
 
 	/**
-	 * Method to create a new Child and add it to Children
-	 * 
+	 * Method to create a new Child and add it to Children.
+	 *
 	 * @param tag    TagName
 	 * @param values Values of Child
 	 * @return XMLEntity new Instance
@@ -542,11 +612,23 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return child;
 	}
 
+	/**
+	 * With value item.
+	 *
+	 * @param value the value
+	 * @return the XML entity
+	 */
 	public XMLEntity withValueItem(String value) {
 		this.valueItem = value;
 		return this;
 	}
 
+	/**
+	 * Adds the comment.
+	 *
+	 * @param comment the comment
+	 * @return the XML entity
+	 */
 	public XMLEntity addComment(String comment) {
 		XMLEntity newComment = new XMLEntity();
 		newComment.withType("<!--");
@@ -558,6 +640,11 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return this;
 	}
 
+	/**
+	 * First child.
+	 *
+	 * @return the XML entity
+	 */
 	@Override
 	public XMLEntity firstChild() {
 		BaseItem child = this.getChild(0);
@@ -567,6 +654,11 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return null;
 	}
 	
+	/**
+	 * Gets the children.
+	 *
+	 * @return the children
+	 */
 	public SimpleList<BaseItem> getChildren() {
 		return children;
 	}

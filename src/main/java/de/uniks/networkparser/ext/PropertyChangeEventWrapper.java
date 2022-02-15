@@ -29,26 +29,55 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
 
 /**
- * Property Change Event
+ * Property Change Event.
+ *
  * @author Stefan Lindel
  */
 public class PropertyChangeEventWrapper extends SendableEntityCreatorWrapper {
+	
+	/** The Constant PROPERTY_SOURCE. */
 	public static final String PROPERTY_SOURCE = "source";
+	
+	/** The Constant PROPERTY_PROPERTY. */
 	public static final String PROPERTY_PROPERTY = "property";
+	
+	/** The Constant PROPERTY_OLDVALUE. */
 	public static final String PROPERTY_OLDVALUE = "oldValue";
+	
+	/** The Constant PROPERTY_NEWVALUE. */
 	public static final String PROPERTY_NEWVALUE = "newValue";
+	
+	/** The Constant SENDABLECLASSSTRING. */
 	public static final String SENDABLECLASSSTRING = "java.beans.PropertyChangeEvent";
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { PROPERTY_SOURCE, PROPERTY_PROPERTY, PROPERTY_OLDVALUE, PROPERTY_NEWVALUE };
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new PropertyChangeEvent(this, null, null, null);
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (entity instanceof PropertyChangeEvent) {
@@ -68,6 +97,12 @@ public class PropertyChangeEventWrapper extends SendableEntityCreatorWrapper {
 		return null;
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @param item the item
+	 * @return the object
+	 */
 	@Override
 	public Object newInstance(Entity item) {
 		Object source = item.getValue(PROPERTY_SOURCE);

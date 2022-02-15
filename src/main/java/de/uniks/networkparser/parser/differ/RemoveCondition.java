@@ -10,8 +10,16 @@ import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.GraphMatcher;
 
+/**
+ * The Class RemoveCondition.
+ *
+ * @author Stefan
+ */
 public class RemoveCondition extends MatchCondition {
 
+	/**
+	 * Instantiates a new removes the condition.
+	 */
 	public RemoveCondition() {
 		super(false);
 	}
@@ -157,6 +165,11 @@ public class RemoveCondition extends MatchCondition {
 		return true;
 	}
 
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
 	@Override
 	public String getAction() {
 		return SendableEntityCreator.REMOVE;

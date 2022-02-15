@@ -12,22 +12,36 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleSet;
 
 /**
- * FeatureCondition for a Global Feature like Set, or PropertyChange
- * 
- * @author Stefan FeatureCondition for ModelFilter
+ * FeatureCondition for a Global Feature like Set, or PropertyChange.
  *
+ * @author Stefan FeatureCondition for ModelFilter
+ * 
  *         Format {{#feature SETCLASS=SimpleSet}}
  */
 public class FeatureCondition extends CustomCondition<GraphMember> {
 	private static final String PROPERTY_FEATURE = "variable.features";
+	
+	/** The Constant TAG. */
 	public static final String TAG = "feature";
 	private Feature feature;
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return TAG;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param buffer the buffer
+	 * @param parser the parser
+	 * @param customTemplate the custom template
+	 */
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		if (buffer == null) {
@@ -48,16 +62,35 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 		buffer.skip();
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param isExpression the is expression
+	 * @return the sendable instance
+	 */
 	@Override
 	public FeatureCondition getSendableInstance(boolean isExpression) {
 		return new FeatureCondition().withExpression(isExpression);
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param creator the creator
+	 * @param member the member
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(SendableEntityCreator creator, GraphMember member) {
 		return null;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param value the value
+	 * @return the value
+	 */
 	@Override
 	public CharSequence getValue(LocalisationInterface value) {
 		Feature feature = getFeature(value);
@@ -77,6 +110,12 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 		return null;
 	}
 
+	/**
+	 * Gets the feature.
+	 *
+	 * @param value the value
+	 * @return the feature
+	 */
 	public Feature getFeature(Object value) {
 		if (value instanceof SendableEntityCreator) {
 			SendableEntityCreator creator = (SendableEntityCreator) value;
@@ -89,6 +128,12 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 		return null;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (feature == null) {
@@ -105,12 +150,25 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 		return false;
 	}
 	
+	/**
+	 * With feature.
+	 *
+	 * @param cond the cond
+	 * @return the feature condition
+	 */
 	public FeatureCondition withFeature(Feature cond) {
 	  this.feature = cond;
 	  this.isExpression=true;
 	  return this; 
 	}
 
+	/**
+	 * Checks for feature property.
+	 *
+	 * @param property the property
+	 * @param values the values
+	 * @return true, if successful
+	 */
 	public boolean hasFeatureProperty(Feature property, Clazz... values) {
 		if (property != null) {
 			if (values == null) {
@@ -126,6 +184,11 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 		return false;
 	}
 	
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	@Override
 	public String toString() {
 		CharacterBuffer buffer = new CharacterBuffer();

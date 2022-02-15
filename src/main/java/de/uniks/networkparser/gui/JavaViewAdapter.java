@@ -25,28 +25,87 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
+/**
+ * The Interface JavaViewAdapter.
+ *
+ * @author Stefan
+ */
 public interface JavaViewAdapter extends ObjectCondition {
+	
+	/** The Constant SUCCEEDED. */
 	public static final String SUCCEEDED = "SUCCEEDED";
+	
+	/** The Constant DRAGOVER. */
 	public static final String DRAGOVER = "Drag_Over";
+	
+	/** The Constant DRAGDROPPED. */
 	public static final String DRAGDROPPED = "Drag_Dropped";
+	
+	/** The Constant ERROR. */
 	public static final String ERROR = "Error";
+	
+	/** The Constant DRAGEXITED. */
 	public static final String DRAGEXITED = "Drag_Exited";
+	
+	/** The Constant STATE. */
 	public static final String STATE = "javafx.concurrent.Worker$State";
+	
+	/** The Constant FAILED. */
 	public static final Object FAILED = "FAILED";
 
+	/**
+	 * With owner.
+	 *
+	 * @param owner the owner
+	 * @return the java view adapter
+	 */
 	public JavaViewAdapter withOwner(JavaBridge owner);
 
+	/**
+	 * Read file.
+	 *
+	 * @param file the file
+	 * @return the string
+	 */
 	public String readFile(String file);
 
+	/**
+	 * Execute script.
+	 *
+	 * @param script the script
+	 * @return the object
+	 */
 	public Object executeScript(String script);
 
+	/**
+	 * Load.
+	 *
+	 * @param entity the entity
+	 * @return true, if successful
+	 */
 	public boolean load(Object entity);
 
+	/**
+	 * Gets the web view.
+	 *
+	 * @return the web view
+	 */
 	public Object getWebView();
 
+	/**
+	 * Gets the web engine.
+	 *
+	 * @return the web engine
+	 */
 	public Object getWebEngine();
 
+	/**
+	 * Load finish.
+	 */
 	public void loadFinish();
 
+	/**
+	 * Enable debug.
+	 */
 	public void enableDebug();
 }

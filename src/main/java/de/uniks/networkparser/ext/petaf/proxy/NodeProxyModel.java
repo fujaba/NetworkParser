@@ -28,7 +28,8 @@ import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.Space;
 
 /**
- * Proxy for Model
+ * Proxy for Model.
+ *
  * @author Stefan Lindel
  */
 public class NodeProxyModel extends NodeProxy {
@@ -36,11 +37,21 @@ public class NodeProxyModel extends NodeProxy {
 	private String id;
 	private NodeProxyModel nextModel;
 
+	/**
+	 * Instantiates a new node proxy model.
+	 *
+	 * @param root the root
+	 */
 	public NodeProxyModel(Object root) {
 		this.root = root;
 		withType(NodeProxy.TYPE_IN);
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		if (space == null) {
@@ -49,6 +60,11 @@ public class NodeProxyModel extends NodeProxy {
 		return getId();
 	}
 
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
 	public String getId() {
 		if (this.id != null) {
 			return this.id;
@@ -57,11 +73,21 @@ public class NodeProxyModel extends NodeProxy {
 		return id;
 	}
 
+	/**
+	 * Close.
+	 *
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean close() {
 		return false;
 	}
 
+	/**
+	 * Gets the model.
+	 *
+	 * @return the model
+	 */
 	public Object getModel() {
 		return root;
 	}
@@ -71,16 +97,33 @@ public class NodeProxyModel extends NodeProxy {
 		return true;
 	}
 
+	/**
+	 * Checks if is sendable.
+	 *
+	 * @return true, if is sendable
+	 */
 	@Override
 	public boolean isSendable() {
 		return false;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param reference the reference
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean reference) {
 		return new NodeProxyModel(null);
 	}
 
+	/**
+	 * Inits the space.
+	 *
+	 * @param space the space
+	 * @return the node proxy
+	 */
 	@Override
 	public NodeProxy initSpace(Space space) {
 		super.initSpace(space);
@@ -92,6 +135,12 @@ public class NodeProxyModel extends NodeProxy {
 		return this;
 	}
 
+	/**
+	 * Sets the next model.
+	 *
+	 * @param model the model
+	 * @return the node proxy model
+	 */
 	public NodeProxyModel setNextModel(NodeProxyModel model) {
 		this.nextModel = model;
 		if (model == null) {
@@ -101,6 +150,11 @@ public class NodeProxyModel extends NodeProxy {
 		return model;
 	}
 
+	/**
+	 * Next model.
+	 *
+	 * @return the node proxy model
+	 */
 	public NodeProxyModel nextModel() {
 		return this.nextModel;
 	}

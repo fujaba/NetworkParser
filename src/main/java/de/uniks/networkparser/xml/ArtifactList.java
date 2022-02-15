@@ -6,26 +6,46 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 
 /**
- * May be a List of Pom of one or more Libaries
- * 
+ * May be a List of Pom of one or more Libaries.
+ *
  * @author Stefan Lindel
  */
 public class ArtifactList extends SortedSet<ArtifactFile> {
+	
+	/** The is show meta data. */
 	public boolean isShowMetaData;
+	
+	/** The biggest snap shot. */
 	public ArtifactFile biggestSnapShot;
+	
+	/** The biggest release. */
 	public ArtifactFile biggestRelease;
 	private String groupId;
 	private String artifactId;
 	private SimpleList<ArtifactList> children;
 
+	/**
+	 * Instantiates a new artifact list.
+	 */
 	public ArtifactList() {
 		this(true);
 	}
 
+	/**
+	 * Instantiates a new artifact list.
+	 *
+	 * @param comparator the comparator
+	 */
 	public ArtifactList(boolean comparator) {
 		super(comparator);
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean add(ArtifactFile value) {
 		if (value == null) {
@@ -44,17 +64,17 @@ public class ArtifactList extends SortedSet<ArtifactFile> {
 					if (value.getArtifactId() == null) {
 						continue;
 					}
-					if (value.getArtifactId().equals(child.getArtifactId()) == false) {
+					if (!value.getArtifactId().equals(child.getArtifactId())) {
 						continue;
 					}
-					if (value.getVersion().equals(child.getVersion()) == false) {
+					if (!value.getVersion().equals(child.getVersion())) {
 						continue;
 					}
 					child.addClassifier(value.getClassifier());
 					found = true;
 					break;
 				}
-				if (found == false) {
+				if (!found) {
 					addItem(value);
 				}
 			} else {
@@ -128,6 +148,9 @@ public class ArtifactList extends SortedSet<ArtifactFile> {
 		return true;
 	}
 
+	/**
+	 * Clear.
+	 */
 	@Override
 	public void clear() {
 		super.clear();
@@ -135,14 +158,29 @@ public class ArtifactList extends SortedSet<ArtifactFile> {
 		this.groupId = null;
 	}
 
+	/**
+	 * Gets the group.
+	 *
+	 * @return the group
+	 */
 	public String getGroup() {
 		return groupId;
 	}
 
+	/**
+	 * Gets the artifact.
+	 *
+	 * @return the artifact
+	 */
 	public String getArtifact() {
 		return artifactId;
 	}
 
+	/**
+	 * To json.
+	 *
+	 * @return the json object
+	 */
 	public JsonObject toJson() {
 		JsonObject json = new JsonObject();
 		json.add("groupid", this.groupId);
@@ -165,10 +203,20 @@ public class ArtifactList extends SortedSet<ArtifactFile> {
 		return json;
 	}
 
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
 	public String toString() {
 		return toJson().toString();
 	}
 
+	/**
+	 * Gets the version.
+	 *
+	 * @return the version
+	 */
 	public String getVersion() {
 		if (this.biggestRelease != null) {
 			return this.biggestRelease.getVersion();

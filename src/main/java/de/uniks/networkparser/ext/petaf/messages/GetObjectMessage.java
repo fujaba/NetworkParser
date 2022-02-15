@@ -27,15 +27,28 @@ import de.uniks.networkparser.ext.petaf.Message;
 //TODO ADD FUNCTIONALITY
 
 /**
- * Get Missing Messages
+ * Get Missing Messages.
+ *
  * @author Stefan Lindel
  */
 public class GetObjectMessage extends Message {
+	
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new GetObjectMessage();
 	}
 
+	/**
+	 * Checks if is sending to peers.
+	 *
+	 * @return true, if is sending to peers
+	 */
 	@Override
 	public boolean isSendingToPeers() {
 		return false;

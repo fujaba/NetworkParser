@@ -28,35 +28,75 @@ import java.beans.PropertyChangeEvent;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * The Class Between.
+ *
+ * @author Stefan
+ */
 public class Between implements ObjectCondition, SendableEntityCreator {
+	
+	/** The Constant FROM. */
 	public static final String FROM = "from";
+	
+	/** The Constant TO. */
 	public static final String TO = "to";
+	
+	/** The Constant BORDER. */
 	public static final String BORDER = "border";
 
 	private Double fromValue;
 	private Double toValue;
 	private boolean border = true;
 
+	/**
+	 * With range.
+	 *
+	 * @param from the from
+	 * @param to the to
+	 * @return the between
+	 */
 	public Between withRange(double from, double to) {
 		this.fromValue = from;
 		this.toValue = to;
 		return this;
 	}
 
+	/**
+	 * With from.
+	 *
+	 * @param from the from
+	 * @return the between
+	 */
 	public Between withFrom(double from) {
 		this.fromValue = from;
 		return this;
 	}
 
+	/**
+	 * With to.
+	 *
+	 * @param to the to
+	 * @return the between
+	 */
 	public Between withTo(double to) {
 		this.toValue = to;
 		return this;
 	}
 
+	/**
+	 * Gets the from.
+	 *
+	 * @return the from
+	 */
 	public double getFrom() {
 		return fromValue;
 	}
 
+	/**
+	 * Gets the to.
+	 *
+	 * @return the to
+	 */
 	public double getTo() {
 		if(toValue== null) {
 			return 0;
@@ -64,6 +104,12 @@ public class Between implements ObjectCondition, SendableEntityCreator {
 		return toValue;
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param evt the evt
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object evt) {
 		if (evt instanceof PropertyChangeEvent == false) {
@@ -116,16 +162,34 @@ public class Between implements ObjectCondition, SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
 	@Override
 	public String[] getProperties() {
 		return new String[] { FROM, TO };
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param prototyp the prototyp
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new Between();
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @return the value
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (FROM.equalsIgnoreCase(attribute)) {
@@ -137,6 +201,15 @@ public class Between implements ObjectCondition, SendableEntityCreator {
 		return null;
 	}
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param entity the entity
+	 * @param attribute the attribute
+	 * @param value the value
+	 * @param type the type
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (FROM.equalsIgnoreCase(attribute)) {

@@ -31,21 +31,46 @@ import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 
+/**
+ * The Class CustomCondition.
+ *
+ * @author Stefan
+ * @param <T> the generic type
+ */
 public abstract class CustomCondition<T> implements ParserCondition {
 	protected static final String PROPERTY_MEMBER = "member";
 	protected boolean isExpression;
 
+	/**
+	 * Checks if is expression.
+	 *
+	 * @return true, if is expression
+	 */
 	@Override
 	public boolean isExpression() {
 		return isExpression;
 	}
 
+	/**
+	 * With expression.
+	 *
+	 * @param <ST> the generic type
+	 * @param value the value
+	 * @return the st
+	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends CustomCondition<T>> ST withExpression(boolean value) {
 		this.isExpression = value;
 		return (ST) this;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param buffer the buffer
+	 * @param parser the parser
+	 * @param customTemplate the custom template
+	 */
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		skipEnd(buffer);
 	}
@@ -82,6 +107,12 @@ public abstract class CustomCondition<T> implements ParserCondition {
 		buffer.skipChar(SPLITEND);
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof ObjectCondition) {
@@ -93,6 +124,12 @@ public abstract class CustomCondition<T> implements ParserCondition {
 		return false;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param variables the variables
+	 * @return the value
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public Object getValue(LocalisationInterface variables) {
@@ -103,5 +140,12 @@ public abstract class CustomCondition<T> implements ParserCondition {
 		return null;
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param creator the creator
+	 * @param member the member
+	 * @return the value
+	 */
 	public abstract Object getValue(SendableEntityCreator creator, T member);
 }

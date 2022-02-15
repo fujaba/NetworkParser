@@ -42,42 +42,93 @@ import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
-/** RabbitMessage 
- * @author Stefan Lindel */
+/**
+ * RabbitMQ Message.
+ *
+ * @author Stefan Lindel
+ */
 public class RabbitMessage {
+	
+	/** The Constant NULL. */
 	public static final byte NULL = 0;
 
+	/** The Constant FRAME_METHOD. */
 	public static final byte FRAME_METHOD = 1;
+	
+	/** The Constant FRAME_HEADER. */
 	public static final byte FRAME_HEADER = 2;
+	
+	/** The Constant FRAME_BODY. */
 	public static final byte FRAME_BODY = 3;
+	
+	/** The Constant FRAME_HEARTBEAT. */
 	public static final byte FRAME_HEARTBEAT = 8;
 
+	/** The Constant CONNECTION_CLASS. */
 	public static final short CONNECTION_CLASS = 10;
+	
+	/** The Constant CHANNEL_CLASS. */
 	public static final short CHANNEL_CLASS = 20;
+	
+	/** The Constant ACCESS_CLASS. */
 	public static final short ACCESS_CLASS = 30;
+	
+	/** The Constant EXCHANGE_CLASS. */
 	public static final short EXCHANGE_CLASS = 40;
 	private static final short QUEUE_CLASS = 50;
 	private static final short BASIC_CLASS = 60;
 	private static final short CONFIRM_CLASS = 85;
 	private static final short TX_CLASS = 90;
 
+	/** The Constant STARTOK_METHOD. */
 	public static final short STARTOK_METHOD = 11;
+	
+	/** The Constant TUNE_METHOD. */
 	public static final short TUNE_METHOD = 30;
+	
+	/** The Constant TUNEOK_METHOD. */
 	public static final short TUNEOK_METHOD = 31;
+	
+	/** The Constant OPEN_METHOD. */
 	public static final short OPEN_METHOD = 40;
+	
+	/** The Constant OPENCHANNEL_METHOD. */
 	public static final short OPENCHANNEL_METHOD = 10;
+	
+	/** The Constant PUBLISH_METHOD. */
 	public static final short PUBLISH_METHOD = 40;
+	
+	/** The Constant CREATE_QUEUE_METHOD. */
 	public static final short CREATE_QUEUE_METHOD = 10;
+	
+	/** The Constant CONSUME_METHOD. */
 	public static final short CONSUME_METHOD = 20;
 
+	/** The Constant BIT. */
 	public static final byte BIT = 1;
+	
+	/** The Constant BYTE. */
 	public static final byte BYTE = 2;
+	
+	/** The Constant SHORT. */
 	public static final byte SHORT = 3;
+	
+	/** The Constant INT. */
 	public static final byte INT = 4;
+	
+	/** The Constant LONG. */
 	public static final byte LONG = 5;
+	
+	/** The Constant SHORTSTR. */
 	public static final byte SHORTSTR = 6;
+	
+	/** The Constant STRING. */
 	public static final byte STRING = 7;
+	
+	/** The Constant VERSION. */
 	public static final byte VERSION = 8;
+	
+	/** The Constant TABLE. */
 	public static final byte TABLE = 9;
 
 	private byte[] headers = new byte[3];
@@ -90,14 +141,23 @@ public class RabbitMessage {
 	private short methodId;
 	private SimpleKeyValueList<String, Object> payloadData = new SimpleKeyValueList<String, Object>();
 
-	/** with values or ByteEntity 
-	 * @param value Message 
-	 * @return This Component */
+	/**
+	 *  with values or ByteEntity .
+	 *
+	 * @param value Message
+	 * @return This Component
+	 */
 	public RabbitMessage withShortString(String value) {
 		withValues(ByteEntity.create(ByteTokener.DATATYPE_STRING + ByteTokener.LEN_LITTLE, value));
 		return this;
 	}
 
+	/**
+	 * With values.
+	 *
+	 * @param args the args
+	 * @return the rabbit message
+	 */
 	public RabbitMessage withValues(Object... args) {
 		if (accumulator == null) {
 			accumulator = new ByteBuffer();
@@ -121,6 +181,11 @@ public class RabbitMessage {
 		return this;
 	}
 
+	/**
+	 * With empty values.
+	 *
+	 * @return the rabbit message
+	 */
 	public RabbitMessage withEmptyValues() {
 		if (accumulator == null) {
 			accumulator = new ByteBuffer();
@@ -130,11 +195,23 @@ public class RabbitMessage {
 		return this;
 	}
 
+	/**
+	 * With map.
+	 *
+	 * @param map the map
+	 * @return the rabbit message
+	 */
 	public RabbitMessage withMap(Map<String, Object> map) {
 		this.table = map;
 		return this;
 	}
 
+	/**
+	 * Write map.
+	 *
+	 * @param map the map
+	 * @return the rabbit message
+	 */
 	public RabbitMessage writeMap(Map<?, ?> map) {
 		if (accumulator == null) {
 			return null;
@@ -155,6 +232,12 @@ public class RabbitMessage {
 		return this;
 	}
 
+	/**
+	 * Write value.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean writeValue(Object value) {
 		if (accumulator == null) {
 			return false;
@@ -233,6 +316,12 @@ public class RabbitMessage {
 		return false;
 	}
 
+	/**
+	 * Write field value.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	public boolean writeFieldValue(Object value) {
 		if (accumulator == null) {
 			return false;
@@ -328,33 +417,69 @@ public class RabbitMessage {
 		return false;
 	}
 
+	/**
+	 * With frame.
+	 *
+	 * @param classId the class id
+	 * @param methodId the method id
+	 * @return the rabbit message
+	 */
 	public RabbitMessage withFrame(short classId, short methodId) {
 		this.classId = classId;
 		this.methodId = methodId;
 		return this;
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public byte getType() {
 		return headers[0];
 	}
 
+	/**
+	 * With type.
+	 *
+	 * @param value the value
+	 * @return the rabbit message
+	 */
 	public RabbitMessage withType(byte value) {
 		this.headers[0] = value;
 		return this;
 	}
 
+	/**
+	 * With channel.
+	 *
+	 * @param value the value
+	 * @return the rabbit message
+	 */
 	public RabbitMessage withChannel(short value) {
 		this.headers[1] = (byte) (value >>> 8);
 		this.headers[2] = (byte) value;
 		return this;
 	}
 
+	/**
+	 * Gets the channel.
+	 *
+	 * @return the channel
+	 */
 	public short getChannel() {
 		short result = headers[1];
 		result = (short) (result << 8 + headers[2]);
 		return result;
 	}
 
+	/**
+	 * Write.
+	 *
+	 * @param stream the stream
+	 * @param logger the logger
+	 * @return true, if successful
+	 */
 	public boolean write(OutputStream stream, NetworkParserLog logger) {
 		if (stream == null) {
 			return false;
@@ -389,6 +514,11 @@ public class RabbitMessage {
 		return true;
 	}
 
+	/**
+	 * Gets the debug string.
+	 *
+	 * @return the debug string
+	 */
 	public String getDebugString() {
 		ByteBuffer errorMessage = new ByteBuffer();
 		errorMessage.insert(headers, true);
@@ -453,6 +583,12 @@ public class RabbitMessage {
 		return msg;
 	}
 
+	/**
+	 * With payload.
+	 *
+	 * @param value the value
+	 * @return the rabbit message
+	 */
 	public RabbitMessage withPayload(byte[] value) {
 		this.payload = new ByteBuffer().with(value).flip(true);
 		return this;
@@ -581,6 +717,12 @@ public class RabbitMessage {
 		}
 	}
 
+	/**
+	 * Analyse pay load.
+	 *
+	 * @param broker the broker
+	 * @return true, if successful
+	 */
 	public boolean analysePayLoad(NodeProxyBroker broker) {
 		if (payload == null || broker == null) {
 			return false;
@@ -753,12 +895,20 @@ public class RabbitMessage {
 	}
 
 	/**
+	 * Gets the payload data.
+	 *
 	 * @return the payloadData
 	 */
 	public SimpleKeyValueList<String, Object> getPayloadData() {
 		return payloadData;
 	}
 
+	/**
+	 * Checks for data.
+	 *
+	 * @param key the key
+	 * @return true, if successful
+	 */
 	public boolean hasData(String key) {
 		if (payloadData != null) {
 			return payloadData.containsKey(key);
@@ -766,6 +916,12 @@ public class RabbitMessage {
 		return false;
 	}
 
+	/**
+	 * Gets the data.
+	 *
+	 * @param key the key
+	 * @return the data
+	 */
 	public Object getData(String key) {
 		if (payloadData != null) {
 			return payloadData.getValue(key);
@@ -773,6 +929,11 @@ public class RabbitMessage {
 		return null;
 	}
 
+	/**
+	 * Gets the text.
+	 *
+	 * @return the text
+	 */
 	public String getText() {
 		if (getType() != 3) {
 			return null;
@@ -781,6 +942,12 @@ public class RabbitMessage {
 		return text;
 	}
 
+	/**
+	 * Creates the start OK.
+	 *
+	 * @param login the login
+	 * @return the rabbit message
+	 */
 	public static RabbitMessage createStartOK(String... login) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
 		msg.withFrame(CONNECTION_CLASS, STARTOK_METHOD);
@@ -801,6 +968,14 @@ public class RabbitMessage {
 		return msg;
 	}
 
+	/**
+	 * Creates the tune OK.
+	 *
+	 * @param channelMax the channel max
+	 * @param frameMax the frame max
+	 * @param heartbeat the heartbeat
+	 * @return the rabbit message
+	 */
 	public static RabbitMessage createTuneOK(short channelMax, int frameMax, short heartbeat) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
 		msg.withFrame(CONNECTION_CLASS, TUNEOK_METHOD);
@@ -808,6 +983,12 @@ public class RabbitMessage {
 		return msg;
 	}
 
+	/**
+	 * Creates the connection open.
+	 *
+	 * @param virtualHost the virtual host
+	 * @return the rabbit message
+	 */
 	public static RabbitMessage createConnectionOpen(String virtualHost) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
 		msg.withFrame(CONNECTION_CLASS, OPEN_METHOD);
@@ -820,6 +1001,13 @@ public class RabbitMessage {
 		return msg;
 	}
 
+	/**
+	 * Creates the channel open.
+	 *
+	 * @param broker the broker
+	 * @param queue the queue
+	 * @return the rabbit message
+	 */
 	public static RabbitMessage createChannelOpen(NodeProxyBroker broker, String queue) {
 		if (broker == null) {
 			return null;
@@ -836,7 +1024,7 @@ public class RabbitMessage {
 	}
 
 	/**
-	 * Declare a queue
+	 * Declare a queue.
 	 *
 	 * @param channel    Tthe Channelname
 	 * @param queue      the name of the queue
@@ -861,6 +1049,19 @@ public class RabbitMessage {
 		return msg;
 	}
 
+	/**
+	 * Creates the consume.
+	 *
+	 * @param channel the channel
+	 * @param queue the queue
+	 * @param consumerTag the consumer tag
+	 * @param noLocal the no local
+	 * @param noAck the no ack
+	 * @param exclusive the exclusive
+	 * @param nowait the nowait
+	 * @param table the table
+	 * @return the rabbit message
+	 */
 	public static RabbitMessage createConsume(short channel, String queue, String consumerTag, boolean noLocal,
 			boolean noAck, boolean exclusive, boolean nowait, Map<String, Object> table) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
@@ -873,6 +1074,15 @@ public class RabbitMessage {
 		return msg;
 	}
 
+	/**
+	 * Creates the publish.
+	 *
+	 * @param channel the channel
+	 * @param queue the queue
+	 * @param routingKey the routing key
+	 * @param body the body
+	 * @return the rabbit message
+	 */
 	public static RabbitMessage createPublish(short channel, String queue, String routingKey, byte[] body) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
 		msg.withFrame(BASIC_CLASS, PUBLISH_METHOD).withChannel(channel);
@@ -884,6 +1094,14 @@ public class RabbitMessage {
 		return msg;
 	}
 
+	/**
+	 * Creates the exange.
+	 *
+	 * @param channel the channel
+	 * @param exchange the exchange
+	 * @param type the type
+	 * @return the rabbit message
+	 */
 	public static RabbitMessage createExange(short channel, String exchange, String type) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
 		msg.withFrame(EXCHANGE_CLASS, OPENCHANNEL_METHOD).withChannel(channel);
@@ -904,6 +1122,14 @@ public class RabbitMessage {
 		return msg;
 	}
 
+	/**
+	 * Creates the bind.
+	 *
+	 * @param channel the channel
+	 * @param exchange the exchange
+	 * @param queue the queue
+	 * @return the rabbit message
+	 */
 	public static RabbitMessage createBind(short channel, String exchange, String queue) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
 		msg.withFrame(QUEUE_CLASS, CONSUME_METHOD).withChannel(channel);
@@ -917,6 +1143,13 @@ public class RabbitMessage {
 		return msg;
 	}
 
+	/**
+	 * Creates the publish header.
+	 *
+	 * @param channel the channel
+	 * @param queue the queue
+	 * @return the rabbit message
+	 */
 	public static RabbitMessage createPublishHeader(short channel, String queue) {
 		if (queue == null) {
 			return null;
@@ -928,6 +1161,13 @@ public class RabbitMessage {
 		return msg;
 	}
 
+	/**
+	 * Creates the publish body.
+	 *
+	 * @param channel the channel
+	 * @param queue the queue
+	 * @return the rabbit message
+	 */
 	public static RabbitMessage createPublishBody(short channel, String queue) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_BODY);
 		msg.withChannel(channel);
@@ -963,6 +1203,12 @@ public class RabbitMessage {
 		bitMask = 1;
 	}
 
+	/**
+	 * With bit.
+	 *
+	 * @param b the b
+	 * @return the rabbit message
+	 */
 	public RabbitMessage withBit(boolean b) {
 		if (bitMask > 0x80) {
 			bitflush();
@@ -977,6 +1223,12 @@ public class RabbitMessage {
 		return this;
 	}
 
+	/**
+	 * Creates the close.
+	 *
+	 * @param channel the channel
+	 * @return the rabbit message
+	 */
 	public static RabbitMessage createClose(short channel) {
 		RabbitMessage msg = new RabbitMessage();
 		msg.withChannel(channel);

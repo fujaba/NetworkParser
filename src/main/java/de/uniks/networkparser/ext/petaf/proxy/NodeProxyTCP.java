@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -63,19 +64,29 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 /**
- * Proxy for TCP-Connection
- * 
+ * Proxy for TCP-Connection.
+ *
  * @author Stefan Lindel
  */
 public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
+    
+    /** The Constant BUFFER. */
     public static final int BUFFER = 100 * 1024;
+    
+    /** The Constant PROPERTY_URL. */
     public static final String PROPERTY_URL = "url";
+    
+    /** The Constant PROPERTY_PORT. */
     public static final String PROPERTY_PORT = "port";
+    
+    /** The Constant USERAGENT. */
     public static final String USERAGENT = "User-Agent";
 
     protected int port;
     protected String url;
     protected int timeOut;
+    
+    /** The Constant LOCALHOST. */
     public static final String LOCALHOST = "127.0.0.1";
     protected Server server;
     protected boolean allowAnswer = false;
@@ -89,16 +100,30 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
      */
     private ObjectCondition listener;
 
+    /**
+     * Instantiates a new node proxy TCP.
+     */
     public NodeProxyTCP() {
         this.property.addAll(PROPERTY_URL, PROPERTY_PORT);
         this.propertyUpdate.addAll(PROPERTY_URL, PROPERTY_PORT);
         this.propertyInfo.addAll(PROPERTY_URL, PROPERTY_PORT);
     }
 
+    /**
+     * Gets the url.
+     *
+     * @return the url
+     */
     public String getUrl() {
         return url;
     }
 
+    /**
+     * With url.
+     *
+     * @param value the value
+     * @return the node proxy TCP
+     */
     public NodeProxyTCP withUrl(String value) {
         String oldValue = value;
         this.url = value;
@@ -106,12 +131,24 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return this;
     }
 
+    /**
+     * With URL port.
+     *
+     * @param url the url
+     * @param port the port
+     * @return the node proxy TCP
+     */
     public NodeProxyTCP withURLPort(String url, int port) {
         withUrl(url);
         withPort(port);
         return this;
     }
 
+    /**
+     * Gets the key.
+     *
+     * @return the key
+     */
     @Override
     public String getKey() {
         if (url == null) {
@@ -120,19 +157,41 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return url + ":" + port;
     }
 
+    /**
+     * Gets the port.
+     *
+     * @return the port
+     */
     public Integer getPort() {
         return port;
     }
 
+    /**
+     * With allow answer.
+     *
+     * @param value the value
+     * @return the node proxy TCP
+     */
     public NodeProxyTCP withAllowAnswer(boolean value) {
         this.allowAnswer = value;
         return this;
     }
 
+    /**
+     * Checks if is allow answer.
+     *
+     * @return true, if is allow answer
+     */
     public boolean isAllowAnswer() {
         return allowAnswer;
     }
 
+    /**
+     * With port.
+     *
+     * @param value the value
+     * @return the node proxy TCP
+     */
     public NodeProxyTCP withPort(int value) {
         int oldValue = value;
         this.port = value;
@@ -140,6 +199,13 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return this;
     }
 
+    /**
+     * Gets the value.
+     *
+     * @param element the element
+     * @param attrName the attr name
+     * @return the value
+     */
     @Override
     public Object getValue(Object element, String attrName) {
         if (element instanceof NodeProxyTCP) {
@@ -154,6 +220,15 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return super.getValue(element, attrName);
     }
 
+    /**
+     * Sets the value.
+     *
+     * @param element the element
+     * @param attrName the attr name
+     * @param value the value
+     * @param type the type
+     * @return true, if successful
+     */
     @Override
     public boolean setValue(Object element, String attrName, Object value, String type) {
         if (element instanceof NodeProxyTCP) {
@@ -170,6 +245,12 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return super.setValue(element, attrName, value, type);
     }
 
+    /**
+     * Update.
+     *
+     * @param socket the socket
+     * @return true, if successful
+     */
     public boolean update(Socket socket) {
         try {
             InputStream is = socket.getInputStream();
@@ -277,10 +358,20 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return success;
     }
 
+    /**
+     * Start.
+     *
+     * @return true, if successful
+     */
     public boolean start() {
         return startProxy();
     }
 
+    /**
+     * Close.
+     *
+     * @return true, if successful
+     */
     @Override
     public boolean close() {
         if (this.server != null) {
@@ -348,16 +439,34 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return true;
     }
 
+    /**
+     * Checks if is sendable.
+     *
+     * @return true, if is sendable
+     */
     @Override
     public boolean isSendable() {
         return url != null;
     }
 
+    /**
+     * Creates the.
+     *
+     * @param url the url
+     * @param port the port
+     * @return the node proxy TCP
+     */
     public static NodeProxyTCP create(String url, int port) {
         NodeProxyTCP proxy = new NodeProxyTCP().withURLPort(url, port);
         return proxy;
     }
 
+    /**
+     * Creates the server.
+     *
+     * @param port the port
+     * @return the node proxy TCP
+     */
     public static NodeProxyTCP createServer(int port) {
         NodeProxyTCP proxy = new NodeProxyTCP();
         proxy.withPort(port);
@@ -365,17 +474,37 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return proxy;
     }
 
+    /**
+     * Gets the sendable instance.
+     *
+     * @param reference the reference
+     * @return the sendable instance
+     */
     @Override
     public NodeProxyTCP getSendableInstance(boolean reference) {
         return new NodeProxyTCP();
     }
 
+    /**
+     * With listener.
+     *
+     * @param condition the condition
+     * @return the node proxy TCP
+     */
     public NodeProxyTCP withListener(ObjectCondition condition) {
         this.listener = condition;
         this.allowAnswer = true;
         return this;
     }
 
+    /**
+     * Gets the http.
+     *
+     * @param session the session
+     * @param path the path
+     * @param params the params
+     * @return the http
+     */
     public static HTMLEntity getHTTP(HTMLEntity session, String path, Object... params) {
         if (session == null) {
             return null;
@@ -420,6 +549,13 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return null;
     }
 
+    /**
+     * Convert params.
+     *
+     * @param result the result
+     * @param params the params
+     * @return the base item
+     */
     public static BaseItem convertParams(BaseItem result, Object... params) {
         if (params == null || params.length < 1) {
             return result;
@@ -474,22 +610,55 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return conn;
     }
 
+    /**
+     * Post HTTP.
+     *
+     * @param url the url
+     * @param params the params
+     * @return the HTML entity
+     */
     public static HTMLEntity postHTTP(String url, BaseItem params) {
         HTTPRequest request = new HTTPRequest(url, HTTPRequest.HTTP_TYPE_POST).withContent(params).withContentType(HTTPRequest.HTTP_CONTENT_FORM);
         return sendHTTP(request);
     }
 
+    /**
+     * Post multi HTTP.
+     *
+     * @param url the url
+     * @param params the params
+     * @return the HTML entity
+     */
     public static HTMLEntity postMultiHTTP(String url, Map<String, Object> params) {
         HTTPRequest request = new HTTPRequest(url, HTTPRequest.HTTP_TYPE_POST).withContentForm("----JavaBoundary", params);
         return sendHTTP(request);
     }
 
+    /**
+     * Post HTTP.
+     *
+     * @param session the session
+     * @param url the url
+     * @param bodyType the body type
+     * @param params the params
+     * @return the HTML entity
+     */
     public static HTMLEntity postHTTP(HTMLEntity session, String url, String bodyType, Object... params) {
         HTTPRequest request = new HTTPRequest(url, HTTPRequest.HTTP_TYPE_POST).withContent(session);
         request.withContent(bodyType, params);
         return sendHTTP(request);
     }
     
+  /**
+   * Post HTTP.
+   *
+   * @param url the url
+   * @param port the port
+   * @param path the path
+   * @param bodyType the body type
+   * @param params the params
+   * @return the HTML entity
+   */
   public static HTMLEntity postHTTP(String url, int port, String path, String bodyType, Object... params) {
 	  String uri = convertPath(url, port, path);
 	  if (uri == null) {
@@ -500,12 +669,27 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
 	  return sendHTTP(request);
   }
   
+  /**
+   * Post HTTP.
+   *
+   * @param url the url
+   * @param params the params
+   * @return the HTML entity
+   */
   public static HTMLEntity postHTTP(String url, Map<String, Object> params) {
 	  HTTPRequest request = new HTTPRequest(url, HTTPRequest.HTTP_TYPE_POST);
 	  request.withContent(HTTPRequest.HTTP_CONTENT_PLAIN, params);
 	  return sendHTTP(request);
   }
   
+  /**
+   * Post HTTP.
+   *
+   * @param url the url
+   * @param content the content
+   * @param params the params
+   * @return the HTML entity
+   */
   public static HTMLEntity postHTTP(String url, String content, String... params) {
 	CharacterBuffer fullUrl = new CharacterBuffer().with(url);
 	if(params != null) {
@@ -518,6 +702,12 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
 	  return sendHTTP(request);
   }
   
+  /**
+   * Send HTTP.
+   *
+   * @param element the element
+   * @return the HTML entity
+   */
   public static HTMLEntity sendHTTP(HTTPRequest element) {
         if (element == null) {
             return null;
@@ -648,6 +838,14 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return root;
     }
 
+    /**
+     * Convert path.
+     *
+     * @param url the url
+     * @param port the port
+     * @param path the path
+     * @return the string
+     */
     public static String convertPath(String url, int port, String path) {
         if (url == null) {
             return null;
@@ -673,6 +871,14 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return buffer.toString();
     }
 
+    /**
+     * Gets the http.
+     *
+     * @param url the url
+     * @param port the port
+     * @param path the path
+     * @return the http
+     */
     public static HTMLEntity getHTTP(String url, int port, String path) {
         String uri = convertPath(url, port, path);
         if (uri == null) {
@@ -681,6 +887,13 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return getHTTP(url);
     }
 
+    /**
+     * Gets the http.
+     *
+     * @param url the url
+     * @param root the root
+     * @return the http
+     */
     public static HTMLEntity getHTTP(String url, HTMLEntity... root) {
         HttpURLConnection conn = getConnection(url, HTTPRequest.HTTP_TYPE_GET);
         if (conn == null) {
@@ -693,6 +906,13 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return readAnswer(conn, rootItem);
     }
 
+    /**
+     * Gets the simple HTTP.
+     *
+     * @param url the url
+     * @param headers the headers
+     * @return the simple HTTP
+     */
     public static HTMLEntity getSimpleHTTP(String url, String... headers) {
         HttpURLConnection conn = getConnection(url, HTTPRequest.HTTP_TYPE_GET);
         if (headers != null && headers.length % 2 == 0) {
@@ -707,6 +927,12 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return readAnswer(conn, rootItem);
     }
 
+    /**
+     * Gets the HTTP binary.
+     *
+     * @param url the url
+     * @return the HTTP binary
+     */
     public static ByteBuffer getHTTPBinary(String url) {
         HttpURLConnection conn = getConnection(url, HTTPRequest.HTTP_TYPE_GET);
         if (conn == null) {
@@ -728,6 +954,11 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return sb;
     }
 
+    /**
+     * To string.
+     *
+     * @return the string
+     */
     @Override
     public String toString() {
         if (this.url != null && this.port > 0) {
@@ -736,16 +967,33 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return super.toString();
     }
 
+    /**
+     * With time out.
+     *
+     * @param value the value
+     * @return the node proxy TCP
+     */
     public NodeProxyTCP withTimeOut(int value) {
         this.timeOut = value;
         return this;
     }
 
+    /**
+     * With server type.
+     *
+     * @param type the type
+     * @return the node proxy TCP
+     */
     public NodeProxyTCP withServerType(String type) {
         this.serverType = type;
         return this;
     }
 
+    /**
+     * Checks if is valid.
+     *
+     * @return true, if is valid
+     */
     @Override
     public boolean isValid() {
         if (this.port > 0) {
@@ -754,6 +1002,12 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return false;
     }
 
+    /**
+     * Execute broad cast.
+     *
+     * @param async the async
+     * @return the datagram packet
+     */
     public DatagramPacket executeBroadCast(boolean async) {
         if (async) {
             this.server = new Server_UPD(this).withStart();
@@ -765,10 +1019,20 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return null;
     }
 
+    /**
+     * Gets the buffer size.
+     *
+     * @return the buffer size
+     */
     public int getBufferSize() {
         return BUFFER;
     }
 
+    /**
+     * Send search.
+     *
+     * @return true, if successful
+     */
     public boolean sendSearch() {
         Server_UPD server = (Server_UPD) this.server;
         DatagramPacket packet = server.runClient();
@@ -780,24 +1044,52 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return false;
     }
 
+    /**
+     * Search.
+     *
+     * @param port the port
+     * @return the node proxy TCP
+     */
     public static NodeProxyTCP search(int port) {
         return NodeProxyTCP.createServer(port);
     }
 
+    /**
+     * With receive port.
+     *
+     * @param port the port
+     * @return the node proxy TCP
+     */
     public NodeProxyTCP withReceivePort(int port) {
         this.receivePort = port;
         return this;
     }
 
+    /**
+     * Gets the receive port.
+     *
+     * @return the receive port
+     */
     public int getReceivePort() {
         return receivePort;
     }
 
+    /**
+     * With executor.
+     *
+     * @param executor the executor
+     * @return the node proxy TCP
+     */
     public NodeProxyTCP withExecutor(ExecutorService executor) {
         this.executor = new SimpleExecutor().withExecutorService(executor);
         return this;
     }
 
+    /**
+     * Gets the executor.
+     *
+     * @return the executor
+     */
     @Override
     public TaskExecutor getExecutor() {
         if (this.executor != null) {
@@ -806,14 +1098,28 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return super.getExecutor();
     }
 
+    /**
+     * Checks if is run.
+     *
+     * @return true, if is run
+     */
     public boolean isRun() {
         return server.isRun();
     }
 
+    /**
+     * Stop.
+     */
     public void stop() {
         this.server.stop();
     }
 
+    /**
+     * With rest service.
+     *
+     * @param restService the rest service
+     * @return the node proxy TCP
+     */
     public NodeProxyTCP withRestService(RESTServiceTask restService) {
         this.restService = restService;
         if (restService != null) {
@@ -821,5 +1127,91 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
             this.serverType = Server.REST;
         }
         return this;
+    }
+    
+
+    /**
+     * Gets the ip adress.
+     *
+     * @return the ip adress
+     */
+    public static String getIpAdress() {
+        try {
+            InetAddress ip = InetAddress.getLocalHost();
+            if (ip != null) {
+                return ip.getHostAddress();
+            }
+        } catch (UnknownHostException e) {
+        }
+        return "";
+    }
+    
+    /**
+     * Gets the ip name.
+     *
+     * @return the ip name
+     */
+    public static String getIpName() {
+        try {
+            InetAddress ip = InetAddress.getLocalHost();
+            if (ip != null) {
+                return ip.getHostName();
+            }
+        } catch (UnknownHostException e) {
+        }
+        return "";
+    }
+
+    /**
+     * Gets the mac adress.
+     *
+     * @return the mac adress
+     */
+    public static String getMacAdress() {
+        try {
+            InetAddress ip = InetAddress.getLocalHost();
+            NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+            byte[] mac = network.getHardwareAddress();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < mac.length; i++) {
+                sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+        }
+        return null;
+    }
+    
+    /**
+     * Get the name of the local host, for use in the EHLO and HELO commands. The
+     * property InetAddress would tell us.
+     *
+     * @param serverSocket the server socket
+     * @return the local host name
+     */
+    public static String getLocalHost(Socket serverSocket) {
+        InetAddress localHost;
+        String localHostName = null;
+        /* get our hostname and cache it for future use */
+        try {
+            localHost = InetAddress.getLocalHost();
+            localHostName = localHost.getCanonicalHostName();
+            /* if we can't get our name, use local address literal */
+            if (localHostName == null) {
+                /* XXX - not correct for IPv6 */
+                return "[" + localHost.getHostAddress() + "]";
+            }
+        } catch (UnknownHostException e) {
+        }
+        /* last chance, try to get our address from our socket */
+        if (localHostName == null || localHostName.length() <= 0 && serverSocket != null && serverSocket.isBound()) {
+            localHost = serverSocket.getLocalAddress();
+            localHostName = localHost.getCanonicalHostName();
+            /* if we can't get our name, use local address literal */
+            if (localHostName == null)
+                /* XXX - not correct for IPv6 */
+                localHostName = "[" + localHost.getHostAddress() + "]";
+        }
+        return localHostName;
     }
 }

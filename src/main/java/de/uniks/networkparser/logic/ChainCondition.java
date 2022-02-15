@@ -31,29 +31,65 @@ import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.TemplateParser;
 
+/**
+ * The Class ChainCondition.
+ *
+ * @author Stefan
+ */
 public class ChainCondition extends ListCondition {
+	
+	/**
+	 * Enable hook.
+	 *
+	 * @return the chain condition
+	 */
 	public ChainCondition enableHook() {
 		this.chain = false;
 		return this;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param buffer the buffer
+	 * @param parser the parser
+	 * @param customTemplate the custom template
+	 */
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		/* CHAIN CANT CREATE */
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param values the values
+	 * @return the chain condition
+	 */
 	@Override
 	public ChainCondition with(ObjectCondition... values) {
 		super.with(values);
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param values the values
+	 * @return the chain condition
+	 */
 	@Override
 	public ChainCondition with(PropertyChangeListener... values) {
 		super.with(values);
 		return this;
 	}
 
+	/**
+	 * With.
+	 *
+	 * @param values the values
+	 * @return the chain condition
+	 */
 	public ChainCondition with(Collection<ObjectCondition> values) {
 		ConditionSet list;
 
@@ -68,16 +104,32 @@ public class ChainCondition extends ListCondition {
 		return this;
 	}
 
+	/**
+	 * Checks if is expression.
+	 *
+	 * @return true, if is expression
+	 */
 	@Override
 	public boolean isExpression() {
 		return false;
 	}
 
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	public String getKey() {
 		return null;
 	}
 
+	/**
+	 * Gets the sendable instance.
+	 *
+	 * @param isExpression the is expression
+	 * @return the sendable instance
+	 */
 	@Override
 	public Object getSendableInstance(boolean isExpression) {
 		return new ChainCondition();

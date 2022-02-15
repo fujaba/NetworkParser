@@ -7,8 +7,16 @@ import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.GraphMatcher;
 
+/**
+ * The Class ChangeAddModifierCondition.
+ *
+ * @author Stefan
+ */
 public class ChangeAddModifierCondition extends MatchCondition {
 
+	/**
+	 * Instantiates a new change add modifier condition.
+	 */
 	public ChangeAddModifierCondition() {
 		super(true);
 	}
@@ -68,6 +76,11 @@ public class ChangeAddModifierCondition extends MatchCondition {
 		return true;
 	}
 
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
 	@Override
 	public String getAction() {
 		return SendableEntityCreator.NEW;
