@@ -30,9 +30,20 @@ THE SOFTWARE.
  * @author Stefan
  */
 public enum SQLCommand {
-	UPDATE("UPDATE", 4), INSERT("INSERT INTO", 3), DELETE("DELETE FROM", 5),
-	CREATETABLE("CREATE TABLE IF NOT EXISTS", 2), DROPTABLE("DROP TABLE IF EXISTS", 1), CONNECTION("", 0),
-	SELECT("SELECT", 6);
+    /** The update. */
+    UPDATE("UPDATE", 4),
+    /** The insert. */
+    INSERT("INSERT INTO", 3),
+    /** The delete. */
+    DELETE("DELETE FROM", 5),
+    /** The createtable. */
+    CREATETABLE("CREATE TABLE IF NOT EXISTS", 2),
+    /** The droptable. */
+    DROPTABLE("DROP TABLE IF EXISTS", 1),
+    /** The connection. */
+    CONNECTION("", 0),
+    /** The select. */
+    SELECT("SELECT", 6);
 
 	private String value;
 

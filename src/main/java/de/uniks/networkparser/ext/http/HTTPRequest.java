@@ -937,8 +937,12 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 				if (paths.size() < matchOfRequestPath) {
 					break;
 				}
+				MapEntry match = paths.get(matchOfRequestPath);
+				if(match == null) {
+				    break;
+				}
 				/* Must be the Same */
-				if (!currentPathpart.equalsIgnoreCase(paths.get(matchOfRequestPath).getValueString())) {
+				if (!currentPathpart.equalsIgnoreCase(match.getValueString())) {
 					break;
 				}
 			} else if (HTTPRequest.VARIABLE.equals(type)) {

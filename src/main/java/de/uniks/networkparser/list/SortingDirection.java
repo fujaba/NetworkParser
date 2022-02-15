@@ -31,10 +31,12 @@ THE SOFTWARE.
  */
 
 public enum SortingDirection {
-	/**
-	 * The Sortdirection Options. ASC from small to BIG and DESC from BIG to small
-	 */
-	ASC(1), DESC(-1);
+    /**
+     * The Sortdirection Options. ASC from small to BIG.
+     */
+    ASC(1),
+    /** DESC from BIG to small. */
+    DESC(-1);
 
 	/** The Variable of Direction. */
 	private int direction;

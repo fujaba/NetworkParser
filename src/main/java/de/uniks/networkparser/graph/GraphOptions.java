@@ -18,9 +18,16 @@ public class GraphOptions {
 	 * @author Stefan
 	 */
 	/* Options */
-	public enum TYP {
-		HTML, CANVAS, SVG, PDF
-	};
+    public enum TYP {
+        /** The html. */
+        HTML,
+        /** The canvas. */
+        CANVAS,
+        /** The svg. */
+        SVG,
+        /** The pdf. */
+        PDF
+	}
 
 	/**
 	 * The Enum RANK.
@@ -28,17 +35,23 @@ public class GraphOptions {
 	 * @author Stefan
 	 */
 	public enum RANK {
-		LR, TB
-	};
+        /** The lr. */
+        LR,
+        /** The tb. */
+        TB
+	}
 
 	/**
 	 * The Enum LINETYP.
 	 *
 	 * @author Stefan
 	 */
-	public enum LINETYP {
-		CENTER, SQUARE
-	};
+    public enum LINETYP {
+        /** The center. */
+        CENTER,
+        /** The square. */
+        SQUARE
+    }
 
 	private TYP display;
 	private LINETYP lineTyp;

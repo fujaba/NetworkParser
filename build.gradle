@@ -228,6 +228,10 @@ sonarqube {
   }
 }
 
+javadoc {
+  options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
 tasks.withType(Checkstyle) {
 	//configFile = file("src/test/resources/de/uniks/networkparser/test/google_checks.xml")
 	//configFile = file("sun_checks.xml")

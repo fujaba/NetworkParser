@@ -7,10 +7,13 @@ package de.uniks.networkparser.bytes.qr;
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class ByteMatrix {
+	
+	/** The bytes. */
 	private final byte[][] bytes;
-	private final int width;
-	private final int height;
 
+    /** The width. */
+    private final int width;
+    
 	/**
 	 * Instantiates a new byte matrix.
 	 *
@@ -18,9 +21,13 @@ public final class ByteMatrix {
 	 * @param height the height
 	 */
 	public ByteMatrix(int width, int height) {
-		bytes = new byte[height][width];
-		this.width = width;
-		this.height = height;
+	    if(width>=0 && height >= 0) {
+	        bytes = new byte[height][width];
+	        this.width = 0;
+	    }else {
+	        bytes = new byte[0][0];
+	        this.width = 0;
+	    }
 	}
 
 	/**
@@ -29,7 +36,7 @@ public final class ByteMatrix {
 	 * @return the height
 	 */
 	public int getHeight() {
-		return height;
+		return bytes.length;
 	}
 
 	/**
@@ -119,7 +126,7 @@ public final class ByteMatrix {
 	 * @param value the value
 	 */
 	public void clear(byte value) {
-		for (int y = 0; y < height; ++y) {
+		for (int y = 0; y < getHeight(); ++y) {
 			for (int x = 0; x < width; ++x) {
 				bytes[y][x] = value;
 			}
@@ -133,8 +140,8 @@ public final class ByteMatrix {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder(2 * width * height + 2);
-		for (int y = 0; y < height; ++y) {
+		StringBuilder result = new StringBuilder(2 * width * getHeight() + 2);
+		for (int y = 0; y < getHeight(); ++y) {
 			for (int x = 0; x < width; ++x) {
 				switch (bytes[y][x]) {
 				case 0:

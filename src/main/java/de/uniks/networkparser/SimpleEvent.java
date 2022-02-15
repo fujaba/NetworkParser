@@ -17,9 +17,17 @@ public class SimpleEvent extends PropertyChangeEvent {
 	private static final long serialVersionUID = 1L;
 	/** Variable for Deep from Root. */
 	private int depth;
+	
+	/** The entity. */
 	private Entity entity;
+	
+	/** The value. */
 	private Object value;
+	
+	/** The type. */
 	private String type;
+	
+	/** The before element. */
 	private Object beforeElement;
 
 	/**

@@ -9,6 +9,7 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
  */
 public class SimpleException extends RuntimeException {
     private static final long serialVersionUID = 1L;
+    /** The datas. */
     private final Object[] datas;
 
     /**

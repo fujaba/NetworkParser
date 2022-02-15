@@ -26,32 +26,29 @@ THE SOFTWARE.
 
 /**
  * The Interface CellEditorElement.
- *
  * @author Stefan
  */
 public interface CellEditorElement {
-	
-	/**
-	 * The Enum APPLYACTION.
-	 *
-	 * @author Stefan
-	 */
-	public enum APPLYACTION {
-		SAVE, TAB, ENTER, FOCUS
-	};
-
+    /** The save. */
+    public static final String SAVE ="SAVE";
+    /** The tab. */
+    public static final String TAB ="TAB";
+    /** The enter. */
+    public static final String ENTER ="ENTER";
+    /** The focus. */
+    public static final String FOCUS ="FOCUS";
 	/**
 	 * With column.
 	 *
 	 * @param column the column
 	 * @return the cell editor element
 	 */
-	public CellEditorElement withColumn(Column column);
+	CellEditorElement withColumn(Column column);
 
 	/**
 	 * Cancel.
 	 */
-	public void cancel();
+	void cancel();
 
 	/**
 	 * Sets the focus.
@@ -59,7 +56,7 @@ public interface CellEditorElement {
 	 * @param value the value
 	 * @return true, if successful
 	 */
-	public boolean setFocus(boolean value);
+	boolean setFocus(boolean value);
 
 	/**
 	 * On active.
@@ -67,26 +64,26 @@ public interface CellEditorElement {
 	 * @param value the value
 	 * @return true, if successful
 	 */
-	public boolean onActive(boolean value);
+	boolean onActive(boolean value);
 
 	/**
 	 * Next focus.
 	 *
 	 * @return true, if successful
 	 */
-	public boolean nextFocus();
+	boolean nextFocus();
 
 	/**
 	 * Apply.
 	 *
 	 * @param action the action
 	 */
-	public void apply(APPLYACTION action);
+	void apply(String action);
 
 	/**
 	 * Dispose.
 	 */
-	public void dispose();
+	void dispose();
 
 	/**
 	 * Gets the value.
@@ -94,7 +91,7 @@ public interface CellEditorElement {
 	 * @param convert the convert
 	 * @return the value
 	 */
-	public Object getValue(boolean convert);
+	Object getValue(boolean convert);
 
 	/**
 	 * With value.
@@ -102,5 +99,5 @@ public interface CellEditorElement {
 	 * @param value the value
 	 * @return the cell editor element
 	 */
-	public CellEditorElement withValue(Object value);
+	CellEditorElement withValue(Object value);
 }

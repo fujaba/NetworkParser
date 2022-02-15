@@ -6,5 +6,20 @@ package de.uniks.networkparser.ext.io;
  * @author Stefan Lindel
  */
 public enum ZipState {
-	SIGNATURE, FLAGS, COMPRESSED_SIZE, FN_LENGTH, EF_LENGTH, HEADER, DATA, TAIL
+    /** The signature. */
+    SIGNATURE,
+    /** The flags. */
+    FLAGS,
+    /** The compressed size. */
+    COMPRESSED_SIZE,
+    /** The fn length. */
+    FN_LENGTH,
+    /** The ef length. */
+    EF_LENGTH,
+    /** The header. */
+    HEADER,
+    /** The data. */
+    DATA,
+    /** The tail. */
+    TAIL
 }

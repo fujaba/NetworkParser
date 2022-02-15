@@ -976,6 +976,10 @@ public class HTMLEntity implements BaseItem {
 		XMLEntity parent = new XMLEntity().withType("div").withKeyValue("class", "inputgroup");
 		parent.createChild("label", "for", name).withValueItem(label);
 		
+		if(value instanceof String && ((String) value).length()>20 && !name.equalsIgnoreCase("password")) {
+		    parent.createChild("textarea", "name", name,  (String)value);
+            return parent;
+        }
 		XMLEntity input = parent.createChild("input", "name", name);
 		if(value instanceof Number) {
 			input.withKeyValue("type", "number");
@@ -985,11 +989,10 @@ public class HTMLEntity implements BaseItem {
 		}
 		if(value instanceof String) {
 			input.withKeyValue("type", "text");
+			if(name.equalsIgnoreCase("password")) {
+			    input.withKeyValue("type", "password");
+			}
 		}
-		if(name.equalsIgnoreCase("password")) {
-			input.withKeyValue("type", "password");
-		}
-
 		input.setValueItem("value", value);
 		return parent;
 	}

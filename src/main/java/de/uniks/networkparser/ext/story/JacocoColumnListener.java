@@ -30,7 +30,7 @@ import java.util.Comparator;
  * The class that is interested in processing a jacocoColumn
  * event implements this interface, and the object created
  * with that class is registered with a component using the
- * component's <code>addJacocoColumnListener<code> method. When
+ * component's <code>addJacocoColumnListener</code> method. When
  * the jacocoColumn event occurs, that object's appropriate
  * method is invoked.
  *

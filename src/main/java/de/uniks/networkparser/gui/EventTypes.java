@@ -30,6 +30,37 @@ THE SOFTWARE.
  * @author Stefan
  */
 public enum EventTypes {
-	CLICK, DOUBLECLICK, CHANGE, MOUSEUP, MOUSEDOWN, MOUSEENTER, MOUSELEAVE, MOUSEMOVE, KEYPRESS, KEYDOWN, KEYUP, RESIZE,
-	DRAGSTART, DRAGOVER, DROP, WINDOWEVENT;
+
+    /** The click. */
+    CLICK,
+    /** The doubleclick. */
+    DOUBLECLICK,
+    /** The change. */
+    CHANGE,
+    /** The mouseup. */
+    MOUSEUP,
+    /** The mousedown. */
+    MOUSEDOWN,
+    /** The mouseenter. */
+    MOUSEENTER,
+    /** The mouseleave. */
+    MOUSELEAVE,
+    /** The mousemove. */
+    MOUSEMOVE,
+    /** The keypress. */
+    KEYPRESS,
+    /** The keydown. */
+    KEYDOWN,
+    /** The keyup. */
+    KEYUP,
+    /** The resize. */
+    RESIZE,
+    /** The dragstart. */
+    DRAGSTART,
+    /** The dragover. */
+    DRAGOVER,
+    /** The drop. */
+    DROP,
+    /** The windowevent. */
+    WINDOWEVENT;
 }

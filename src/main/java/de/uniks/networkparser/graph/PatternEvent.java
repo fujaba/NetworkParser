@@ -10,6 +10,7 @@ import de.uniks.networkparser.list.SimpleList;
  */
 public class PatternEvent extends SimpleEvent {
 	private static final long serialVersionUID = 1L;
+	/** The candidates. */
 	private SimpleList<Object> candidates;
 	
 	/**

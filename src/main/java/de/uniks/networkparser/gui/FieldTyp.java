@@ -30,7 +30,24 @@ THE SOFTWARE.
  * @author Stefan
  */
 public enum FieldTyp {
-	ASSOC(1), DATE(2), CHECKBOX(3), COMBOBOX(4), DOUBLE(5), INTEGER(6), TEXT(7), PASSWORD(8), VALUEFROMDROPDOWNLIST(9);
+    /** The assoc. */
+    ASSOC(1),
+    /** The date. */
+    DATE(2),
+    /** The checkbox. */
+    CHECKBOX(3),
+    /** The combobox. */
+    COMBOBOX(4),
+    /** The double. */
+    DOUBLE(5),
+    /** The integer. */
+    INTEGER(6),
+    /** The text. */
+    TEXT(7),
+    /** The password. */
+    PASSWORD(8),
+    /** The valuefromdropdownlist. */
+    VALUEFROMDROPDOWNLIST(9);
 
 	private int value;
 

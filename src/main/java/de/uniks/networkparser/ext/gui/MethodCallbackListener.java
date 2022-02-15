@@ -31,7 +31,7 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
  * The class that is interested in processing a methodCallback
  * event implements this interface, and the object created
  * with that class is registered with a component using the
- * component's <code>addMethodCallbackListener<code> method. When
+ * component's <code>addMethodCallbackListener</code> method. When
  * the methodCallback event occurs, that object's appropriate
  * method is invoked.
  *
