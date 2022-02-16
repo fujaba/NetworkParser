@@ -358,7 +358,7 @@ public class FileBuffer extends Buffer {
 				return -1;
 			}
 		} else {
-			if (buffer.createFile() == false) {
+			if (!buffer.createFile()) {
 				return -1;
 			}
 		}
@@ -653,7 +653,7 @@ public class FileBuffer extends Buffer {
 				/* buffer not at end */
 				JsonArray array = new JsonArray();
 				array.add(result);
-				while (buffer.isEndCharacter() == false) {
+				while (!buffer.isEndCharacter()) {
 					result = new JsonObject();
 					result.withValue(buffer);
 					array.add(result);
@@ -724,7 +724,7 @@ public class FileBuffer extends Buffer {
 		if (parentFile == null || parentFile.exists()) {
 			return true;
 		}
-		if (parentFile.mkdirs() == false) {
+		if (!parentFile.mkdirs()) {
 			return false;
 		}
 		try {

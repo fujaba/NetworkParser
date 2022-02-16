@@ -229,7 +229,7 @@ public class MessageSession {
 	 * @return true, if successful
 	 */
 	public boolean setSender(String sender) {
-		if (StringUtil.stringEquals(this.sender, sender) == false) {
+		if (!StringUtil.stringEquals(this.sender, sender)) {
 			this.sender = sender;
 			return true;
 		}
@@ -494,19 +494,19 @@ public class MessageSession {
 					sendStart();
 				}
 				BufferedBuffer answer = sendCommand("AUTH LOGIN");
-				if (checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response) == false) {
+				if (!checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response)) {
 					close();
 					return false;
 				}
 				ByteConverter64 converter = new ByteConverter64();
 				answer = sendCommand(converter.toStaticString(sender).toString());
-				if (checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response) == false) {
+				if (!checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response)) {
 					close();
 					return false;
 				}
 				/* send passwd */
 				answer = sendCommand(converter.toStaticString(password).toString());
-				if (checkServerResponse(answer, RESPONSE_LOGIN_SUCCESS) == false) {
+				if (!checkServerResponse(answer, RESPONSE_LOGIN_SUCCESS)) {
 					close();
 					return false;
 				}

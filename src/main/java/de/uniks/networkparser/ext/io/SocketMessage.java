@@ -320,7 +320,7 @@ public class SocketMessage implements BaseItem {
 			return null;
 		}
 		String returnValue = value.trim();
-		if (returnValue.startsWith("<") == false) {
+		if (!returnValue.startsWith("<")) {
 			if (returnValue.endsWith(">")) {
 				return "<" + returnValue;
 			}

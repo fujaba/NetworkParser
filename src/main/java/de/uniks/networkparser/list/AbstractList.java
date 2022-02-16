@@ -59,7 +59,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 
   @Override
   protected int addKey(int pos, Object element, int size) {
-    if (this.type != null && this.type.isAssignableFrom(element.getClass()) == false) {
+    if (this.type != null && !this.type.isAssignableFrom(element.getClass())) {
       return -1;
     }
     return super.addKey(pos, element, size);
@@ -324,7 +324,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
    */
   @Override
   public boolean equals(Object obj) {
-    if (obj instanceof Collection<?> == false) {
+    if (!(obj instanceof Collection<?>)) {
       return false;
     }
     Collection<?> collection = (Collection<?>) obj;
@@ -332,7 +332,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
       return false;
     }
     for (Object item : this) {
-      if (collection.contains(item) == false) {
+      if (!collection.contains(item)) {
         return false;
       }
     }

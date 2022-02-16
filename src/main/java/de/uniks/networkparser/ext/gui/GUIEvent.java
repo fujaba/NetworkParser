@@ -100,7 +100,7 @@ public class GUIEvent extends Event {
 	}
 
 	private static Object getMember(Object obj, String value) {
-		if (obj == null || obj.getClass().getName().startsWith("javafx") == false) {
+		if (obj == null || !obj.getClass().getName().startsWith("javafx")) {
 			return null;
 		}
 		return ReflectionLoader.call(obj, "getMember", String.class, value);
@@ -178,7 +178,7 @@ public class GUIEvent extends Event {
 			event.setValue(CURRENT_TARGET, ReflectionLoader.call(obj, "getTarget"));
 
 			String type = "" + ReflectionLoader.call(obj, "getEventType");
-			event.active = "WINDOW_CLOSE_REQUEST".equals(type) == false;
+			event.active = !"WINDOW_CLOSE_REQUEST".equals(type);
 			event.setValue(EVENT, obj);
 			return event;
 		}
@@ -193,7 +193,7 @@ public class GUIEvent extends Event {
 			return event;
 		}
 		Object value;
-		if (name.startsWith("javafx") == false) {
+		if (!name.startsWith("javafx")) {
 			return event;
 		}
 		value = getMember(obj, TIME_STAMP);

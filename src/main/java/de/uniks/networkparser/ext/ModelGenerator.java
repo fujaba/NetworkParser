@@ -160,7 +160,7 @@ public class ModelGenerator extends SimpleGenerator {
 	 * @return true, if successful
 	 */
 	public boolean addTemplate(Template template, boolean addOwner) {
-		if (super.addTemplate(template, addOwner) == false) {
+		if (!super.addTemplate(template, addOwner)) {
 			return false;
 		}
 		String id2 = template.getId(true);
@@ -192,7 +192,7 @@ public class ModelGenerator extends SimpleGenerator {
 	 * @return the sendable entity creator
 	 */
 	public SendableEntityCreator generate(String rootDir, GraphMember item) {
-		if (item instanceof GraphModel == false) {
+		if (!(item instanceof GraphModel)) {
 			return null;
 		}
 		return generating(rootDir, (GraphModel) item, null, null, true, true);
@@ -227,7 +227,7 @@ public class ModelGenerator extends SimpleGenerator {
 			}
 		}
 
-		if (model.fixClassModel() == false) {
+		if (!model.fixClassModel()) {
 		    if(logger != null) {
 		        logger.info("Reparing of Model failed");
 		    }
@@ -287,7 +287,7 @@ public class ModelGenerator extends SimpleGenerator {
 			 */
 			if (useSDMLibParser && enableParser) {
 				for (TemplateResultFile file : resultModel) {
-					if (file.isMetaModell() == false) {
+					if (!file.isMetaModell()) {
 						continue;
 					}
 					ParserEntity parser = parse(rootDir, file);
@@ -318,7 +318,7 @@ public class ModelGenerator extends SimpleGenerator {
 	private String getFileName(String path, String file) {
 		if (path == null) {
 			path = "";
-		} else if (path.endsWith("/") == false) {
+		} else if (!path.endsWith("/")) {
 			path = path + "/";
 		}
 		if(file != null) {
@@ -338,12 +338,12 @@ public class ModelGenerator extends SimpleGenerator {
 		if(rootPath == null || entity == null) {
 			return false;
 		}
-		if (rootPath.endsWith("/") == false) {
+		if (!rootPath.endsWith("/")) {
 			rootPath += "/";
 		}
 		String newContent = entity.toString();
 		CharacterBuffer oldContent = null;
-		if (entity.isMetaModell() == false) {
+		if (!entity.isMetaModell()) {
 			oldContent = FileBuffer.readFile(rootPath + entity.getFileName());
 		} else {
 			SourceCode code = entity.getCode();
@@ -369,11 +369,11 @@ public class ModelGenerator extends SimpleGenerator {
 	 */
 	public ParserEntity parse(String rootPath, TemplateResultFile entity) {
 		/* check for each clazz, if a matching file already exists */
-		if (entity == null || entity.getMember() instanceof Clazz == false) {
+		if (entity == null || !(entity.getMember() instanceof Clazz)) {
 			return null;
 		}
 		String fileName = entity.getFileName();
-		if (rootPath.endsWith("/") == false) {
+		if (!rootPath.endsWith("/")) {
 			rootPath += "/";
 		}
 		CharacterBuffer content = FileBuffer.readFile(rootPath + fileName);
@@ -552,7 +552,7 @@ public class ModelGenerator extends SimpleGenerator {
 		 * CreatorCreator
 		 */
 		Feature codeStyle = getFeature(Feature.CODESTYLE);
-		if (rootDir.endsWith("/") == false) {
+		if (!rootDir.endsWith("/")) {
 			rootDir = rootDir + "/";
 		}
 

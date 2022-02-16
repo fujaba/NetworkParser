@@ -72,7 +72,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	 */
 	@Override
 	public int removeByObject(Object key) {
-		if (isReadOnly() || isVisible() == false) {
+		if (isReadOnly() || !isVisible()) {
 			throw new UnsupportedOperationException("remove(" + key + ")");
 		}
 		return super.removeByObject(key);
@@ -86,7 +86,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	 */
 	@Override
 	public boolean retainAll(Collection<?> c) {
-		if (isReadOnly() || isVisible() == false) {
+		if (isReadOnly() || !isVisible()) {
 			throw new UnsupportedOperationException("retainAll(" + c + ")");
 		}
 		return super.retainAll(c);
@@ -160,7 +160,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	/* ReadOnly Add all */
 	@Override
 	public V set(int index, V element) {
-		if (isReadOnly() || isVisible() == false) {
+		if (isReadOnly() || !isVisible()) {
 			throw new UnsupportedOperationException("set(" + index + ")");
 		}
 		return super.set(index, element);
@@ -174,7 +174,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	 */
 	@Override
 	public void add(int index, V element) {
-		if (isReadOnly() || isVisible() == false) {
+		if (isReadOnly() || !isVisible()) {
 			throw new UnsupportedOperationException("add(" + index + ")");
 		}
 		super.add(index, element);
@@ -185,7 +185,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	 */
 	@Override
 	public void clear() {
-		if (isReadOnly() || isVisible() == false) {
+		if (isReadOnly() || !isVisible()) {
 			throw new UnsupportedOperationException("clear()");
 		}
 		super.clear();
@@ -199,7 +199,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	 */
 	@Override
 	public V remove(int index) {
-		if (isReadOnly() || isVisible() == false) {
+		if (isReadOnly() || !isVisible()) {
 			throw new UnsupportedOperationException("remove(" + index + ")");
 		}
 		return super.remove(index);
@@ -213,7 +213,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	 */
 	@Override
 	public boolean add(V newValue) {
-		if (isReadOnly() || isVisible() == false) {
+		if (isReadOnly() || !isVisible()) {
 			throw new UnsupportedOperationException("add()");
 		}
 		return super.add(newValue);

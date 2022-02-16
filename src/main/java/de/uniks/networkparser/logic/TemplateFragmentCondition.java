@@ -118,10 +118,8 @@ public class TemplateFragmentCondition implements ParserCondition {
 	@Override
 	public boolean update(Object value) {
 		if (value instanceof SendableEntityCreator) {
-			if (condition != null) {
-				if (condition.update(value) == false) {
-					return false;
-				}
+			if (condition != null && !condition.update(value)) {
+				return false;
 			}
 			SendableEntityCreator creator = (SendableEntityCreator) value;
 			/* VODOO */

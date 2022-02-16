@@ -66,14 +66,14 @@ public class GraphList extends GraphModel {
 	 */
 	public void initSubLinks() {
 		for (GraphEntity node : getNodes()) {
-			if (node instanceof Clazz == false) {
+			if (!(node instanceof Clazz)) {
 				continue;
 			}
 			Clazz graphClazz = (Clazz) node;
 			SimpleSet<Association> childEdges = graphClazz.getAssociations();
 			for (Association edge : childEdges) {
 				SimpleSet<Association> associations = getAssociations();
-				if (associations.contains(edge) == false && associations.contains(edge.getOther()) == false) {
+				if (!associations.contains(edge) && !associations.contains(edge.getOther())) {
 					super.with(edge);
 				}
 			}

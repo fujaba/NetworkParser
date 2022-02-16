@@ -27,7 +27,7 @@ public class AssociationChangeRenameCondition extends MatchCondition {
 		Association sourceAssociation = (Association) match.getMatch();
 		Association otherAssociation = (Association) match.getOtherMatch().getMatch();
 
-		return sourceAssociation.getOther().getName().equals(otherAssociation.getOther().getName()) == false;
+		return !sourceAssociation.getOther().getName().equals(otherAssociation.getOther().getName());
 	}
 
 	@Override

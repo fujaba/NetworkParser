@@ -227,7 +227,7 @@ public int size() {
    */
   public BaseItem withAllowEmptyValue(boolean value) {
     this.setFlag((byte) (this.flag | ALLOWEMPTYVALUE));
-    if (value == false) {
+    if (!value) {
       this.setFlag((byte) (this.flag - ALLOWEMPTYVALUE));
     }
     return this;
@@ -251,7 +251,7 @@ public int size() {
   public AbstractArray<V> withVisible(boolean value) {
 
     this.setFlag((byte) (this.flag | VISIBLE));
-    if (value == false) {
+    if (!value) {
       this.setFlag((byte) (this.flag - VISIBLE));
     }
     return this;
@@ -621,7 +621,7 @@ public int size() {
         Object value = getKeyByIndex(i);
         int r = comparator().compare(value, element);
         if (r == 0) {
-          if (allowDuplicate == false && value.equals(element)) {
+          if (!allowDuplicate && value.equals(element)) {
             return REMOVED;
           }
         } else if (r > 0) {
@@ -630,10 +630,8 @@ public int size() {
       }
       return this.size;
     }
-    if (isAllowDuplicate() == false) {
-      if (indexOf(element, size) >= 0) {
+    if (!isAllowDuplicate() && (indexOf(element, size) >= 0)) {
         return REMOVED;
-      }
     }
     return this.size;
   }
@@ -655,7 +653,7 @@ public int size() {
       }
       return size;
     }
-    if (isAllowDuplicate() == false) {
+    if (!isAllowDuplicate()) {
       int pos = indexOf(element, size);
       if (pos >= 0) {
         return pos;
@@ -941,7 +939,7 @@ public String toString() {
     }
     int newSize = this.size + list.size();
     grow(newSize);
-    if (isAllowDuplicate() == false) {
+    if (!isAllowDuplicate()) {
       for (Iterator<?> i = list.iterator(); i.hasNext();) {
         Object item = i.next();
         if (indexOf(item, newSize) < 0) {
@@ -1038,7 +1036,7 @@ public String toString() {
    * @return the position key
    */
   public int getPositionKey(Object o, boolean last) {
-    if (isComplex(size) == false) {
+    if (!isComplex(size)) {
       if (last) {
         return lastIndexOf(o);
       }
@@ -1089,7 +1087,7 @@ public String toString() {
       for (int i = 0; i < hashCodes.length; i++) {
         if (checkValue(o, hashCodes[i])) {
           lastIndex = i;
-          if (last == false) {
+          if (!last) {
             break;
           }
         }
@@ -1116,7 +1114,7 @@ public String toString() {
       }
       indexItem = transformIndex((Integer) hashCodes[index], len);
       if (checkValue(o, getByIndex(offset, indexItem, size))) {
-        if (last == false) {
+        if (!last) {
           break;
         }
         lastIndex = indexItem;
@@ -1135,10 +1133,8 @@ public String toString() {
   }
 
   protected boolean checkValue(Object a, Object b) {
-    if (isCaseSensitive() == false) {
-      if (a instanceof String && b instanceof String) {
+    if (!isCaseSensitive() && (a instanceof String && b instanceof String)) {
         return ((String) a).equalsIgnoreCase((String) b);
-      }
     }
     return a.equals(b);
   }
@@ -1163,7 +1159,7 @@ public String toString() {
     if (c == null)
       return true;
     for (Object e : c)
-      if (contains(e) == false)
+      if (!contains(e))
         return false;
     return true;
   }
@@ -1207,7 +1203,7 @@ public String toString() {
     if (keys == null)
       return true;
     for (Object e : keys)
-      if (contains(e) == false) {
+      if (!contains(e)) {
         return false;
       }
     return true;
@@ -1262,7 +1258,7 @@ public String toString() {
     Object item = removeItem(index, offset, offsetIndex);
     if (item != null) {
       size--;
-      if (shrink(size) == false) {
+      if (!shrink(size)) {
         if (offsetIndex == index) {
           return item;
         }
@@ -1411,7 +1407,7 @@ public String toString() {
       }
       return this.getByIndex(SMALL_KEY, pos, size);
     }
-    if (key instanceof String == false) {
+    if (!(key instanceof String)) {
       return null;
     }
     String keyString = (String)key;
@@ -1525,7 +1521,7 @@ public String toString() {
 
     Iterator<?> it = new SimpleIterator<V>(this);
     while (it.hasNext()) {
-      if (c.contains(it.next()) == false) {
+      if (!c.contains(it.next())) {
         it.remove();
         modified = true;
       }

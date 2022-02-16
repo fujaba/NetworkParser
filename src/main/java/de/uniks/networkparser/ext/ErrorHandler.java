@@ -127,7 +127,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     if (filepath == null) {
       return false;
     }
-    if (filepath.length() > 0 && filepath.endsWith("/") == false) {
+    if (filepath.length() > 0 && !filepath.endsWith("/")) {
       filepath += "/";
     }
     String fullfilename = filepath + prefix + "heap.bin";
@@ -240,7 +240,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     }
     File dirPath = new File(path);
     dirPath = new File(dirPath.getPath());
-    if (dirPath.exists() == false) {
+    if (!dirPath.exists()) {
       if (dirPath.mkdirs()) {
         return path;
       }
@@ -281,7 +281,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     if (filepath == null) {
       return null;
     }
-    if (filepath.length() > 0 && filepath.endsWith("/") == false) {
+    if (filepath.length() > 0 && !filepath.endsWith("/")) {
       filepath += "/";
     }
     String fullfilename = null;
@@ -292,10 +292,8 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     }
 
     File file = new File(fullfilename);
-    if (file.exists() == false) {
-      if (file.createNewFile() == false) {
+    if (!file.exists() && !file.createNewFile()) {
         return null;
-      }
     }
     return file;
   }
@@ -379,7 +377,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     String fullFileName = "";
     if (this.path != null) {
       fullFileName = this.path;
-      if (fullFileName.length() > 0 && fullFileName.endsWith("/") == false) {
+      if (fullFileName.length() > 0 && !fullFileName.endsWith("/")) {
         fullFileName += "/";
       }
     }

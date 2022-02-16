@@ -299,7 +299,7 @@ public class QRTokener {
 
 		/* Choose the mask pattern and set to "qrCode". */
 		int dimension = version.getDimensionForVersion();
-		ByteMatrix matrix = new ByteMatrix(dimension, dimension);
+		ByteMatrix matrix = new ByteMatrix(dimension);
 		int maskPattern = chooseMaskPattern(finalBits, ecLevel, version, matrix);
 		qrCode.setMaskPattern(maskPattern);
 

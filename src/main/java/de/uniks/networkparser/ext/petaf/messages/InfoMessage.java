@@ -71,7 +71,7 @@ public class InfoMessage extends ReceivingTimerTask {
 	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (attribute == null || entity instanceof AcceptMessage == false) {
+		if (attribute == null || !(entity instanceof AcceptMessage)) {
 			return null;
 		}
 		AcceptMessage message = (AcceptMessage) entity;

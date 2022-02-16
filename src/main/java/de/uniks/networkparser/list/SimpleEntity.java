@@ -184,7 +184,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntity
 	 */
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof Map.Entry == false ) {
+		if (!(o instanceof Map.Entry) ) {
 			return false;
 		}
 		Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;

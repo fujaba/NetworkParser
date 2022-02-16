@@ -28,7 +28,7 @@ public class MethodChangeUpdateTypeCondition extends MatchCondition {
 		if (matches.getMetaModel() == null) {
 			return false;
 		}
-		if (match.isMetaMatch() == false && match.isMetaSourceMatch() == false) {
+		if (!match.isMetaMatch() && !match.isMetaSourceMatch()) {
 			return false;
 		}
 		if (oldMethod.getReturnType().equals(newMethod.getReturnType())) {
@@ -54,7 +54,7 @@ public class MethodChangeUpdateTypeCondition extends MatchCondition {
 		Method oldMethod = (Method) match.getOtherMatch().getMatch();
 		Method newMethod = (Method) match.getMatch();
 
-		return oldMethod.getReturnType().equals(newMethod.getReturnType()) == false;
+		return !oldMethod.getReturnType().equals(newMethod.getReturnType());
 	}
 
 	@Override

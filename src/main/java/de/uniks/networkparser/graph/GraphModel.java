@@ -79,13 +79,13 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 			if (children == null) {
 				return collection;
 			}
-			if (children instanceof Clazz && GraphUtil.isExternal((Clazz) children) == false) {
+			if (children instanceof Clazz && !GraphUtil.isExternal((Clazz) children)) {
 				collection.add(children);
 			}
 			if (children instanceof GraphSimpleSet) {
 				GraphSimpleSet items = (GraphSimpleSet) children;
 				for (GraphMember child : items) {
-					if (child instanceof Clazz && GraphUtil.isExternal((Clazz) child) == false) {
+					if (child instanceof Clazz && !GraphUtil.isExternal((Clazz) child)) {
 						collection.add((Clazz) child);
 					}
 				}
@@ -102,7 +102,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		if (this.children == null) {
 			return true;
 		}
-		if (this.children instanceof GraphSimpleSet == false) {
+		if (!(this.children instanceof GraphSimpleSet)) {
 			if (this.children instanceof Clazz) {
 				Clazz clazz = (Clazz) this.children;
 				if (Clazz.TYPE_CREATOR.equals(clazz.getType()) || Clazz.TYPE_PATTERNOBJECT.equals(clazz.getType())
@@ -214,7 +214,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 	 * @return State for change the Autorname
 	 */
 	public boolean setAuthorName(String value) {
-		if ((value != null && value.equals(this.defaultAuthorName) == false)
+		if ((value != null && !value.equals(this.defaultAuthorName))
 				|| (value == null && this.defaultAuthorName != null)) {
 			this.defaultAuthorName = value;
 			return true;
@@ -271,7 +271,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 				if (className.indexOf('.') > 0) {
 					if (packageName == null) {
 						packageName = className.substring(0, className.lastIndexOf("."));
-					} else if (className.startsWith(packageName) == false) {
+					} else if (!className.startsWith(packageName)) {
 						packageName = "";
 					}
 				}
@@ -299,7 +299,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 					}
 				}
 			}
-			if (fixClassModel(item, visited) == false) {
+			if (!fixClassModel(item, visited)) {
 				return false;
 			}
 		}
@@ -332,7 +332,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		/* Run over Interfaces, SuperClazzes, KidClazzes, Associations */
 		AssociationSet assocs = item.getAssociations();
 		for (Association role : assocs) {
-			if (item.repairAssociation(role, this.renameAttributes) == false) {
+			if (!item.repairAssociation(role, this.renameAttributes)) {
 				return false;
 			}
 			Clazz clazz = role.getOtherClazz();
@@ -394,7 +394,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 			return;
 		}
 		Clazz clazz = dataType.getClazz();
-		if (clazz.isExternal() == false && StringUtil.isPrimitiveType(clazz.getName()) == false) {
+		if (!clazz.isExternal() && !StringUtil.isPrimitiveType(clazz.getName())) {
 			GraphMember byObject = this.getByObject(clazz.getName(), true);
 			if (byObject == null) {
 				this.add(clazz);

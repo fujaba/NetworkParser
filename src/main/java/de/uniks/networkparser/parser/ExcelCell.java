@@ -72,7 +72,7 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList {
 	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (entity instanceof ExcelCell == false) {
+		if (!(entity instanceof ExcelCell)) {
 			return null;
 		}
 		if (PROPERTY_STYLE.equals(attribute)) {
@@ -98,7 +98,7 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList {
 	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (entity instanceof ExcelCell == false) {
+		if (!(entity instanceof ExcelCell)) {
 			return false;
 		}
 		ExcelCell item = (ExcelCell) entity;
@@ -217,7 +217,7 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList {
 		if (referenceCell != null) {
 			return referenceCell.setContent(value);
 		}
-		if ((this.content == null && value != null) || (this.content != null && this.content.equals(value) == false)) {
+		if ((this.content == null && value != null) || (this.content != null && !this.content.equals(value))) {
 			this.content = value;
 			return true;
 		}
@@ -251,7 +251,7 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList {
 	 * @return true, if successful
 	 */
 	public boolean setStyle(String value) {
-		if ((this.style == null && value != null) || (this.style != null && this.style.equals(value) == false)) {
+		if ((this.style == null && value != null) || (this.style != null && !this.style.equals(value))) {
 			this.style = value;
 			return true;
 		}
@@ -265,7 +265,7 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList {
 	 * @return true, if successful
 	 */
 	public boolean setType(String value) {
-		if ((this.type == null && value != null) || (this.type != null && this.type.equals(value) == false)) {
+		if ((this.type == null && value != null) || (this.type != null && !this.type.equals(value))) {
 			this.type = value;
 			return true;
 		}
@@ -409,7 +409,7 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList {
 	 */
 	public boolean setReferenceCell(ExcelCell value) {
 		if ((this.referenceCell == null && value != null)
-				|| (this.referenceCell != null && this.referenceCell.equals(value) == false)) {
+				|| (this.referenceCell != null && !this.referenceCell.equals(value))) {
 			this.referenceCell = value;
 			return true;
 		}

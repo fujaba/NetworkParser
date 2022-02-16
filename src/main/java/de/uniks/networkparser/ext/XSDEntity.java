@@ -236,7 +236,7 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (entity == null || entity instanceof XSDEntity == false) {
+		if (!(entity instanceof XSDEntity)) {
 			return false;
 		}
 		XSDEntity xsd = (XSDEntity) entity;
@@ -428,7 +428,7 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 					XSDEntity first = (XSDEntity) child.getChild(0);
 
 					String containerType = first.getString("type");
-					if (XSD_UNBOUNDED.equalsIgnoreCase(first.getMaxOccurs()) == false) {
+					if (!XSD_UNBOUNDED.equalsIgnoreCase(first.getMaxOccurs())) {
 					    if(logger != null) {
 					        logger.info("IGNORE: " + first.getString("name") + " " + containerType);
 					    }
@@ -454,7 +454,7 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 					if (stringType.equalsIgnoreCase(type)) {
 						orderKey.add(changeName(name));
 						Attribute attr = clazz.createAttribute(name, DataType.STRING);
-						if ("0".equals(element.getMinOccurs()) == false) {
+						if (!"0".equals(element.getMinOccurs())) {
 							/* ITS NESSESSARY */
 							attr.withValue("\"\"");
 							if(logger != null) {

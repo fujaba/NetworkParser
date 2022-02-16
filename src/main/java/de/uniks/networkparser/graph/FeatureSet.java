@@ -36,7 +36,7 @@ public class FeatureSet extends SimpleSet<Feature> {
 	public Feature getFeature(Feature name) {
 		for (Feature item : this) {
 			Feature feature = (Feature) item;
-			if (feature.equals(name) == false) {
+			if (!feature.equals(name)) {
 				continue;
 			}
 			return feature;

@@ -24,7 +24,7 @@ public class ClazzChangeRenameCondition extends MatchCondition {
 		Clazz sourceClazz = (Clazz) match.getMatch();
 		Clazz otherClazz = (Clazz) match.getSourceMatch();
 
-		return sourceClazz.getName().equals(otherClazz.getName()) == false;
+		return !sourceClazz.getName().equals(otherClazz.getName());
 	}
 
 	@Override

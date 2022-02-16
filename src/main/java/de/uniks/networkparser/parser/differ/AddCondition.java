@@ -6,6 +6,7 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.Match;
+import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.GraphMatcher;
 
@@ -44,7 +45,7 @@ public class AddCondition extends MatchCondition {
 			matches.addDiff(addToCode);
 
 			for (String modifier : clazz.getModifier().toString().split(" ")) {
-				if (modifier.equals("public") == false) {
+				if (!modifier.equals(Modifier.PUBLIC.getName())) {
 					Match addModifierInCode = Match.create(clazz, this, Clazz.PROPERTY_MODIFIERS, null, modifier);
 					matches.addDiff(addModifierInCode);
 				}
@@ -102,7 +103,7 @@ public class AddCondition extends MatchCondition {
 			matches.addDiff(add);
 
 			for (String modifier : clazz.getModifier().toString().split(" ")) {
-				if (modifier.equals("public") == false) {
+				if (!modifier.equals(Modifier.PUBLIC.getName())) {
 					Match addModifier = Match.create(clazz, this, Clazz.PROPERTY_MODIFIERS, null, modifier);
 					matches.addDiff(addModifier);
 				}
@@ -151,7 +152,7 @@ public class AddCondition extends MatchCondition {
 			if (((association.getType().equals(AssociationTypes.EDGE)
 					&& association.getOther().getType().equals(AssociationTypes.UNDIRECTIONAL))
 					|| (association.getType().equals(AssociationTypes.ASSOCIATION)
-							&& association.getOther().getType().equals(AssociationTypes.ASSOCIATION))) == false) {
+							&& !association.getOther().getType().equals(AssociationTypes.ASSOCIATION)))) {
 				return false;
 			}
 		}

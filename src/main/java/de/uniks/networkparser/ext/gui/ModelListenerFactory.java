@@ -86,7 +86,7 @@ public class ModelListenerFactory {
 	 */
 	public static ModelListenerProperty create(Object node, SendableEntityCreator creator, Object item, String field) {
 		if (node == null || ReflectionLoader.NODE == null
-				|| ReflectionLoader.NODE.isAssignableFrom(node.getClass()) == false) {
+				|| !ReflectionLoader.NODE.isAssignableFrom(node.getClass())) {
 			return null;
 		}
 		if (field == null) {
@@ -175,7 +175,7 @@ public class ModelListenerFactory {
 		ModelListenerProperty listener = new ModelListenerProperty(creator, item, field, DataType.STRING);
 		Object proxy = listener.getProxy();
 		if (ReflectionLoader.PROPERTY == null || property == null
-				|| ReflectionLoader.PROPERTY.isAssignableFrom(property.getClass()) == false) {
+				|| !ReflectionLoader.PROPERTY.isAssignableFrom(property.getClass())) {
 			return listener;
 		}
 		ReflectionLoader.call(property, "bindBidirectional", ReflectionLoader.PROPERTY, proxy);

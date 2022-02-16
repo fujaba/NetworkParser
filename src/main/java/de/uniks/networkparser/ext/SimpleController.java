@@ -191,7 +191,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 
 	private Object getApplication() {
 		Field params;
-		if (Os.isFXThread() == false) {
+		if (!Os.isFXThread()) {
 			return null;
 		}
 		try {
@@ -284,7 +284,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 				javacExecutor = System.getProperty("java.home").replace("\\", "/") + "/bin/javac";
 			} else {
 				javacExecutor = System.getProperty("java.home").replace("\\", "/") + "/../bin/javac.exe";
-				if (new File(javacExecutor).exists() == false) {
+				if (!new File(javacExecutor).exists()) {
 					javacExecutor = System.getProperty("java.home").replace("\\", "/") + "/bin/javac.exe";
 				}
 			}
@@ -310,7 +310,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			} else {
 
 				items.add("-classpath");
-				if (ClassLoader.getSystemClassLoader() instanceof URLClassLoader == false) {
+				if (!(ClassLoader.getSystemClassLoader() instanceof URLClassLoader)) {
 					return null;
 				}
 				URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
@@ -395,7 +395,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			if (outputFile == null && this.outputParameter != null) {
 				outputFile = this.outputParameter;
 			}
-			if (isEclipse == false || this.outputParameter != null) {
+			if (!isEclipse || this.outputParameter != null) {
 				if (outputFile != null) {
 					if (outputFile.equalsIgnoreCase("inherit")) {
 						processBuilder.redirectErrorStream(true);
@@ -551,14 +551,14 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	 * @param root the root
 	 */
 	public void show(Object root) {
-		show(root, false, firstShow == false);
+		show(root, false, !firstShow);
 	}
 
 	/**
 	 * Show.
 	 */
 	public void show() {
-		show(null, false, firstShow == false);
+		show(null, false, !firstShow);
 	}
 
 	/**
@@ -735,7 +735,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	 */
 	public SimpleController withErrorPath(String value) {
 		this.errorHandler.withURL(value);
-		if (isEclipse == false) {
+		if (!isEclipse) {
 			if (Thread.getDefaultUncaughtExceptionHandler() == null) {
 				Thread.setDefaultUncaughtExceptionHandler(this);
 				Thread.currentThread().setUncaughtExceptionHandler(this);
@@ -926,7 +926,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	 * @return the object
 	 */
 	public Object showTrayIcon(String... labels) {
-		if (Os.checkSystemTray() == false) {
+		if (!Os.checkSystemTray()) {
 			return null;
 		}
 		if (this.icon != null && this.icon.length() > 0) {
@@ -1092,7 +1092,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		if (launcherClass == null) {
 			return false;
 		}
-		if (Os.isJavaFX() == false) {
+		if (!Os.isJavaFX()) {
 			return false;
 		}
 		ReflectionLoader.call(launcherClass, "startToolkit");
@@ -1144,7 +1144,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			return controller;
 		}
 		ReflectionLoader.call(launcherClass, "startToolkit");
-		if (exitOnClose == false) {
+		if (!exitOnClose) {
 			ReflectionLoader.call(ReflectionLoader.PLATFORM, "setImplicitExit", boolean.class, false);
 		}
 
@@ -1340,13 +1340,13 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 				command.with("cmd.exe /c ");
 			} else {
 				if (values.length > 0 && values[0] != null) {
-					if ((values[0].startsWith("/") || values[0].startsWith("\\")) == false) {
+					if ((values[0].startsWith("/") || !values[0].startsWith("\\"))) {
 						values[0] = "./" + values[0];
 					}
 					/* Check if File Exist */
 					found = new File(values[0]).exists();
 				}
-				if (found == false) {
+				if (!found) {
 					commands = new ArrayList<String>();
 					commands.add("/bin/sh");
 					commands.add("-c");
@@ -1354,7 +1354,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			}
 			Process p;
 			/* So now add executeCommand to String */
-			if (found == false) {
+			if (!found) {
 				command.with('"');
 				if (values.length > 0 && values[0] != null) {
 					if (commands != null) {
@@ -1426,7 +1426,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	 */
 	public SimpleController withPackageName(String packageName, String... excludes) {
 		if (compilePath == null && packageName != null && packageName.length() > 0) {
-			if ((packageName.endsWith("/") || packageName.endsWith("\\")) == false) {
+			if ((packageName.endsWith("/") || !packageName.endsWith("\\"))) {
 				packageName += "/";
 			}
 			compilePath = new SimpleList<String>();

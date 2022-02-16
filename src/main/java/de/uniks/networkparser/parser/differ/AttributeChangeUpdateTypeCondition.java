@@ -28,7 +28,7 @@ public class AttributeChangeUpdateTypeCondition extends MatchCondition {
 		Attribute oldAttribute = (Attribute) match.getMatch();
 		Attribute newAttribute = (Attribute) match.getOtherMatch().getMatch();
 
-		if (match.isMetaMatch() == false && match.isSourceMatch() == false) {
+		if (!match.isMetaMatch() && !match.isSourceMatch()) {
 			return false;
 		}
 		if (oldAttribute.getType().equals(newAttribute.getType())) {
@@ -62,7 +62,7 @@ public class AttributeChangeUpdateTypeCondition extends MatchCondition {
 		if (oldAttribute == null || newAttribute == null) {
 			return false;
 		}
-		return oldAttribute.getType().equals(newAttribute.getType()) == false;
+		return !oldAttribute.getType().equals(newAttribute.getType());
 	}
 
 	@Override

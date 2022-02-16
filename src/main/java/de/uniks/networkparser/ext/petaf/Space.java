@@ -885,7 +885,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 					if (proxy.isSendable()) {
 						msg.withAddToReceived(proxy);
 					}
-				} else if (proxy.isReconnecting(this.tryReconnectTimeSecond) == false) {
+				} else if (!proxy.isReconnecting(this.tryReconnectTimeSecond)) {
 					sendProxies.add(proxy);
 				}
 			}
@@ -902,12 +902,12 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 					if (proxy.isSendable()) {
 						msg.withAddToReceived(proxy);
 					}
-				} else if (proxy.isReconnecting(this.tryReconnectTimeSecond) == false) {
+				} else if (!proxy.isReconnecting(this.tryReconnectTimeSecond)) {
 					sendProxies.add(proxy);
 				}
 			}
 		}
-		if (out == false) {
+		if (!out) {
 			return;
 		}
 		if (receiverProxy.size() < 1 && this.proxies.size() > 0) {
@@ -928,7 +928,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 					/* If the proxy not already received the message, we want to send it to the proxy */
 					if (received.indexOf(proxy) < 0 || proxy instanceof NodeProxyFileSystem) {
 						step++;
-						if (sendProxies.add(proxy) == false) {
+						if (!sendProxies.add(proxy)) {
 							/* Break while */
 							step = this.peerCount;
 						}
@@ -1234,7 +1234,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	 */
 	@Override
 	public boolean update(Object value) {
-		if (value instanceof SimpleEvent == false) {
+		if (!(value instanceof SimpleEvent)) {
 			return false;
 		}
 		SimpleEvent event = (SimpleEvent) value;
@@ -1269,7 +1269,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	 * @return true, if successful
 	 */
 	public boolean updateModel(SimpleEvent event) {
-		if (this.isInit == false) {
+		if (!this.isInit) {
 			return false;
 		}
 		if (SendableEntityCreator.UPDATE.equals(event.getType()) || SendableEntityCreator.NEW.equals(event.getType())) {
@@ -1508,7 +1508,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (entity instanceof Space == false) {
+		if (!(entity instanceof Space)) {
 			return null;
 		}
 		Space space = (Space) entity;
@@ -1539,7 +1539,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (entity instanceof Space == false) {
+		if (!(entity instanceof Space)) {
 			return false;
 		}
 		Space space = (Space) entity;

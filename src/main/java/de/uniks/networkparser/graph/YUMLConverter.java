@@ -105,7 +105,7 @@ public class YUMLConverter implements Converter {
 		}
 		SimpleSet<Association> association = item.getAssociations();
 		if (association.size() == 0) {
-			if (visited.contains(item) == false) {
+			if (!visited.contains(item)) {
 				if (sb.length() > 0) {
 					sb.append(",");
 				}
@@ -119,7 +119,7 @@ public class YUMLConverter implements Converter {
 		Iterator<?> iterator = association.iterator();
 		while (iterator.hasNext()) {
 			Object entry = iterator.next();
-			if (entry instanceof Association == false) {
+			if (!(entry instanceof Association)) {
 				continue;
 			}
 			Association element = (Association) entry;
@@ -178,12 +178,12 @@ public class YUMLConverter implements Converter {
 	 * @return the string
 	 */
 	public String parseEntity(GraphEntity entity, SimpleList<GraphMember> visited, String type, boolean shortName) {
-		if (entity instanceof Clazz == false) {
+		if (!(entity instanceof Clazz)) {
 			return "";
 		}
 		Clazz clazzEntity = (Clazz) entity;
 		boolean shortString = visited.contains(clazzEntity);
-		if (shortString == false) {
+		if (!shortString) {
 			visited.add(clazzEntity);
 		}
 		if (type == null) {
@@ -199,7 +199,7 @@ public class YUMLConverter implements Converter {
 			sb.append(" : ");
 		}
 		sb.append(clazzEntity.getName(shortName));
-		if (shortString == false) {
+		if (!shortString) {
 			sb.append(parseEntityValues(clazzEntity, type, shortName));
 		}
 		sb.append("]");
@@ -235,7 +235,7 @@ public class YUMLConverter implements Converter {
 
 			while (i.hasNext()) {
 				element = i.next();
-				if (element instanceof Attribute == false) {
+				if (!(element instanceof Attribute)) {
 					continue;
 				}
 				attribute = (Attribute) element;

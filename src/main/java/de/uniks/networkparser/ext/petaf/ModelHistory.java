@@ -99,7 +99,7 @@ public class ModelHistory implements ObjectCondition {
 			ModelChange change = history.get(i);
 
 			BaseItem changeMsg = change.getChange();
-			if (changeMsg instanceof Entity == false) {
+			if (!(changeMsg instanceof Entity)) {
 				break;
 			}
 			Entity changeEntity = (Entity) changeMsg;
@@ -112,7 +112,7 @@ public class ModelHistory implements ObjectCondition {
 			}
 
 			value = changeEntity.getString(ChangeMessage.PROPERTY_ID);
-			if ("ChangeMessage".equals(changeEntity.getString(IdMap.CLASS)) == false) {
+			if (!"ChangeMessage".equals(changeEntity.getString(IdMap.CLASS))) {
 				/* May be another Message ignore it */
 				continue;
 			}
@@ -285,7 +285,7 @@ public class ModelHistory implements ObjectCondition {
 			Entity historyJsonObject = getElement(historyChange);
 			Entity valueJsonObject = getElement(value);
 
-			if (historyJsonObject.has(IdMap.ID) == false) {
+			if (!historyJsonObject.has(IdMap.ID)) {
 				if (space != null) {
 					space.error(this, "addHistory", "ERROR");
 				}
@@ -380,7 +380,7 @@ public class ModelHistory implements ObjectCondition {
 			historyKid = jsonObject.getValue(fieldName + SendableEntityCreator.REMOVE);
 		}
 
-		if (historyKid instanceof Entity == false) {
+		if (!(historyKid instanceof Entity)) {
 			return null;
 		}
 
@@ -714,7 +714,7 @@ public class ModelHistory implements ObjectCondition {
 
 		/* undo step by swapping rem and upd */
 		BaseItem jo = step.getChange();
-		if (jo instanceof Entity == false) {
+		if (!(jo instanceof Entity)) {
 			return this;
 		}
 		Entity entity = (Entity) jo;
@@ -767,7 +767,7 @@ public class ModelHistory implements ObjectCondition {
 			/* does current step operate on target? */
 			ModelChange step = history.get((int) (currentStep - 1));
 			BaseItem jo = step.getChange();
-			if (jo instanceof Entity == false) {
+			if (!(jo instanceof Entity)) {
 				return this;
 			}
 			Entity change = (Entity) jo;
@@ -799,7 +799,7 @@ public class ModelHistory implements ObjectCondition {
 			/* does current step operate on target? */
 			ModelChange step = history.get((int) (currentStep - 1));
 			BaseItem jo = step.getChange();
-			if (jo instanceof Entity == false) {
+			if (!(jo instanceof Entity)) {
 				return this;
 			}
 			Entity change = (Entity) jo;

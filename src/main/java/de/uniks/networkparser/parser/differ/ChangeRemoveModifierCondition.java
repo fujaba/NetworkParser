@@ -31,7 +31,7 @@ public class ChangeRemoveModifierCondition extends MatchCondition {
 		if (matches.getMetaModel() == null) {
 			return false;
 		}
-		if (match.isMetaMatch() == false && match.isSourceMatch() == false) {
+		if (!match.isMetaMatch() && !match.isSourceMatch()) {
 			return false;
 		}
 		if (sourceAttribute.getModifier().toString().equals(otherAttribute.getModifier().toString())) {
@@ -55,7 +55,7 @@ public class ChangeRemoveModifierCondition extends MatchCondition {
 		GraphMember newAttribute = match.getSourceMatch();
 
 		for (String modifier : newAttribute.getModifier().toString().split(" ")) {
-			if (oldAttribute.getModifier().toString().contains(modifier) == false) {
+			if (!oldAttribute.getModifier().toString().contains(modifier)) {
 				Match addModifier = Match.create(oldAttribute, this, Attribute.PROPERTY_MODIFIERS, modifier, null);
 
 				matches.addDiff(addModifier);
@@ -78,7 +78,7 @@ public class ChangeRemoveModifierCondition extends MatchCondition {
 		GraphMember newAttribute = match.getMatch();
 
 		for (String modifier : oldAttribute.getModifier().toString().split(" ")) {
-			if (newAttribute.getModifier().toString().contains(modifier) == false) {
+			if (!newAttribute.getModifier().toString().contains(modifier)) {
 				Match addModifier = Match.create(oldAttribute, this, Attribute.PROPERTY_MODIFIERS, modifier, null);
 				matches.addDiff(addModifier);
 			}

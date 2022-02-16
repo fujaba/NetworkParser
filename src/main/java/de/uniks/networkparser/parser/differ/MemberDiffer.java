@@ -41,7 +41,7 @@ public class MemberDiffer {
 			if (match.isMetaMatch()) {
 				MemberDiffer.executeCondition(SendableEntityCreator.REMOVE, memberConditions, match);
 			} else {
-				if (match.isOtherMatch() == false) {
+				if (!match.isOtherMatch()) {
 					MemberDiffer.executeCondition(SendableEntityCreator.NEW, memberConditions, match);
 				} else {
 					MemberDiffer.executeCondition(SendableEntityCreator.UPDATE, memberConditions, match);

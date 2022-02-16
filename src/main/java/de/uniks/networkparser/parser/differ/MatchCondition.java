@@ -41,12 +41,12 @@ public class MatchCondition implements ObjectCondition {
 	protected boolean executeMatch(Match match, boolean isModelCheck) {
 		GraphMatcher matchData = match.getOwner();
 		if (isModelCheck) {
-			if (checkModelCondition(matchData, match) == false) {
+			if (!checkModelCondition(matchData, match)) {
 				return false;
 			}
 			return calculateModelDiffs(matchData.getOldModel(), matchData, match);
 		}
-		if (checkFileCondition(matchData, match) == false) {
+		if (!checkFileCondition(matchData, match)) {
 			return false;
 		}
 		return calculateFileDiffs(matchData.getNewModel(), matchData, match);
@@ -98,14 +98,14 @@ public class MatchCondition implements ObjectCondition {
 	 */
 	@Override
 	public boolean update(Object value) {
-		if (value instanceof Match == false) {
+		if (!(value instanceof Match)) {
 			return false;
 		}
 		Match match = (Match) value;
 		if (changeConditions != null) {
 			GraphMatcher matches = match.getOwner();
 
-			if (checkCondition(matches, match) == false) {
+			if (!checkCondition(matches, match)) {
 				return false;
 			}
 			return calculateDiffs(matches, match);
@@ -113,7 +113,7 @@ public class MatchCondition implements ObjectCondition {
 		if (isReverse) {
 			return executeMatch(match, match.isFileMatch());
 		}
-		return executeMatch(match, match.isFileMatch() == false);
+		return !executeMatch(match, match.isFileMatch());
 	}
 
 }

@@ -90,7 +90,7 @@ public class Method extends GraphMember {
 		} else {
 			sb.append("()");
 		}
-		if (returnType != null && returnType.equals(DataType.VOID) == false) {
+		if (returnType != null && !returnType.equals(DataType.VOID)) {
 			sb.append(" " + returnType.getName(shortName));
 		}
 		return sb.toString();
@@ -207,7 +207,7 @@ public class Method extends GraphMember {
 		CharacterBuffer sb = new CharacterBuffer().with("(");
 		GraphSimpleSet collection = this.getChildren();
 		for (int i = 0; i < collection.size(); i++) {
-			if ((collection.get(i) instanceof Parameter) == false) {
+			if (!(collection.get(i) instanceof Parameter)) {
 				continue;
 			}
 			Parameter param = (Parameter) collection.get(i);

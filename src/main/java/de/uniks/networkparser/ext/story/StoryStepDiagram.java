@@ -56,11 +56,11 @@ public class StoryStepDiagram implements ObjectCondition {
 	 */
 	@Override
 	public boolean update(Object value) {
-		if (value instanceof SimpleEvent == false) {
+		if (!(value instanceof SimpleEvent)) {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
-		if (evt.getNewValue() instanceof HTMLEntity == false || evt.getSource() instanceof Story == false) {
+		if (!(evt.getNewValue() instanceof HTMLEntity) || !(evt.getSource() instanceof Story)) {
 			return false;
 		}
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();

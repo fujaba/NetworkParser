@@ -141,7 +141,7 @@ public class NodeProxyBroker extends NodeProxy {
 		if (session == null) {
 			session = new MessageSession();
 		}
-		if (session.isClose() == false) {
+		if (!session.isClose()) {
 			return false;
 		}
 		session.withHost(url);
@@ -488,7 +488,7 @@ public class NodeProxyBroker extends NodeProxy {
 	 */
 	public SimpleKeyValueList<Short, SimpleKeyValueList<Short, SimpleKeyValueList<String, Byte>>> getGrammar(
 			boolean create) {
-		if (create == false) {
+		if (!create) {
 			return values;
 		}
 		values = new SimpleKeyValueList<Short, SimpleKeyValueList<Short, SimpleKeyValueList<String, Byte>>>();

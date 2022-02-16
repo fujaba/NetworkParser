@@ -451,26 +451,26 @@ public class Cucumber implements ObjectCondition {
 	 */
 	public boolean analyse() {
 		for (ObjectCondition rule : rules) {
-			if (rule.update(this) == false) {
+			if (!rule.update(this)) {
 				return false;
 			}
 		}
 		int i;
 		for (i = 0; i < given.size(); i++) {
 			Boolean key = given.getValueByIndex(i);
-			if (key.booleanValue() == false) {
+			if (!key.booleanValue()) {
 				return false;
 			}
 		}
 		for (i = 0; i < when.size(); i++) {
 			Boolean key = when.getValueByIndex(i);
-			if (key.booleanValue() == false) {
+			if (!key.booleanValue()) {
 				return false;
 			}
 		}
 		for (i = 0; i < then.size(); i++) {
 			Boolean key = then.getValueByIndex(i);
-			if (key.booleanValue() == false) {
+			if (!key.booleanValue()) {
 				return false;
 			}
 		}
@@ -572,7 +572,7 @@ public class Cucumber implements ObjectCondition {
 	 */
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SimpleEvent == false) {
+		if(!(value instanceof SimpleEvent)) {
 			return false;
 		}
 		this.analyse();

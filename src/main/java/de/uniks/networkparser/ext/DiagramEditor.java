@@ -170,7 +170,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 
 		HTMLEntity entity = new HTMLEntity();
 		GraphList list = instance().map.toObjectDiagram(items[0]);
-		if (all == false) {
+		if (!all) {
 			SimpleList<String> ids = new SimpleList<String>();
 			for (Object item : items) {
 				String id = instance().map.getId(item);
@@ -179,7 +179,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			Clazz[] array = list.getClazzes().toArray();
 			SimpleList<Clazz> foundClazz = new SimpleList<Clazz>();
 			for (Clazz clazz : array) {
-				if (ids.contains(clazz.getId()) == false) {
+				if (!ids.contains(clazz.getId())) {
 					list.remove(clazz);
 					foundClazz.add(clazz);
 				}
@@ -333,7 +333,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			width = -1;
 			height = -1;
 		}
-		if (SimpleController.startFX() == false) {
+		if (!SimpleController.startFX()) {
 			return false;
 		}
 		if (entity != null && file != null) {
@@ -379,7 +379,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 				return;
 			}
 			if ("NPM".equalsIgnoreCase(args[0])) {
-				if (new Gradle().loadNPM() == false) {
+				if (!new Gradle().loadNPM()) {
 					System.exit(-1);
 				}
 				return;
@@ -417,7 +417,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 				}
 				gradle.withLogger(DiagramEditor.logger);
 				boolean success = gradle.initProject(filename, projectName, licence);
-				if (success == false) {
+				if (!success) {
 					System.exit(-1);
 				}
 				// GRADLE ININT SHOW IF TEST ADD
@@ -512,7 +512,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 							exit = subExit;
 							logger.error(null, "main", "FatJar Error");
 						}
-						if (validator.isValidate && subExit == 0 && validator.isExistFullJar() == false) {
+						if (validator.isValidate && subExit == 0 && !validator.isExistFullJar()) {
 							logger.error(null, "main", "No FatJar found");
 							exit = -1;
 						}
@@ -1007,7 +1007,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	 */
 	@Override
 	public boolean changed(SimpleEvent evt) {
-		if (TYPE_CONTENT.equalsIgnoreCase(type) == false) {
+		if (!TYPE_CONTENT.equalsIgnoreCase(type)) {
 			super.changed(evt);
 			return true;
 		}
@@ -1111,7 +1111,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	 */
 	@Override
 	public String encode(BaseItem entity) {
-		if (entity instanceof GraphModel == false) {
+		if (!(entity instanceof GraphModel)) {
 			return null;
 		}
 		GraphModel model = (GraphModel) entity;

@@ -157,7 +157,7 @@ public class ZipContainer {
 			ZipEntry item = zis.getNextEntry();
 			byte[] buffer = new byte[2048];
 			while (item != null) {
-				if (item.isDirectory() == false) {
+				if (!item.isDirectory()) {
 					BaseItem element = getNewInstanceFromFileName(item.getName());
 					if (element != null) {
 						CharacterBuffer output = new CharacterBuffer();

@@ -104,10 +104,10 @@ public class DataTypeSet extends DataType {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (super.equals(obj) == false) {
+		if (!super.equals(obj)) {
 			return false;
 		}
-		if (obj instanceof DataTypeSet == false) {
+		if (!(obj instanceof DataTypeSet)) {
 			return false;
 		}
 		if (obj.hashCode() == this.hashCode()) {

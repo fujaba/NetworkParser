@@ -301,7 +301,7 @@ public abstract class GraphMember implements TemplateItem {
 	}
 
 	protected boolean setName(String value) {
-		if ((value != null && value.equals(this.name) == false) || (value == null && this.name != null)) {
+		if ((value != null && !value.equals(this.name)) || (value == null && this.name != null)) {
 			this.name = value;
 			return true;
 		}

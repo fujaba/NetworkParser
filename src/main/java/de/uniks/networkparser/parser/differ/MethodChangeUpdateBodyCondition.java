@@ -30,8 +30,8 @@ public class MethodChangeUpdateBodyCondition extends MatchCondition {
 		Method oldMethod = (Method) match.getMatch();
 		Method newMethod = (Method) match.getOtherMatch().getMatch();
 
-		if ((oldMethod.getBody() != null && oldMethod.getBody().equals(newMethod.getBody()) == false)
-				|| (newMethod.getBody() != null && newMethod.getBody().equals(oldMethod.getBody()) == false)) {
+		if ((oldMethod.getBody() != null && !oldMethod.getBody().equals(newMethod.getBody()))
+				|| (newMethod.getBody() != null && !newMethod.getBody().equals(oldMethod.getBody()))) {
 			/* MethodBody changed */
 			Match update = Match.create(newMethod, this, Method.PROPERTY_BODY, newMethod.getBody(),
 					oldMethod.getBody());
@@ -51,8 +51,8 @@ public class MethodChangeUpdateBodyCondition extends MatchCondition {
 		Method oldMethod = (Method) match.getOtherMatch().getMatch();
 		Method newMethod = (Method) match.getMatch();
 
-		if ((oldMethod.getBody() != null && oldMethod.getBody().equals(newMethod.getBody()) == false)
-				|| (newMethod.getBody() != null && newMethod.getBody().equals(oldMethod.getBody()) == false)) {
+		if ((oldMethod.getBody() != null && !oldMethod.getBody().equals(newMethod.getBody()))
+				|| (newMethod.getBody() != null && !newMethod.getBody().equals(oldMethod.getBody()))) {
 			/* MethodBody changed */
 			Match update = Match.create(oldMethod, this, Method.PROPERTY_BODY, oldMethod.getBody(),
 					newMethod.getBody());

@@ -55,7 +55,7 @@ public class StoryStepTitle implements ObjectCondition {
 	 */
 	@Override
 	public boolean update(Object value) {
-		if (value instanceof SimpleEvent == false) {
+		if (!(value instanceof SimpleEvent)) {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;

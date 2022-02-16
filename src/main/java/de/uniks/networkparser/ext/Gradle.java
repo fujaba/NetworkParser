@@ -427,7 +427,7 @@ public class Gradle implements ObjectCondition {
     extractGradleFiles(path, file);
     /* NOW WRITE build.gradle */
     file = new File(path + "build.gradle");
-    if (file.exists() == false) {
+    if (!file.exists()) {
       CharacterBuffer buildGradle = new CharacterBuffer();
 
       buildGradle.withLine("// MAJOR VERSION - Manually set");

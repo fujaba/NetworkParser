@@ -30,7 +30,7 @@ public class ClazzChangeRemoveModifierCondition extends MatchCondition {
 		if (matches.getMetaModel() == null) {
 			return false;
 		}
-		if (match.isMetaMatch() == false && match.isMetaSourceMatch() == false) {
+		if (!match.isMetaMatch() && !match.isMetaSourceMatch()) {
 			return false;
 		}
 		if (sourceClazz.getModifier().toString().equals(otherClazz.getModifier().toString())) {
@@ -54,7 +54,7 @@ public class ClazzChangeRemoveModifierCondition extends MatchCondition {
 		Clazz newClazz = (Clazz) match.getSourceMatch();
 
 		for (String modifier : newClazz.getModifier().toString().split(" ")) {
-			if (oldClazz.getModifier().toString().contains(modifier) == false) {
+			if (!oldClazz.getModifier().toString().contains(modifier)) {
 				Match removeInFile = Match.create(newClazz, this, Clazz.PROPERTY_MODIFIERS, modifier, null);
 
 				matches.addDiff(removeInFile);
@@ -74,7 +74,7 @@ public class ClazzChangeRemoveModifierCondition extends MatchCondition {
 		Clazz newClazz = (Clazz) match.getMatch();
 
 		for (String modifier : oldClazz.getModifier().toString().split(" ")) {
-			if (newClazz.getModifier().toString().contains(modifier) == false) {
+			if (!newClazz.getModifier().toString().contains(modifier)) {
 				Match addInFile = Match.create(oldClazz, this, Clazz.PROPERTY_MODIFIERS, modifier, null);
 				matches.addDiff(addInFile);
 			}

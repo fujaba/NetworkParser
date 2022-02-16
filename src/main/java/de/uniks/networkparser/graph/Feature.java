@@ -278,7 +278,7 @@ public class Feature implements Comparable<Feature> {
 			if (clazz == null) {
 				return true;
 			}
-			if (match(clazz.getName(false)) == false) {
+			if (!match(clazz.getName(false))) {
 				return false;
 			}
 		}
@@ -434,7 +434,7 @@ public class Feature implements Comparable<Feature> {
 		if (obj instanceof String) {
 			return obj.equals(this.name);
 		}
-		if (obj instanceof Feature == false) {
+		if (!(obj instanceof Feature)) {
 			return false;
 		}
 		return compareTo((Feature) obj) == 0;

@@ -87,8 +87,8 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		Set<ObjectCondition> list = getList();
 		boolean result = true;
 		for (ObjectCondition item : list) {
-			if (item.update(evt) == false) {
-				if (chain == false) {
+			if (!item.update(evt)) {
+				if (!chain) {
 					return false;
 				}
 				result = false;
@@ -115,7 +115,7 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		for (Iterator<?> i = collection.iterator(); i.hasNext();) {
 			Object listener = i.next();
 			if (listener instanceof ObjectCondition) {
-				if (((ObjectCondition) listener).update(evt) == false) {
+				if (!((ObjectCondition) listener).update(evt)) {
 					if (chain) {
 						return false;
 					}
@@ -161,7 +161,7 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		}
 		if (values.length == 1 && this.list == null) {
 			/* Dont do Chain in Chain */
-			if (values[0] instanceof ChainCondition == false) {
+			if (!(values[0] instanceof ChainCondition)) {
 				if (values[0] instanceof PropertyChangeListener || values[0] instanceof ObjectCondition) {
 					this.list = values[0];
 				}
@@ -186,7 +186,7 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 					ChainCondition cc = (ChainCondition) condition;
 					list.withList(cc.getList());
 				} else if (condition instanceof ObjectCondition) {
-					if (list.add((ObjectCondition) condition) == false) {
+					if (!list.add((ObjectCondition) condition)) {
 						return false;
 					}
 				} else if(condition instanceof ListCondition) {
@@ -293,7 +293,7 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (entity instanceof ChainCondition == false) {
+		if (!(entity instanceof ChainCondition)) {
 			return false;
 		}
 		ChainCondition cc = (ChainCondition) entity;
@@ -314,7 +314,7 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (entity instanceof ChainCondition == false) {
+		if (!(entity instanceof ChainCondition)) {
 			return false;
 		}
 		ChainCondition cc = (ChainCondition) entity;

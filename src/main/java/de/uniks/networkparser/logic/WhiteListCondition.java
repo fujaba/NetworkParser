@@ -81,7 +81,7 @@ public class WhiteListCondition implements ObjectCondition, SendableEntityCreato
 	 */
 	@Override
 	public boolean update(Object value) {
-		if (value instanceof SimpleEvent == false) {
+		if (!(value instanceof SimpleEvent)) {
 			return false;
 		}
 		SimpleEvent event = (SimpleEvent) value;

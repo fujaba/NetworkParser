@@ -290,7 +290,7 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 	private boolean finding(boolean save) {
 		/* Backwards */
 		
-		if (findCondition(null) == false) {
+		if (!findCondition(null)) {
 			/* Not found */
 			if (parent == null) {
 				return false; 
@@ -305,17 +305,17 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 				}
 			}
 
-			if (finding == false) {
+			if (!finding) {
 				return this.match != null;
 			}
 			if (children != null) {
 				for (Pattern child : children) {
 					finding = child.find();
-					if (finding == false) {
+					if (!finding) {
 						break;
 					}
 				}
-				if (finding == false) {
+				if (!finding) {
 					return false;
 				}
 			}
@@ -434,7 +434,7 @@ public class Pattern implements Iterator<Object>, Iterable<Object>, ObjectCondit
 	 * @return true, if successful
 	 */
 	public boolean appling() {
-		if (condition instanceof PatternCondition == false) {
+		if (!(condition instanceof PatternCondition)) {
 			return false;
 		}
 		PatternCondition patternCondition = (PatternCondition) condition;

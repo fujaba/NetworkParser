@@ -83,9 +83,9 @@ public class AssociationChangeCondition extends MatchCondition {
 		if (match == null || matches == null) {
 			return false;
 		}
-		return sourceAssociation.getOtherClazz().getName().equals(otherAssociation.getOtherClazz().getName()) == false
-				|| sourceAssociation.getClazz().getName().equals(otherAssociation.getClazz().getName()) == false
-				|| sourceAssociation.getType().equals(otherAssociation.getType()) == false;
+		return !sourceAssociation.getOtherClazz().getName().equals(otherAssociation.getOtherClazz().getName())
+				|| !sourceAssociation.getClazz().getName().equals(otherAssociation.getClazz().getName())
+				|| !sourceAssociation.getType().equals(otherAssociation.getType());
 	}
 
 	private boolean checkSimiliarNames(Association sourceAssociation, Association otherAssociation) {

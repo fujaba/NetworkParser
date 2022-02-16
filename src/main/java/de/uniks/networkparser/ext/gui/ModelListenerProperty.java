@@ -217,7 +217,7 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 			return false;
 		}
 		this.viewProperty = newObservable;
-		if (newObservable.equals(observable) == false) {
+		if (!newObservable.equals(observable)) {
 			unbind();
 			observable = newObservable;
 			ReflectionLoader.call(observable, "addListener", ReflectionLoader.INVALIDATIONLISTENER, this);
@@ -488,7 +488,7 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (entity instanceof ModelListenerProperty == false) {
+		if (!(entity instanceof ModelListenerProperty)) {
 			return false;
 		}
 		ModelListenerProperty property = (ModelListenerProperty) entity;
@@ -557,7 +557,7 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (entity instanceof ModelListenerProperty == false || attribute == null) {
+		if (!(entity instanceof ModelListenerProperty) || attribute == null) {
 			return null;
 		}
 		ModelListenerProperty prop = (ModelListenerProperty) entity;

@@ -109,7 +109,7 @@ public class JavaSetCreator extends Template {
 
 				"{{#if {{templatemodel.features.setclass.classstring}}==" + SimpleSet.class.getName() + " ?	@Override}}",
 				"	public Object getValue(Object entity, String attribute) {",
-				"		if(attribute == null || entity instanceof {{name}} == false) {",
+				"		if(attribute == null || !(entity instanceof {{name}})) {",
 				"			return null;",
 				"		}",
 				"		{{name}} element = ({{name}})entity;",
@@ -140,7 +140,7 @@ public class JavaSetCreator extends Template {
 
 				"{{#if {{templatemodel.features.setclass.classstring}}==" + SimpleSet.class.getName() + " ?	@Override}}",
 				"	public boolean setValue(Object entity, String attribute, Object value, String type) {",
-				"		if(attribute == null || entity instanceof {{name}} == false) {",
+				"		if(attribute == null || !(entity instanceof {{name}})) {",
 				"			return false;",
 				"		}",
 				"{{#debug}}{{#if childtransitive.size()>0}}",
@@ -245,16 +245,14 @@ public class JavaSetCreator extends Template {
 	@Override
 	public TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters, boolean isStandard) {
 		FeatureSet features = getFeatures(parameters);
-		if (features != null) {
-			if (features.match(Feature.SETCLASS, null) == false) {
-				return null;
-			}
+		if (features != null && !features.match(Feature.SETCLASS, null)) {
+			return null;
 		}
 		return super.executeClazz(clazz, parameters, isStandard);
 	}
 
 	protected boolean isValid(GraphMember member, LocalisationInterface parameters) {
-		if (super.isValid(member, parameters) == false) {
+		if (!super.isValid(member, parameters)) {
 			return false;
 		}
 		/* Check for existing Feature Serialization */

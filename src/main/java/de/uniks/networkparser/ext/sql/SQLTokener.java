@@ -139,7 +139,7 @@ public class SQLTokener extends Tokener {
 		boolean result = true;
 		Connection connection = null;
 		for (SQLStatement statement : statements) {
-			if (statement.isEnable() == false) {
+			if (!statement.isEnable()) {
 				continue;
 			}
 			Statement query = null;
@@ -300,7 +300,7 @@ public class SQLTokener extends Tokener {
 
 	private void addTableCreate(String tableName, Object item, SendableEntityCreator creator,
 			SQLStatementList statements, MapEntity map) {
-		if (map.contains(tableName) == false) {
+		if (!map.contains(tableName)) {
 			if (map.isTokenerFlag(FLAG_DROP)) {
 				statements.add(new SQLStatement(SQLCommand.DROPTABLE, tableName));
 			}
@@ -516,7 +516,7 @@ public class SQLTokener extends Tokener {
 					continue;
 				}
 				if (values.drop) {
-					if (statement.autoDisable() == false) {
+					if (!statement.autoDisable()) {
 						values.addId(primaryKey);
 					}
 				} else {
@@ -536,7 +536,7 @@ public class SQLTokener extends Tokener {
 			}
 			if (statement.getCommand() == SQLCommand.UPDATE) {
 				if (values.create) {
-					if (values.getIds().contains(primaryKey) == false) {
+					if (!values.getIds().contains(primaryKey)) {
 						if (statement.isAutoStatement()) {
 							statement.withCommand(SQLCommand.INSERT);
 							statement.withoutCondition(SQLStatement.ID);
@@ -553,7 +553,7 @@ public class SQLTokener extends Tokener {
 					}
 				} else {
 					values.mayBeStatements.add(statement);
-					if (statement.isAutoStatement() && values.getIds().contains(statement.getPrimaryId()) == false) {
+					if (statement.isAutoStatement() && !values.getIds().contains(statement.getPrimaryId())) {
 						if (primaryKey != null) {
 							statement.withCommand(SQLCommand.INSERT);
 							statement.withoutCondition(SQLStatement.ID);
@@ -566,7 +566,7 @@ public class SQLTokener extends Tokener {
 			}
 			if (statement.getCommand() == SQLCommand.DELETE) {
 				if (values.create) {
-					if (values.getIds().contains(primaryKey) == false) {
+					if (!values.getIds().contains(primaryKey)) {
 						if (statement.isAutoStatement()) {
 							statement.withEnable(false);
 						} else if (primaryKey != null) {
@@ -579,7 +579,7 @@ public class SQLTokener extends Tokener {
 					values.addDeletedId(primaryKey);
 				}
 			} else if (statement.getCommand() == SQLCommand.SELECT) {
-				if (values.create == false && values.drop) {
+				if (!values.create && values.drop) {
 					statement.autoDisable();
 				} else {
 					if (values.getDeletedIds().contains(primaryKey)) {

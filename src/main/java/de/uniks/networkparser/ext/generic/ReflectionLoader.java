@@ -621,7 +621,7 @@ public class ReflectionLoader {
 			}
 			for (Constructor<?> con : constructors) {
 				try {
-					if (Modifier.isPublic(con.getModifiers()) == false) {
+					if (!Modifier.isPublic(con.getModifiers())) {
 						con.setAccessible(true);
 					}
 					Object[] values = ReflectionBlackBoxTester.getParameters(con, con.getParameterTypes(),
@@ -1100,7 +1100,7 @@ public class ReflectionLoader {
 	@SuppressWarnings("unchecked")
 	public static List<Object> callList(Object item, String methodName, Object... arguments) {
 		Object returnValue = calling(item, methodName, true, null, arguments);
-		if (returnValue == null || returnValue instanceof List<?> == false) {
+		if (!(returnValue instanceof List<?>)) {
 			return new SimpleList<Object>();
 		}
 		return (List<Object>) returnValue;
@@ -1153,7 +1153,7 @@ public class ReflectionLoader {
 		Method method = null;
 		try {
 			boolean staticCall = false;
-			if (item instanceof Type == false) {
+			if (!(item instanceof Type)) {
 				if(item instanceof String) {
 					item = ReflectionLoader.getClass(""+item);
 				}
@@ -1172,7 +1172,7 @@ public class ReflectionLoader {
 					method = itemClass.getDeclaredMethod(methodName, methodArguments);
 				}
 			} catch (Exception e) {
-				if (staticCall == false && item instanceof Class<?>) {
+				if (!staticCall && item instanceof Class<?>) {
 					itemClass = ((Class<?>) item);
 					staticCall = true;
 					try {
@@ -1227,7 +1227,7 @@ public class ReflectionLoader {
 				return method.invoke(item, methodArgumentsValues);
 			}
 		} catch (Exception e) {
-			if (notify == false) {
+			if (!notify) {
 				return null;
 			}
 			if (logger != null) {
@@ -1254,13 +1254,11 @@ public class ReflectionLoader {
 			return false;
 		}
 		for (int i = 0; i < arguments.length; i += 2) {
-			if (arguments[i] instanceof Class<?> == false) {
+			if (!(arguments[i] instanceof Class<?>)) {
 				return true;
 			}
-			if (arguments[i + 1] != null) {
-				if (arguments[i + 1].getClass().isAssignableFrom((Class<?>) arguments[i]) == false) {
-					return false;
-				}
+			if (arguments[i + 1] != null && !arguments[i + 1].getClass().isAssignableFrom((Class<?>) arguments[i])) {
+				return false;
 			}
 		}
 		return false;

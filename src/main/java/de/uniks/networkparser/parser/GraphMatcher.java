@@ -202,13 +202,13 @@ public GraphSimpleSet getDiffs() {
 					continue;
 				}
 
-				if (matchAttributes(oldClazz, newClazz) == false) {
+				if (!matchAttributes(oldClazz, newClazz)) {
 					matchEntries = false;
 				}
-				if (matchEntries && matchAssociations(oldClazz, newClazz) == false) {
+				if (matchEntries && !matchAssociations(oldClazz, newClazz)) {
 					matchEntries = false;
 				}
-				if (matchEntries && matchMethods(oldClazz, newClazz) == false) {
+				if (matchEntries && !matchMethods(oldClazz, newClazz)) {
 					matchEntries = false;
 				}
 
@@ -239,7 +239,7 @@ public GraphSimpleSet getDiffs() {
 				this.addAttributeMatch(attributeMatch);
 			}
 			for (Association association : clazz.getAssociations()) {
-				if (GraphUtil.isAssociation(association) == false) {
+				if (!GraphUtil.isAssociation(association)) {
 					continue;
 				}
 				Match associationMatch = Match.createMatch(this, association, isFileMatch);
@@ -426,7 +426,7 @@ public GraphSimpleSet getDiffs() {
 						executed = true;
 					}
 				}
-				if (executed == false) {
+				if (!executed) {
 					oldBuffer.set(oldMember.getName());
 					newBuffer.set(newMember.getName());
 				}
@@ -454,12 +454,12 @@ public GraphSimpleSet getDiffs() {
 		AssociationSet newMatches = new AssociationSet();
 
 		for (Association oldAssociation : oldAssociations) {
-			if (GraphUtil.isAssociation(oldAssociation) == false) {
+			if (!GraphUtil.isAssociation(oldAssociation)) {
 				oldMatches.add(oldAssociation);
 			}
 		}
 		for (Association newAssociation : newAssociations) {
-			if (GraphUtil.isAssociation(newAssociation) == false) {
+			if (!GraphUtil.isAssociation(newAssociation)) {
 				newMatches.add(newAssociation);
 			}
 		}
@@ -657,7 +657,7 @@ public GraphSimpleSet getDiffs() {
 	}
 
 	private boolean matchClazzValues(Clazz oldClazz, Clazz newClazz) {
-		if (oldClazz.getName().equals(newClazz.getName()) == false) {
+		if (!oldClazz.getName().equals(newClazz.getName())) {
 			return false;
 		}
 
@@ -671,7 +671,7 @@ public GraphSimpleSet getDiffs() {
 				if (newMatchedAttributes.contains(newAttribute)) {
 					continue;
 				}
-				if (newMatchedAttributes.contains(newAttribute) == false) {
+				if (!newMatchedAttributes.contains(newAttribute)) {
 					if (matchAttributeValues(oldAttribute, newAttribute)) {
 						metaMatchedAttributes.add(oldAttribute);
 						newMatchedAttributes.add(newAttribute);
@@ -686,12 +686,12 @@ public GraphSimpleSet getDiffs() {
 		AssociationSet newMatchedAssociations = new AssociationSet();
 
 		for (Association oldAssociation : oldAssociations) {
-			if (GraphUtil.isAssociation(oldAssociation) == false) {
+			if (!GraphUtil.isAssociation(oldAssociation)) {
 				metaMatchedAssociations.add(oldAssociation);
 			}
 		}
 		for (Association newAssociation : newAssociations) {
-			if (GraphUtil.isAssociation(newAssociation) == false) {
+			if (!GraphUtil.isAssociation(newAssociation)) {
 				newMatchedAssociations.add(newAssociation);
 			}
 		}
@@ -704,7 +704,7 @@ public GraphSimpleSet getDiffs() {
 				if (newMatchedAssociations.contains(newAssociation)) {
 					continue;
 				}
-				if (newMatchedAssociations.contains(newAssociation) == false) {
+				if (!newMatchedAssociations.contains(newAssociation)) {
 					if (matchAssociationValues(oldAssociation, newAssociation)) {
 						metaMatchedAssociations.add(oldAssociation);
 						newMatchedAssociations.add(newAssociation);
@@ -728,11 +728,9 @@ public GraphSimpleSet getDiffs() {
 				if (newMatchedMethods.contains(newMethod)) {
 					continue;
 				}
-				if (newMatchedMethods.contains(newMethod) == false) {
-					if (matchMethodValues(oldMethod, newMethod)) {
-						metaMatchedMethods.add(oldMethod);
-						newMatchedMethods.add(newMethod);
-					}
+				if (!newMatchedMethods.contains(newMethod) && matchMethodValues(oldMethod, newMethod)) {
+					metaMatchedMethods.add(oldMethod);
+					newMatchedMethods.add(newMethod);
 				}
 			}
 		}
@@ -771,13 +769,13 @@ public GraphSimpleSet getDiffs() {
 		if (oldAttribute == null || newAttribute == null) {
 			return false;
 		}
-		if (oldAttribute.getName().equals(newAttribute.getName()) == false) {
+		if (!oldAttribute.getName().equals(newAttribute.getName())) {
 			return false;
 		}
-		if (oldAttribute.getType().equals(newAttribute.getType()) == false) {
+		if (!oldAttribute.getType().equals(newAttribute.getType())) {
 			return false;
 		}
-		if (oldAttribute.getModifier().toString().equals(newAttribute.getModifier().toString()) == false) {
+		if (!oldAttribute.getModifier().toString().equals(newAttribute.getModifier().toString())) {
 			return false;
 		}
 
@@ -794,40 +792,38 @@ public GraphSimpleSet getDiffs() {
 		if (oldAssociation == null || newAssociation == null) {
 			return false;
 		}
-		if (oldAssociation.getName().equals(newAssociation.getName()) == false) {
+		if (!oldAssociation.getName().equals(newAssociation.getName())) {
 			return false;
 		}
-		if (oldAssociation.getType().equals(newAssociation.getType()) == false) {
+		if (!oldAssociation.getType().equals(newAssociation.getType())) {
 			return false;
 		}
-		if (oldAssociation.getCardinality() == newAssociation.getCardinality() == false) {
+		if (oldAssociation.getCardinality() != newAssociation.getCardinality()) {
 			return false;
 		}
-		if (oldAssociation.getModifier() != null && newAssociation.getModifier() != null) {
-			if (oldAssociation.getModifier().toString().equals(newAssociation.getModifier().toString()) == false) {
-				return false;
-			}
+		if (oldAssociation.getModifier() != null && newAssociation.getModifier() != null &&
+			(!oldAssociation.getModifier().toString().equals(newAssociation.getModifier().toString()))) {
+			return false;
 		} else if (oldAssociation.getModifier() != null || newAssociation.getModifier() != null) {
 			return false;
 		}
-		if (oldAssociation.getOther().getName().equals(newAssociation.getOther().getName()) == false) {
+		if (!oldAssociation.getOther().getName().equals(newAssociation.getOther().getName())) {
 			return false;
 		}
-		if (oldAssociation.getOther().getType().equals(newAssociation.getOther().getType()) == false) {
+		if (!oldAssociation.getOther().getType().equals(newAssociation.getOther().getType())) {
 			return false;
 		}
-		if (oldAssociation.getOther().getCardinality() == newAssociation.getOther().getCardinality() == false) {
+		if (oldAssociation.getOther().getCardinality() != newAssociation.getOther().getCardinality()) {
 			return false;
 		}
 		if (oldAssociation.getOther().getModifier() != null && newAssociation.getModifier() != null) {
-			if (oldAssociation.getOther().getModifier().toString()
-					.equals(newAssociation.getOther().getModifier().toString()) == false) {
+			if (!oldAssociation.getOther().getModifier().toString().equals(newAssociation.getOther().getModifier().toString())) {
 				return false;
 			}
 		} else if (oldAssociation.getOther().getModifier() != null || newAssociation.getOther().getModifier() != null) {
 			return false;
 		}
-		if (oldAssociation.getOtherClazz().getName().equals(newAssociation.getOtherClazz().getName()) == false) {
+		if (!oldAssociation.getOtherClazz().getName().equals(newAssociation.getOtherClazz().getName())) {
 			return false;
 		}
 
@@ -841,13 +837,13 @@ public GraphSimpleSet getDiffs() {
 	}
 
 	private boolean matchMethodValues(Method oldMethod, Method newMethod) {
-		if (oldMethod.getName().equals(newMethod.getName()) == false) {
+		if (!oldMethod.getName().equals(newMethod.getName())) {
 			return false;
 		}
-		if (oldMethod.getModifier().toString().equals(newMethod.getModifier().toString()) == false) {
+		if (!oldMethod.getModifier().toString().equals(newMethod.getModifier().toString())) {
 			return false;
 		}
-		if (oldMethod.getReturnType().equals(newMethod.getReturnType()) == false) {
+		if (!oldMethod.getReturnType().equals(newMethod.getReturnType())) {
 			return false;
 		}
 		ParameterSet oldParameters = oldMethod.getParameters();
@@ -859,26 +855,25 @@ public GraphSimpleSet getDiffs() {
 		for (Parameter oldParameter : oldParameters) {
 			found = false;
 			for (Parameter newParameter : newParameters) {
-				if (oldParameter.getName() != null && newParameter.getName() != null
-						&& oldParameter.getName().equals(newParameter.getName()) == false) {
+				if (oldParameter.getName() != null && newParameter.getName() != null && !oldParameter.getName().equals(newParameter.getName())) {
 					continue;
 				}
-				if (oldParameter.getType().equals(newParameter.getType()) == false) {
+				if (!oldParameter.getType().equals(newParameter.getType())) {
 					continue;
 				}
 				if (oldParameter.getModifier() == null) {
 					if (newParameter.getModifier() != null) {
 						continue;
 					}
-				} else if (oldParameter.getModifier().toString()
-						.equals(newParameter.getModifier().toString()) == false) {
+				} else if (!oldParameter.getModifier().toString()
+						.equals(newParameter.getModifier().toString())) {
 					continue;
 				}
 
 				found = true;
 				break;
 			}
-			if (found == false) {
+			if (!found) {
 				return false;
 			}
 		}
@@ -886,8 +881,8 @@ public GraphSimpleSet getDiffs() {
 			if (newMethod.getBody() != null) {
 				return false;
 			}
-		} else if (oldMethod.getBody().equals(newMethod.getBody()) == false) {
-//		if (oldMethod.getBody() == newMethod.getBody() && oldMethod.getBody().equals(newMethod.getBody()) == false) {
+		} else if (!oldMethod.getBody().equals(newMethod.getBody())) {
+//		if (oldMethod.getBody() == newMethod.getBody() && !oldMethod.getBody().equals(newMethod.getBody())) {
 			return false;
 		}
 

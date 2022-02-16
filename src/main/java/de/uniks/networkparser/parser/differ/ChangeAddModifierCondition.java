@@ -30,7 +30,7 @@ public class ChangeAddModifierCondition extends MatchCondition {
 		if (sourceAttribute == null || otherAttribute == null) {
 			return false;
 		}
-		return sourceAttribute.getModifier().toString().equals(otherAttribute.getModifier().toString()) == false;
+		return !sourceAttribute.getModifier().toString().equals(otherAttribute.getModifier().toString());
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class ChangeAddModifierCondition extends MatchCondition {
 		GraphMember oldAttribute = match.getMatch();
 		GraphMember newAttribute = match.getSourceMatch();
 		for (String modifier : oldAttribute.getModifier().toString().split(" ")) {
-			if (newAttribute.getModifier().toString().contains(modifier) == false) {
+			if (!newAttribute.getModifier().toString().contains(modifier)) {
 				Match addModifier = Match.create(oldAttribute, this, Attribute.PROPERTY_MODIFIERS, null, modifier);
 				matches.addDiff(addModifier);
 			}
@@ -68,7 +68,7 @@ public class ChangeAddModifierCondition extends MatchCondition {
 		GraphMember newAttribute = match.getMatch();
 
 		for (String modifier : newAttribute.getModifier().toString().split(" ")) {
-			if (oldAttribute.getModifier().toString().contains(modifier) == false) {
+			if (!oldAttribute.getModifier().toString().contains(modifier)) {
 				Match addModifier = Match.create(oldAttribute, this, Attribute.PROPERTY_MODIFIERS, null, modifier);
 				matches.addDiff(addModifier);
 			}

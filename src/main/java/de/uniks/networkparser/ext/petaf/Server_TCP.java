@@ -105,7 +105,7 @@ public class Server_TCP extends Thread implements Server {
 		} else {
 			Thread.currentThread().setName("localhost:" + proxy.getPort() + " com server");
 		}
-		while (isInterrupted() == false && this.run) {
+		while (!isInterrupted() && this.run) {
 			Socket requestSocket = null;
 			try {
 				requestSocket = serverSocket.accept();
@@ -114,7 +114,8 @@ public class Server_TCP extends Thread implements Server {
 				if (executor != null) {
 					executor.executeTask(task, 0);
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
+			    e.printStackTrace();
 			} finally {
 			}
 		}

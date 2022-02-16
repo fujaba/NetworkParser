@@ -38,7 +38,7 @@ public class BooleanList extends SimpleList<Boolean> {
 	 */
 	public boolean and() {
 		for (Boolean value : this) {
-			if (value == false) {
+			if (!value) {
 				return false;
 			}
 		}

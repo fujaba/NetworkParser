@@ -131,7 +131,7 @@ public class Attribute extends Value {
 	 */
 	public String getValue(String typ, boolean shortName) {
 		if (GraphTokener.OBJECTDIAGRAM.equals(typ)) {
-			if (DataType.STRING == this.type && this.value != null && this.value.startsWith("\"") == false) {
+			if (DataType.STRING == this.type && this.value != null && !this.value.startsWith("\"")) {
 				return "\"" + this.value + "\"";
 			}
 			return this.value;

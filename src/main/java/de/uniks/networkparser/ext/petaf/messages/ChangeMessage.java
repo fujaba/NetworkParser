@@ -194,7 +194,7 @@ public class ChangeMessage extends ReceivingTimerTask {
 	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (attribute == null || entity instanceof ChangeMessage == false) {
+		if (attribute == null || !(entity instanceof ChangeMessage)) {
 			return false;
 		}
 		ChangeMessage message = (ChangeMessage) entity;
@@ -233,7 +233,7 @@ public class ChangeMessage extends ReceivingTimerTask {
 	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (attribute == null || entity instanceof ChangeMessage == false) {
+		if (attribute == null || !(entity instanceof ChangeMessage)) {
 			return false;
 		}
 		ChangeMessage message = (ChangeMessage) entity;

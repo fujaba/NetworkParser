@@ -542,7 +542,7 @@ public class Association extends GraphMember {
 				contains = ((GraphSimpleSet) parentNode).contains(key);
 			}
 		}
-		if (other && contains == false) {
+		if (other && !contains) {
 			if(this.other == null) {
 				return false;
 			}

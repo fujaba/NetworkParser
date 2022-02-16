@@ -510,7 +510,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		}
 		String content = entity.toString();
 		PrintWriter output = getOutput();
-		if (output != null) {
+		if (output != null && !this.writeBody) {
 			this.writeHeader = true;
 			this.writeBody = true;
 			output.println(HTTP_STATE_OK);
@@ -724,7 +724,14 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	 * @return the content value
 	 */
 	public String getContentValue(String key) {
-		return ""+contentValues.get(key);
+	    if(contentValues == null) {
+	        return null;
+	    }
+	    Object value = contentValues.get(key);
+	    if(value instanceof String) {
+	        return (String)value;
+	    }
+		return null;
 	}
 
 	/**

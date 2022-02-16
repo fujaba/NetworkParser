@@ -201,7 +201,7 @@ public class User implements SendableEntityCreator {
 	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (attribute == null || entity instanceof User == false) {
+		if (attribute == null || !(entity instanceof User)) {
 			return null;
 		}
 		if (PROPERTY_NAME.equalsIgnoreCase(attribute)) {
@@ -224,7 +224,7 @@ public class User implements SendableEntityCreator {
 	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (attribute == null || entity instanceof User == false) {
+		if (attribute == null || !(entity instanceof User)) {
 			return false;
 		}
 		if (PROPERTY_NAME.equalsIgnoreCase(attribute)) {

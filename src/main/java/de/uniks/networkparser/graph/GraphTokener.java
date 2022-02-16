@@ -239,7 +239,7 @@ public class GraphTokener extends Tokener {
 	 * @return the graph pattern match
 	 */
 	public GraphPatternMatch diffModel(Object master, Object slave, MapEntity map) {
-		if (map == null || map.add(master) == false) {
+		if (map == null || !map.add(master)) {
 			return null;
 		}
 		GraphPatternMatch result = new GraphPatternMatch();
@@ -309,14 +309,14 @@ public class GraphTokener extends Tokener {
 					continue;
 				}
 				if (value instanceof String || value instanceof Date || value instanceof Number) {
-					if (value.equals(slaveValue) == false) {
+					if (!value.equals(slaveValue)) {
 						result.with(GraphPatternChange.createChange(item.getKey(), value, slaveValue));
 					}
 				} else {
 					matchMap.add(value, slaveValue);
 					if (this.map.getCreatorClass(value) != null) {
 						result.with(diffModel(value, slaveValue, map));
-					} else if (value.equals(slaveValue) == false) {
+					} else if (!value.equals(slaveValue)) {
 						result.with(GraphPatternChange.createChange(item.getKey(), value, slaveValue));
 					}
 				}
@@ -327,7 +327,7 @@ public class GraphTokener extends Tokener {
 				Collection<?> masterCollection = item.getValue();
 				GraphPatternMatch match = GraphPatternMatch.create(item.getKey(), masterCollection);
 				Object slaveValue = slaveCreator.getValue(slave, item.getKey());
-				if (slaveValue == null || slaveValue instanceof Collection<?> == false) {
+				if (!(slaveValue instanceof Collection<?>)) {
 					if (masterCollection.size() > 0) {
 						for (Iterator<?> childIterator = masterCollection.iterator(); childIterator.hasNext();) {
 							match.with(GraphPatternChange.createDelete(childIterator.next()));

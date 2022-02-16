@@ -53,7 +53,7 @@ public class JsonArrayLazy extends JsonArray {
 		if (this.ref == null) {
 			return false;
 		}
-		if (this.loaded == false) {
+		if (!this.loaded) {
 			this.loaded = true;
 		} else {
 			return false;

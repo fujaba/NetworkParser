@@ -49,7 +49,7 @@ public class ReaderComm implements Runnable {
 	public void start(NodeProxyBroker broker, String threadName) {
 		this.threadName = threadName;
 		this.broker = broker;
-		if (running == false) {
+		if (!running) {
 			running = true;
 		}
 	}
@@ -88,7 +88,7 @@ public class ReaderComm implements Runnable {
 		if (session == null) {
 			return;
 		}
-		while (running && (session.isClose() == false)) {
+		while (running && !session.isClose()) {
 			try {
 				Object response = session.getServerResponse(broker);
 

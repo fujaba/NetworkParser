@@ -267,7 +267,7 @@ public class SQLStatement {
 		if (this.values == null) {
 			this.values = new SimpleList<Object>();
 		}
-		if (this.values instanceof SimpleList<?> == false) {
+		if (!(this.values instanceof SimpleList<?>)) {
 			return this;
 		}
 		SimpleList<?> list = (SimpleList<?>) this.values;
@@ -323,7 +323,7 @@ public class SQLStatement {
 				String item = null;
 				for (; i.hasNext();) {
 					item = i.next();
-					if (first == false) {
+					if (!first) {
 						sb.append(", ");
 					}
 					first = false;
@@ -351,7 +351,7 @@ public class SQLStatement {
 				Entry<String, Object> item = null;
 				for (; i.hasNext();) {
 					item = i.next();
-					if (first == false) {
+					if (!first) {
 						sb.append(", ");
 					} else {
 						first = false;
@@ -398,7 +398,7 @@ public class SQLStatement {
 				Entry<String, Object> item = null;
 				for (; i.hasNext();) {
 					item = i.next();
-					if (first == false) {
+					if (!first) {
 						sb.append(", ");
 					}
 					first = false;
@@ -439,7 +439,7 @@ public class SQLStatement {
 
 			for (Iterator<Entry<String, Object>> i = conditions.entrySet().iterator(); i.hasNext();) {
 				Entry<String, Object> item = i.next();
-				if (first == false) {
+				if (!first) {
 					sb.append(", ");
 				} else {
 					first = false;
@@ -449,7 +449,7 @@ public class SQLStatement {
 					sb.append(item.getKey()).append(SPACE).append("IN").append(SPACE).append("(");
 					boolean newFirst = true;
 					for (Object object : values) {
-						if (newFirst == false) {
+						if (!newFirst) {
 							sb.append(", ");
 						} else {
 							newFirst = false;

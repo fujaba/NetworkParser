@@ -57,7 +57,7 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 		JacocoColumn jacocoColumn = new JacocoColumn();
 		Class<?> proxyClass = ReflectionLoader.getSimpleClass(COLUMRENDERER);
 		if (proxyClass == null) {
-			if (ReflectionBlackBoxTester.isTester() == false && logger != null) {
+			if (!ReflectionBlackBoxTester.isTester() && logger != null) {
 			    logger.info(JacocoColumn.class, "create", "NO JACOCO FOUND ON BUILD-PATH");
 			}
 			return null;

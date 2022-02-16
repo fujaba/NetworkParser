@@ -33,7 +33,7 @@ public class PropertyList extends AbstractList<String> {
 			return true;
 		}
 		for (String value : values) {
-			if (super.add(value) == false) {
+			if (!super.add(value)) {
 				this.cache = null;
 				return false;
 			}

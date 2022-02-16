@@ -29,7 +29,7 @@ public class ExcelWorkBook extends SimpleList<ExcelSheet> {
 	 * @return true, if successful
 	 */
 	public boolean setAuthor(String value) {
-		if ((this.author == null && value != null) || (this.author != null && this.author.equals(value) == false)) {
+		if ((this.author == null && value != null) || (this.author != null && !this.author.equals(value))) {
 			this.author = value;
 			return true;
 		}

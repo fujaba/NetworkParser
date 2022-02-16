@@ -7,26 +7,19 @@ package de.uniks.networkparser.bytes.qr;
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class ByteMatrix {
-	
 	/** The bytes. */
 	private final byte[][] bytes;
 
-    /** The width. */
-    private final int width;
-    
 	/**
 	 * Instantiates a new byte matrix.
 	 *
 	 * @param width the width
-	 * @param height the height
 	 */
-	public ByteMatrix(int width, int height) {
-	    if(width>=0 && height >= 0) {
-	        bytes = new byte[height][width];
-	        this.width = 0;
+	public ByteMatrix(int width) {
+	    if(width>=0) {
+	        bytes = new byte[width][width];
 	    }else {
 	        bytes = new byte[0][0];
-	        this.width = 0;
 	    }
 	}
 
@@ -45,7 +38,7 @@ public final class ByteMatrix {
 	 * @return the width
 	 */
 	public int getWidth() {
-		return width;
+		return bytes.length;
 	}
 
 	/**
@@ -127,6 +120,7 @@ public final class ByteMatrix {
 	 */
 	public void clear(byte value) {
 		for (int y = 0; y < getHeight(); ++y) {
+		    int width = bytes[y].length;
 			for (int x = 0; x < width; ++x) {
 				bytes[y][x] = value;
 			}
@@ -140,6 +134,7 @@ public final class ByteMatrix {
 	 */
 	@Override
 	public String toString() {
+	    int width = getHeight();
 		StringBuilder result = new StringBuilder(2 * width * getHeight() + 2);
 		for (int y = 0; y < getHeight(); ++y) {
 			for (int x = 0; x < width; ++x) {

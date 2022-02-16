@@ -83,7 +83,7 @@ public class GenericJsonGrammar extends SimpleGrammar {
 			return null;
 		}
 		Object entity = creator.getSendableInstance(prototype);
-		if (entity instanceof Class<?> == false || className == null) {
+		if (!(entity instanceof Class<?>) || className == null) {
 			return entity;
 		}
 		return ReflectionLoader.newInstance(className);

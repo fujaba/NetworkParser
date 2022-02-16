@@ -76,7 +76,7 @@ public class JavaMethodBodyCondition extends CustomCondition<Method> {
 		}
 		if (method.getBody() == null) {
 			String defaultValue = StringUtil.getDefaultValue(method.getReturnType().getName(false));
-			if (defaultValue.equals("void") == false) {
+			if (!defaultValue.equals("void")) {
 				result = "return " + defaultValue + ";";
 			}
 		} else {

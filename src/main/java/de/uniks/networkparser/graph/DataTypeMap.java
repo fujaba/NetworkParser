@@ -110,10 +110,10 @@ public class DataTypeMap extends DataType {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (super.equals(obj) == false) {
+		if (!super.equals(obj)) {
 			return false;
 		}
-		if (obj instanceof DataTypeMap == false) {
+		if (!(obj instanceof DataTypeMap)) {
 			return false;
 		}
 		if (obj.hashCode() == this.hashCode()) {
@@ -125,7 +125,7 @@ public class DataTypeMap extends DataType {
 				return false;
 			}
 		} else {
-			if (otherDTM.getGenericKey().equals(this.genericKey) == false) {
+			if (!otherDTM.getGenericKey().equals(this.genericKey)) {
 				return false;
 			}
 		}

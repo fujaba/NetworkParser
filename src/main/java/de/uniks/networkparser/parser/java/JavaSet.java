@@ -79,10 +79,8 @@ public class JavaSet extends Template {
 	@Override
 	public TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters, boolean isStandard) {
 		FeatureSet features = getFeatures(parameters);
-		if (features != null) {
-			if (features.match(Feature.SETCLASS, null) == false) {
-				return null;
-			}
+		if (features != null && !features.match(Feature.SETCLASS, null)) {
+			return null;
 		}
 		return super.executeClazz(clazz, parameters, isStandard);
 	}

@@ -49,7 +49,7 @@ public class GraphSimpleSet extends SimpleSet<GraphMember> implements Comparator
 
 	@Override
 	protected boolean checkValue(Object a, Object b) {
-		if (a instanceof GraphMember == false) {
+		if (!(a instanceof GraphMember)) {
 			return a.equals(b);
 		}
 
@@ -94,7 +94,7 @@ public class GraphSimpleSet extends SimpleSet<GraphMember> implements Comparator
 	 * @return the int
 	 */
 	public int compare(Object o1, Object o2) {
-		if (o1 instanceof GraphMember == false || o2 instanceof GraphMember == false) {
+		if (!(o1 instanceof GraphMember) || !(o2 instanceof GraphMember)) {
 			return 0;
 		}
 		String id1 = ((GraphMember) o1).getFullId();

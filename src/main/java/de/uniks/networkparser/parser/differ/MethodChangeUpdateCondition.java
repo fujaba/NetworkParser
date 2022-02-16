@@ -41,13 +41,11 @@ public class MethodChangeUpdateCondition extends MatchCondition {
 				if (newParameters.contains(newParameter)) {
 					continue;
 				}
-				if (oldParameter.getName().equals(newParameter.getName()) == false) {
+				if (!oldParameter.getName().equals(newParameter.getName())) {
 					continue;
 				}
-				if (withMeta && (match.isMetaMatch() || match.isMetaSourceMatch())) {
-					if (oldParameter.getType().equals(newParameter.getType()) == false) {
-						continue;
-					}
+				if ((withMeta && (match.isMetaMatch() || match.isMetaSourceMatch())) && (!oldParameter.getType().equals(newParameter.getType()))) {
+					continue;
 				}
 				oldParameters.add(oldParameter);
 				newParameters.add(newParameter);
@@ -63,8 +61,8 @@ public class MethodChangeUpdateCondition extends MatchCondition {
 			matches.addDiff(update);
 		}
 /*		if(
-				(oldMethod.getBody() != null && oldMethod.getBody().equals(newMethod.getBody()) == false) ||
-				(newMethod.getBody() != null && newMethod.getBody().equals(oldMethod.getBody()) == false) 
+				(oldMethod.getBody() != null && !oldMethod.getBody().equals(newMethod.getBody())) ||
+				(newMethod.getBody() != null && !newMethod.getBody().equals(oldMethod.getBody())) 
 				) {
 			// MethodBody changed
 			Diff update = new Diff(this)
@@ -105,15 +103,14 @@ public class MethodChangeUpdateCondition extends MatchCondition {
 				if (newParameters.contains(newParameter)) {
 					continue;
 				}
-				if (oldParameter.getName().equals(newParameter.getName()) == false) {
-					if (matches.getMetaModel() == null
-							|| (match.isMetaMatch() == false && match.isMetaSourceMatch() == false)) {
+				if (!oldParameter.getName().equals(newParameter.getName())) {
+					if (matches.getMetaModel() == null || (!match.isMetaMatch() && !match.isMetaSourceMatch())) {
 						oldParameters.add(oldParameter);
 						break;
 					}
 					continue;
 				}
-				if (oldParameter.getType().equals(newParameter.getType()) == false) {
+				if (!oldParameter.getType().equals(newParameter.getType())) {
 					continue;
 				}
 				oldParameters.add(oldParameter);
@@ -122,8 +119,8 @@ public class MethodChangeUpdateCondition extends MatchCondition {
 			}
 		}
 /*		if(
-				(oldMethod.getBody() != null && oldMethod.getBody().equals(newMethod.getBody()) == false) ||
-				(newMethod.getBody() != null && newMethod.getBody().equals(oldMethod.getBody()) == false) 
+				(oldMethod.getBody() != null && !oldMethod.getBody().equals(newMethod.getBody())) ||
+				(newMethod.getBody() != null && !newMethod.getBody().equals(oldMethod.getBody())) 
 				) {
 			// MethodBody changed
 			Diff update = new Diff(this)

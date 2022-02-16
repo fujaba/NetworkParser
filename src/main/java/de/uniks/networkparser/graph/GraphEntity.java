@@ -30,10 +30,10 @@ public abstract class GraphEntity extends GraphMember {
 		if (this.name == null) {
 			return null;
 		}
-		if (shortName == false) {
+		if (!shortName) {
 			if (name.indexOf('.') < 0 && this.parentNode != null) {
 				String parentName = ((GraphMember) this.parentNode).getName();
-				if (parentName != null && parentName.isEmpty() == false) {
+				if (parentName != null && !parentName.isEmpty()) {
 					return parentName + "." + name.replace("$", ".");
 				}
 			}

@@ -77,7 +77,7 @@ public class JavaCreator extends Template {
 				"      return new {{name}}();", "{{#else}}", "      return null;", "{{#endif}}", "   }", "",
 
 				"   @Override", "   public Object getValue(Object entity, String attribute)", "   {",
-				"      if(attribute == null || entity instanceof {{name}} == false) {", "          return null;",
+				"      if(attribute == null || !(entity instanceof {{name}})) {", "          return null;",
 				"      }", "      {{name}} element = ({{name}})entity;", "{{#foreach child}}",
 				"{{#if {{item.className}}==" + Attribute.class.getName() + "}}",
 				"      if ({{name}}.PROPERTY_{{item.NAME}}.equalsIgnoreCase(attribute))", "      {",
@@ -94,7 +94,7 @@ public class JavaCreator extends Template {
 
 				"   @Override",
 				"   public boolean setValue(Object entity, String attribute, Object value, String type)", "   {",
-				"      if(attribute == null || entity instanceof {{name}} == false) {", "          return false;",
+				"      if(attribute == null || !(entity instanceof {{name}})) {", "          return false;",
 				"      }", "      {{name}} element = ({{name}})entity;",
 				"      if (SendableEntityCreator.REMOVE.equals(type) && value != null)", "      {",
 				"         attribute = attribute + type;", "      }", "",
@@ -117,7 +117,7 @@ public class JavaCreator extends Template {
 	}
 
 	protected boolean isValid(GraphMember member, LocalisationInterface parameters) {
-		if (super.isValid(member, parameters) == false) {
+		if (!super.isValid(member, parameters)) {
 			return false;
 		}
 		/* Check for existing Feature Serialization */

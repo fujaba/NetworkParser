@@ -139,7 +139,7 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 		if (feature == null) {
 			return true;
 		}
-		if (this.isExpression == false && value instanceof ObjectCondition) {
+		if (!this.isExpression && value instanceof ObjectCondition) {
 			return ((ObjectCondition) value).update(this);
 		}
 		Feature feature = getFeature(value);
@@ -175,7 +175,7 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 				return true;
 			}
 			for (int i = 0; i < values.length; i++) {
-				if (property.match(values[i]) == false) {
+				if (!property.match(values[i])) {
 					return false;
 				}
 			}

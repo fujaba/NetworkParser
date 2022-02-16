@@ -123,7 +123,7 @@ public class StringCondition implements ParserCondition {
 		SimpleList<ObjectCondition> conditionList = new SimpleList<ObjectCondition>();
 		int start = 0;
 		char item = sequence.getChar();
-		while (sequence.isEnd() == false) {
+		while (!sequence.isEnd()) {
 			if (item == '(') {
 				/* Sub Sequence */
 				conditionList.add(createSearchIntern(sequence, new And()));
@@ -160,7 +160,7 @@ public class StringCondition implements ParserCondition {
 			}
 			if (item == '"' || item == '\'') {
 				item = sequence.getChar();
-				while (sequence.isEnd() == false) {
+				while (!sequence.isEnd()) {
 					if (item == '"' || item == '\'') {
 						break;
 					}

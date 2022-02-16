@@ -129,7 +129,7 @@ public class JarValidator
             while (end > 0)
             {
                String p = subSequence.subSequence(pos, end).toString().trim();
-               if (p.isEmpty() == false)
+               if (!p.isEmpty())
                {
                   packages.add(p);
                }
@@ -451,9 +451,9 @@ public class JarValidator
                {
                   output.println("FOUND: " + child.toString() + " (" + child.length() + ")");
                }
-               if (!analyseFile(child) == false)
+               if (analyseFile(child))
                {
-                  if (isError() == false)
+                  if (!isError())
                   {
                      if (output != null)
                      {
@@ -649,7 +649,7 @@ public class JarValidator
             copy = true;
          }
       }
-      if (copy == false)
+      if (!copy)
       {
          dep.clear();
       }
@@ -705,7 +705,7 @@ public class JarValidator
 
    private boolean analyseFile(File file)
    {
-      if (file == null || file.exists() == false)
+      if (file == null || !file.exists())
       {
          return false;
       }
@@ -747,7 +747,7 @@ public class JarValidator
                }
                else if (lName.endsWith(".png"))
                {
-                  if (lName.equals("de/uniks/networkparser/np.png") == false)
+                  if (!lName.equals("de/uniks/networkparser/np.png"))
                   {
                      warnings.add(name);
                   }
@@ -774,13 +774,13 @@ public class JarValidator
                }
                continue;
             }
-            if (isInstance == false)
+            if (!isInstance)
             {
                continue;
             }
             String entryName = name.substring(0, name.length() - ".class".length());
             entryName = entryName.replace("/", ".");
-            if (instancePackage != null && entryName.startsWith(instancePackage) == false)
+            if (instancePackage != null && !entryName.startsWith(instancePackage))
             {
                continue;
             }
@@ -796,7 +796,7 @@ public class JarValidator
                {
                   continue;
                }
-               if (Modifier.isPublic(wantedClass.getModifiers()) == false)
+               if (!Modifier.isPublic(wantedClass.getModifiers()))
                {
                   continue;
                }

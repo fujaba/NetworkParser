@@ -49,7 +49,7 @@ public class AcceptMessage extends ReceivingTimerTask {
 	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (attribute == null || entity instanceof AcceptMessage == false) {
+		if (attribute == null || !(entity instanceof AcceptMessage)) {
 			return null;
 		}
 		AcceptMessage message = (AcceptMessage) entity;
@@ -103,7 +103,7 @@ public class AcceptMessage extends ReceivingTimerTask {
 	/* Add helper Variable to creating Objects */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (attribute == null || entity instanceof AcceptMessage == false) {
+		if (attribute == null || !(entity instanceof AcceptMessage)) {
 			return false;
 		}
 		AcceptMessage message = (AcceptMessage) entity;
@@ -196,7 +196,7 @@ public class AcceptMessage extends ReceivingTimerTask {
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		AcceptMessage acceptMessage = new AcceptMessage();
-		if (prototyp == false && this.space != null) {
+		if (!prototyp && this.space != null) {
 			acceptMessage.withSpace(this.space);
 		}
 		return acceptMessage;

@@ -57,7 +57,7 @@ public class JsonObjectLazy extends JsonObject {
 		if (this.ref == null) {
 			return false;
 		}
-		if (this.loaded == false) {
+		if (!this.loaded) {
 			this.loaded = true;
 		} else {
 			return false;
@@ -147,7 +147,7 @@ public class JsonObjectLazy extends JsonObject {
 	}
 
 	private static Object getMember(Object obj, String value) {
-		if (obj == null || obj.getClass().getName().startsWith("javafx") == false) {
+		if (obj == null || !obj.getClass().getName().startsWith("javafx")) {
 			return null;
 		}
 		return ReflectionLoader.call(obj, "getMember", String.class, value);

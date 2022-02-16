@@ -32,7 +32,7 @@ public class ExcelSheet extends SimpleList<ExcelRow> {
 	 * @return true, if successful
 	 */
 	public boolean setName(String value) {
-		if ((this.name == null && value != null) || (this.name != null && this.name.equals(value) == false)) {
+		if ((this.name == null && value != null) || (this.name != null && !this.name.equals(value))) {
 			this.name = value;
 			return true;
 		}

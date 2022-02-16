@@ -42,7 +42,7 @@ public class LoginService implements SimpleUpdateListener {
 	 */
 	@Override
 	public boolean update(SimpleEvent value) {
-		if (value == null || value.getSource() instanceof HTTPRequest == false) {
+		if (value == null || !(value.getSource() instanceof HTTPRequest)) {
 			return false;
 		}
 		HTTPRequest request = (HTTPRequest) value.getSource();

@@ -203,7 +203,7 @@ public class JavaBridgeFX extends JavaBridge {
 	}
 
 	private static Object convertButton(Button button, boolean clearStyle) {
-		if (button == null || Os.isJavaFX() == false) {
+		if (button == null || !Os.isJavaFX()) {
 			return null;
 		}
 		String value = button.getValue();

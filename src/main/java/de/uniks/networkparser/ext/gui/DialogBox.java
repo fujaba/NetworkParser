@@ -335,7 +335,7 @@ public class DialogBox implements ObjectCondition {
 			Object styleSheet = ReflectionLoader.call(scene, "getStylesheets");
 			if (styleSheet instanceof List<?>) {
 				List<String> list = (List<String>) styleSheet;
-				if (list.contains(dialogsCssUrl) == false) {
+				if (!list.contains(dialogsCssUrl)) {
 					list.add(dialogsCssUrl);
 				}
 			}
@@ -628,7 +628,7 @@ public class DialogBox implements ObjectCondition {
 			return true;
 		}
 
-		if (event instanceof Button == false) {
+		if (!(event instanceof Button)) {
 			return false;
 		}
 		Button btn = (Button) event;
@@ -648,7 +648,7 @@ public class DialogBox implements ObjectCondition {
 		double x = (Double) ReflectionLoader.call(event, "getSceneX");
 		double y = (Double) ReflectionLoader.call(event, "getSceneY");
 		String name = (String) ReflectionLoader.call(event, "getEventType", "getName");
-		if (name == null || name.startsWith("MOUSE-DRAG") == false) {
+		if (name == null || !name.startsWith("MOUSE-DRAG")) {
 			mouseDragDeltaX = x;
 			mouseDragDeltaY = y;
 		} else {
@@ -818,7 +818,7 @@ public class DialogBox implements ObjectCondition {
 				return null;
 			}
 			ReflectionLoader.logger = new StringPrintStream();
-			if (parentObj == null || ReflectionLoader.JFRAME.isAssignableFrom(parentObj.getClass()) == false) {
+			if (parentObj == null || !ReflectionLoader.JFRAME.isAssignableFrom(parentObj.getClass())) {
 				parentObj = ReflectionLoader.newInstance(ReflectionLoader.JFRAME);
 			}
 			Object fileChooser = ReflectionLoader.newInstance(ReflectionLoader.JFILECHOOSER);

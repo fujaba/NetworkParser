@@ -32,7 +32,7 @@ public class SimpleReplication implements ObjectCondition {
 	public static SimpleReplication bind(SendableEntityCreator creator, Object root, String... tag) {
 		Object item = ReflectionLoader.call(creator, "createIdMap", "");
 		SimpleReplication binder = new SimpleReplication();
-		if (item == null || item instanceof IdMap == false) {
+		if (!(item instanceof IdMap)) {
 			return binder;
 		}
 		IdMap map = (IdMap) item;

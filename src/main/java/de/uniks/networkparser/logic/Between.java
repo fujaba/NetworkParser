@@ -112,7 +112,7 @@ public class Between implements ObjectCondition, SendableEntityCreator {
 	 */
 	@Override
 	public boolean update(Object evt) {
-		if (evt instanceof PropertyChangeEvent == false) {
+		if (!(evt instanceof PropertyChangeEvent)) {
 			return false;
 		}
 		PropertyChangeEvent event = (PropertyChangeEvent) evt;

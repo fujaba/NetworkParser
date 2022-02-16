@@ -219,7 +219,7 @@ public class PatternCondition implements ObjectCondition {
 				return true;
 			}else if(Pattern.MODIFIER_SEARCH.equals(event.getPropertyName())) {
 				// Search Link and save back to Pattern
-				if(event instanceof PatternEvent == false) {
+				if(!(event instanceof PatternEvent)) {
 					return false;
 				}
 				PatternEvent pe = (PatternEvent) event;
@@ -234,7 +234,7 @@ public class PatternCondition implements ObjectCondition {
 				}
 			}
 		}
-		if (value instanceof Pattern == false) {
+		if (!(value instanceof Pattern)) {
 			return false;
 		}
 		Pattern pattern = (Pattern) value;

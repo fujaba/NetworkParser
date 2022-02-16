@@ -31,10 +31,10 @@ public class AssociationChangeUpdateCondition extends MatchCondition {
 		if (matches.getMetaModel() == null) {
 			return false;
 		}
-		if (match.isMetaMatch() == false && match.isSourceMatch() == false) {
+		if (!match.isMetaMatch() && !match.isSourceMatch()) {
 			return false;
 		}
-		if (sourceAssociation.getType().equals(otherAssociation.getType()) == false) {
+		if (!sourceAssociation.getType().equals(otherAssociation.getType())) {
 			return false;
 		}
 		if (sourceAssociation.getOther().getCardinality() == otherAssociation.getOther().getCardinality()) {
@@ -66,7 +66,7 @@ public class AssociationChangeUpdateCondition extends MatchCondition {
 		Association oldAssociation = (Association) match.getOtherMatch().getMatch();
 		Association newAssociation = (Association) match.getMatch();
 
-		if (oldAssociation.getType().equals(newAssociation.getType()) == false) {
+		if (!oldAssociation.getType().equals(newAssociation.getType())) {
 			return false;
 		}
 		if (oldAssociation.getOther().getCardinality() == newAssociation.getOther().getCardinality()) {

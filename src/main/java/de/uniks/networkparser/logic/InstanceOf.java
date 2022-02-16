@@ -267,13 +267,13 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 	@Override
 	public boolean update(Object evt) {
 		/* Filter for ClazzTyp */
-		if (evt == null || evt instanceof PropertyChangeEvent == false) {
+		if (evt == null || !(evt instanceof PropertyChangeEvent)) {
 			return false;
 		}
 		PropertyChangeEvent event = (PropertyChangeEvent) evt;
 		if (this.clazzName != null) {
 			Object newValue = event.getNewValue();
-			if(checkClazz(newValue) == false) {
+			if(!checkClazz(newValue)) {
 				/* Check for whiteList */
 				if (evt instanceof SimpleEvent) {
 					SimpleEvent se = (SimpleEvent) evt;
@@ -291,7 +291,7 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 				return false;
 			}
 		} else if (this.property != null) {
-			return this.property.equalsIgnoreCase(event.getPropertyName()) == false;
+			return !this.property.equalsIgnoreCase(event.getPropertyName());
 		}
 		/* Filter for one item */
 		return (this.item == null || this.item != event.getNewValue());

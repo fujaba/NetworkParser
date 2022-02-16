@@ -563,7 +563,7 @@ public class TarUtils {
 		final long maxAsOctalChar = length == UIDLEN ? MAXID : MAXSIZE;
 
 		final boolean negative = value < 0;
-		if (negative == false && value <= maxAsOctalChar) { /* OK to store as octal chars */
+		if (!negative && value <= maxAsOctalChar) { /* OK to store as octal chars */
 			return formatLongOctalBytes(value, buf, offset, length);
 		}
 

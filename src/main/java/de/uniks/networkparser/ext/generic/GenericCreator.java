@@ -210,7 +210,7 @@ public class GenericCreator implements SendableEntityCreator {
 		/* No Method Found */
 		try {
 			Field field = this.clazz.getDeclaredField(attribute);
-			if (ReflectionLoader.isAccess(field, entity) == false) {
+			if (!ReflectionLoader.isAccess(field, entity)) {
 				field.setAccessible(true);
 				Object invoke = field.get(entity);
 				field.setAccessible(false);
@@ -289,7 +289,7 @@ public class GenericCreator implements SendableEntityCreator {
 		/* No Method Found */
 		try {
 			Field field = this.clazz.getDeclaredField(attribute);
-			if (ReflectionLoader.isAccess(field, entity) == false) {
+			if (!ReflectionLoader.isAccess(field, entity)) {
 				field.setAccessible(true);
 				field.set(entity, value);
 				field.setAccessible(false);
@@ -314,7 +314,7 @@ public class GenericCreator implements SendableEntityCreator {
 
 	String getValidMethod(String methodName) {
 		String name = null;
-		if (methodName != null && badProperties.contains(methodName) == false) {
+		if (methodName != null && !badProperties.contains(methodName)) {
 			if (methodName.startsWith("get")) {
 				name = methodName.substring(3);
 			} else if (methodName.startsWith("is")) {
@@ -363,7 +363,7 @@ public class GenericCreator implements SendableEntityCreator {
 		GenericCreator genericCreator = new GenericCreator();
 		/* Add all Properties */
 		try {
-			if (instance.isInterface() == false) {
+			if (!instance.isInterface()) {
 				genericCreator.withItem(ReflectionLoader.newInstance(instance));
 			}
 		} catch (Exception e1) {
@@ -378,7 +378,7 @@ public class GenericCreator implements SendableEntityCreator {
 			String methodName = method.getName();
 			if (genericCreator.getValidMethod(methodName) != null) {
 				Class<?> child = method.getReturnType();
-				if (StringUtil.isPrimitiveType(child.getName()) == false) {
+				if (!StringUtil.isPrimitiveType(child.getName())) {
 					try {
 						Type types = child.getGenericSuperclass();
 						if (types != null && types instanceof ParameterizedType) {
@@ -394,7 +394,7 @@ public class GenericCreator implements SendableEntityCreator {
 					} catch (ReflectiveOperationException e) {
 						/* Try to find SubClass for Set */
 					}
-					if (child.isInterface() == false && child instanceof Class<?> == false) {
+					if (!child.isInterface() && !(child instanceof Class<?>)) {
 						create(map, child);
 					}
 				}
@@ -403,8 +403,8 @@ public class GenericCreator implements SendableEntityCreator {
 		Field[] fields = instance.getDeclaredFields();
 		for (Field field : fields) {
 			Class<?> child = field.getType();
-			if (StringUtil.isPrimitiveType(child.getName()) == false
-					&& field.getName().equals("dynamicValues") == false) {
+			if (!StringUtil.isPrimitiveType(child.getName())
+					&& !field.getName().equals("dynamicValues")) {
 				Type types = field.getGenericType();
 				if (types != null && types instanceof ParameterizedType) {
 					ParameterizedType genericSuperclass = (ParameterizedType) types;

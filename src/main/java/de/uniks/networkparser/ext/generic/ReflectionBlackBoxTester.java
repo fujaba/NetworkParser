@@ -230,7 +230,7 @@ public class ReflectionBlackBoxTester {
 			}
 			int pos = item.indexOf(":");
 			if (pos < 0) {
-				if (this.ignoreMethods.contains(item) == false) {
+				if (!this.ignoreMethods.contains(item)) {
 					this.ignoreMethods.put(item, new SimpleSet<String>());
 				}
 			} else {
@@ -360,7 +360,7 @@ public class ReflectionBlackBoxTester {
 						methods = defaultMethods;
 					}
 				}
-				if(testClass(obj, clazz, methods) == false) {
+				if(!testClass(obj, clazz, methods)) {
 					break;
 				}
 			} else {
@@ -375,7 +375,7 @@ public class ReflectionBlackBoxTester {
 			timer = null;
 		}
 
-		if ("gitlab".equalsIgnoreCase(tester) == false) {
+		if (!"gitlab".equalsIgnoreCase(tester)) {
 			ReflectionLoader.closeThreads(oldThreads);
 		}
 		printResult(NetworkParserLog.LOGLEVEL_INFO);
@@ -472,7 +472,7 @@ public class ReflectionBlackBoxTester {
 					}
 				} catch (Exception e) {
 					isValid = false;
-					if(saveException(e, clazz, m, call) == false) {
+					if(!saveException(e, clazz, m, call)) {
 						return false;
 					}
 				}

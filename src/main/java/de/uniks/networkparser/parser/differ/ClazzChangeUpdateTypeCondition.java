@@ -28,7 +28,7 @@ public class ClazzChangeUpdateTypeCondition extends MatchCondition {
 		if (matches.getMetaModel() == null) {
 			return false;
 		}
-		if (match.isMetaMatch() == false && match.isMetaSourceMatch() == false) {
+		if (!match.isMetaMatch() && !match.isMetaSourceMatch()) {
 			return false;
 		}
 		if (oldClazz.getType().equals(newClazz.getType())) {

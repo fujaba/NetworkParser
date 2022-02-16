@@ -256,7 +256,7 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 	 */
 	@Override
 	public boolean update(Object value) {
-		if (value instanceof SimpleEvent == false) {
+		if (!(value instanceof SimpleEvent)) {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
@@ -286,7 +286,7 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 		if(source == null) {
 			return false;
 		}
-		if(newElement instanceof HTMLEntity == false) {
+		if(!(newElement instanceof HTMLEntity)) {
 			return false;
 		}
 		/* PATH IS "doc/" */
@@ -301,7 +301,7 @@ public class StoryStepJUnit extends StoryElement implements ObjectCondition {
 			}
 		}
 
-		if (new File(this.task).exists() == false) {
+		if (!new File(this.task).exists()) {
 			return false;
 		}
 		SimpleController controller = SimpleController.create();

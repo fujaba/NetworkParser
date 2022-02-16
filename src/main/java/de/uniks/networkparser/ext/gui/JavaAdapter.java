@@ -103,16 +103,14 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		}
 		if (item instanceof File) {
 			File file = ((File) item);
-			if (file.exists() == false) {
-				if (logger != null) {
-					logger.error(this, "load", "FILE NOT FOUND");
-				}
+			if (!file.exists() && logger != null) {
+				logger.error(this, "load", "FILE NOT FOUND");
 			}
 			ReflectionLoader.call(webEngine, "load", file.toURI().toString());
 			return true;
 		}
 
-		if (item instanceof HTMLEntity == false) {
+		if (!(item instanceof HTMLEntity)) {
 			return false;
 		}
 		HTMLEntity entity = (HTMLEntity) item;
@@ -141,10 +139,8 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		XMLEntity body = entity.getHeader();
 		for (int i = 0; i < body.sizeChildren(); i++) {
 			XMLEntity child = (XMLEntity) body.getChild(i);
-			if (HTMLEntity.SCRIPT.equalsIgnoreCase(child.getTag())) {
-				if (child.has(HTMLEntity.KEY_SRC) == false) {
-					this._execute(child.getValue(), false);
-				}
+			if (HTMLEntity.SCRIPT.equalsIgnoreCase(child.getTag()) && !child.has(HTMLEntity.KEY_SRC)) {
+				this._execute(child.getValue(), false);
 			}
 		}
 		Object engine = getWebEngine();
@@ -313,7 +309,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 			/* Must be cached */
 			this.queue.add(script);
 		}
-		if (Os.isFXThread() == false) {
+		if (!Os.isFXThread()) {
 			JavaAdapter.execute(new JSEditor(this).withScript(script));
 			return null;
 		}
@@ -401,7 +397,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	}
 
 	protected void addAdapter(ObjectCondition eventListener) {
-		if (TYPE_EDITOR.equals(type) == false) {
+		if (!TYPE_EDITOR.equals(type)) {
 			JsonObjectLazy executeScript = (JsonObjectLazy) _execute(
 					"bridge.addAdapter(new DiagramJS.DelegateAdapter());", true);
 			if (executeScript != null) {
@@ -475,7 +471,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	 * @param runnable the runnable
 	 */
 	public static void execute(final Runnable runnable) {
-		if (Os.isReflectionTest() == false) {
+		if (!Os.isReflectionTest()) {
 			ReflectionLoader.call(ReflectionLoader.PLATFORMIMPL, "startup", Runnable.class, runnable);
 		}
 	}
@@ -525,7 +521,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 																					 * a log in Java console
 																					 */
 		boolean isFX = Os.isFXThread();
-		if (this.webEngine == null || isFX == false) {
+		if (this.webEngine == null || !isFX) {
 			JSEditor editor = new JSEditor(this).withScript(script);
 			JavaAdapter.execute(editor);
 

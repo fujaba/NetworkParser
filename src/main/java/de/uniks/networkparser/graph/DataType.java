@@ -115,7 +115,7 @@ public class DataType {
 			}
 			return result;
 		}
-		if (shortName  == false || result == null || result.lastIndexOf(".") < 0) {
+		if (!shortName || result == null || result.lastIndexOf(".") < 0) {
 			result= StringUtil.convertPrimitiveToObjectType(result);
 			if(isArray) {
 				return result+ARRAY;
@@ -198,7 +198,7 @@ public class DataType {
 		if (obj instanceof String) {
 			return ((String) obj).equalsIgnoreCase(this.getName(false));
 		}
-		if (obj instanceof DataType == false) {
+		if (!(obj instanceof DataType)) {
 			return false;
 		}
 		if (obj.hashCode() == this.hashCode()) {

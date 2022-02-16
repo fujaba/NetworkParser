@@ -412,7 +412,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (attribute == null || entity instanceof Message == false) {
+		if (attribute == null || !(entity instanceof Message)) {
 			return null;
 		}
 		Message msg = (Message) entity;
@@ -445,7 +445,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (attribute == null || entity instanceof Message == false) {
+		if (attribute == null || !(entity instanceof Message)) {
 			return false;
 		}
 		Message msg = (Message) entity;

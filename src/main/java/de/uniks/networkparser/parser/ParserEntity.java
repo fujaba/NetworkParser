@@ -537,7 +537,7 @@ public class ParserEntity implements SendableEntityCreator {
 				break;
 
 			case '8':
-				if (Character.isDigit(currentChar) == false) {
+				if (!Character.isDigit(currentChar)) {
 					lookAheadToken.endPos = index - 1;
 					return;
 				}
@@ -791,7 +791,7 @@ public class ParserEntity implements SendableEntityCreator {
 				result += currentWord();
 				nextToken();
 
-				while (")".equals(currentWord()) == false) {
+				while (!")".equals(currentWord())) {
 					result += currentWord();
 					nextToken();
 				}
@@ -1330,7 +1330,7 @@ public class ParserEntity implements SendableEntityCreator {
 			}
 			return buffer;
 		}
-		while (currentKindEquals(Token.EOF) == false && currentKindEquals(';') == false) {
+		while (!currentKindEquals(Token.EOF) && !currentKindEquals(';')) {
 			if (currentKindEquals('\'')) {
 				parseExpression(buffer);
 			}
@@ -1486,8 +1486,8 @@ public class ParserEntity implements SendableEntityCreator {
 			return;
 		}
 		String modifiers = symTabEntry.getModifiers();
-		if (!addStaticAttribute && ((modifiers.indexOf("public") >= 0 || modifiers.indexOf("private") >= 0)
-				&& modifiers.indexOf("static") >= 0 && modifiers.indexOf("final") >= 0)) {
+		if (!addStaticAttribute && ((modifiers.indexOf(Modifier.PUBLIC.getName()) >= 0 || modifiers.indexOf(Modifier.PRIVATE.getName()) >= 0)
+				&& modifiers.indexOf(Modifier.STATIC.getName()) >= 0 && modifiers.indexOf(Modifier.FINAL.getName()) >= 0)) {
 			/* ignore */
 			return;
 		}

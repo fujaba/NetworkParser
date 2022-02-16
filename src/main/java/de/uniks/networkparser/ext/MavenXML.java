@@ -45,7 +45,7 @@ public class MavenXML {
 			return false;
 		}
 		String lUrl = url.toLowerCase();
-		if (lUrl.startsWith("file") == false && lUrl.startsWith("http") == false) {
+		if (!lUrl.startsWith("file") && !lUrl.startsWith("http")) {
 			return false;
 		}
 		HTMLEntity http = NodeProxyTCP.getHTTP(url + "index.html");
@@ -148,7 +148,7 @@ public class MavenXML {
 			return false;
 		}
 		File directory = new File(path);
-		if(directory.exists() == false) {
+		if(!directory.exists()) {
 			return false;
 		}
 		for (String classifier : artefact.getClassifiers()) {

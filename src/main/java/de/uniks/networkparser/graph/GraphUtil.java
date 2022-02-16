@@ -66,7 +66,7 @@ public class GraphUtil {
 		if (plural == null || plural.length() < 1) {
 			return false;
 		}
-		if (plural.endsWith("s") == false) {
+		if (!plural.endsWith("s")) {
 			return false;
 		}
 		return true;
@@ -679,7 +679,7 @@ public class GraphUtil {
 			Association other) {
 		boolean foundAssoc = false;
 		for (GraphMember checkItem : visited) {
-			if (checkItem instanceof Association == false || checkItem.getName() == null) {
+			if (!(checkItem instanceof Association) || checkItem.getName() == null) {
 				continue;
 			}
 			Association assocA = (Association) checkItem;

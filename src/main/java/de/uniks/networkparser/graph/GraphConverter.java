@@ -244,7 +244,7 @@ public class GraphConverter implements Converter {
 					}
 					if (value != null) {
 						attribute = graphNode.createAttribute(name, DataType.create(value.getClass()));
-						if (isClassDiagram == false) {
+						if (!isClassDiagram) {
 							attribute.withValue(value.toString());
 						}
 					} else {
@@ -360,7 +360,7 @@ public class GraphConverter implements Converter {
 	 * @return the graph model
 	 */
 	public GraphModel convertFromJson(Entity model, GraphModel reference) {
-		if (model == null || model.has(NODES) == false) {
+		if (model == null || !model.has(NODES)) {
 			return null;
 		}
 		EntityList nodes = (EntityList) model.getValue(NODES);
@@ -544,7 +544,7 @@ public class GraphConverter implements Converter {
 		}
 		Association other = edge.getOther();
 		
-		if(AssociationTypes.EDGE.equals(other.getType()) && AssociationTypes.EDGE.equals(edge.getType()) == false) {
+		if(AssociationTypes.EDGE.equals(other.getType()) && !AssociationTypes.EDGE.equals(edge.getType())) {
 		  return null;
 		}
 	  if (other != null) {
@@ -568,7 +568,7 @@ public class GraphConverter implements Converter {
 					.with(source.getName(false), ":", edge.getName(), "-", target.getName(false), ":", otherName)
 					.toString();
 
-			if (ids.contains(id) == false) {
+			if (!ids.contains(id)) {
 				Match diff = GraphUtil.getDifference(edge);
 				if (diff != null && diff.getCount() > 0) {
 					child.put(COUNTER, diff.getCount());
@@ -769,7 +769,7 @@ public class GraphConverter implements Converter {
 			return result;
 		}
 		for (GraphMember item : children) {
-			if (item instanceof Attribute == false) {
+			if (!(item instanceof Attribute)) {
 				continue;
 			}
 			Attribute attribute = (Attribute) item;
@@ -797,7 +797,7 @@ public class GraphConverter implements Converter {
 			return result;
 		}
 		for (GraphMember item : children) {
-			if (item instanceof Method == false) {
+			if (!(item instanceof Method)) {
 				continue;
 			}
 			Method method = (Method) item;
@@ -988,7 +988,7 @@ public class GraphConverter implements Converter {
 					}
 				} else if (match instanceof Attribute) {
 					if (Clazz.PROPERTY_TYPE.equalsIgnoreCase(diff.getType())) {
-						if (newValue instanceof DataType == false) {
+						if (!(newValue instanceof DataType)) {
 							newValue = fragment.replacing("#IMPORT.create(\"" + newValue + "\")",
 									DataType.class.getName());
 						}
@@ -1098,7 +1098,7 @@ public class GraphConverter implements Converter {
 	 */
 	public TemplateResultFragment convertToMetaText(GraphModel model, boolean full, boolean useImport) {
 		TemplateResultFragment fragment = TemplateResultFragment.create(model, useImport, true);
-		if (full == false || model == null) {
+		if (!full || model == null) {
 			return convertToAdvanced(fragment);
 		}
 		AssociationSet associations = new AssociationSet();
@@ -1165,7 +1165,7 @@ public class GraphConverter implements Converter {
 			createMember(fragment, method, names, refModifier);
 		}
 		String root = GraphUtil.getGenPath(model);
-		if (root != null && root.isEmpty() == false) {
+		if (root != null && !root.isEmpty()) {
 			fragment.withLine("model.generate(\"" + root + "\");");
 		} else {
 			fragment.withLine("model.generate();");
@@ -1203,7 +1203,7 @@ public class GraphConverter implements Converter {
 			CharacterBuffer paramsString = new CharacterBuffer();
 			String split = ", ";
 			for (Parameter param : method.getParameters()) {
-				if (paramsString.isEmpty() == false) {
+				if (!paramsString.isEmpty()) {
 					paramsString.with(split);
 				}
 				paramsString.with("new #IMPORTB(" + param.getType().toString(fragment.isUseImports()) + ")");
@@ -1246,15 +1246,15 @@ public class GraphConverter implements Converter {
 			return null;
 		}
 		String value = member.getName().toLowerCase();
-		if (names.containsValue(value) == false) {
+		if (!names.containsValue(value)) {
 			names.add(member, value);
 			return value;
 		}
-		if (member instanceof Clazz == false) {
+		if (!(member instanceof Clazz)) {
 			/* Search for Clazz */
 			String clazzName = (String) names.getValue(member.getClazz());
 			value = clazzName + "_" + member.getName().toLowerCase();
-			if (names.containsValue(value) == false) {
+			if (!names.containsValue(value)) {
 				names.add(member, value);
 				return value;
 			}
@@ -1263,7 +1263,7 @@ public class GraphConverter implements Converter {
 		String startValue = value;
 		while (i < 1000) {
 			value = startValue + i;
-			if (names.containsValue(value) == false) {
+			if (!names.containsValue(value)) {
 				names.add(member, value);
 				return value;
 			}

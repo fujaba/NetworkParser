@@ -185,7 +185,7 @@ public class ClassModel extends GraphModel {
 
 		diagramName = Story.addResource(entity, diagramName, false);
 
-		if (write == null || write.length < 1 || write[0] == false) {
+		if (write == null || write.length < 1 || !write[0]) {
 			return entity;
 		}
 		String htmlText = entity.toString();

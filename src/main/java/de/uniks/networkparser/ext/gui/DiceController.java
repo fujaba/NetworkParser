@@ -469,7 +469,7 @@ public class DiceController extends SendableItem
 	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (entity instanceof DiceController == false) {
+		if (!(entity instanceof DiceController)) {
 			return false;
 		}
 		DiceController controller = (DiceController) entity;

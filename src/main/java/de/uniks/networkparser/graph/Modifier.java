@@ -117,7 +117,7 @@ public class Modifier extends GraphMember {
 		}
 		if (this.children != null) {
 			for (GraphMember member : this.getChildren()) {
-				if ((member instanceof Modifier) == false) {
+				if (!(member instanceof Modifier)) {
 					continue;
 				}
 				if (((Modifier) member).has(other)) {
@@ -156,7 +156,7 @@ public class Modifier extends GraphMember {
 		}
 		for (int i = 0; i < list.size(); i++) {
 			GraphMember member = list.get(i);
-			if ((member instanceof Modifier) == false) {
+			if (!(member instanceof Modifier)) {
 				continue;
 			}
 			name = member.getName();

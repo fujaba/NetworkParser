@@ -298,7 +298,7 @@ public class Annotation extends GraphMember {
 			}
 			for (int i = 1; i < list.size(); i++) {
 				Object child = list.get(i);
-				if (child instanceof Import == false) {
+				if (!(child instanceof Import)) {
 					sb.append(",");
 					sb.append(list.get(i));
 				}

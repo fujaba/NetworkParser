@@ -51,7 +51,7 @@ public class I18NUtil {
 	}
 
 	private CharacterBuffer transform(CharacterBuffer builder, BaseItem node, String prefix) {
-		if (builder == null || node == null || node instanceof Entity == false) {
+		if (builder == null || !(node instanceof Entity)) {
 			return builder;
 		}
 		Entity entity = (Entity) node;
@@ -101,10 +101,7 @@ public class I18NUtil {
 	 */
 	public boolean validate(BaseItem sourceLanguage, BaseItem targetLanguage, String targetFileName,
 			boolean getMissedText) {
-		if (sourceLanguage == null || targetLanguage == null) {
-			return false;
-		}
-		if (sourceLanguage instanceof Entity == false || targetLanguage instanceof Entity == false) {
+		if (!(sourceLanguage instanceof Entity) || !(targetLanguage instanceof Entity)) {
 			return false;
 		}
 		Entity sourceEntity = (Entity) sourceLanguage;
@@ -136,7 +133,7 @@ public class I18NUtil {
 			Object newValue = newLanguage.getValue(fieldName);
 			Object value = original.getValue(fieldName);
 			if (newValue == null) {
-				if (addNewLanguage && value instanceof Entity == false) {
+				if (addNewLanguage && !(value instanceof Entity)) {
 					String oldText = ByteConverter64.toBase64String("" + value).toString();
 					String browser = "Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0";
 					HTMLEntity response = NodeProxyTCP.getSimpleHTTP(

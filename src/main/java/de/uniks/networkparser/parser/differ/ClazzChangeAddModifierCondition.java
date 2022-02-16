@@ -27,7 +27,7 @@ public class ClazzChangeAddModifierCondition extends MatchCondition {
 		Clazz sourceClazz = (Clazz) match.getMatch();
 		Clazz otherClazz = (Clazz) match.getSourceMatch();
 
-		return sourceClazz.getModifier().toString().equals(otherClazz.getModifier().toString()) == false;
+		return !sourceClazz.getModifier().toString().equals(otherClazz.getModifier().toString());
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class ClazzChangeAddModifierCondition extends MatchCondition {
 		Clazz newClazz = (Clazz) match.getSourceMatch();
 
 		for (String modifier : oldClazz.getModifier().toString().split(" ")) {
-			if (newClazz.getModifier().toString().contains(modifier) == false) {
+			if (!newClazz.getModifier().toString().contains(modifier)) {
 				Match addInFile = Match.create(newClazz, this, Clazz.PROPERTY_MODIFIERS, null, modifier);
 				matches.addDiff(addInFile);
 			}
@@ -66,7 +66,7 @@ public class ClazzChangeAddModifierCondition extends MatchCondition {
 		Clazz newClazz = (Clazz) match.getMatch();
 
 		for (String modifier : newClazz.getModifier().toString().split(" ")) {
-			if (oldClazz.getModifier().toString().contains(modifier) == false) {
+			if (!oldClazz.getModifier().toString().contains(modifier)) {
 				Match removeInFile = Match.create(oldClazz, this, Clazz.PROPERTY_MODIFIERS, null, modifier);
 
 				matches.addDiff(removeInFile);

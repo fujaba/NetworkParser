@@ -60,7 +60,7 @@ public class DialogPane implements Runnable {
 		if (owner != null) {
 			this.initHeight = this.owner.prefWidth(-1);
 			this.initWidth = this.owner.prefHeight(-1);
-			if (owner.isModel() == false) {
+			if (!owner.isModel()) {
 				opaqueLayer = ReflectionLoader.newInstance(ReflectionLoader.REGION);
 				JavaBridgeFX.setStyle(opaqueLayer, false, "lightweight-dialog-background");
 				JavaBridgeFX.addChildren(pane, 0, opaqueLayer);

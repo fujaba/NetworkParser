@@ -42,16 +42,16 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 				if (newSuperClazzes.contains(newSuperClazz)) {
 					continue;
 				}
-				if (oldSuperClazz.getName().equals(newSuperClazz.getName()) == false) {
+				if (!oldSuperClazz.getName().equals(newSuperClazz.getName())) {
 					if (matches.getMetaModel() != null) {
 						Match superMatch = matches.getClazzMatch(newSuperClazz);
-						if (superMatch.isMetaMatch() == false) {
+						if (!superMatch.isMetaMatch()) {
 							continue;
 						}
-						if (superMatch.getSourceMatch() == oldSuperClazz == false) {
+						if (superMatch.getSourceMatch() != oldSuperClazz) {
 							continue;
 						}
-						if (superMatch.isMetaMatch() == false && superMatch.isSourceMatch() == false) {
+						if (!superMatch.isMetaMatch() && !superMatch.isSourceMatch()) {
 							continue;
 						}
 					} else {
@@ -78,7 +78,7 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 			if (newSuperClazzes.contains(newSuperClazz)) {
 				continue;
 			}
-			if (determineNonRemovableSuperClazz(matches, match, newSuperClazz) == false) {
+			if (!determineNonRemovableSuperClazz(matches, match, newSuperClazz)) {
 				continue;
 			}
 
@@ -128,16 +128,16 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 				if (newSuperClazzes.contains(newSuperClazz)) {
 					continue;
 				}
-				if (oldSuperClazz.getName().equals(newSuperClazz.getName()) == false) {
+				if (!oldSuperClazz.getName().equals(newSuperClazz.getName())) {
 					if (withMeta) {
 						Match superMatch = matches.getClazzMatch(oldSuperClazz);
-						if (superMatch.isMetaMatch() == false) {
+						if (!superMatch.isMetaMatch()) {
 							continue;
 						}
-						if (superMatch.getSourceMatch() == newSuperClazz == false) {
+						if (superMatch.getSourceMatch() != newSuperClazz) {
 							continue;
 						}
-						if (superMatch.isMetaMatch() == false && superMatch.isSourceMatch() == false) {
+						if (!superMatch.isMetaMatch() && !superMatch.isSourceMatch()) {
 							continue;
 						}
 					} else {
@@ -153,7 +153,7 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 			if (oldSuperClazzes.contains(oldSuperClazz)) {
 				continue;
 			}
-			if (determineNonRemovableSuperClazz(matches, match, oldSuperClazz) == false) {
+			if (!determineNonRemovableSuperClazz(matches, match, oldSuperClazz)) {
 				continue;
 			}
 
@@ -183,7 +183,7 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 			}
 			Match superMatch = matches.getClazzMatch(newSuperClazz);
 			Clazz destination = newSuperClazz;
-			if (superMatch.isMetaMatch() && superMatch.isMetaMatch() && superMatch.isSourceMatch() == false) {
+			if (superMatch.isMetaMatch() && superMatch.isMetaMatch() && !superMatch.isSourceMatch()) {
 				if (oldInheritance.contains(superMatch.getSourceMatch())) {
 					continue;
 				}
@@ -198,13 +198,9 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 	private boolean determineAddableSuperclazz(GraphMatcher matches, Match match, Clazz superClazz) {
 		Match superMatch = matches.getClazzMatch(superClazz);
 
-		if (superMatch.isMetaMatch() == false) {
+		if (!superMatch.isMetaMatch()) {
 			return true;
 		}
-		if (superMatch.isMetaMatch()) {
-			return true;
-		}
-
 		return false;
 	}
 
@@ -212,10 +208,10 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 		if (matches.getMetaModel() == null) {
 			return true;
 		}
-		if (match.isSourceMatch() == false) {
+		if (!match.isSourceMatch()) {
 			Match superMatch = matches.getClazzMatch(superClazz);
 
-			if (superMatch.isMetaMatch() == false) {
+			if (!superMatch.isMetaMatch()) {
 				return true;
 			}
 		}

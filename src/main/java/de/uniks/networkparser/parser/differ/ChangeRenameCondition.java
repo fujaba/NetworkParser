@@ -30,7 +30,7 @@ public class ChangeRenameCondition extends MatchCondition {
 		if (otherAttribute == null) {
 			return false;
 		}
-		return sourceAttribute.getName().equals(otherAttribute.getName()) == false;
+		return !sourceAttribute.getName().equals(otherAttribute.getName());
 	}
 
 	@Override

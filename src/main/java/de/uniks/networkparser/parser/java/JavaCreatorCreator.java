@@ -61,7 +61,7 @@ public class JavaCreatorCreator extends Template {
 	public TemplateResultFile executeEntity(TemplateItem entity, LocalisationInterface parameters, boolean isStandard) {
 		FeatureSet features = getFeatures(parameters);
 		if (features != null) {
-			if (features.match(Feature.SERIALIZATION, null) == false) {
+			if (!features.match(Feature.SERIALIZATION, null)) {
 				return null;
 			}
 			if (entity instanceof GraphModel) {

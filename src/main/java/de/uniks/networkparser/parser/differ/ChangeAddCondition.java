@@ -5,6 +5,7 @@ import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Match;
+import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.GraphMatcher;
 
@@ -43,13 +44,13 @@ public class ChangeAddCondition extends MatchCondition {
 			matches.addDiff(addToCode);
 
 			for (String modifier : oldMatch.getModifier().toString().split(" ")) {
-				if (modifier.equals("public") == false) {
+				if (!modifier.equals(Modifier.PUBLIC.getName())) {
 					Match addModifierInCode = Match.create(oldMatch, this, Clazz.PROPERTY_MODIFIERS, null, modifier);
 					matches.addDiff(addModifierInCode);
 				}
 			}
 			Clazz oldClazz = (Clazz) oldMatch;
-			if (oldClazz.getType().equals(Clazz.TYPE_CLASS) == false) {
+			if (!oldClazz.getType().equals(Clazz.TYPE_CLASS)) {
 				Match updateType = Match.create(oldMatch, this, Clazz.PROPERTY_TYPE, newClazz.getType(),
 						oldClazz.getType());
 				matches.addDiff(updateType);
@@ -58,8 +59,7 @@ public class ChangeAddCondition extends MatchCondition {
 		}
 		Match clazzMatch = matches.getClazzMatch(newClazz);
 
-		if (clazzMatch.isOtherMatch() == false
-				|| GraphUtil.compareName(newClazz.getName(), clazzMatch.getSourceMatch().getName()) >= 1) {
+		if (!clazzMatch.isOtherMatch() || GraphUtil.compareName(newClazz.getName(), clazzMatch.getSourceMatch().getName()) >= 1) {
 			newClazz = oldMatch.getClazz();
 		}
 		Match addToCode = Match.create(newClazz, this, Clazz.PROPERTY_ASSOCIATION, null, oldMatch);
@@ -85,13 +85,13 @@ public class ChangeAddCondition extends MatchCondition {
 			matches.addDiff(add);
 
 			for (String modifier : newMatch.getModifier().toString().split(" ")) {
-				if (modifier.equals("public") == false) {
+				if (!modifier.equals(Modifier.PUBLIC.getName())) {
 					Match addModifier = Match.create(newMatch, this, Clazz.PROPERTY_MODIFIERS, null, modifier);
 					matches.addDiff(addModifier);
 				}
 			}
 			Clazz newClazz = (Clazz) newMatch;
-			if (newClazz.getType().equals(Clazz.TYPE_CLASS) == false) {
+			if (!newClazz.getType().equals(Clazz.TYPE_CLASS)) {
 				Match updateType = Match.create(newMatch, this, Clazz.PROPERTY_MODIFIERS, oldClazz.getType(),
 						newClazz.getType());
 				matches.addDiff(updateType);
@@ -101,8 +101,7 @@ public class ChangeAddCondition extends MatchCondition {
 
 		Match clazzMatch = matches.getClazzMatch(oldClazz);
 
-		if (clazzMatch.isOtherMatch() == false
-				|| GraphUtil.compareName(oldClazz.getName(), clazzMatch.getSourceMatch().getName()) >= 1) {
+		if (!clazzMatch.isOtherMatch() || GraphUtil.compareName(oldClazz.getName(), clazzMatch.getSourceMatch().getName()) >= 1) {
 			oldClazz = newMatch.getClazz();
 		}
 		Match add = Match.create(oldClazz, this, Clazz.PROPERTY_ASSOCIATION, null, newMatch);

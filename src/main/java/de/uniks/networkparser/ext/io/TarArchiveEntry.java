@@ -985,7 +985,7 @@ public class TarArchiveEntry {
 
 	private int writeEntryHeaderField(long value, byte[] outbuf, final int offset, final int length,
 			final boolean starMode) {
-		if (starMode == false && (value < 0 || value >= 1L << 3 * (length - 1))) {
+		if (!starMode && (value < 0 || value >= 1L << 3 * (length - 1))) {
 			/*
 			 * value does not fit into field when written as octal number, will be written
 			 * to PAX header or causes an error
@@ -1126,7 +1126,7 @@ public class TarArchiveEntry {
 	 * @return the new FileName
 	 */
 	private static String normalizeFileName(String fileName, boolean preserveAbsolutePath) {
-		if (preserveAbsolutePath == false) {
+		if (!preserveAbsolutePath) {
 			final String osname = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
 
 			if (osname != null) {
@@ -1159,7 +1159,7 @@ public class TarArchiveEntry {
 			 * No absolute pathnames Windows (and Posix?) paths can start with
 			 * "\\NetworkDrive\", so we loop on starting / s.
 			 */
-			while (preserveAbsolutePath == false && fileName.startsWith("/")) {
+			while (!preserveAbsolutePath && fileName.startsWith("/")) {
 				fileName = fileName.substring(1);
 			}
 		}

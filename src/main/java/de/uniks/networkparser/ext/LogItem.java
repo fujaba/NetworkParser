@@ -129,7 +129,7 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 	 * @return true, if successful
 	 */
 	public boolean setThreadName(String value) {
-		if(this.threadName != value || (this.threadName != null && this.threadName.equals(value) == false)) {
+		if(this.threadName != value || (this.threadName != null && !this.threadName.equals(value))) {
 			String oldValue = this.threadName;
 			this.threadName = value;
 			firePropertyChange(PROPERTY_THREADNAME, oldValue, value);
@@ -165,7 +165,7 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 	 * @return true, if successful
 	 */
 	public boolean setType(String value) {
-		if(this.type != value || (this.type != null && this.type.equals(value) == false)) {
+		if(this.type != value || (this.type != null && !this.type.equals(value))) {
 			String oldValue = this.type;
 			this.type = value;
 			firePropertyChange(PROPERTY_TYPE, oldValue, value);
@@ -201,7 +201,7 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 	 * @return true, if successful
 	 */
 	public boolean setMessage(String value) {
-		if(this.message != value || (this.message != null && this.message.equals(value) == false)) {
+		if(this.message != value || (this.message != null && !this.message.equals(value))) {
 			String oldValue = this.message;
 			this.message = value;
 			firePropertyChange(PROPERTY_MESSAGE, oldValue, value);
@@ -240,7 +240,7 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (attribute == null || entity instanceof LogItem == false) {
+		if (attribute == null || !(entity instanceof LogItem)) {
 			return null;
 		}
 		int pos = attribute.indexOf('.');
@@ -289,7 +289,7 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (attribute == null || entity instanceof LogItem == false) {
+		if (attribute == null || !(entity instanceof LogItem)) {
 			return false;
 		}
 		LogItem item = (LogItem) entity;

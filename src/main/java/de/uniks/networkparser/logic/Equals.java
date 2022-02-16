@@ -149,7 +149,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 				return value.equals(this.value);
 			}
 		}
-		if ((evt instanceof PropertyChangeEvent) == false) {
+		if (!(evt instanceof PropertyChangeEvent)) {
 			if (value instanceof Number && evt instanceof Number) {
 				/* Check for Number */
 				if (value instanceof Byte || value instanceof Short || value instanceof Integer
@@ -349,7 +349,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (entity instanceof Equals == false) {
+		if (!(entity instanceof Equals)) {
 			return false;
 		}
 		Equals element = (Equals) entity;

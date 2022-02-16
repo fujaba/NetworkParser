@@ -144,10 +144,10 @@ public class JsonToken {
 		String headerString = converter.toStaticString(header.toString(), false).toString();
 
 		JsonObject body = getBodyClone();
-		if (body.has(IAT) == false) {
+		if (!body.has(IAT)) {
 			body.put(IAT, System.currentTimeMillis() / 1000);
 		}
-		if (body.has(EXPIRATION) == false && this.expiration != null) {
+		if (!body.has(EXPIRATION) && this.expiration != null) {
 			body.put(EXPIRATION, body.getLong(IAT) + this.expiration);
 		}
 		String bodyString = converter.toStaticString(body.toString(), false).toString();
@@ -269,14 +269,14 @@ public class JsonToken {
 		checkSum = token.substring(pos + 1);
 		/* CHECK HEADER */
 		JsonObject headerJson = new JsonObject().withValue(ByteConverter64.fromBase64String(header));
-		if (headerJson.equals(this.header) == false) {
+		if (!headerJson.equals(this.header)) {
 			return false;
 		}
 		/* CHECK HASHCODE */
 
 		this.body = new JsonObject().withValue(ByteConverter64.fromBase64String(payLoad));
 		String token2 = this.getCheckSum();
-		if (checkSum.equals(token2) == false) {
+		if (!checkSum.equals(token2)) {
 			return false;
 		}
 		/* CHECK EXPIRATED */

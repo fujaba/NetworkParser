@@ -27,7 +27,7 @@ public class AssociationChangeUpdateTypeCondition extends MatchCondition {
 		if (matches.getMetaModel() == null) {
 			return false;
 		}
-		if (match.isMetaMatch() == false && match.isMetaSourceMatch() == false) {
+		if (!match.isMetaMatch() && !match.isMetaSourceMatch()) {
 			return false;
 		}
 
@@ -44,8 +44,8 @@ public class AssociationChangeUpdateTypeCondition extends MatchCondition {
 
 		if ((oldAssociation.getType().equals(AssociationTypes.EDGE)
 				&& oldAssociation.getOther().getType().equals(AssociationTypes.UNDIRECTIONAL))
-				|| oldAssociation.getType().equals(newAssociation.getType()) == false
-				|| oldAssociation.getOther().getType().equals(newAssociation.getOther().getType()) == false) {
+				|| !oldAssociation.getType().equals(newAssociation.getType())
+				|| !oldAssociation.getOther().getType().equals(newAssociation.getOther().getType())) {
 			Match remove = Match.create(newAssociation.getClazz(), this, Clazz.PROPERTY_ASSOCIATION, newAssociation,
 					null);
 
@@ -82,8 +82,8 @@ public class AssociationChangeUpdateTypeCondition extends MatchCondition {
 						&& oldAssociation.getOther().getType().equals(AssociationTypes.ASSOCIATION))) {
 			if ((oldAssociation.getType().equals(AssociationTypes.EDGE)
 					&& oldAssociation.getOther().getType().equals(AssociationTypes.UNDIRECTIONAL))
-					|| oldAssociation.getType().equals(newAssociation.getType()) == false
-					|| oldAssociation.getOther().getType().equals(newAssociation.getOther().getType()) == false) {
+					|| !oldAssociation.getType().equals(newAssociation.getType())
+					|| !oldAssociation.getOther().getType().equals(newAssociation.getOther().getType())) {
 				boolean removeAssoc = true;
 				if (oldAssociation.getType().equals(AssociationTypes.ASSOCIATION)
 						&& oldAssociation.getOther().getType().equals(AssociationTypes.ASSOCIATION)

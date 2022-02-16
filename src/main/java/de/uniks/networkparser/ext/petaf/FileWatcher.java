@@ -150,7 +150,7 @@ public class FileWatcher implements Runnable {
 		try {
 			watcher = FileSystems.getDefault().newWatchService();
 			File file = new File(this.fileName);
-			if(file.exists() == false || file.isDirectory() == false) {
+			if(!file.exists() || !file.isDirectory()) {
 				return false;
 			}
 			Path dirPath = file.toPath();

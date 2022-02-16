@@ -792,7 +792,7 @@ public class RabbitMessage {
 		while (in.position() < endPos) {
 			String name = in.getShortstr();
 			Object value = readFieldValue(in);
-			if (table.containsKey(name) == false) {
+			if (!table.containsKey(name)) {
 				table.put(name, value);
 			}
 		}

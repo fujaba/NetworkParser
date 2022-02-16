@@ -119,7 +119,7 @@ public class GitRevision {
 		String localPath = path;
 		if (localPath == null) {
 			localPath = "";
-		} else if ((localPath.endsWith("/") || localPath.endsWith("\\")) == false) {
+		} else if ((localPath.endsWith("/") || !localPath.endsWith("\\"))) {
 			localPath += "/";
 		}
 		File projectFile = null;
@@ -137,7 +137,7 @@ public class GitRevision {
 		try {
 			Object builder = ReflectionLoader.newInstance(ReflectionLoader.FILEREPOSITORYBUILDER);
 			ReflectionLoader.call(builder, "setWorkTree", File.class, file);
-			if (projectFile != null && "".equals(projectFile.getName()) == false) {
+			if (projectFile != null && !"".equals(projectFile.getName())) {
 				ReflectionLoader.call(builder, "setGitDir", File.class, projectFile);
 			}
 			repository = ReflectionLoader.callChain(builder, "readEnvironment", "findGitDir", "build");
@@ -221,7 +221,7 @@ public class GitRevision {
 
 				String newId = (String) ReflectionLoader.callChain(value, false, "getObjectId", "getName");
 				if (id.equals(newId)) {
-					if (branches.contains(item.getKey()) == false) {
+					if (!branches.contains(item.getKey())) {
 						branches.add(item.getKey());
 					}
 				}
@@ -292,7 +292,7 @@ public class GitRevision {
 	@SuppressWarnings("unchecked")
 	public int calcGitTag(Object repository, JsonObject info) {
 		if (ReflectionLoader.REPOSITORY == null || repository == null
-				|| ReflectionLoader.REPOSITORY.isAssignableFrom(repository.getClass()) == false) {
+				|| !ReflectionLoader.REPOSITORY.isAssignableFrom(repository.getClass())) {
 			return -1;
 		}
 		int minor = -1;
@@ -496,7 +496,7 @@ public class GitRevision {
 		String localPath = path;
 		if (localPath == null) {
 			localPath = "";
-		} else if ((localPath.endsWith("/") || localPath.endsWith("\\")) == false) {
+		} else if ((localPath.endsWith("/") || !localPath.endsWith("\\"))) {
 			localPath += "/";
 		}
 		File dir = new File(localPath);

@@ -104,7 +104,7 @@ public class SimpleParser {
 				return null;
 			}
 			className = classOfT.getName();
-			if (jsonObject.has(JsonTokener.PROPS) == false) {
+			if (!jsonObject.has(JsonTokener.PROPS)) {
 				JsonObject obj = new JsonObject();
 				obj.put(JsonTokener.PROPS, jsonObject);
 				jsonObject = obj;
@@ -307,7 +307,7 @@ public class SimpleParser {
 
 			/* So now decoding Attributes */
 			char currentChar = buffer.getCurrentChar();
-			while (currentChar != endTag && buffer.isEnd() == false) {
+			while (currentChar != endTag && !buffer.isEnd()) {
 				key = tokener.nextString(buffer).toString();
 				if (key.length() < 1) {
 					break;
@@ -318,7 +318,7 @@ public class SimpleParser {
 					/* Start Tag */
 					char propStartTag = currentChar = buffer.getChar();
 					char propEndTag = getEndTag(currentChar);
-					while (currentChar != propEndTag && buffer.isEnd() == false) {
+					while (currentChar != propEndTag && !buffer.isEnd()) {
 						key = tokener.nextString(buffer).toString();
 						if (key.length() < 1) {
 							break;
@@ -336,7 +336,7 @@ public class SimpleParser {
 								Object subElement = decodingModel(buffer, map, tokener, propEndTag);
 								creator.setValue(result, key, subElement, SendableEntityCreator.NEW);
 								currentChar = buffer.getCurrentChar();
-							} while (currentChar != JsonArray.END && buffer.isEnd() == false);
+							} while (currentChar != JsonArray.END && !buffer.isEnd());
 						} else {
 							String value = tokener.nextString(buffer).toString();
 

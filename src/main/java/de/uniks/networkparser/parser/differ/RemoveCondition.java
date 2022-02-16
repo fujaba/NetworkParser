@@ -32,10 +32,10 @@ public class RemoveCondition extends MatchCondition {
 		if (member instanceof Association) {
 			return checkConditionAssociation(matches, match, (Association) member);
 		}
-		if (match.isMetaMatch() == false) {
+		if (!match.isMetaMatch()) {
 			return false;
 		}
-		if (member instanceof Clazz && match.isSourceMatch() == false) {
+		if (member instanceof Clazz && !match.isSourceMatch()) {
 			return false;
 		}
 
@@ -50,27 +50,25 @@ public class RemoveCondition extends MatchCondition {
 			if (((association.getType().equals(AssociationTypes.UNDIRECTIONAL)
 					&& association.getOther().getType().equals(AssociationTypes.EDGE))
 					|| (association.getType().equals(AssociationTypes.ASSOCIATION)
-							&& association.getOther().getType().equals(AssociationTypes.ASSOCIATION))) == false) {
+							&& !association.getOther().getType().equals(AssociationTypes.ASSOCIATION)))) {
 				return false;
 			}
 		} else {
 			if (((association.getType().equals(AssociationTypes.EDGE)
 					&& association.getOther().getType().equals(AssociationTypes.UNDIRECTIONAL))
 					|| (association.getType().equals(AssociationTypes.ASSOCIATION)
-							&& association.getOther().getType().equals(AssociationTypes.ASSOCIATION))) == false) {
+							&& !association.getOther().getType().equals(AssociationTypes.ASSOCIATION)))) {
 				return false;
 			}
 		}
 
 		if (match.isMetaMatch()) {
-			if (association.getType().equals(AssociationTypes.EDGE) == false) {
-				if (association.getType().equals(AssociationTypes.ASSOCIATION) == false) {
-					return false;
-				}
+			if (!association.getType().equals(AssociationTypes.EDGE) && !association.getType().equals(AssociationTypes.ASSOCIATION)) {
+				return false;
 			}
 			Match otherMatch = matches.getAssociationMatch(association.getOther());
 			if (otherMatch.isMetaMatch()) {
-				if (otherMatch.isMetaMatch() == false || otherMatch.isMetaSourceMatch() == false) {
+				if (!otherMatch.isMetaMatch() || !otherMatch.isMetaSourceMatch()) {
 					return false;
 				}
 			} else if (association.getType().equals(AssociationTypes.EDGE)) {

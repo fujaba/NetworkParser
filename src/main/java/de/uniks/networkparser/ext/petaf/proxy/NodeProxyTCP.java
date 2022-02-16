@@ -391,14 +391,14 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
             }
             if (Server.TCP.equals(this.serverType)) {
                 /* Incoming Proxy */
-                if (isInput == false) {
+                if (!isInput) {
                     withType(NodeProxy.TYPE_IN);
                 }
                 server = new Server_TCP(this);
                 if (url == null) {
                     try {
                         String urlValue = InetAddress.getLocalHost().getHostAddress();
-                        if (LOCALHOST.equals(urlValue) == false) {
+                        if (!LOCALHOST.equals(urlValue)) {
                             this.url = urlValue;
                         }
                     } catch (UnknownHostException e) {

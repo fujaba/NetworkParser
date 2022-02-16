@@ -60,7 +60,7 @@ public class CucumberStdRule implements ObjectCondition {
 		analyseDefinition(cucumber.getDefinition());
 
 		GraphList model = new GraphList().withType(GraphTokener.OBJECTDIAGRAM);
-		if (analyseTokens(cucumber.getGiven(), model) == false) {
+		if (!analyseTokens(cucumber.getGiven(), model)) {
 			return false;
 		}
 		this.model = model;
@@ -69,7 +69,7 @@ public class CucumberStdRule implements ObjectCondition {
 		
 		// Now Analyse WHEN BLOCK
 		model = new GraphList().withType(GraphTokener.OBJECTDIAGRAM);
-		if (analyseTokens(cucumber.getWhen(), model) == false) {
+		if (!analyseTokens(cucumber.getWhen(), model)) {
 			return false;
 		}
 		Pattern pattern = new Pattern();
@@ -87,7 +87,7 @@ public class CucumberStdRule implements ObjectCondition {
 		if(clazz == null) {
 			return null;
 		}
-		if(visited.add(clazz) == false) {
+		if(!visited.add(clazz)) {
 			return null;
 		}
 		if(parent == null) {
@@ -114,7 +114,7 @@ public class CucumberStdRule implements ObjectCondition {
 			return null;
 		}
 		Association other = assoc.getOther();
-		if(visited.add(assoc) == false || visited.add(other) == false) {
+		if(!visited.add(assoc) || !visited.add(other)) {
 			return null;
 		}
 		And parent = new And();
@@ -473,7 +473,7 @@ public class CucumberStdRule implements ObjectCondition {
 				int source = Association.ONE;
 				int target = Association.ONE;
 				if (z > 1 && types[z - 2] == Token.AND) {
-					if (token[z].endsWith("s") && token[z].equals("has") == false) {
+					if (token[z].endsWith("s") && !token[z].equals("has")) {
 						token[z] = token[z].substring(0, token[z].length() - 1);
 					}
 					source = Association.MANY;

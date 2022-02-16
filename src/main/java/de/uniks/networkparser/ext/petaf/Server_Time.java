@@ -115,7 +115,7 @@ public class Server_Time extends Thread implements Server {
 		ByteBuffer out = ByteBuffer.allocate(8);
 		out.order(ByteOrder.BIG_ENDIAN);
 
-		while (isInterrupted() == false && this.run) {
+		while (!isInterrupted() && this.run) {
 			try {
 				in.clear();
 				SocketAddress client = channel.receive(in);

@@ -36,7 +36,7 @@ public class OCLParser implements ObjectCondition {
 			return parser;
 		}
 		CharacterBuffer buffer = new CharacterBuffer().with(sequence);
-		if (buffer.startsWith("context", 0, true) == false) {
+		if (!buffer.startsWith("context", 0, true)) {
 			return parser;
 		}
 		buffer.withPosition(7);
@@ -46,7 +46,7 @@ public class OCLParser implements ObjectCondition {
 		parser.withCreator(className);
 
 		CharacterBuffer item = buffer.nextString();
-		if (INV.equalsIgnoreCase(item.toString()) == false) {
+		if (!INV.equalsIgnoreCase(item.toString())) {
 			return parser;
 		}
 		parser.withInv(parser.parsingElement(buffer));

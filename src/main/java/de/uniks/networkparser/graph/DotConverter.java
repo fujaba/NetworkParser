@@ -110,7 +110,7 @@ public class DotConverter implements Converter {
 			case 0:
 				break;
 			case ' ':
-				if (useStrict == false && "strict".equals(sb.toString())) {
+				if (!useStrict && "strict".equals(sb.toString())) {
 					sb = new StringBuilder();
 					useStrict = true;
 				}
@@ -284,7 +284,7 @@ public class DotConverter implements Converter {
 	 * @return the string
 	 */
 	public String encode(BaseItem entity, boolean removePackage) {
-		if (entity instanceof GraphModel == false) {
+		if (!(entity instanceof GraphModel)) {
 			return "";
 		}
 		GraphModel root = (GraphModel) entity;
@@ -317,7 +317,7 @@ public class DotConverter implements Converter {
 					sb.append("</u>");
 				}
 				sb.append("</b></td></tr>");
-				if (node instanceof Clazz == false) {
+				if (!(node instanceof Clazz)) {
 					sb.append("</table>>];" + BaseItem.CRLF);
 					continue;
 				}
@@ -387,7 +387,7 @@ public class DotConverter implements Converter {
     */
    public void replaceInvalidChars(GraphList entity, char... chars)
    {
-      if (entity instanceof GraphModel == false || chars == null || chars.length%2==1) {
+      if (!(entity instanceof GraphModel) || chars == null || chars.length%2==1) {
          return;
       }
       GraphModel root = entity;

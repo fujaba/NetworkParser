@@ -318,7 +318,7 @@ public class TarArchiveInputStream extends InputStream {
 
     if (currEntry.isPaxHeader()) { /* Process Pax headers */
       paxHeaders();
-    } else if (globalPaxHeaders.isEmpty() == false) {
+    } else if (!globalPaxHeaders.isEmpty()) {
       applyPaxHeadersToCurrentEntry(globalPaxHeaders);
     }
 
@@ -342,7 +342,7 @@ public class TarArchiveInputStream extends InputStream {
    * fill a record after an entry
    */
   private void skipRecordPadding() {
-    if (isDirectory() == false && this.entrySize > 0 && this.entrySize % this.recordSize != 0) {
+    if (!isDirectory() && this.entrySize > 0 && this.entrySize % this.recordSize != 0) {
       final long numRecords = (this.entrySize / this.recordSize) + 1;
       final long padding = (numRecords * this.recordSize) - this.entrySize;
       final long skipped = FileBuffer.skip(is, padding);

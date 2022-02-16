@@ -176,8 +176,20 @@ public class RESTServiceTask implements Condition<Socket> {
 				return false;
 			}
 		}
-	    if(match == null && routing.size()>0 && (path == null || path.isEmpty())) {
-            // ROOT AND DEFAULT PAGE
+
+		// Execute Request Data
+		clientSocket.parse();
+		if(updateExecuteEvent(event, clientSocket)) {
+		    return true;
+		}
+		
+		/* So Valid and Execute Match or default CHECK FOR NEXT VALID OR BEST */
+		if (match != null) {
+			boolean success = match.update(clientSocket);
+			clientSocket.close();
+			return success;
+		} else if(routing.size()>0 && (path == null || path.isEmpty())) {
+		    // ROOT AND DEFAULT PAGE
             HTMLEntity entity = new HTMLEntity();
             XMLEntity menueItem = entity.createChild("div", "class", "menue");
             for(HTTPRequest item : routing) {
@@ -186,24 +198,25 @@ public class RESTServiceTask implements Condition<Socket> {
                 }
             }
             clientSocket.withContent(entity);
-        }
-		if(this.executeController != null) {
-			boolean success = executeController.update(event);
-			if(success) {
-				clientSocket.close();
-				return success;
-			}
-		}
-		/* So Valid and Execute Match or default CHECK FOR NEXT VALID OR BEST */
-		if (match != null) {
-			boolean success = match.update(clientSocket);
-			clientSocket.close();
-			return success;
+            if(updateExecuteEvent(event, clientSocket)) {
+                return true;
+            }
 		}
 		String result = this.executeRequest(event);
 		clientSocket.writeBody(result);
 		clientSocket.close();
 		return true;
+	}
+	
+	public boolean updateExecuteEvent(SimpleEvent event, HTTPRequest clientSocket) {
+	    if(this.executeController != null) {
+            boolean success = executeController.update(event);
+            if(success) {
+                clientSocket.close();
+                return true;
+            }
+        }
+	    return false;
 	}
 
 	/**
@@ -432,7 +445,7 @@ public class RESTServiceTask implements Condition<Socket> {
 			return HTTPRequest.HTTP_STATE_NOTFOUND;
 		}
 		Object source = socketRequest.getSource();
-		if (source instanceof HTTPRequest == false) {
+		if (!(source instanceof HTTPRequest)) {
 			return HTTPRequest.HTTP_STATE_NOTFOUND;
 		}
 		HTTPRequest request = (HTTPRequest) source;

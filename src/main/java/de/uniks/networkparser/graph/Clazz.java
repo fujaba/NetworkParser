@@ -501,7 +501,7 @@ public class Clazz extends GraphEntity {
 		}
 
 		ClazzSet collection = getEdgeClazzes(type, null);
-		if (transitive == false) {
+		if (!transitive) {
 			return collection;
 		}
 		int size = collection.size();
@@ -526,7 +526,7 @@ public class Clazz extends GraphEntity {
 	public ClazzSet getSuperClazzes(boolean transitive) {
 		repairAssociations();
 		ClazzSet collection = getEdgeClazzes(AssociationTypes.GENERALISATION, null);
-		if (transitive == false) {
+		if (!transitive) {
 			return collection;
 		}
 		int size = collection.size();
@@ -540,14 +540,14 @@ public class Clazz extends GraphEntity {
 		if (assoc == null || assoc.getOther() == null) {
 			return false;
 		}
-		if (AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false
-				&& AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
+		if (!AssociationTypes.IMPLEMENTS.equals(assoc.getType())
+				&& !AssociationTypes.GENERALISATION.equals(assoc.getType())) {
 			/* Wrong way try another round */
 			assoc = assoc.getOther();
 		}
 		Association otherAssoc = assoc.getOther();
-		if (AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false
-				&& AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
+		if (!AssociationTypes.IMPLEMENTS.equals(assoc.getType())
+				&& !AssociationTypes.GENERALISATION.equals(assoc.getType())) {
 			/* Check Cardinality */
 			if (assoc.getClazz() == otherAssoc.getClazz() && assoc.getName() != null
 					&& assoc.getName().equals(otherAssoc.getName())) {
@@ -718,7 +718,7 @@ public class Clazz extends GraphEntity {
 	 */
 	public ClazzSet getKidClazzes(boolean transitive) {
 		ClazzSet kidClazzes = getEdgeClazzes(AssociationTypes.EDGE, AssociationTypes.GENERALISATION);
-		if (transitive == false) {
+		if (!transitive) {
 			return kidClazzes;
 		}
 		int size = kidClazzes.size();
@@ -768,14 +768,13 @@ public class Clazz extends GraphEntity {
 		AssociationSet associations = getAssociations();
 		for (Clazz item : values) {
 			if (item != null) {
-				if (AssociationTypes.GENERALISATION.equals(backDirection) == false
-						&& AssociationTypes.GENERALISATION.equals(direction) == false) {
+				if (!AssociationTypes.GENERALISATION.equals(backDirection)
+						&& !AssociationTypes.GENERALISATION.equals(direction)) {
 					for (Association assoc : associations) {
-						if (assoc.getType() == direction && assoc.getOtherType() == backDirection) {
-							if (assoc.contains(item, true, false) == false) {
+						if ((assoc.getType() == direction && assoc.getOtherType() == backDirection) &&
+							(!assoc.contains(item, true, false))) {
 								assoc.getOther().setParentNode(item);
 								return true;
-							}
 						}
 					}
 				}
@@ -994,7 +993,7 @@ public class Clazz extends GraphEntity {
 		boolean isInterface = TYPE_INTERFACE.equals(getType());
 		boolean isAbstract = getModifier().has(Modifier.ABSTRACT);
 		Class<?> checkClassType = existsElements.getTypClass();
-		if (isInterface == false && isAbstract == false) {
+		if (!isInterface && !isAbstract) {
 			SimpleSet<?> collection = null;
 			if (checkClassType == Method.class) {
 				collection = getMethods(filters);
@@ -1024,11 +1023,11 @@ public class Clazz extends GraphEntity {
 					continue;
 				}
 			}
-			if (checkClassType == Method.class && member instanceof Method == false) {
+			if (checkClassType == Method.class && !(member instanceof Method)) {
 				continue;
-			} else if (checkClassType == Attribute.class && member instanceof Attribute == false) {
+			} else if (checkClassType == Attribute.class && !(member instanceof Attribute)) {
 				continue;
-			} else if (checkClassType == Association.class && member instanceof Association == false) {
+			} else if (checkClassType == Association.class && !(member instanceof Association)) {
 				continue;
 			}
 			if (existsElements.contains(member)) {
@@ -1036,18 +1035,18 @@ public class Clazz extends GraphEntity {
 			}
 			Modifier modifier = member.getModifier();
 			if (isInterface) {
-				if (modifier == null || modifier.has(Modifier.DEFAULT) == false) {
-					if (check(member, filters) && newExistElements.contains(member) == false) {
+				if (modifier == null || !modifier.has(Modifier.DEFAULT)) {
+					if (check(member, filters) && !newExistElements.contains(member)) {
 						newElements.add(member);
 					}
-				} else if (newExistElements.contains(member) == false) {
+				} else if (!newExistElements.contains(member)) {
 					newExistElements.add(member);
 					newElements.remove(member);
 				}
 			} else if (isAbstract && modifier != null && modifier.has(Modifier.ABSTRACT)) {
-				if (check(member, filters) && newExistElements.contains(member) == false) {
+				if (check(member, filters) && !newExistElements.contains(member)) {
 					newElements.add(member);
-				} else if (newExistElements.contains(member) == false) {
+				} else if (!newExistElements.contains(member)) {
 					newExistElements.add(member);
 					newElements.remove(member);
 				}

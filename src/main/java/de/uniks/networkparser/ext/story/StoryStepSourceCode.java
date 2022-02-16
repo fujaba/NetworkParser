@@ -208,7 +208,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 	public boolean readFile() {
 		FileBuffer fileBuffer = new FileBuffer();
 		fileBuffer.withFile(contentFile);
-		if (fileBuffer.exists() == false) {
+		if (!fileBuffer.exists()) {
 			return false;
 		}
 		CharacterBuffer indexText = new CharacterBuffer();
@@ -297,11 +297,11 @@ public class StoryStepSourceCode implements ObjectCondition {
 	 */
 	@Override
 	public boolean update(Object value) {
-		if (value == null || value instanceof SimpleEvent == false) {
+		if (!(value instanceof SimpleEvent)) {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
-		if (evt.getNewValue() instanceof HTMLEntity == false || evt.getSource() instanceof Story == false) {
+		if (!(evt.getNewValue() instanceof HTMLEntity) || !(evt.getSource() instanceof Story)) {
 			return false;
 		}
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();

@@ -133,7 +133,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	public boolean update(Object evt) {
 		if (expression != null && expression.update(evt)) {
 			if (trueCondition != null) {
-				if (this.notifyBuffer == null || evt instanceof LocalisationInterface == false) {
+				if (this.notifyBuffer == null || !(evt instanceof LocalisationInterface)) {
 					return trueCondition.update(evt);
 				}
 				LocalisationInterface li = (LocalisationInterface) evt;
@@ -157,7 +157,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 			return true;
 		} else {
 			if (falseCondition != null) {
-				if (this.notifyBuffer == null || evt instanceof LocalisationInterface == false) {
+				if (this.notifyBuffer == null || !(evt instanceof LocalisationInterface)) {
 					return falseCondition.update(evt);
 				}
 				LocalisationInterface li = (LocalisationInterface) evt;
