@@ -218,7 +218,7 @@ public class SocketMessage implements BaseItem {
 
 		/* Unique string is <hashcode>.<id>.<currentTime><suffix> */
 		String id = MessageSession.nextID();
-		s.with(s.hashCode()).with('.').with(id).with('.').with(System.currentTimeMillis()).with(localHost);
+		s.withInt(s.hashCode()).with('.').with(id).with('.').withInt(System.currentTimeMillis()).with(localHost);
 		this.id = s.toString();
 		return this.id;
 	}
@@ -281,7 +281,7 @@ public class SocketMessage implements BaseItem {
 		/* Unique string is ----=_Part_<part>_<hashcode>.<currentTime> */
 		String id = MessageSession.nextID();
 
-		s.with("_Part_").with(id).with('_').with(hash).with('.').with(System.currentTimeMillis());
+		s.with("_Part_").with(id).with('_').withInt(hash).with('.').withInt(System.currentTimeMillis());
 		this.boundary = s.toString();
 		return this.boundary;
 	}

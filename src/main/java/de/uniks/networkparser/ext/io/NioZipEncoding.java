@@ -188,8 +188,7 @@ class NioZipEncoding {
 	    if(buffer == null) {
 	        return null;
 	    }
-	    buffer.clear(); 
-		buffer.with((byte)'%', (byte)'U');
+		buffer.withInit((byte)'%', (byte)'U');
 		ByteConverterHex.convert(buffer, (byte)((c >> 12) & 0x0f), (byte)((c >> 8) & 0x0f), (byte)((c >> 4) & 0x0f), (byte) (c & 0x0f));
 		return buffer;
 	}

@@ -11,34 +11,34 @@ import java.util.Arrays;
  */
 final class BitArray implements Cloneable {
   private int[] bits;
-  private int size;
+  private int offset;
+  
   private int byteOffset;
   private int bitOffset;
 
-  BitArray() {
-    this.size = 0;
-    this.bits = new int[1];
-  }
-
-  BitArray(int size) {
-    this.size = size;
-    this.bits = makeArray(size);
-  }
-
-  BitArray(byte[] bytes) {
+  public BitArray(byte... bytes) {
     if (bytes == null) {
       return;
     }
-    size = bytes.length;
-    this.bits = new int[size];
-    for (int i = 0; i < size; i++) {
+    if(bytes.length<1) {
+        this.bits = new int[1];
+        return;
+    }
+    this.bits = new int[bytes.length];
+    this.offset = bytes.length;
+    for (int i = 0; i < bytes.length; i++) {
       this.bits[i] = bytes[i];
     }
   }
+  
+  public BitArray(int size) {
+      this.offset = size;
+      this.bits = makeArray(size);
+  }
 
-  private BitArray(int[] bits, int size) {
+  public BitArray(int[] bits) {
     this.bits = bits;
-    this.size = size;
+    this.offset = bits.length;
   }
 
   /**
@@ -47,7 +47,7 @@ final class BitArray implements Cloneable {
    * @return the size
    */
   public int getSize() {
-    return size;
+    return offset;
   }
 
   /**
@@ -56,7 +56,7 @@ final class BitArray implements Cloneable {
    * @return the size in bytes
    */
   public int getSizeInBytes() {
-    return (size + 7) / 8;
+    return (offset + 7) / 8;
   }
 
   private void ensureCapacity(int size) {
@@ -114,11 +114,11 @@ final class BitArray implements Cloneable {
   }
 
   void appendBit(boolean bit) {
-    ensureCapacity(size + 1);
+    ensureCapacity(offset + 1);
     if (bit && bits != null) {
-      bits[size / 32] |= 1 << (size & 0x1F);
+      bits[offset / 32] |= 1 << (offset & 0x1F);
     }
-    size++;
+    offset++;
   }
 
   /**
@@ -134,7 +134,7 @@ final class BitArray implements Cloneable {
     if (numBits < 0 || numBits > 32) {
       return false;
     }
-    ensureCapacity(size + numBits);
+    ensureCapacity(offset + numBits);
     for (int numBitsLeft = numBits; numBitsLeft > 0; numBitsLeft--) {
       appendBit(((value >> (numBitsLeft - 1)) & 0x01) == 1);
     }
@@ -143,8 +143,8 @@ final class BitArray implements Cloneable {
 
   void appendBitArray(BitArray other) {
     if (other != null) {
-      int otherSize = other.size;
-      ensureCapacity(size + otherSize);
+      int otherSize = other.offset;
+      ensureCapacity(offset + otherSize);
       for (int i = 0; i < otherSize; i++) {
         appendBit(other.get(i));
       }
@@ -207,7 +207,7 @@ final class BitArray implements Cloneable {
     }
     int[] newBits = new int[bits.length];
     /* reverse all int's first */
-    int len = (size - 1) / 32;
+    int len = (offset - 1) / 32;
     int oldBitsLen = len + 1;
     for (int i = 0; i < oldBitsLen; i++) {
       long x = (long) bits[i];
@@ -219,8 +219,8 @@ final class BitArray implements Cloneable {
       newBits[len - i] = (byte) x;
     }
     /* now correct the int's if the bit size isn't a multiple of 32 */
-    if (size != oldBitsLen * 32) {
-      int leftOffset = oldBitsLen * 32 - size;
+    if (offset != oldBitsLen * 32) {
+      int leftOffset = oldBitsLen * 32 - offset;
       int mask = 1;
       for (int i = 0; i < 31 - leftOffset; i++) {
         mask = (mask << 1) | 1;
@@ -256,7 +256,7 @@ final class BitArray implements Cloneable {
       return false;
     }
     BitArray other = (BitArray) o;
-    return size == other.size && Arrays.equals(bits, other.bits);
+    return offset == other.offset && Arrays.equals(bits, other.bits);
   }
 
   /**
@@ -266,7 +266,7 @@ final class BitArray implements Cloneable {
    */
   @Override
   public int hashCode() {
-    return 31 * size + Arrays.hashCode(bits);
+    return 31 * offset + Arrays.hashCode(bits);
   }
 
   /**
@@ -276,8 +276,8 @@ final class BitArray implements Cloneable {
    */
   @Override
   public String toString() {
-    StringBuilder result = new StringBuilder(size);
-    for (int i = 0; i < size; i++) {
+    StringBuilder result = new StringBuilder(offset);
+    for (int i = 0; i < offset; i++) {
       if ((i & 0x07) == 0) {
         result.append(' ');
       }
@@ -294,7 +294,7 @@ final class BitArray implements Cloneable {
   @Override
   public BitArray clone() {
     if (bits != null) {
-      return new BitArray(bits.clone(), size);
+      return new BitArray(bits.clone());
     }
     return null;
   }

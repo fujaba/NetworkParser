@@ -137,7 +137,7 @@ public class JsonTest {
 		JsonObject jsonObject = new JsonObject();
 		new JsonTokener().parseToEntity(jsonObject, new CharacterBuffer().with(functionJson));
 		Assert.assertEquals(
-				"{\"body\":\"public main() {\\u000d\\u000a\\u0009console.log(\'Hallo Welt\');\\u000a\\u0009}\"}",
+				"{\"body\":\"public main() {\\r\\n\\u0009console.log(\'Hallo Welt\');\\n\\u0009}\"}",
 				jsonObject.toString(2));
 	}
 

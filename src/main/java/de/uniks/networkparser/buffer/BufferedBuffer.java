@@ -388,7 +388,7 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		}
 		sb.with(']');
 		if (addString != null && addString.length > 0 && addString[0]) {
-			sb.with(' ').with('(').with(new String(byteArray)).with(')');
+			sb.with(' ', '(').with(new String(byteArray)).with(')');
 		}
 		return sb.toString();
 	}
@@ -406,12 +406,22 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	 * With.
 	 *
 	 * @param buffer the buffer
-	 * @param i the i
-	 * @param readed the readed
+	 * @param start the startposition
+	 * @param readed the length
 	 * @return the buffered buffer
 	 */
-	public abstract BufferedBuffer with(char[] buffer, int i, int readed);
+	public abstract BufferedBuffer with(char[] buffer, int start, int length);
 
+	/**
+     * With.
+     *
+     * @param buffer the buffer
+     * @param start the startposition
+     * @param readed the length
+     * @return the buffered buffer
+     */
+    public abstract BufferedBuffer with(byte[] buffer, int start, int length);
+	
 	/**
 	 * With.
 	 *
@@ -420,14 +430,6 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	 */
 	public abstract BufferedBuffer with(CharSequence... items);
 	
-	/**
-	 * With.
-	 *
-	 * @param items the items
-	 * @return the buffered buffer
-	 */
-	public abstract BufferedBuffer with(byte... items);
-
 	/**
 	 * Gets the new list.
 	 *

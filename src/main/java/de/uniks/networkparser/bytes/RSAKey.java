@@ -258,7 +258,7 @@ public class RSAKey {
       } else if (character < 100) {
         item.append("0" + (int) character);
       } else {
-        item.with(((int) character));
+        item.withInt((int)character);
       }
       c++;
       if (c == group) {

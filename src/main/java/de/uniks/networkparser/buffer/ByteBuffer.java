@@ -63,7 +63,7 @@ public class ByteBuffer extends BufferedBuffer {
 				sub[i] = buffer[start + i];
 			}
 		}
-		return new CharacterBuffer().with(sub);
+		return new CharacterBuffer().with(sub, 0, len);
 	}
 
 	/**
@@ -672,7 +672,7 @@ public class ByteBuffer extends BufferedBuffer {
 	 * @param len the len
 	 * @return the byte buffer
 	 */
-	public ByteBuffer with(byte[] array, int len) {
+	public ByteBuffer with(byte[] array, int start, int len) {
 		this.position = 0;
 		if (array == null) {
 			return this;
@@ -682,13 +682,14 @@ public class ByteBuffer extends BufferedBuffer {
 		}
 		if (this.buffer == null) {
 			this.buffer = array;
+			this.start = start;
 			this.length = len;
 		} else {
 			/* Resize */
 			byte[] oldBuffer = this.buffer;
 			this.buffer = new byte[this.length * 2 + len];
 			System.arraycopy(oldBuffer, 0, this.buffer, 0, this.length);
-			System.arraycopy(array, 0, this.buffer, this.length, len);
+			System.arraycopy(array, start, this.buffer, this.length, len);
 			this.length += len;
 		}
 		return this;

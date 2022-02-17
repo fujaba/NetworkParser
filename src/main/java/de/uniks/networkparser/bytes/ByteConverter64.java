@@ -152,19 +152,19 @@ public class ByteConverter64 extends ByteConverter {
 	 */
 	public static CharacterBuffer fromBase64String(Object values) {
 		ByteConverter64 converter = new ByteConverter64();
-		byte[] ref;
-		if (values instanceof String) {
-			ref = converter.decode((String) values);
-		} else {
-			CharacterBuffer buffer = new CharacterBuffer();
-			if (values instanceof byte[]) {
-				buffer.with((byte[]) values);
-			} else if (values instanceof CharSequence) {
-				buffer.with((CharSequence) values);
-			}
-			ref = converter.decode(buffer.toString());
+        if (values instanceof String) {
+            byte[] ref =converter.decode((String) values);
+            return new CharacterBuffer().with(ref, 0, ref.length);
+		} 
+
+		CharacterBuffer buffer = new CharacterBuffer();
+		if (values instanceof byte[]) {
+			buffer.with((byte[]) values, 0, ((byte[]) values).length);
+		} else if (values instanceof CharSequence) {
+			buffer.with((CharSequence) values);
 		}
-		return new CharacterBuffer().with(ref);
+		byte[] ref =converter.decode(buffer.toString());
+		return new CharacterBuffer().with(ref, 0, ref.length);
 	}
 
 	/**
@@ -234,7 +234,7 @@ public class ByteConverter64 extends ByteConverter {
 			val >>= 6;
 			outbuf[outpos + 0] = (byte) pem_array[val & 0x3f];
 		}
-		return new CharacterBuffer().with(outbuf);
+		return new CharacterBuffer().with(outbuf, 0, outbuf.length);
 	}
 
 	private static byte[] pem_convert_array = null;

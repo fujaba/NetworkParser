@@ -231,36 +231,51 @@ public class StringUtil {
 	 * @param string A String
 	 * @return A String correctly formatted for insertion in a JSON text.
 	 */
-	public static final String quote(String string) {
+	public static final String quote(CharSequence string) {
+       if (string == null || string.length() == 0) {
+           return "\"\"";
+        }
+	    CharacterBuffer sb = new CharacterBuffer().withBufferLength(string.length() + 4);
+	    sb.with('"');
+	    quoteInteral(sb, string);
+	    sb.with('"');
+	    return sb.toString();
+	    
+	}
+	public static final CharacterBuffer quoteInteral(CharacterBuffer buffer, CharSequence string) {
 		if (string == null || string.length() == 0) {
-			return "\"\"";
+		    return null;
 		}
-
 		int i;
 		int len = string.length();
-		CharacterBuffer sb = new CharacterBuffer().withBufferLength(len + 4);
+		if(buffer == null) {
+		    buffer = new CharacterBuffer().withBufferLength(len+4);
+		}
 		char c;
 		String hhhh;
-		sb.with('"');
+		
 		for (i = 0; i < len; i += 1) {
 			c = string.charAt(i);
 			if (c == '\\') {
-				sb.with('\\').with('\\');
+			    buffer.with('\\', '\\');
 				continue;
 			}
 			if (c == '"') {
-				sb.with('\\').with('\"');
+			    buffer.with('\\', '\"');
 				continue;
 			}
-			if (c < ' ' || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
+			if (c ==13) {
+			    buffer.with('\\', 'r');
+			}else if (c ==10) {
+			    buffer.with('\\', 'n');
+			}else if (c < ' ' || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
 				hhhh = "000" + Integer.toHexString(c);
-				sb.with("\\u" + hhhh.substring(hhhh.length() - 4));
+				buffer.with("\\u" + hhhh.substring(hhhh.length() - 4));
 			} else {
-				sb.with(c);
+			    buffer.with(c);
 			}
 		}
-		sb.with('"');
-		return sb.toString();
+		return buffer;
 	}
 
 	/**

@@ -895,7 +895,7 @@ public int size() {
     if (value instanceof String) {
       value = new CharacterBuffer().with(((String) value).intern());
     } else if (value instanceof byte[]) {
-      value = new CharacterBuffer().with((byte[]) value);
+      value = new CharacterBuffer().with((byte[]) value, 0, ((byte[]) value).length);
     }
     if (value instanceof Buffer) {
       Buffer buffer = (Buffer) value;

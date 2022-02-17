@@ -57,7 +57,10 @@ public class BufferedByteInputStream extends InputStream {
 	 * @return the buffered byte input stream
 	 */
 	public BufferedByteInputStream with(byte[] value) {
-		this.mBuf.with(value);
+	    if(value == null) {
+	        return this;
+	    }
+		this.mBuf.with(value, 0, value.length);
 		return this;
 	}
 	

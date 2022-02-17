@@ -127,6 +127,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	
 	private SimpleKeyValueList<String, String> matchVariables = new SimpleKeyValueList<String, String>();
 	private boolean matchValid = true;
+	private boolean parsing = false;
 	private int matchOfRequestPath;
 
 	/**
@@ -798,8 +799,11 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	 * @return the HTTP request
 	 */
 	public HTTPRequest parse() {
-		readHeader();
-		parseForm();
+	    if(!parsing) {
+    		readHeader();
+    		parseForm();
+    		parsing = true;
+	    }
 		return this;
 	}
 

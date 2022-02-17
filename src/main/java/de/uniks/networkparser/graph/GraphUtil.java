@@ -727,7 +727,7 @@ public class GraphUtil {
 		sb.with(':');
 		sb.with(assoc.getName());
 		sb.with("_");
-		sb.with(assoc.getCardinality());
+		sb.withInt(assoc.getCardinality());
 		sb.with(assoc.getSeperator());
 		assoc = assoc.getOther();
 		if (assoc != null) {
@@ -738,7 +738,7 @@ public class GraphUtil {
 			sb.with(':');
 			sb.with(assoc.getName());
 			sb.with("_");
-			sb.with(assoc.getCardinality());
+			sb.withInt(assoc.getCardinality());
 		}
 		return sb.toString();
 	}

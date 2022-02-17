@@ -231,13 +231,16 @@ sonarqube {
 javadoc {
   options.memberLevel = JavadocMemberLevel.PUBLIC
 }
-
+checkstyle {
+	checkstyleTest.enabled = false
+}
+spotbugsTest {
+    ignoreFailures = true
+	spotbugsTest.enabled = false
+}
+ 
 tasks.withType(Checkstyle) {
-	//configFile = file("src/test/resources/de/uniks/networkparser/test/google_checks.xml")
-	//configFile = file("sun_checks.xml")
 	configFile = file("src/test/resources/de/uniks/networkparser/test/networkparser.xml")
-	
-	//classpath = (sourceSets.main.compileClasspath + sourceSets.main.output + files('build/classes/main18') + files('src/test/resources/de/uniks/networkparser/test/') )
 	reports {
 		xml.enabled true
 		xml.destination = new File("build/checkStyle.xml")

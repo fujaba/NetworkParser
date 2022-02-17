@@ -163,7 +163,7 @@ public class ZipContainer {
 						CharacterBuffer output = new CharacterBuffer();
 						int len = 0;
 						while ((len = zis.read(buffer)) > 0) {
-							output.write(buffer, len);
+							output.with(buffer, 0, len);
 						}
 						if (element instanceof Entity) {
 							((Entity) element).withValue(output);
@@ -211,7 +211,7 @@ public class ZipContainer {
 			CharacterBuffer output = new CharacterBuffer();
 			int len = 0;
 			while ((len = zis.read(buffer)) > 0) {
-				output.write(buffer, len);
+				output.with(buffer, 0, len);
 			}
 			FileBuffer.writeFile(folder + item.getName(), output);
 		} catch (Exception e) {

@@ -858,7 +858,7 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         }
         if (buffer.indexOf(':', 6) < 1) {
             buffer.with(':');
-            buffer.with(port);
+            buffer.withInt(port);
         }
         if (path != null) {
             if (path.startsWith("/")) {

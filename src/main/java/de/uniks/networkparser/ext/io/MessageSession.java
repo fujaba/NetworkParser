@@ -865,9 +865,8 @@ public class MessageSession {
 					out.write(item);
 					sb.with(new String(item));
 				} else if (value instanceof Integer) {
-					Integer item = (Integer) value;
-					out.write(item);
-					sb.with(item);
+					out.write((Integer) value);
+					sb.withInt((Integer) value);
 				}
 			}
 			out.flush();

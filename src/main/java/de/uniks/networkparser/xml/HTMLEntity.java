@@ -750,26 +750,24 @@ public class HTMLEntity implements BaseItem {
 	 */
 	public XMLEntity getElementsBy(String key, String value) {
 		XMLEntity item = new XMLEntity();
-		EntityList headerList = this.header.getElementsBy(key, value);
-		EntityList bodyList = this.body.getElementsBy(key, value);
-		int z;
-		if (headerList != null) {
-			for (z = 0; z < headerList.sizeChildren(); z++) {
-				BaseItem child = headerList.getChild(z);
-				if (child instanceof EntityList) {
-					item.withChild((EntityList) child);
-				}
-			}
-		}
-		if (bodyList != null) {
-			for (z = 0; z < bodyList.sizeChildren(); z++) {
-				BaseItem child = bodyList.getChild(z);
-				if (child instanceof EntityList) {
-					item.withChild((EntityList) child);
-				}
-			}
-		}
+		addChildren(item, this.header.getElementsBy(key, value));
+		addChildren(item, this.body.getElementsBy(key, value));
 		return item;
+	}
+	
+	private void addChildren(XMLEntity item, EntityList list) {
+		if (item != null && list != null) {
+		    if(list.sizeChildren() == 0 && list.size() > 0) {
+		        item.add(list);
+		    }else {
+    			for (int z = 0; z < list.sizeChildren(); z++) {
+    				BaseItem child = list.getChild(z);
+    				if (child instanceof EntityList) {
+    					item.withChild(child);
+    				}
+    			}
+		    }
+		}
 	}
 
 	/**

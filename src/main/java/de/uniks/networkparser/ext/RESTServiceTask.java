@@ -208,6 +208,12 @@ public class RESTServiceTask implements Condition<Socket> {
 		return true;
 	}
 	
+	/**
+	 * Execute HTTP Event
+	 * @param event Event for HTTP (Response)
+	 * @param clientSocket Socket Connection
+	 * @return if success
+	 */
 	public boolean updateExecuteEvent(SimpleEvent event, HTTPRequest clientSocket) {
 	    if(this.executeController != null) {
             boolean success = executeController.update(event);
