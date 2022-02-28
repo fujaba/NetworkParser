@@ -15,7 +15,14 @@ History Changes+Rlastcommit as hash and tree
 
 
 - SimpleMock
-- Rest-API mit COnfig
-- Console Logoutput
+  - Fehlt noch die Implementierung für MockMethod
+- Rest-API mit Config
+  - Erste IMplementierung fertig
 - Promise vereinfachen
+  - Assyncrone ausfühurng gehlt noch
+- Dependency Check for BND
+
+
+- Console Logoutput
+
 

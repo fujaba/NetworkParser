@@ -1,6 +1,9 @@
 package de.uniks.networkparser.ext.petaf;
 
+import java.util.Timer;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /*
 The MIT License
@@ -33,120 +36,214 @@ import de.uniks.networkparser.DateTimeEntity;
  * @author Stefan Lindel
  */
 public class SimpleExecutor implements TaskExecutor {
-	private DateTimeEntity lastRun = new DateTimeEntity();
-	private Space space;
-	private ExecutorService executor;
+    private boolean isCancel;
+    private DateTimeEntity lastRun = new DateTimeEntity();
+    private Space space;
+    private Timer executor;
+    private ExecutorService executorService;
 
-	/**
-	 * Execute task.
-	 *
-	 * @param task the task
-	 * @param delay the delay
-	 * @param interval the interval
-	 * @return the object
-	 */
-	@Override
-	public Object executeTask(Runnable task, int delay, int interval) {
-		try {
-			this.lastRun.withValue(System.currentTimeMillis());
-			if (task != null) {
-				task.run();
-			}
-		} catch (Exception e) {
-			if (space != null) {
-				space.handleException(e);
-			}
-		}
-		return null;
-	}
+    public static SimpleExecutor createSimpleExecutor(String... name) {
+        SimpleExecutor executor = new SimpleExecutor();
+        if (name != null && name.length > 0) {
+            executor.executor = new Timer(name[0]);
+        } else {
+            executor.executor = new Timer("TimerExecutor");
+        }
+        return executor;
+    }
 
-	/**
-	 * Execute task.
-	 *
-	 * @param task the task
-	 * @param delay the delay
-	 * @return the object
-	 */
-	@Override
-	public Object executeTask(Runnable task, int delay) {
-		try {
-			this.lastRun.withValue(System.currentTimeMillis());
-			if (task != null) {
-				if(executor != null) {
-					executor.execute(task);
-					return null;
-				}
-				task.run();
-			}
-		} catch (Exception e) {
-			if (space != null) {
-				space.handleException(e);
-			}
-		}
-		return null;
-	}
+    /**
+     * Cancel.
+     */
+    public void cancel() {
+        this.isCancel = true;
+        if (executor != null) {
+            executor.cancel();
+            executor = null;
+        }
+    }
 
-	/**
-	 * Handle msg.
-	 *
-	 * @param message the message
-	 * @return true, if successful
-	 */
-	@Override
-	public boolean handleMsg(Message message) {
-		if (space != null) {
-			return space.handleMsg(message);
-		}
-		return false;
-	}
+    /**
+     * Checks if is cancel.
+     *
+     * @return true, if is cancel
+     */
+    public boolean isCancel() {
+        return isCancel;
+    }
 
-	/**
-	 * Shutdown.
-	 */
-	@Override
-	public void shutdown() {
-	}
+    /**
+     * Execute task.
+     *
+     * @param task     the task
+     * @param delay    the delay
+     * @param interval the interval
+     * @return the object
+     */
+    @Override
+    public Object executeTask(Runnable task, int delay, int interval) {
+        if (isCancel()) {
+            return null;
+        }
+        try {
+            this.lastRun.withValue(System.currentTimeMillis());
+            SimpleTimerTask newTask;
+            if (task instanceof SimpleTimerTask) {
+                newTask = (SimpleTimerTask) task;
+            } else {
+                newTask = new SimpleTimerTask(space).withTask(task);
+            }
+            newTask.withDateTime(lastRun);
+            if (executor != null) {
+                if (interval > 0) {
+                    this.executor.schedule(newTask, delay, interval);
+                } else {
+                    this.executor.schedule(newTask, delay);
+                }
+            }
+            if (executorService != null) {
+                executorService.execute(newTask);
+            }
+            if (task != null) {
+                task.run();
+            }
 
-	/**
-	 * With space.
-	 *
-	 * @param space the space
-	 * @return the simple executor
-	 */
-	@Override
-	public SimpleExecutor withSpace(Space space) {
-		this.space = space;
-		return this;
-	}
+        } catch (Exception e) {
+            if (space != null) {
+                space.handleException(e);
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * Gets the space.
-	 *
-	 * @return the space
-	 */
-	@Override
-	public Space getSpace() {
-		return space;
-	}
+    /**
+     * Execute task.
+     *
+     * @param task     the task
+     * @param delay    the delay
+     * @param interval the interval
+     * @return the object
+     */
+    public Object executeTaskAtFixedRate(Runnable task, int delay, int interval, TimeUnit unit) {
+        try {
+            this.lastRun.withValue(System.currentTimeMillis());
+            if (executor instanceof ScheduledExecutorService) {
+                return ((ScheduledExecutorService) this.executor).scheduleAtFixedRate(task, delay, interval, unit);
+            }
+            if (task != null) {
+                task.run();
+            }
 
-	/**
-	 * Gets the last run.
-	 *
-	 * @return the last run
-	 */
-	@Override
-	public DateTimeEntity getLastRun() {
-		return lastRun;
-	}
+        } catch (Exception e) {
+            if (space != null) {
+                space.handleException(e);
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * With executor service.
-	 *
-	 * @param executor the executor
-	 * @return the task executor
-	 */
-	public TaskExecutor withExecutorService(ExecutorService executor) {
-		this.executor = executor;
-		return this;
-	}
+    /**
+     * Execute task.
+     *
+     * @param task  the task
+     * @param delay the delay
+     * @return the object
+     */
+    @Override
+    public Object executeTask(Runnable task, int delay) {
+        if (isCancel()) {
+            return null;
+        }
+        try {
+            this.lastRun.withValue(System.currentTimeMillis());
+            if (task != null) {
+                SimpleTimerTask newTask;
+                if (task instanceof SimpleTimerTask) {
+                    newTask = (SimpleTimerTask) task;
+                } else {
+                    newTask = new SimpleTimerTask(space).withTask(task);
+                }
+                newTask.withDateTime(lastRun);
+                if (this.executor != null) {
+                    this.executor.schedule(newTask, delay);
+                    return null;
+                }
+                if (executorService != null) {
+                    executorService.execute(task);
+                    return null;
+                }
+                task.run();
+            }
+        } catch (Exception e) {
+            if (space != null) {
+                space.handleException(e);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Handle msg.
+     *
+     * @param message the message
+     * @return true, if successful
+     */
+    @Override
+    public boolean handleMsg(Message message) {
+        if (space != null) {
+            return space.handleMsg(message);
+        }
+        return false;
+    }
+
+    /**
+     * Shutdown.
+     */
+    @Override
+    public void shutdown() {
+        this.cancel();
+    }
+
+    /**
+     * With space.
+     *
+     * @param space the space
+     * @return the simple executor
+     */
+    @Override
+    public SimpleExecutor withSpace(Space space) {
+        this.space = space;
+        return this;
+    }
+
+    /**
+     * Gets the space.
+     *
+     * @return the space
+     */
+    @Override
+    public Space getSpace() {
+        return space;
+    }
+
+    /**
+     * Gets the last run.
+     *
+     * @return the last run
+     */
+    @Override
+    public DateTimeEntity getLastRun() {
+        return lastRun;
+    }
+
+    /**
+     * With executor service.
+     *
+     * @param executor the executor
+     * @return the task executor
+     */
+    public SimpleExecutor withExecutorService(ExecutorService executor) {
+        this.executorService = executor;
+        return this;
+    }
 }

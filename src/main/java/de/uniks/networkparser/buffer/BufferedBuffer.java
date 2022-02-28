@@ -270,16 +270,39 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		return sb;
 	}
 
-	/**
-	 * Next string.
-	 *
-	 * @param count the count
-	 * @return the string
-	 */
-	public String nextString(int count) {
-		int start = position();
-		CharacterBuffer sb = subSequence(start, start + count).trim();
-		return sb.toString();
+    /**
+     * Get the next n characters.
+     *
+     * @param count The number of characters to take.
+     * @param movePosition MoveCounter
+     * @return A string of n characters. Substring bounds error if there are not n
+     *         characters remaining in the source string.
+     */
+	public String nextString(int count, boolean movePosition) {
+	    int pos = 0;
+        if (count < -1) {
+            count = count * -1;
+            char[] chars = new char[count];
+            while (pos < count) {
+                chars[pos] = this.charAt(this.position() - (count - pos++));
+            }
+            return new String(chars);
+        } else if (count == -1) {
+            count = length() - this.position();
+        } else if (count == 0) {
+            return "";
+        } else if (position() + count > length()) {
+            count = length() - position();
+        }
+        char[] chars = new char[count];
+
+        while (pos < count) {
+            chars[pos] = charAt(position() + pos++);
+        }
+        if(movePosition) {
+            withPosition(position()+count);
+        }
+        return new String(chars);
 	}
 
 	/**
@@ -403,21 +426,21 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	}
 
 	/**
-	 * With.
+     * add char[] to Buffer.
 	 *
 	 * @param buffer the buffer
 	 * @param start the startposition
-	 * @param readed the length
+	 * @param length the length
 	 * @return the buffered buffer
 	 */
 	public abstract BufferedBuffer with(char[] buffer, int start, int length);
 
 	/**
-     * With.
+     * add byte[] to Buffer.
      *
      * @param buffer the buffer
      * @param start the startposition
-     * @param readed the length
+     * @param length the length
      * @return the buffered buffer
      */
     public abstract BufferedBuffer with(byte[] buffer, int start, int length);

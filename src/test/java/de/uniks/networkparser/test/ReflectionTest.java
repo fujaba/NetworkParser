@@ -125,8 +125,5 @@ public class ReflectionTest {
 
     result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.ext.RESTServiceTask.class);
     Assert.assertNotNull(result);
-
-    result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.ext.petaf.TimerExecutor.class);
-    Assert.assertNotNull(result);
   }
 }

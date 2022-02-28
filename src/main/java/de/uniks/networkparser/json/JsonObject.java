@@ -103,6 +103,12 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 				}
 			}
 			returnValue.add(object);
+		}else if(key.indexOf(".")>0) {
+		    int pos = key.indexOf(".");
+		    object = this.get(key.substring(0, pos));
+		    if(object instanceof JsonObject) {
+		        return ((JsonObject) object).getJsonArray(key.substring(pos+1));
+		    }
 		}
 		return returnValue;
 	}

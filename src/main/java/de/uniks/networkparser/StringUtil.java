@@ -242,6 +242,12 @@ public class StringUtil {
 	    return sb.toString();
 	    
 	}
+	/**
+	 * Quote String
+	 * @param buffer Target Buffer
+     * @param string A String
+	 * @return A String correctly formatted for insertion quote-String
+	 */
 	public static final CharacterBuffer quoteInteral(CharacterBuffer buffer, CharSequence string) {
 		if (string == null || string.length() == 0) {
 		    return null;

@@ -508,11 +508,11 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
     		if(year > 0) {
     			this.withYear(year);
     		} else {
-    			this.withYear(getValue(format, "yy", date) + 2000);
+    			this.withYear(getValue(format, "yy", date));
     		}
             this.withMonth(getValue(format, "mm", date));
             this.withDate(getValue(format, "dd", date));	
-            
+            this.calculate();
       } catch (Exception e) {
       }
     }

@@ -1331,14 +1331,24 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
    * @return the int
    */
   public int lastIndexOf(char ch) {
-    for (int i = length - 1; i >= start; i--) {
-      if (buffer[i] == ch) {
+    return lastIndexOf(ch, length);
+  }
+
+  /**
+   * Last index of.
+   *
+   * @param character the character for search
+   * @param offset from index
+   * @return the position or -1 if not found
+   */
+  public int lastIndexOf(char character, int offset) {
+    for (int i = offset - 1; i >= start; i--) {
+      if (buffer[i] == character) {
         return i - start;
       }
     }
     return -1;
   }
-
   /**
    * get the () values.
    *
@@ -1674,6 +1684,11 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		return false;
 	}
 
+    /**
+     * Add a Int to Stream
+     * @param value The Int-Value 
+     * @return ThisComponent
+     */
     public CharacterBuffer withInt(Number value) {
         return this.with("" + value);
     }

@@ -1216,7 +1216,6 @@ public class ReflectionLoader {
 				if (staticCall && isPublic) {
 					return method.invoke(null, methodArgumentsValues);
 				}
-				method.setAccessible(true);
 				if (notifyObject instanceof Boolean) {
 					Object invoke = method.invoke(item, methodArgumentsValues);
 					if (invoke != null) {

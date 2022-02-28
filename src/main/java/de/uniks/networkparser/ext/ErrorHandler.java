@@ -298,6 +298,11 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
     return file;
   }
 
+  public Object getScreen() {
+      return ReflectionLoader.newInstance(ReflectionLoader.RECTANGLE, ReflectionLoader.DIMENSION,
+              ReflectionLoader.callChain(ReflectionLoader.TOOLKIT, "getDefaultToolkit", "getScreenSize"));
+  }
+  
   /**
    * Save screen shoot.
    *
@@ -317,8 +322,8 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
       if (target == null) {
         return null;
       }
-      Object rect = ReflectionLoader.newInstance(ReflectionLoader.RECTANGLE, ReflectionLoader.DIMENSION,
-          ReflectionLoader.callChain(ReflectionLoader.TOOLKIT, "getDefaultToolkit", "getScreenSize"));
+      
+      Object rect = getScreen();
       writeScreen(target, rect);
       if (currentStage != null) {
         Double x = (Double) ReflectionLoader.call(currentStage, "getX");

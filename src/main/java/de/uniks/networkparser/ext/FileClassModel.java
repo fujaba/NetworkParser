@@ -285,7 +285,7 @@ public class FileClassModel extends ClassModel {
                 }
             }
             buffer.skip("static", "final","native", "synchronized", "abstract", "transient");
-            String name = buffer.nextString('(');
+            String name = buffer.nextString('(').toString();
             /* Current Line is not a Methodheader */
             if(buffer.getCurrentChar()!='(') {
                 continue;
