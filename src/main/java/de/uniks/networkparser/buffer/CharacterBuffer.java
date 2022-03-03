@@ -1692,4 +1692,18 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     public CharacterBuffer withInt(Number value) {
         return this.with("" + value);
     }
+    
+
+    /**
+     * Next string.
+     *
+     * @param count the count
+     * @return the string
+     */
+     @Override
+    public String nextString(int count) {
+        int start = position();
+        CharacterBuffer sb = subSequence(start, start + count).trim();
+        return sb.toString();
+    }
 }

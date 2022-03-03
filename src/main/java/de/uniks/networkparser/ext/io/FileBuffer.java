@@ -33,8 +33,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -173,6 +175,7 @@ public class FileBuffer extends Buffer {
 				lookAHead.trimStart(1);
 			}
 			this.position++;
+			this.currentChar = value;
 			return value;
 		}
 		try {
@@ -313,6 +316,24 @@ public class FileBuffer extends Buffer {
 		}
 		return -1;
 	}
+	
+	   /**
+     * Write file.
+     *
+     * @param fileName the file name
+     * @param data the data
+     * @param flag the flag
+     * @return the int
+     */
+    public static final int writeFileUTF8(String fileName, String data) {
+        if (data != null) {
+            String charset = StringUtil.charset(data, StandardCharsets.ISO_8859_1.name(),BaseItem.ENCODING);
+            byte[] ptext = data.getBytes(Charset.forName(charset)); 
+            String value = new String(ptext, StandardCharsets.UTF_8); 
+            return writeFile(fileName, value);
+        }
+        return -1;
+    }
 
 	/**
 	 * Copy file.
@@ -539,7 +560,7 @@ public class FileBuffer extends Buffer {
 			return sb;
 		}
 		if (file.exists()) {
-			final byte[] buffer = new byte[BUFFER];
+		    final byte[] buffer = new byte[BUFFER];
 			int read;
 			FileInputStream is = null;
 			try {

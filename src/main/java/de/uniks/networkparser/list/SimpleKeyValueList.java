@@ -832,7 +832,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			start = pos;
 			while (pos < keyValue.length()) {
 				item = keyValue.charAt(pos);
-				if (item == ',') {
+				if (item == ',' || (item == 13)) {
 					break;
 				}
 				pos++;

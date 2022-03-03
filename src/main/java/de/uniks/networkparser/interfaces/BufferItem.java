@@ -158,8 +158,17 @@ public interface BufferItem {
 	 * @param c               CurrentChar
 	 * @return The NextValue
 	 */
-	Object nextValue(BaseItem creator, boolean allowQuote, boolean allowDuppleMark, char c);
-
+	Object nextValue(char c);
+    /**
+     * Get the NextVlaue.
+     *
+     * @param creator         Creator for creating Child Item
+     * @param allowQuote      Is it allow Quote in NextValue
+     * @param allowDuppleMark Is allow DuppleMarks
+     * @param c               CurrentChar
+     * @return The NextValue
+     */
+    Object nextValueXML(char c);
 	/**
 	 * Get the next Token.
 	 *

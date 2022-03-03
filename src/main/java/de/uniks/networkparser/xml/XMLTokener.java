@@ -81,16 +81,16 @@ public class XMLTokener extends Tokener {
    * @return An object.
    */
   @Override
-  public Object nextValue(Buffer buffer, BaseItem creator, boolean allowQuote, boolean allowDuppleMarks, char c) {
+  public Object nextValue(Buffer buffer, char c) {
     switch (c) {
       case BufferItem.QUOTES:
       case '\'':
         buffer.skip();
-        CharacterBuffer v = nextString(buffer, new CharacterBuffer(), allowQuote, true, c);
+        CharacterBuffer v = nextString(buffer, c);
         String g = StringUtil.unQuote(v);
         return g;
       case XMLEntity.START:
-        BaseItem element = creator.getNewList(false);
+        BaseItem element = new XMLEntity();
         if (element instanceof Entity) {
           parseToEntity((Entity) element, buffer);
         }
@@ -98,7 +98,7 @@ public class XMLTokener extends Tokener {
       default:
         break;
     }
-    return super.nextValue(buffer, creator, allowQuote, allowDuppleMarks, c);
+    return super.nextValueXML(buffer, c);
   }
 
   /**
@@ -200,13 +200,13 @@ public class XMLTokener extends Tokener {
       } else {
         if (xmlEntity.sizeChildren() < 1) {
           /* Normal key Value */
-          Object value = nextValue(buffer, xmlEntity, false, true, c);
+          Object value = nextValueXML(buffer, c);
           if (value == null) {
             return null;
           }
           String key = value.toString();
           if (key.length() > 0) {
-            xmlEntity.put(key, nextValue(buffer, xmlEntity, isAllowQuote, true, buffer.nextClean(false)));
+            xmlEntity.put(key, nextValueXML(buffer, buffer.nextClean(false)));
           }
         } else {
           /* Just a Child */

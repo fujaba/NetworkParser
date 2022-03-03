@@ -301,9 +301,6 @@ public abstract class Buffer implements BufferItem {
    */
   @Override
   public char nextClean(boolean currentValid) {
-    if (position < 0) {
-      position = 0;
-    }
     char c = getCurrentChar();
     if (currentValid && c > ' ') {
       return c;
@@ -434,28 +431,6 @@ public abstract class Buffer implements BufferItem {
     return sc;
   }
 
-  protected CharacterBuffer nextValue(char c, boolean allowDuppleMark) {
-    CharacterBuffer sb = new CharacterBuffer();
-    if (allowDuppleMark) {
-      while (c >= ' ' && STOPCHARSXML.indexOf(c) < 0) {
-        sb.with(c);
-        c = getChar();
-        if (c == 0) {
-          break;
-        }
-      }
-    } else {
-      while (c >= ' ' && STOPCHARSJSON.indexOf(c) < 0) {
-        sb.with(c);
-        c = getChar();
-        if (c == 0) {
-          break;
-        }
-      }
-    }
-    return sb.trim();
-  }
-
   /**
    * Next value.
    *
@@ -466,21 +441,46 @@ public abstract class Buffer implements BufferItem {
    * @return the object
    */
   @Override
-  public Object nextValue(BaseItem creator, boolean allowQuote, boolean allowDuppleMark, char c) {
-    CharacterBuffer value = nextValue(c, allowDuppleMark);
-    if (value.length() < 1) {
+  public Object nextValue(char c) {
+    CharacterBuffer sb = new CharacterBuffer();
+    while (c >= ' ' && STOPCHARSJSON.indexOf(c) < 0) {
+        sb.with(c);
+        c = getChar();
+        if (c == 0) {
+          break;
+        }
+      }
+    return validateReturn(sb);
+  }
+  
+  @Override
+  public Object nextValueXML(char c) {
+      CharacterBuffer sb = new CharacterBuffer();
+      while (c >= ' ' && STOPCHARSXML.indexOf(c) < 0) {
+        sb.with(c);
+        c = getChar();
+        if (c == 0) {
+          break;
+        }
+      }
+      return sb;
+    }
+ 
+  private Object validateReturn(CharacterBuffer sb) {
+    sb.trim();
+    if (sb.length() < 1) {
       return null;
     }
-    if (value.equals("")) {
-      return value;
+    if (sb.equals("")) {
+      return sb;
     }
-    if (value.equalsIgnoreCase("true")) {
+    if (sb.equalsIgnoreCase("true")) {
       return Boolean.TRUE;
     }
-    if (value.equalsIgnoreCase("false")) {
+    if (sb.equalsIgnoreCase("false")) {
       return Boolean.FALSE;
     }
-    if (value.equalsIgnoreCase("null")) {
+    if (sb.equalsIgnoreCase("null")) {
       return null;
     }
     /*
@@ -488,27 +488,27 @@ public abstract class Buffer implements BufferItem {
      * just be a string. Note that the plus and implied string conventions are non-standard. A JSON
      * parser may accept non-JSON forms as long as it accepts all correct JSON forms.
      */
-    Double d;
-    char b = value.charAt(0);
-    if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+') {
-      try {
-        if (value.indexOf('.') > -1 || value.indexOf('e') > -1 || value.indexOf('E') > -1) {
-          d = Double.valueOf(value.toString());
-          if (!d.isInfinite() && !d.isNaN()) {
-            return d;
-          }
-        } else {
-          Long myLong = Long.valueOf(value.toString());
-          if (myLong.longValue() == myLong.intValue()) {
-            return Integer.valueOf(myLong.intValue());
-          }
-          return myLong;
-        }
-      } catch (Exception ignore) {
-        /* Do nothing */
-      }
-    }
-    return value;
+//    Double d;
+//    char b = sb.charAt(0);
+//    if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+') {
+//      try {
+//        if (sb.indexOf('.') > -1 || sb.indexOf('e') > -1 || sb.indexOf('E') > -1) {
+//          d = Double.valueOf(sb.toString());
+//          if (!d.isInfinite() && !d.isNaN()) {
+//            return d;
+//          }
+//        } else {
+//          Long myLong = Long.valueOf(sb.toString());
+//          if (myLong.longValue() == myLong.intValue()) {
+//            return Integer.valueOf(myLong.intValue());
+//          }
+//          return myLong;
+//        }
+//      } catch (Exception ignore) {
+//        /* Do nothing */
+//      }
+//    }
+    return sb;
   }
 
   /**

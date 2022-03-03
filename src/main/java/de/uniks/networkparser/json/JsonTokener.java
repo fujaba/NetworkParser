@@ -34,9 +34,9 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.SimpleMap;
-import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
+import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
@@ -71,27 +71,28 @@ public class JsonTokener extends Tokener {
 	 * @param newValue the newValue
 	 * @return Itself
 	 */
-	@Override
-	public BaseItem parseToEntity(BaseItem parent, Object newValue) {
-		if (newValue == null) {
-			return null;
-		}
-		if (newValue instanceof SimpleKeyValueList<?, ?>) {
-			return parsingEntityXML((JsonObject) parent, (SimpleKeyValueList<?, ?>) newValue);
-		}
-		if (!(newValue instanceof Buffer)) {
-			return null;
-		}
-		Buffer buffer = (Buffer) newValue;
-		if (parent instanceof Entity) {
-			return parsingEntity((Entity) parent, buffer);
-		} else if (parent instanceof EntityList) {
-			return parsingEntity((EntityList) parent, buffer);
-		}
-		return null;
-	}
+//	@Override
+//	public BaseItem parseToEntity(BaseItem parent, Object newValue) {
+//		if (newValue == null) {
+//			return null;
+//		}
+//		if (newValue instanceof SimpleKeyValueList<?, ?>) {
+//			return parsingEntityXML((JsonObject) parent, (SimpleKeyValueList<?, ?>) newValue);
+//		}
+//		if (!(newValue instanceof Buffer)) {
+//			return null;
+//		}
+//		Buffer buffer = (Buffer) newValue;
+//		if (parent instanceof Entity) {
+//			return parsingEntity((Entity) parent, buffer);
+//		} else if (parent instanceof EntityList) {
+//			return parsingEntity((EntityList) parent, buffer);
+//		}
+//		return null;
+//	}
+	
 
-	private EntityList parsingEntity(EntityList entityList, Buffer buffer) {
+	public EntityList parsingEntity(EntityList entityList, Buffer buffer) {
 		if (buffer == null) {
 			return null;
 		}
@@ -107,7 +108,7 @@ public class JsonTokener extends Tokener {
 			for (;;) {
 				c = buffer.getCurrentChar();
 				if (c != ',') {
-					entityList.add(nextValue(buffer, entityList, false, false, (char) 0));
+					entityList.add(nextValue(buffer));
 				}
 				c = buffer.nextClean(true);
 				switch (c) {
@@ -132,7 +133,7 @@ public class JsonTokener extends Tokener {
 		return entityList;
 	}
 
-	private Entity parsingEntity(Entity entity, Buffer buffer) {
+	public Entity parsingEntity(Entity entity, Buffer buffer) {
 		if (buffer == null || entity == null) {
 			return entity;
 		}
@@ -143,8 +144,6 @@ public class JsonTokener extends Tokener {
 			}
 		}
 		buffer.skip();
-		boolean isQuote = true;
-		char stop = (char) 0;
 		char c;
 		do {
 			c = buffer.nextClean(true);
@@ -157,7 +156,6 @@ public class JsonTokener extends Tokener {
 			case '\\':
 				/* unquote */
 				buffer.skip();
-				isQuote = false;
 				continue;
 			case COMMENT:
 				buffer.skip();
@@ -177,7 +175,7 @@ public class JsonTokener extends Tokener {
 				return entity;
 			case ',':
 				buffer.skip();
-				Object keyValue = nextValue(buffer, entity, isQuote, false, stop);
+				Object keyValue = nextValue(buffer);
 				if (keyValue == null) {
 					/* No Key Found Must be an empty statement */
 					return entity;
@@ -185,7 +183,7 @@ public class JsonTokener extends Tokener {
 				key = keyValue.toString();
 				break;
 			default:
-				Object parse = nextValue(buffer, entity, isQuote, false, stop);
+				Object parse = nextValue(buffer);
 				if (parse == null) {
 					return entity;
 				}
@@ -197,7 +195,7 @@ public class JsonTokener extends Tokener {
 					/* HJSON OLD ADD TO VALUE */
 					String oldKey = entity.getKeyByIndex(entity.size() - 1);
 					String valueOld = entity.getValueByIndex(entity.size() - 1).toString();
-					valueOld += " " + key + " " + nextValue(buffer, entity, isQuote, false, stop);
+					valueOld += " " + key + " " + nextValue(buffer);
 
 					entity.put(oldKey, valueOld);
 					continue;
@@ -209,7 +207,7 @@ public class JsonTokener extends Tokener {
 				return null;
 			}
 			buffer.getChar();
-			entity.put(key, nextValue(buffer, entity, isQuote, false, stop));
+			entity.put(key, nextValue(buffer));
 		} while (c != 0);
 		return entity;
 	}
@@ -325,40 +323,46 @@ public class JsonTokener extends Tokener {
 	 * @param stopChar the stop char
 	 * @return the object
 	 */
-	@Override
-	public Object nextValue(Buffer buffer, BaseItem creator, boolean allowQuote, boolean allowDuppleMarks,
-			char stopChar) {
+	public Object nextValue(Buffer buffer) {
 		if (buffer == null) {
 			return null;
 		}
-		stopChar = buffer.nextClean(true);
+		char stopChar = buffer.nextClean(true);
 
 		switch (stopChar) {
 		case BufferItem.QUOTES:
 			buffer.skip();
-			return StringUtil.unQuote(nextString(buffer, new CharacterBuffer(), true, true, stopChar));
+			return nextStringInternal((BufferedBuffer) buffer, stopChar);
 		case '\\':
 			/* Must be unquote */
 			buffer.skip();
 			buffer.skip();
-			return nextString(buffer, new CharacterBuffer(), allowQuote, true, BufferItem.QUOTES);
+			return nextString(buffer, new CharacterBuffer(), true, true, BufferItem.QUOTES);
 		case JsonObject.START:
-			BaseItem element = creator.getNewList(true);
-			if (element instanceof Entity) {
-				this.parseToEntity((Entity) element, buffer);
-			}
-			return element;
+			return this.parsingEntity(new JsonObject(), buffer);
 		case JsonArray.START:
-			BaseItem item = creator.getNewList(false);
-			if (item instanceof EntityList) {
-				this.parseToEntity((EntityList) item, buffer);
-			}
-			return item;
+			return this.parsingEntity(new JsonArray(), buffer);
 		default:
 			break;
 		}
-		return super.nextValue(buffer, creator, allowQuote, allowDuppleMarks, stopChar);
+		return super.nextValue(buffer, stopChar);
 	}
+	
+	private String nextStringInternal(BufferedBuffer buffer,char quotes) {
+        int pos=-1;
+        for (int i = buffer.position(); i < buffer.length(); i++) {
+            if (buffer.charAt(i) == quotes) {
+                pos = i;
+                break;
+            }
+        }
+        if(pos>0) {
+            String result = buffer.nextString(pos-buffer.position());
+            buffer.withPosition(pos+1);
+            return result;
+        }
+        return "";
+    }
 
 	/**
 	 * Parses the entity.

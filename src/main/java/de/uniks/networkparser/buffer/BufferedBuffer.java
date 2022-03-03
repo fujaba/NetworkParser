@@ -255,19 +255,21 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	}
 
 	@Override
-	protected CharacterBuffer nextValue(char c, boolean allowDuppleMark) {
-		int start = position();
-		if (allowDuppleMark) {
-			while (c >= ' ' && STOPCHARSXML.indexOf(c) < 0) {
-				c = getChar();
-			}
-		} else {
-			while (c >= ' ' && STOPCHARSJSON.indexOf(c) < 0) {
-				c = getChar();
-			}
+	public Object nextValueXML(char c) {
+	    int s = position();
+        while (c >= ' ' && STOPCHARSXML.indexOf(c) < 0) {
+            c = getChar();
+        }
+        return subSequence(s, position()).trim();
+	}
+	
+	@Override
+	public CharacterBuffer nextValue(char c) {
+		int s = position();
+		while (c >= ' ' && STOPCHARSJSON.indexOf(c) < 0) {
+			c = getChar();
 		}
-		CharacterBuffer sb = subSequence(start, position()).trim();
-		return sb;
+		return subSequence(s, position()).trim();
 	}
 
     /**
@@ -278,7 +280,7 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
      * @return A string of n characters. Substring bounds error if there are not n
      *         characters remaining in the source string.
      */
-	public String nextString(int count, boolean movePosition) {
+	public String nextString(int count) {
 	    int pos = 0;
         if (count < -1) {
             count = count * -1;
@@ -298,9 +300,6 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 
         while (pos < count) {
             chars[pos] = charAt(position() + pos++);
-        }
-        if(movePosition) {
-            withPosition(position()+count);
         }
         return new String(chars);
 	}

@@ -1,8 +1,10 @@
 package de.uniks.networkparser;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
  * The Class EntityStringConverter.
@@ -12,7 +14,7 @@ import de.uniks.networkparser.interfaces.Entity;
 public class EntityStringConverter implements Converter {
 	private int indentFactor;
 	private int indent;
-	private String relativePath;
+	private String value;
 	
 	/** The Constant EMPTY. */
 	public static final String EMPTY = "";
@@ -44,23 +46,23 @@ public class EntityStringConverter implements Converter {
 	}
 
 	/**
-	 * With path.
+	 * With Delimiter Structure.
 	 *
-	 * @param path the path
+	 * @param value the Delimiter
 	 * @return the entity string converter
 	 */
-	public EntityStringConverter withPath(String path) {
-		this.relativePath = path;
+	public EntityStringConverter withDelimeter(String value) {
+		this.value = value;
 		return this;
 	}
 
 	/**
-	 * Gets the path.
+	 * Gets the Delimiter.
 	 *
-	 * @return the path
+	 * @return the Delimiter
 	 */
-	public String getPath() {
-		return relativePath;
+	public String getDelimiter() {
+		return value;
 	}
 
 	/**
@@ -73,6 +75,16 @@ public class EntityStringConverter implements Converter {
 	public String encode(BaseItem entity) {
 		if (entity instanceof Entity) {
 			return ((Entity) entity).toString(getIndentFactor());
+		}
+		if(entity instanceof SimpleKeyValueList<?, ?>) {
+		    SimpleKeyValueList<?, ?> collection = (SimpleKeyValueList<?, ?>) entity;
+	        CharacterBuffer result = new CharacterBuffer();
+	        for(int i=0;i<collection.size();i++) {
+	            Object key = collection.getKeyByIndex(i);
+	            Object value = collection.getValueByIndex(i);
+	            result.withLine(""+key+this.value+value);
+	        }
+		    return result.toString();
 		}
 		if (entity != null) {
 			return entity.toString(this);

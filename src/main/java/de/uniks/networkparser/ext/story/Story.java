@@ -385,7 +385,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 			}
 		}
 		EntityStringConverter converter = new EntityStringConverter(2);
-		converter.withPath(path);
+		converter.withDelimeter(path);
 		if(file.indexOf(".")<0) {
 			file = file + ".html";
 		}

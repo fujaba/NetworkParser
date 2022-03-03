@@ -3,6 +3,7 @@ package de.uniks.networkparser.json;
 import de.uniks.networkparser.EntityStringConverter;
 import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
@@ -216,8 +217,8 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		}
 		if (values.length > 0) {
 			CharacterBuffer buffer = new CharacterBuffer().with(values[0]);
-			Tokener tokener = new JsonTokener();
-			tokener.parseToEntity(this, buffer);
+//			Tokener tokener = new JsonTokener();
+//			tokener.parseToEntity(this, buffer);
 			return this;
 		}
 		return this;
@@ -230,7 +231,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	 * @return Itself
 	 */
 	public JsonObject withValue(BufferItem values) {
-		new JsonTokener().parseToEntity(this, values);
+		new JsonTokener().parsingEntity((Entity)this, (Buffer) values);
 		return this;
 	}
 
@@ -241,7 +242,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	 * @return Itself
 	 */
 	public JsonObject withEntity(SimpleKeyValueList<?, ?> entity) {
-		new JsonTokener().parseToEntity(this, entity);
+//FIXME		new JsonTokener().parseToEntity(this, entity);
 		return this;
 	}
 

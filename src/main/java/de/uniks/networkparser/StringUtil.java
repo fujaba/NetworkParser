@@ -1,7 +1,9 @@
 package de.uniks.networkparser;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 /*
 NetworkParser
 The MIT License
@@ -139,7 +141,7 @@ public class StringUtil {
 		/* Shave off trailing zeros and decimal point, if possible. */
 
 		String string = number.toString();
-		if (string.indexOf('.') > 0 && string.indexOf('e') < 0 && string.indexOf('E') < 0) {
+		if (string.indexOf('.') >= 0 && string.indexOf('e') < 0 && string.indexOf('E') < 0) {
 			while (string.endsWith("0")) {
 				string = string.substring(0, string.length() - 1);
 			}
@@ -1281,6 +1283,27 @@ public class StringUtil {
 		}
 		return sb.toString(); 
 	}
+	
+    public static String convert(String value, String fromEncoding, String toEncoding) {
+        try {
+            return new String(value.getBytes(fromEncoding), toEncoding);
+        } catch (UnsupportedEncodingException e) {
+        }
+        return "";
+    }
+
+    public static String charset(String value, String... charsets) {
+        String probe = StandardCharsets.UTF_8.name();
+        for (String c : charsets) {
+            Charset charset = Charset.forName(c);
+            if (charset != null) {
+                if (value.equals(convert(convert(value, charset.name(), probe), probe, charset.name()))) {
+                    return c;
+                }
+            }
+        }
+        return StandardCharsets.UTF_8.name();
+    }
 	
 	/**
 	 * Encode parameter.
