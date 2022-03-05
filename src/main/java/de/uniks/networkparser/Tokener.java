@@ -204,40 +204,6 @@ public class Tokener {
 	}
 
 	/**
-	 * Next value.
-	 *
-	 * @param buffer the buffer
-	 * @param creator the creator
-	 * @param allowQuote the allow quote
-	 * @param allowDuppleMark the allow dupple mark
-	 * @param c the c
-	 * @return the object
-	 */
-	public Object nextValueXML(Buffer buffer, char c) {
-		if (buffer != null) {
-			return buffer.nextValueXML(c);
-		}
-		return null;
-	}
-	
-	   /**
-     * Next value.
-     *
-     * @param buffer the buffer
-     * @param creator the creator
-     * @param allowQuote the allow quote
-     * @param allowDuppleMark the allow dupple mark
-     * @param c the c
-     * @return the object
-     */
-    public Object nextValue(Buffer buffer, char c) {
-        if (buffer != null) {
-            return buffer.nextValue(c);
-        }
-        return null;
-    }
-
-	/**
 	 * Next string.
 	 *
 	 * @param buffer the buffer
@@ -297,6 +263,24 @@ public class Tokener {
 		return null;
 	}
 
+
+    /**
+     * Next value.
+     *
+     * @param buffer          the buffer
+     * @param creator         the creator
+     * @param allowQuote      the allow quote
+     * @param allowDuppleMark the allow dupple mark
+     * @param c               the c
+     * @return the object
+     */
+    public Object nextValue(Buffer buffer, char[] stopChars) {
+        if (buffer != null) {
+            return buffer.nextValue(stopChars);
+        }
+        return null;
+    }
+	
 	/**
 	 * New instance.
 	 *

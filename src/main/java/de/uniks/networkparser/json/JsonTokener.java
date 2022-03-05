@@ -57,8 +57,8 @@ import de.uniks.networkparser.xml.XMLEntity;
  * @author Stefan
  */
 public class JsonTokener extends Tokener {
-	/** The Constant JSON_PROPS. */
-	public static final String STOPCHARS = ",]}/\\\"[{;=# ";
+    /** The Constant STOPCHARSJSON. */
+	public static final char[] STOPCHARSXMLEND = new char[] {'"', ',', ':', ']', '}', '/', '\\', '[','{', ';', '=', '#', ' '};
 	
 	/** The Constant COMMENT. */
 	public static final char COMMENT = '#';
@@ -345,7 +345,7 @@ public class JsonTokener extends Tokener {
 		default:
 			break;
 		}
-		return super.nextValue(buffer, stopChar);
+		return super.nextValue(buffer, STOPCHARSXMLEND);
 	}
 	
 	private String nextStringInternal(BufferedBuffer buffer,char quotes) {

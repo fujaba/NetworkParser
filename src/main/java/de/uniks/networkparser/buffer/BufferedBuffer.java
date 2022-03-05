@@ -2,6 +2,7 @@ package de.uniks.networkparser.buffer;
 
 import java.io.InputStream;
 
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
 
 /*
@@ -254,23 +255,16 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		return new String(chars);
 	}
 
-	@Override
-	public Object nextValueXML(char c) {
-	    int s = position();
-        while (c >= ' ' && STOPCHARSXML.indexOf(c) < 0) {
+    @Override
+    public Object nextValue(char[] stopChars) {
+        int s = position();
+        char c;
+        do {
             c = getChar();
-        }
+        }while (c >= ' ' && !StringUtil.containsAny(c, stopChars));
         return subSequence(s, position()).trim();
-	}
-	
-	@Override
-	public CharacterBuffer nextValue(char c) {
-		int s = position();
-		while (c >= ' ' && STOPCHARSJSON.indexOf(c) < 0) {
-			c = getChar();
-		}
-		return subSequence(s, position()).trim();
-	}
+    }
+
 
     /**
      * Get the next n characters.

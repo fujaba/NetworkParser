@@ -1,5 +1,6 @@
 package de.uniks.networkparser.buffer;
 
+import de.uniks.networkparser.StringUtil;
 /*
  * NetworkParser The MIT License Copyright (c) 2010-2016 Stefan Lindel
  * https://www.github.com/fujaba/NetworkParser/
@@ -29,17 +30,6 @@ import de.uniks.networkparser.list.SimpleList;
  * @author Stefan
  */
 public abstract class Buffer implements BufferItem {
-  
-  /** The Constant STOPCHARSJSON. */
-  public static final String STOPCHARSJSON = ",:]}/\\\"[{;=# ";
-  
-  /** The Constant STOPCHARSXML. */
-  public static final String STOPCHARSXML = ",]}/\\\"[{;=# ";
-  
-  /** The Constant STOPCHARSXMLEND. */
-  public static final char[] STOPCHARSXMLEND = new char[] {'"', ',', ']', '}', '/', '\\', '[', '{', ';', '=', '#',
-      '>', '\r', '\n', ' '};
-  
   /** The Constant ENDLINE. */
   public static final char ENDLINE = '\n';
 
@@ -53,8 +43,7 @@ public abstract class Buffer implements BufferItem {
    */
   public short getShort() {
     byte[] bytes = array(Short.SIZE / Byte.SIZE, false);
-    short result = (short) ((bytes[0] << 8) + bytes[1]);
-    return result;
+    return (short) ((bytes[0] << 8) + bytes[1]);
   }
 
   /**
@@ -64,7 +53,7 @@ public abstract class Buffer implements BufferItem {
    */
   public int getInt() {
     byte[] bytes = array(Integer.SIZE / Byte.SIZE, false);
-    return (int) ((bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + bytes[3]);
+    return ((bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + bytes[3]);
   }
 
   /**
@@ -74,7 +63,7 @@ public abstract class Buffer implements BufferItem {
    */
   public int getUnsignedInt() {
     byte[] bytes = array(Integer.SIZE / Byte.SIZE, false);
-    return (int) (((bytes[0] & 0xff) << 24) + ((bytes[1] & 0xff) << 16) + ((bytes[2] & 0xff) << 8)
+    return (((bytes[0] & 0xff) << 24) + ((bytes[1] & 0xff) << 16) + ((bytes[2] & 0xff) << 8)
         + (bytes[3] & 0xff));
   }
 
@@ -435,37 +424,22 @@ public abstract class Buffer implements BufferItem {
    * Next value.
    *
    * @param creator the creator
-   * @param allowQuote the allow quote
-   * @param allowDuppleMark the allow dupple mark
-   * @param c the c
    * @return the object
    */
   @Override
-  public Object nextValue(char c) {
-    CharacterBuffer sb = new CharacterBuffer();
-    while (c >= ' ' && STOPCHARSJSON.indexOf(c) < 0) {
-        sb.with(c);
+  public Object nextValue(char[] stopChars) {
+    CharacterBuffer sb = new CharacterBuffer().with(this.getCurrentChar());
+    char c;
+    do {
         c = getChar();
         if (c == 0) {
-          break;
+            break;
         }
-      }
+        sb.with(c);
+    }while (c >= ' ' && !StringUtil.containsAny(c, stopChars));
     return validateReturn(sb);
   }
   
-  @Override
-  public Object nextValueXML(char c) {
-      CharacterBuffer sb = new CharacterBuffer();
-      while (c >= ' ' && STOPCHARSXML.indexOf(c) < 0) {
-        sb.with(c);
-        c = getChar();
-        if (c == 0) {
-          break;
-        }
-      }
-      return sb;
-    }
- 
   private Object validateReturn(CharacterBuffer sb) {
     sb.trim();
     if (sb.length() < 1) {
@@ -488,26 +462,26 @@ public abstract class Buffer implements BufferItem {
      * just be a string. Note that the plus and implied string conventions are non-standard. A JSON
      * parser may accept non-JSON forms as long as it accepts all correct JSON forms.
      */
-//    Double d;
-//    char b = sb.charAt(0);
-//    if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+') {
-//      try {
-//        if (sb.indexOf('.') > -1 || sb.indexOf('e') > -1 || sb.indexOf('E') > -1) {
-//          d = Double.valueOf(sb.toString());
-//          if (!d.isInfinite() && !d.isNaN()) {
-//            return d;
-//          }
-//        } else {
-//          Long myLong = Long.valueOf(sb.toString());
-//          if (myLong.longValue() == myLong.intValue()) {
-//            return Integer.valueOf(myLong.intValue());
-//          }
-//          return myLong;
-//        }
-//      } catch (Exception ignore) {
-//        /* Do nothing */
-//      }
-//    }
+    
+    char b = sb.charAt(0);
+    if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+') {
+      try {
+        if (sb.indexOf('.') > -1 || sb.indexOf('e') > -1 || sb.indexOf('E') > -1) {
+          Double d = Double.valueOf(sb.toString());
+          if (!d.isInfinite() && !d.isNaN()) {
+            return d;
+          }
+        } else {
+          Long myLong = Long.valueOf(sb.toString());
+          if (myLong.longValue() == myLong.intValue()) {
+            return Integer.valueOf(myLong.intValue());
+          }
+          return myLong;
+        }
+      } catch (Exception ignore) {
+        /* Do nothing */
+      }
+    }
     return sb;
   }
 

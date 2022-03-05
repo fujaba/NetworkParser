@@ -997,6 +997,14 @@ public class StringUtil {
 		return containsAny(cs, toCharArray(searchChars));
 	}
 
+	public static final boolean containsAny(char cs, char[] searchChars) {
+	    for (int i = 0; i < searchChars.length; i++) {
+	        if(searchChars[i]==cs) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
 	/**
 	 * Checks if the CharSequence contains any character in the given set of
 	 * characters.

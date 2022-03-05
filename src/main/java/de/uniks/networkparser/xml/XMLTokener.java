@@ -54,6 +54,10 @@ public class XMLTokener extends Tokener {
   public static final String CHILDREN = "<CHILDREN>";
 
   private SendableEntityCreator defaultFactory;
+  
+  /** The Constant STOPCHARSXMLEND. */
+  public static final char[] STOPCHARSXMLEND = new char[] {'"', ',', ']', '}', '/', '\\', '[', '{', ';', '=', '#', '>', '\r', '\n', ' '};
+      
 
   /** The stopwords. */
   private ArrayList<String> stopwords = new ArrayList<String>();
@@ -80,25 +84,29 @@ public class XMLTokener extends Tokener {
    * @param c The Terminate Char
    * @return An object.
    */
-  @Override
   public Object nextValue(Buffer buffer, char c) {
     switch (c) {
       case BufferItem.QUOTES:
       case '\'':
         buffer.skip();
-        CharacterBuffer v = nextString(buffer, c);
+        CharacterBuffer v;
+        if(isAllowQuote) {
+            v = nextString(buffer, new CharacterBuffer(), isAllowQuote, true, '"');
+        }else {
+            v = nextString(buffer, c);
+        }
         String g = StringUtil.unQuote(v);
         return g;
       case XMLEntity.START:
         BaseItem element = new XMLEntity();
         if (element instanceof Entity) {
-          parseToEntity((Entity) element, buffer);
+          parseToEntity(element, buffer);
         }
         return element;
       default:
         break;
     }
-    return super.nextValueXML(buffer, c);
+    return super.nextValue(buffer, STOPCHARSXMLEND);
   }
 
   /**
@@ -125,14 +133,14 @@ public class XMLTokener extends Tokener {
       }
       return null;
     }
-    XMLEntity xmlEntity = (XMLEntity) entity;
+     XMLEntity xmlEntity = (XMLEntity) entity;
     if (c != XMLEntity.START) {
       if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
         throw new SimpleException("A XML text must begin with '<'");
       }
       return null;
     }
-    xmlEntity.withType(buffer.nextToken(false, Buffer.STOPCHARSXMLEND).toString());
+    xmlEntity.withType(buffer.nextToken(false, STOPCHARSXMLEND).toString());
     XMLEntity child;
     while (true) {
       c = buffer.nextClean(true);
@@ -200,13 +208,12 @@ public class XMLTokener extends Tokener {
       } else {
         if (xmlEntity.sizeChildren() < 1) {
           /* Normal key Value */
-          Object value = nextValueXML(buffer, c);
+          CharSequence value = (CharSequence) nextValue(buffer, STOPCHARSXMLEND);
           if (value == null) {
             return null;
           }
-          String key = value.toString();
-          if (key.length() > 0) {
-            xmlEntity.put(key, nextValueXML(buffer, buffer.nextClean(false)));
+          if (value.length() > 0) {
+            xmlEntity.put(value.toString(), nextValue(buffer, buffer.nextClean(false)));
           }
         } else {
           /* Just a Child */
