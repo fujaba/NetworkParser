@@ -217,8 +217,8 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		}
 		if (values.length > 0) {
 			CharacterBuffer buffer = new CharacterBuffer().with(values[0]);
-//			Tokener tokener = new JsonTokener();
-//			tokener.parseToEntity(this, buffer);
+			Tokener tokener = new JsonTokener();
+			tokener.parseToEntity(this, buffer);
 			return this;
 		}
 		return this;
@@ -242,7 +242,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	 * @return Itself
 	 */
 	public JsonObject withEntity(SimpleKeyValueList<?, ?> entity) {
-//FIXME		new JsonTokener().parseToEntity(this, entity);
+		new JsonTokener().parseToEntity(this, entity);
 		return this;
 	}
 

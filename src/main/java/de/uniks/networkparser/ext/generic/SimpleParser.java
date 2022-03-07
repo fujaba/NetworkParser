@@ -214,23 +214,19 @@ public class SimpleParser {
 			return null;
 		}
 		char firstChar = buffer.nextClean(true);
-		Tokener tokener = null;
-		char endTag = 0;
 		if (firstChar == JsonArray.START) {
-			tokener = new JsonTokener();
-			endTag = JsonArray.END;
-		} else if (firstChar == JsonObject.START) {
-			tokener = new JsonTokener();
-			endTag = JsonObject.END;
-		} else if (firstChar == XMLEntity.START) {
-			tokener = new XMLTokener();
-			endTag = XMLEntity.END;
+		    buffer.nextClean(false);
+	        return decodeModel(buffer, map, new JsonTokener(), JsonArray.END);
 		}
-		if (tokener == null) {
-			return null;
+		if (firstChar == JsonObject.START) {
+            buffer.nextClean(false);
+            return decodeModel(buffer, map, new JsonTokener(), JsonObject.END);
 		}
-		buffer.nextClean(false);
-		return decodeModel(buffer, map, tokener, endTag);
+		if (firstChar == XMLEntity.START) {
+            buffer.nextClean(false);
+            return decodeModel(buffer, map, new XMLTokener(), XMLEntity.END);
+		}
+		return null;
 	}
 
 	private static char getEndTag(char startTag) {
@@ -280,21 +276,23 @@ public class SimpleParser {
 		Object result = null;
 		if (key != null && IdMap.CLASS.equals(key)) {
 			/* CLASSNAME : */
-			buffer.getChar();
+			buffer.skip();
 			className = tokener.nextString(buffer).toString();
 
 			SendableEntityCreator creator = map.getCreator(className, true);
 			if (creator == null) {
 				return null;
 			}
+			buffer.skip();
 
 			/* MAYBE ID */
 			key = tokener.nextString(buffer).toString();
 			String id = null;
 			if (IdMap.ID.equals(key)) {
 				/* : */
-				buffer.getChar();
+				buffer.skip();
 				id = tokener.nextString(buffer).toString();
+				buffer.skip();
 				result = map.getObject(id);
 				if (result != null) {
 					return result;
@@ -309,44 +307,45 @@ public class SimpleParser {
 			char currentChar = buffer.getCurrentChar();
 			while (currentChar != endTag && !buffer.isEnd()) {
 				key = tokener.nextString(buffer).toString();
+				buffer.skip();
 				if (key.length() < 1) {
 					break;
 				}
 				if (Tokener.PROPS.equals(key)) {
-					/* Now Skip */
-
 					/* Start Tag */
-					char propStartTag = currentChar = buffer.getChar();
+					currentChar = buffer.getCurrentChar();
 					char propEndTag = getEndTag(currentChar);
+					buffer.skip();
 					while (currentChar != propEndTag && !buffer.isEnd()) {
 						key = tokener.nextString(buffer).toString();
 						if (key.length() < 1) {
 							break;
 						}
 						/* SKIP : */
-						buffer.getChar();
-
-						if (buffer.getCurrentChar() == propStartTag) {
-							/* new Subtype */
-							Object subElement = decodingModel(buffer, map, tokener, propEndTag);
-							creator.setValue(result, key, subElement, SendableEntityCreator.NEW);
-						} else if (buffer.getCurrentChar() == JsonArray.START) {
-							/* LIST of elements */
-							do {
-								Object subElement = decodingModel(buffer, map, tokener, propEndTag);
-								creator.setValue(result, key, subElement, SendableEntityCreator.NEW);
-								currentChar = buffer.getCurrentChar();
-							} while (currentChar != JsonArray.END && !buffer.isEnd());
+						buffer.skip();
+						if (buffer.getCurrentChar() == JsonArray.START) {
+						    do {
+                                buffer.skip();
+                                Object subElement = decodingSubModel(buffer, map, tokener);
+                                creator.setValue(result, key, subElement, SendableEntityCreator.NEW);
+                                currentChar = buffer.getCurrentChar();
+                            } while (currentChar != JsonArray.END && !buffer.isEnd());
 						} else {
-							String value = tokener.nextString(buffer).toString();
-
-							creator.setValue(result, key, value, SendableEntityCreator.NEW);
-							currentChar = buffer.getCurrentChar();
-						}
+    						Object subElement = decodingSubModel(buffer, map, tokener);
+    						if(subElement != null) {
+    						    creator.setValue(result, key, subElement, SendableEntityCreator.NEW);
+    						} else {
+    						    String value = tokener.nextString(buffer).toString();
+    						    creator.setValue(result, key, value, SendableEntityCreator.NEW);
+    						    currentChar = buffer.getCurrentChar();
+    						    creator.setValue(result, key, subElement, SendableEntityCreator.NEW);
+    						}
+						}						
 					}
 				} else {
 					/* Skip */
 					tokener.nextString(buffer).toString();
+					buffer.skip();
 				}
 			}
 		} else {
@@ -354,4 +353,24 @@ public class SimpleParser {
 		}
 		return result;
 	}
+	
+   private static <T> T decodingSubModel(Buffer buffer, IdMap map, Tokener tokener) {
+        if (buffer == null || map == null) {
+            return null;
+        }
+        char firstChar = buffer.nextClean(true);
+        if (firstChar == JsonArray.START) {
+            buffer.nextClean(false);
+            return decodeModel(buffer, map, tokener, JsonArray.END);
+        }
+        if (firstChar == JsonObject.START) {
+            buffer.nextClean(false);
+            return decodeModel(buffer, map, tokener, JsonObject.END);
+        }
+        if (firstChar == XMLEntity.START) {
+            buffer.nextClean(false);
+            return decodeModel(buffer, map, tokener, XMLEntity.END);
+        }
+        return null;
+    }
 }

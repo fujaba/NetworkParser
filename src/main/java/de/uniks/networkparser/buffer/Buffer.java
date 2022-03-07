@@ -1,26 +1,6 @@
 package de.uniks.networkparser.buffer;
 
 import de.uniks.networkparser.StringUtil;
-/*
- * NetworkParser The MIT License Copyright (c) 2010-2016 Stefan Lindel
- * https://www.github.com/fujaba/NetworkParser/
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
- * associated documentation files (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge, publish, distribute,
- * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all copies or
- * substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
- * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.list.SimpleList;
 
@@ -32,6 +12,7 @@ import de.uniks.networkparser.list.SimpleList;
 public abstract class Buffer implements BufferItem {
   /** The Constant ENDLINE. */
   public static final char ENDLINE = '\n';
+  public static final char[] QUOTE = new char[] {'"'};
 
   /** The index. */
   protected int position;
@@ -309,9 +290,9 @@ public abstract class Buffer implements BufferItem {
   @Override
   public CharacterBuffer nextString(char... quotes) {
     if (quotes == null) {
-      quotes = new char[] {'"'};
+      quotes = QUOTE;
     }
-    return nextString(new CharacterBuffer(), false, false, quotes);
+    return nextString(new CharacterBuffer(), false, true, quotes);
   }
 
   /**
@@ -325,7 +306,6 @@ public abstract class Buffer implements BufferItem {
     if (isQuote) {
       this.skipChar(QUOTES);
       CharacterBuffer result = nextString(QUOTES);
-      this.skipChar(QUOTES);
       return result;
     }
     nextClean(true);
@@ -423,67 +403,67 @@ public abstract class Buffer implements BufferItem {
   /**
    * Next value.
    *
-   * @param creator the creator
-   * @return the object
+   * @param stopChars Chars for stopping
+   * @return nextValue
    */
   @Override
-  public Object nextValue(char[] stopChars) {
-    CharacterBuffer sb = new CharacterBuffer().with(this.getCurrentChar());
-    char c;
+  public CharacterBuffer nextValue(char[] stopChars) {
+    CharacterBuffer sb = new CharacterBuffer();
+    char c = this.getCurrentChar();
     do {
-        c = getChar();
-        if (c == 0) {
-            break;
-        }
         sb.with(c);
+        c = getChar();
     }while (c >= ' ' && !StringUtil.containsAny(c, stopChars));
-    return validateReturn(sb);
-  }
-  
-  private Object validateReturn(CharacterBuffer sb) {
-    sb.trim();
-    if (sb.length() < 1) {
-      return null;
-    }
-    if (sb.equals("")) {
-      return sb;
-    }
-    if (sb.equalsIgnoreCase("true")) {
-      return Boolean.TRUE;
-    }
-    if (sb.equalsIgnoreCase("false")) {
-      return Boolean.FALSE;
-    }
-    if (sb.equalsIgnoreCase("null")) {
-      return null;
-    }
-    /*
-     * If it might be a number, try converting it. If a number cannot be produced, then the value will
-     * just be a string. Note that the plus and implied string conventions are non-standard. A JSON
-     * parser may accept non-JSON forms as long as it accepts all correct JSON forms.
-     */
-    
-    char b = sb.charAt(0);
-    if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+') {
-      try {
-        if (sb.indexOf('.') > -1 || sb.indexOf('e') > -1 || sb.indexOf('E') > -1) {
-          Double d = Double.valueOf(sb.toString());
-          if (!d.isInfinite() && !d.isNaN()) {
-            return d;
-          }
-        } else {
-          Long myLong = Long.valueOf(sb.toString());
-          if (myLong.longValue() == myLong.intValue()) {
-            return Integer.valueOf(myLong.intValue());
-          }
-          return myLong;
-        }
-      } catch (Exception ignore) {
-        /* Do nothing */
-      }
-    }
     return sb;
   }
+  
+  public Object validateReturn(CharacterBuffer sb) {
+      if(sb == null) {
+          return null;
+      }
+      sb.trim();
+      if (sb.length() < 1) {
+        return null;
+      }
+      if (sb.equals("")) {
+        return sb;
+      }
+      if (sb.equalsIgnoreCase("true")) {
+        return Boolean.TRUE;
+      }
+      if (sb.equalsIgnoreCase("false")) {
+        return Boolean.FALSE;
+      }
+      if (sb.equalsIgnoreCase("null")) {
+        return null;
+      }
+      /*
+       * If it might be a number, try converting it. If a number cannot be produced, then the value will
+       * just be a string. Note that the plus and implied string conventions are non-standard. A JSON
+       * parser may accept non-JSON forms as long as it accepts all correct JSON forms.
+       */
+      
+      char b = sb.charAt(0);
+      if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+') {
+        try {
+          if (sb.indexOf('.') > -1 || sb.indexOf('e') > -1 || sb.indexOf('E') > -1) {
+            Double d = Double.valueOf(sb.toString());
+            if (!d.isInfinite() && !d.isNaN()) {
+              return d;
+            }
+          } else {
+            Long myLong = Long.valueOf(sb.toString());
+            if (myLong.longValue() == myLong.intValue()) {
+              return Integer.valueOf(myLong.intValue());
+            }
+            return myLong;
+          }
+        } catch (Exception ignore) {
+          /* Do nothing */
+        }
+      }
+      return sb.toString();
+    }
 
   /**
    * Skip to.

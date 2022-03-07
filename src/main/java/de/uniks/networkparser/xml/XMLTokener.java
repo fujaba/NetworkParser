@@ -56,7 +56,7 @@ public class XMLTokener extends Tokener {
   private SendableEntityCreator defaultFactory;
   
   /** The Constant STOPCHARSXMLEND. */
-  public static final char[] STOPCHARSXMLEND = new char[] {'"', ',', ']', '}', '/', '\\', '[', '{', ';', '=', '#', '>', '\r', '\n', ' '};
+  public static final char[] STOPCHARS = new char[] {'"', ',', ']', '}', '/', '\\', '[', '{', ';', '=', '#', '>', '\r', '\n', ' '};
       
 
   /** The stopwords. */
@@ -78,14 +78,11 @@ public class XMLTokener extends Tokener {
    * Get the next value. The value can be a Boolean, Double, Integer, BaseEntity, Long, or String.
    *
    * @param buffer the buffer
-   * @param creator The new Creator
-   * @param allowQuote is in Text allow Quote
-   * @param allowDuppleMarks the allow dupple marks
-   * @param c The Terminate Char
+   * @param stopChar The Terminate Char
    * @return An object.
    */
-  public Object nextValue(Buffer buffer, char c) {
-    switch (c) {
+  public Object nextValue(Buffer buffer, char stopChar) {
+    switch (stopChar) {
       case BufferItem.QUOTES:
       case '\'':
         buffer.skip();
@@ -93,7 +90,7 @@ public class XMLTokener extends Tokener {
         if(isAllowQuote) {
             v = nextString(buffer, new CharacterBuffer(), isAllowQuote, true, '"');
         }else {
-            v = nextString(buffer, c);
+            v = nextString(buffer, stopChar);
         }
         String g = StringUtil.unQuote(v);
         return g;
@@ -106,7 +103,7 @@ public class XMLTokener extends Tokener {
       default:
         break;
     }
-    return super.nextValue(buffer, STOPCHARSXMLEND);
+    return super.nextValue(buffer, STOPCHARS);
   }
 
   /**
@@ -140,7 +137,7 @@ public class XMLTokener extends Tokener {
       }
       return null;
     }
-    xmlEntity.withType(buffer.nextToken(false, STOPCHARSXMLEND).toString());
+    xmlEntity.withType(buffer.nextToken(false, STOPCHARS).toString());
     XMLEntity child;
     while (true) {
       c = buffer.nextClean(true);
@@ -193,7 +190,7 @@ public class XMLTokener extends Tokener {
         } else {
           buffer.withLookAHead(c);
           if (buffer.getCurrentChar() == '<') {
-            child = (XMLEntity) xmlEntity.getNewList(true);
+            child = xmlEntity.getNewList(true);
             if (parseToEntity(child, buffer) != null) {
               xmlEntity.with(child);
               buffer.skip();
@@ -208,7 +205,7 @@ public class XMLTokener extends Tokener {
       } else {
         if (xmlEntity.sizeChildren() < 1) {
           /* Normal key Value */
-          CharSequence value = (CharSequence) nextValue(buffer, STOPCHARSXMLEND);
+          CharSequence value = (CharSequence) nextValue(buffer, STOPCHARS);
           if (value == null) {
             return null;
           }

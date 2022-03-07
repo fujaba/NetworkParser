@@ -30,7 +30,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import de.uniks.networkparser.EntityStringConverter;
 import de.uniks.networkparser.SimpleException;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
@@ -846,7 +848,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 				key = Integer.valueOf("" + key);
 			}
 			withKeyValue(key, value);
-		} while (pos < keyValue.length());
+		} while (pos < keyValue.length()-1);
 		return this;
 	}
 
@@ -938,6 +940,26 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	public Comparator<Object> comparator() {
 		return cpr;
 	}
+	
+    protected String parseItem(EntityStringConverter converter) {
+        CharacterBuffer sb = new CharacterBuffer();
+        int len = this.size();
+        if(len>0) {
+            sb.with(getKeyByIndex(0).toString());
+            sb.with(converter.getDelimiter());
+            sb.with(getValueByIndex(0).toString());
+        }
+        for (int i = 1; i < len; i++) {
+            Object key = getKeyByIndex(i);
+            if (key != null) {
+                sb.with(',');
+                sb.with(getKeyByIndex(i).toString());
+                sb.with(converter.getDelimiter());
+                sb.with(getValueByIndex(i).toString());
+            }
+        }
+        return sb.toString();
+    }
 
 	/**
 	 * To table.

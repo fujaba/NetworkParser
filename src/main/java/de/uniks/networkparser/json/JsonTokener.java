@@ -34,9 +34,9 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.SimpleMap;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
-import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
@@ -49,7 +49,6 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
 import de.uniks.networkparser.list.ObjectMapEntry;
 import de.uniks.networkparser.list.SimpleIteratorSet;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.xml.XMLEntity;
 
 /**
  * The Class JsonTokener.
@@ -58,11 +57,10 @@ import de.uniks.networkparser.xml.XMLEntity;
  */
 public class JsonTokener extends Tokener {
     /** The Constant STOPCHARSJSON. */
-	public static final char[] STOPCHARSXMLEND = new char[] {'"', ',', ':', ']', '}', '/', '\\', '[','{', ';', '=', '#', ' '};
+	public static final char[] STOPCHARS = new char[] {'"', ',', ':', ']', '}', '/', '\\', '[','{', ';', '=', '#', ' '};
 	
 	/** The Constant COMMENT. */
 	public static final char COMMENT = '#';
-	private boolean simpleFormat;
 
 	/**
 	 * Cross compiling.
@@ -71,26 +69,25 @@ public class JsonTokener extends Tokener {
 	 * @param newValue the newValue
 	 * @return Itself
 	 */
-//	@Override
-//	public BaseItem parseToEntity(BaseItem parent, Object newValue) {
-//		if (newValue == null) {
-//			return null;
-//		}
-//		if (newValue instanceof SimpleKeyValueList<?, ?>) {
-//			return parsingEntityXML((JsonObject) parent, (SimpleKeyValueList<?, ?>) newValue);
-//		}
-//		if (!(newValue instanceof Buffer)) {
-//			return null;
-//		}
-//		Buffer buffer = (Buffer) newValue;
-//		if (parent instanceof Entity) {
-//			return parsingEntity((Entity) parent, buffer);
-//		} else if (parent instanceof EntityList) {
-//			return parsingEntity((EntityList) parent, buffer);
-//		}
-//		return null;
-//	}
-	
+	@Override
+	public BaseItem parseToEntity(BaseItem parent, Object newValue) {
+		if (newValue == null) {
+			return null;
+		}
+		if (newValue instanceof SimpleKeyValueList<?, ?>) {
+		    return parsingEntity((JsonObject) parent, (SimpleKeyValueList<?, ?>) newValue);
+		}
+		if (!(newValue instanceof Buffer)) {
+			return null;
+		}
+		Buffer buffer = (Buffer) newValue;
+		if (parent instanceof Entity) {
+			return parsingEntity((Entity) parent, buffer);
+		} else if (parent instanceof EntityList) {
+			return parsingEntity((EntityList) parent, buffer);
+		}
+		return null;
+	}
 
 	public EntityList parsingEntity(EntityList entityList, Buffer buffer) {
 		if (buffer == null) {
@@ -206,121 +203,16 @@ public class JsonTokener extends Tokener {
 				}
 				return null;
 			}
-			buffer.getChar();
+			buffer.skip();
 			entity.put(key, nextValue(buffer));
 		} while (c != 0);
 		return entity;
 	}
-
-	private BaseItem parsingSimpleEntityXML(JsonObject parent, XMLEntity newValue) {
-		/* <TAG PARAM>CHILDREN</TAG> */
-		if (newValue == null) {
-			return null;
-		}
-
-		/* Parsing all Parameter */
-		int i = 0;
-		for (; i < newValue.size(); i++) {
-			String key = newValue.getKeyByIndex(i);
-			Object value = newValue.getValueByIndex(i);
-			parent.put(key, value);
-		}
-
-		if (i == 0 && newValue.sizeChildren() == 1) {
-			XMLEntity child = (XMLEntity) newValue.getChild(0);
-			if (child.sizeChildren() > 0) {
-				/* PARSING */
-				JsonObject childItem = (JsonObject) newInstance();
-				parsingSimpleEntityXML(childItem, child);
-				parent.put(child.getTag(), childItem);
-
-			} else {
-				parent.put(child.getTag(), child.getValue());
-			}
-			return parent;
-		}
-		/* Parsing children */
-		SimpleKeyValueList<String, Integer> childrenCount = new SimpleKeyValueList<String, Integer>();
-		for (i = 0; i < newValue.sizeChildren(); i++) {
-			XMLEntity child = (XMLEntity) newValue.getChild(i);
-			childrenCount.increment(child.getTag());
-		}
-		SimpleKeyValueList<String, JsonArray> childrenArray = new SimpleKeyValueList<String, JsonArray>();
-		for (i = 0; i < newValue.sizeChildren(); i++) {
-			JsonObject item = (JsonObject) newInstance();
-			BaseItem child = newValue.getChild(i);
-			if (child instanceof XMLEntity) {
-				XMLEntity xml = (XMLEntity) child;
-				String tag = xml.getTag();
-				if (childrenCount.get(tag) == 1) {
-					parsingSimpleEntityXML(item, xml);
-					if (item.size() > 0) {
-						parent.put(tag, item);
-					} else if (xml.getValue() != null) {
-						/* Ifgnore check for ValueItem */
-						String value = xml.getValue().trim();
-						if (value.length() > 0) {
-							parent.put(tag, value);
-						}
-					}
-				} else {
-					JsonArray children = childrenArray.get(tag);
-					if (children == null) {
-						children = (JsonArray) newInstanceList();
-						childrenArray.put(tag, children);
-					}
-					parsingSimpleEntityXML(item, xml);
-					children.add(item);
-				}
-			}
-		}
-		for (i = 0; i < childrenArray.size(); i++) {
-			parent.put(childrenArray.getKeyByIndex(i), childrenArray.getValueByIndex(i));
-		}
-		return parent;
-	}
-
-	private BaseItem parsingEntityXML(JsonObject parent, SimpleKeyValueList<?, ?> newValue) {
-		if (newValue instanceof XMLEntity) {
-			XMLEntity xmlEntity = (XMLEntity) newValue;
-
-			if (simpleFormat) {
-				return parsingSimpleEntityXML(parent, xmlEntity);
-			}
-
-			parent.put(SimpleMap.CLASS, xmlEntity.getTag());
-			JsonObject props = new JsonObject();
-			if (xmlEntity.getValue() != null && xmlEntity.getValue().length() > 0) {
-				parent.put(SimpleMap.VALUE, xmlEntity.getValue());
-			}
-
-			int i;
-			for (i = 0; i < xmlEntity.size(); i++) {
-				parseEntityProp(props, xmlEntity.getValueByIndex(i), xmlEntity.getKeyByIndex(i));
-			}
-
-			for (i = 0; i < xmlEntity.size(); i++) {
-				BaseItem child = xmlEntity.getChild(i);
-				if (!(child instanceof XMLEntity)) {
-					continue;
-				}
-				XMLEntity xml = (XMLEntity) child;
-				parseEntityProp(props, xml, xml.getTag());
-			}
-			parent.put(PROPS, props);
-			return parent;
-		}
-		return null;
-	}
-
+	
 	/**
 	 * Next value.
 	 *
 	 * @param buffer the buffer
-	 * @param creator the creator
-	 * @param allowQuote the allow quote
-	 * @param allowDuppleMarks the allow dupple marks
-	 * @param stopChar the stop char
 	 * @return the object
 	 */
 	public Object nextValue(Buffer buffer) {
@@ -332,12 +224,14 @@ public class JsonTokener extends Tokener {
 		switch (stopChar) {
 		case BufferItem.QUOTES:
 			buffer.skip();
-			return nextStringInternal((BufferedBuffer) buffer, stopChar);
+			return StringUtil.unQuote(nextString(buffer, new CharacterBuffer(), true, true, BufferItem.QUOTES));
+//FIXME			return buffer.validateReturn(nextString(buffer, BufferItem.QUOTES));
+//			return nextStringInternal((BufferedBuffer) buffer, BufferItem.QUOTES);
 		case '\\':
 			/* Must be unquote */
 			buffer.skip();
 			buffer.skip();
-			return nextString(buffer, new CharacterBuffer(), true, true, BufferItem.QUOTES);
+			return buffer.validateReturn(nextString(buffer, new CharacterBuffer(), true, true, BufferItem.QUOTES));
 		case JsonObject.START:
 			return this.parsingEntity(new JsonObject(), buffer);
 		case JsonArray.START:
@@ -345,81 +239,7 @@ public class JsonTokener extends Tokener {
 		default:
 			break;
 		}
-		return super.nextValue(buffer, STOPCHARSXMLEND);
-	}
-	
-	private String nextStringInternal(BufferedBuffer buffer,char quotes) {
-        int pos=-1;
-        for (int i = buffer.position(); i < buffer.length(); i++) {
-            if (buffer.charAt(i) == quotes) {
-                pos = i;
-                break;
-            }
-        }
-        if(pos>0) {
-            String result = buffer.nextString(pos-buffer.position());
-            buffer.withPosition(pos+1);
-            return result;
-        }
-        return "";
-    }
-
-	/**
-	 * Parses the entity.
-	 *
-	 * @param parent the parent
-	 * @param newValue the new value
-	 * @return the json object
-	 */
-	public JsonObject parseEntity(JsonObject parent, SimpleKeyValueList<?, ?> newValue) {
-		if (newValue instanceof XMLEntity) {
-			XMLEntity xmlEntity = (XMLEntity) newValue;
-			parent.put(SimpleMap.CLASS, xmlEntity.getTag());
-			JsonObject props = new JsonObject();
-			if (xmlEntity.getValue() != null && xmlEntity.getValue().length() > 0) {
-				parent.put(SimpleMap.VALUE, xmlEntity.getValue());
-			}
-
-			int i;
-			for (i = 0; i < xmlEntity.size(); i++) {
-				parseEntityProp(props, xmlEntity.getValueByIndex(i), xmlEntity.getKeyByIndex(i));
-			}
-			for (i = 0; i < xmlEntity.size(); i++) {
-				BaseItem child = xmlEntity.getChild(i);
-				if (!(child instanceof XMLEntity)) {
-					continue;
-				}
-				XMLEntity xml = (XMLEntity) child;
-				parseEntityProp(props, xml, xml.getTag());
-			}
-			parent.put(PROPS, props);
-		}
-		return parent;
-	}
-
-	private void parseEntityProp(JsonObject props, Object propValue, String prop) {
-		if (propValue != null) {
-			if (propValue instanceof XMLEntity) {
-				if (props.containsKey(prop)) {
-					Object child = props.get(prop);
-					JsonArray propList = null;
-					if (child instanceof JsonObject) {
-						propList = new JsonArray();
-						propList.add(child);
-					} else if (child instanceof JsonArray) {
-						propList = (JsonArray) child;
-					}
-					if (propList != null) {
-						propList.add(parseEntity(new JsonObject(), (XMLEntity) propValue));
-						props.put(prop, propList);
-					}
-				} else {
-					props.put(prop, parseEntity(new JsonObject(), (XMLEntity) propValue));
-				}
-			} else {
-				props.put(prop, propValue);
-			}
-		}
+		return super.nextValue(buffer, STOPCHARS);
 	}
 
 	/**
@@ -721,16 +541,5 @@ public class JsonTokener extends Tokener {
 		child.put(SimpleMap.CLASS, className);
 		child.put(SimpleMap.ID, id);
 		return child;
-	}
-
-	/**
-	 * With simple format.
-	 *
-	 * @param value the value
-	 * @return the json tokener
-	 */
-	public JsonTokener withSimpleFormat(boolean value) {
-		this.simpleFormat = value;
-		return this;
 	}
 }

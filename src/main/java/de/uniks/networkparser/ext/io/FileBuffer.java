@@ -322,7 +322,6 @@ public class FileBuffer extends Buffer {
      *
      * @param fileName the file name
      * @param data the data
-     * @param flag the flag
      * @return the int
      */
     public static final int writeFileUTF8(String fileName, String data) {

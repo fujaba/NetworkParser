@@ -291,7 +291,7 @@ public class ModelTest implements ObjectCondition {
 		// Really Nessessary???
 //		JsonObject json = new JsonObject().withValue(buffer);
 
-		University uni2 = SimpleParser.decodeModel(buffer, map);
+ 		University uni2 = SimpleParser.decodeModel(buffer, map);
 		Assert.assertNotNull(uni2);
 	}
 	

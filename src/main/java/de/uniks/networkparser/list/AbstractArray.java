@@ -1730,15 +1730,14 @@ public String toString() {
   protected String parseItem(EntityStringConverter converter) {
     CharacterBuffer sb = new CharacterBuffer();
     int len = this.size();
-    for (int i = 0; i < len; i++) {
+    if(len>0) {
+        sb.with(getKeyByIndex(0).toString());
+    }
+    for (int i = 1; i < len; i++) {
       Object key = getKeyByIndex(i);
       if (key != null) {
-        if (sb.isEmpty()) {
-          sb.with(key.toString());
-        } else {
           sb.with(',');
           sb.with(key.toString());
-        }
       }
     }
     sb.with(']');

@@ -31,7 +31,11 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.json.JsonArray;
+import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.xml.XMLEntity;
 
 /**
  * The Class Tokener.
@@ -181,6 +185,59 @@ public class Tokener {
 	public BaseItem parseToEntity(BaseItem entity, Object buffer) {
 		return entity;
 	}
+	
+
+    protected BaseItem parsingEntity(Entity parent, SimpleKeyValueList<?, ?> newValue) {
+        if(newValue instanceof XMLEntity) {
+            parent.put(SimpleMap.CLASS, ((XMLEntity)newValue).getTag());
+            String value = ((XMLEntity)newValue).getValue();
+            if (value != null && value.length() > 0) {
+                parent.put(SimpleMap.VALUE, value);
+            }
+        }
+    
+        JsonObject props = new JsonObject();
+        for (int i = 0; i < newValue.size(); i++) {
+            parseEntityProp(props, newValue.getValueByIndex(i), (String)newValue.getKeyByIndex(i));
+        }
+        if(newValue instanceof XMLEntity) {
+            XMLEntity entity = (XMLEntity) newValue;
+            for (int i = 0; i < entity.sizeChildren(); i++) {
+                BaseItem child = entity.getChild(i);
+                if (!(child instanceof XMLEntity)) {
+                    continue;
+                }
+                parseEntityProp(props, child, ((XMLEntity) child).getTag());
+            }
+        }
+        parent.put(PROPS, props);
+        return parent;
+    }
+    
+  private void parseEntityProp(JsonObject props, Object propValue, String prop) {
+      if (propValue != null) {
+          if (propValue instanceof XMLEntity) {
+              if (props.containsKey(prop)) {
+                  Object child = props.get(prop);
+                  JsonArray propList = null;
+                  if (child instanceof JsonObject) {
+                      propList = new JsonArray();
+                      propList.add(child);
+                  } else if (child instanceof JsonArray) {
+                      propList = (JsonArray) child;
+                  }
+                  if (propList != null) {
+                      propList.add(parsingEntity(newInstance(), (SimpleKeyValueList<?, ?>)propValue));
+                      props.put(prop, propList);
+                  }
+              } else {
+                  props.put(prop, parsingEntity(newInstance(), (SimpleKeyValueList<?, ?>) propValue));
+              }
+          } else {
+              props.put(prop, propValue);
+          }
+      }
+  }
 
 	/**
 	 * Encode.
@@ -268,15 +325,12 @@ public class Tokener {
      * Next value.
      *
      * @param buffer          the buffer
-     * @param creator         the creator
-     * @param allowQuote      the allow quote
-     * @param allowDuppleMark the allow dupple mark
-     * @param c               the c
+     * @param stopChars       the Chars for stopping
      * @return the object
      */
-    public Object nextValue(Buffer buffer, char[] stopChars) {
+    public Object nextValue(Buffer buffer, char... stopChars) {
         if (buffer != null) {
-            return buffer.nextValue(stopChars);
+            return buffer.validateReturn(buffer.nextValue(stopChars));
         }
         return null;
     }

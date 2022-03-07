@@ -256,7 +256,10 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	}
 
     @Override
-    public Object nextValue(char[] stopChars) {
+    public CharacterBuffer nextValue(char[] stopChars) {
+        if(StringUtil.containsAny(this.getCurrentChar(), stopChars)) {
+            return null;
+        }
         int s = position();
         char c;
         do {
@@ -270,7 +273,6 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
      * Get the next n characters.
      *
      * @param count The number of characters to take.
-     * @param movePosition MoveCounter
      * @return A string of n characters. Substring bounds error if there are not n
      *         characters remaining in the source string.
      */

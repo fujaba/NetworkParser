@@ -155,7 +155,7 @@ public interface BufferItem {
 	 * @param stopChars      stopChars
 	 * @return The NextValue
 	 */
-	 Object nextValue(char[] stopChars);
+	CharacterBuffer nextValue(char[] stopChars);
 
 	  /**
 	 * Get the next Token.

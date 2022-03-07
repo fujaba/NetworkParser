@@ -706,9 +706,11 @@ public class JsonTest {
 		JsonObject item = new JsonObject().withKeyValue("item", subItem.toString());
 
 		String itemString = item.toString();
+		// {"item":"{\"id\":\"{\\\"value\\\":\\\"Hallo Welt\\\"}\"}"}
 		Assert.assertEquals(58, itemString.length());
 
 		JsonObject newItem = new JsonObject().withValue(itemString);
+		//{"item":"{\\ id :\\\"{\\\\\\\"value\\\\\\\":\\\\\\\"Hallo Welt\\\\\\\"}\\\"}"}
 		String newItemString = newItem.getString("item");
 		JsonObject newSubItem = new JsonObject().withValue(newItemString);
 		Assert.assertEquals(35, newSubItem.toString().length());
