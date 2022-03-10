@@ -744,6 +744,31 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 		return this;
 	}
+	
+
+    /**
+     * With key value.
+     *
+     * @param key the key
+     * @param value the value
+     * @return the simple key value list
+     */
+    public SimpleKeyValueList<K, V> withNotEmptyValue(Object key, Object value) {
+        if(value == null) {
+            return this;
+        }
+        int pos = hasKeyAndPos(key);
+        if (pos < 0) {
+            return this;
+        }
+        if (pos == size || getByIndex(SMALL_KEY, pos, size) != key) {
+            grow(size + 1);
+            super.addKeyValue(pos, key, value);
+        } else {
+            super.setValue(pos, value, SMALL_VALUE);
+        }
+        return this;
+    }
 
 	/**
 	 * Adds the to key value.

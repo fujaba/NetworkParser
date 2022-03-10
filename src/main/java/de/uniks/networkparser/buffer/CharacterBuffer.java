@@ -1704,6 +1704,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     public String nextString(int count) {
         int start = position();
         CharacterBuffer sb = subSequence(start, start + count).trim();
+        withPosition(start + count);
         return sb.toString();
     }
 }

@@ -42,6 +42,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.RESTServiceTask;
@@ -497,6 +498,44 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         return this;
     }
 
+    
+    /**
+     * Gets the http.
+     *
+     * @param session the session
+     * @param path the path
+     * @param params the params
+     * @return the http
+     */
+    public static HTMLEntity getHTTP(String url, String path, Object... params) {
+        CharacterBuffer buffer = new CharacterBuffer().with(url);
+        if (path != null) {
+            if (path.startsWith("/")) {
+                buffer.with(path);
+            } else {
+                buffer.with('/');
+                buffer.with(path);
+            }
+        }
+        if (params != null && params.length > 0) {
+            buffer.add("?");
+            convertParams(buffer, params);
+        }
+        String uri = buffer.toString();
+        if (uri == null) {
+            return null;
+        }
+        HttpURLConnection conn = getConnection(uri, HTTPRequest.HTTP_TYPE_GET);
+        if (conn == null) {
+            return null;
+        }
+        try {
+            conn.connect();
+            return readAnswer(conn);
+        } catch (IOException e) {
+        }
+        return null;
+    }
     /**
      * Gets the http.
      *
@@ -565,7 +604,8 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
             Map<?, ?> map = (Map<?, ?>) params[0];
             Set<?> keySet = map.keySet();
             for (Object key : keySet) {
-                split = addToList(result, "" + key, "" + map.get(key), split);
+                String value = StringUtil.encodeParameter(""+map.get(key));
+                split = addToList(result, "" + key, value, split);
             }
         } else if (params.length % 2 == 0) {
             for (int i = 0; i < params.length; i += 2) {
@@ -621,7 +661,7 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         HTTPRequest request = new HTTPRequest(url, HTTPRequest.HTTP_TYPE_POST).withContent(params).withContentType(HTTPRequest.HTTP_CONTENT_FORM);
         return sendHTTP(request);
     }
-
+    
     /**
      * Post multi HTTP.
      *
