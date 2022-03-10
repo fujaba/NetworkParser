@@ -89,12 +89,11 @@ public class CharacterReader extends CharacterBuffer {
    *
    * @param sc the sc
    * @param allowQuote the allow quote
-   * @param nextStep the next step
    * @param quotes the quotes
    * @return the character buffer
    */
   @Override
-  public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes) {
+  public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, char... quotes) {
     if (quotes == null) {
       return sc;
     }
@@ -114,7 +113,7 @@ public class CharacterReader extends CharacterBuffer {
       isString = true;
       while (!isEnd()) {
         int len = sc.length();
-        super.nextString(sc, allowQuote, nextStep, quotes);
+        super.nextString(sc, allowQuote, quotes);
         if (sc.length() > len && !sc.endsWith("\"", false)) {
           sc.with(',');
         } else {
@@ -123,7 +122,7 @@ public class CharacterReader extends CharacterBuffer {
       }
       return sc;
     }
-    super.nextString(sc, allowQuote, nextStep, quotes);
+    super.nextString(sc, allowQuote, quotes);
     return sc;
   }
 

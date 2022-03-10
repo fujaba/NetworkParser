@@ -624,7 +624,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
     dateFormat.replace('\'', '\"');
     boolean isString = false;
     do {
-      sub = tokener.nextString(dateFormat, new CharacterBuffer(), false, false, '"').toString();
+      sub = tokener.nextString(dateFormat, new CharacterBuffer(), false, '"').toString();
       if (sub.length() > 0 && !isString) {
           /* Date */
           int dayOfWeek = (int) get(DAY_OF_WEEK);

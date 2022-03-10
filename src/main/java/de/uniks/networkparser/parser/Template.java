@@ -416,7 +416,7 @@ public class Template implements TemplateParser {
 				start = buffer.position();
 				continue;
 			}
-			buffer.nextString(tokenPart, false, false, SPLITEND);
+			buffer.nextString(tokenPart, false, SPLITEND);
 			String key = tokenPart.toString();
 			child = createVariable(key, isExpression);
 			character = buffer.getChar();
@@ -477,7 +477,7 @@ public class Template implements TemplateParser {
 				parent.with(child);
 			}
 			tokenPart.clear();
-			buffer.nextString(tokenPart, false, false, SPLITEND);
+			buffer.nextString(tokenPart, false, SPLITEND);
 
 			// {{#if Type}} {{#end}}
 			IfCondition token = new IfCondition();

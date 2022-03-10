@@ -293,14 +293,12 @@ public class Tokener {
 	 * @param buffer the buffer
 	 * @param sc the sc
 	 * @param allowCRLF the allow CRLF
-	 * @param nextStep the next step
 	 * @param quotes the quotes
 	 * @return the character buffer
 	 */
-	public CharacterBuffer nextString(Buffer buffer, CharacterBuffer sc, boolean allowCRLF, boolean nextStep,
-			char... quotes) {
+	public CharacterBuffer nextString(Buffer buffer, CharacterBuffer sc, boolean allowCRLF, char... quotes) {
 		if (buffer != null) {
-			return buffer.nextString(sc, allowCRLF, nextStep, quotes);
+			return buffer.nextString(sc, allowCRLF, quotes);
 		}
 		return null;
 	}

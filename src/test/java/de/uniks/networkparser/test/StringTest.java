@@ -146,7 +146,7 @@ public class StringTest {
 			int count=0;
 			CharacterBuffer sc;
 			do{
-				sc = tokener.nextString(new CharacterBuffer(), true, false, ',');
+				sc = tokener.nextString(new CharacterBuffer(), true, ',');
 				if(sc.length()>0){
 					Assert.assertNotNull(count);
 					output(count++ + ": #" +sc.toString()+ "# -- " +tokener.isString(), null);
@@ -171,7 +171,7 @@ public class StringTest {
 		tokener.with(value);
 		do{
 			sub = new CharacterBuffer();
-			tokener.nextString(sub, true, false, '"');
+			tokener.nextString(sub, true, '"');
 			if(sub.length()>0){
 				Assert.assertNotNull(count);
 				output(count++ + ": #" +sub+ "# -- " +tokener.isString(), stream);
@@ -202,8 +202,8 @@ public class StringTest {
 		Assert.assertNotNull(bytes[0]);
 //		JsonTokener jsonTokener = (JsonTokener) new JsonTokener();
 		CharacterBuffer buffer = new CharacterBuffer().with(test);
-		Assert.assertNotNull(buffer.nextString(new CharacterBuffer(), true, false, '\"'));
-		Assert.assertNotNull(buffer.nextString(new CharacterBuffer(), true, false, '\"'));
+		Assert.assertNotNull(buffer.nextString(new CharacterBuffer(), true, '\"'));
+		Assert.assertNotNull(buffer.nextString(new CharacterBuffer(), true, '\"'));
 	}
 
 	@Test

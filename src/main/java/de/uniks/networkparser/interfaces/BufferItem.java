@@ -141,13 +141,12 @@ public interface BufferItem {
 	 *
 	 * @param sc         StringContainer for manage Chars
 	 * @param allowQuote is allow Quote in Stream
-	 * @param nextStep   must i step next after find Text
 	 * @param quotes     The quoting character, either <code>"</code>
 	 *                   &nbsp;<small>(double quote)</small> or <code>'</code>
 	 *                   &nbsp;<small>(single quote)</small>.
 	 * @return the StringContainer with the new Value
 	 */
-	CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes);
+	CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, char... quotes);
 
 	/**
 	 * Get the NextVlaue.

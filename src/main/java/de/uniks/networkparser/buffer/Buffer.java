@@ -292,7 +292,10 @@ public abstract class Buffer implements BufferItem {
     if (quotes == null) {
       quotes = QUOTE;
     }
-    return nextString(new CharacterBuffer(), false, true, quotes);
+    CharacterBuffer result = new CharacterBuffer();
+    nextString(result, false, quotes);
+    skip();
+    return result;
   }
 
   /**
@@ -323,7 +326,7 @@ public abstract class Buffer implements BufferItem {
    * @return the character buffer
    */
   @Override
-  public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes) {
+  public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, char... quotes) {
     if (getCurrentChar() == 0 || quotes == null) {
       return sc;
     }
@@ -335,16 +338,13 @@ public abstract class Buffer implements BufferItem {
       }
     }
     if (i < quotes.length) {
-      if (nextStep) {
-        skip();
-      }
       return sc;
     }
-    parseString(sc, allowQuote, nextStep, quotes);
+    parseString(sc, allowQuote, quotes);
     return sc;
   }
 
-  protected CharacterBuffer parseString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes) {
+  public CharacterBuffer parseString(CharacterBuffer sc, boolean allowQuote, char... quotes) {
     sc.with(getCurrentChar());
     if (quotes == null) {
       return sc;
@@ -391,9 +391,6 @@ public abstract class Buffer implements BufferItem {
         c = 0;
       }
     } while (c != 0);
-    if (nextStep) {
-      skip();
-    }
     if (isQuote) {
       sc.remove(sc.length() - 1);
     }
@@ -581,7 +578,7 @@ public abstract class Buffer implements BufferItem {
         return characterBuffer;
       }
     }
-    parseString(characterBuffer, true, false, stopWords);
+    parseString(characterBuffer, true, stopWords);
     return characterBuffer;
   }
 
@@ -613,7 +610,8 @@ public abstract class Buffer implements BufferItem {
     CharacterBuffer sc = new CharacterBuffer();
     do {
       sc.clear();
-      nextString(sc, true, true, '"');
+      nextString(sc, true, '"');
+      skip();
       if (sc.length() > 0) {
         if (sc.indexOf('\"') >= 0) {
           list.add("\"" + sc + "\"");

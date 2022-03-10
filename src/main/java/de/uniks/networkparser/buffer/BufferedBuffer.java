@@ -174,52 +174,50 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		return this;
 	}
 
+	private void next(char... quotes) {
+        char c = getCurrentChar();
+        char b = 0;
+        int i;
+	    do {
+            
+            switch (c) {
+                case 0:
+                    c = 0;
+                    break;
+                case '\n':
+                case '\r':
+                    break;
+                case '\\':
+                    if (b == '\\') {
+                        b=0;
+                        c=getChar();
+                        continue;
+                    }
+                    break;
+                case '"':
+                    if (b == '\\') {
+                        b=c;
+                        c=getChar();
+                        continue;
+                    }
+                    break;
+                default:
+            }
+            for (i = 0; i < quotes.length; i++) {
+                if (c == quotes[i]) {
+                    return;
+                }
+            }
+            b = c;
+            c = getChar();
+            
+        } while (c != 0);
+	}
 	@Override
-	protected CharacterBuffer parseString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes) {
-		if (quotes == null) {
-			sc.with(getCurrentChar());
-			return sc;
-		}
+	public CharacterBuffer parseString(CharacterBuffer sc, boolean check, char... quotes) {
 		int startpos = this.position();
-		char c;
-		char b = getCurrentChar();
-		int i, quoteLen = quotes.length;
-		do {
-			c = getChar();
-			switch (c) {
-			case 0:
-				c = 0;
-				break;
-			case '\n':
-			case '\r':
-				break;
-			default:
-				if (b == '\\') {
-					if (c == '\\') {
-						if (allowQuote) {
-							c = 0;
-						}
-					}
-					if (allowQuote) {
-						b = c;
-						c = 1;
-						continue;
-					}
-				}
-			}
-			b = c;
-			for (i = 0; i < quoteLen; i++) {
-				if (c == quotes[i]) {
-					c = 0;
-					break;
-				}
-			}
-		} while (c != 0);
-
+		next(quotes);
 		int endPos = this.position();
-		if (nextStep) {
-			skip();
-		}
 		sc.with(this.subSequence(startpos, endPos));
 		return sc;
 	}

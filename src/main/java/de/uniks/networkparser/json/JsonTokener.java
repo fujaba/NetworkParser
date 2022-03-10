@@ -34,7 +34,6 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.SimpleMap;
-import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -223,19 +222,23 @@ public class JsonTokener extends Tokener {
 
 		switch (stopChar) {
 		case BufferItem.QUOTES:
-			buffer.skip();
-			return StringUtil.unQuote(nextString(buffer, new CharacterBuffer(), true, true, BufferItem.QUOTES));
-//FIXME			return buffer.validateReturn(nextString(buffer, BufferItem.QUOTES));
-//			return nextStringInternal((BufferedBuffer) buffer, BufferItem.QUOTES);
+            buffer.skip();
+            CharacterBuffer text = new CharacterBuffer();
+            buffer.parseString(text, true, BufferItem.QUOTES);
+            buffer.skip();
+            return text.toString();
 		case '\\':
 			/* Must be unquote */
-			buffer.skip();
-			buffer.skip();
-			return buffer.validateReturn(nextString(buffer, new CharacterBuffer(), true, true, BufferItem.QUOTES));
+            buffer.skip();
+            buffer.skip();
+            CharacterBuffer textResult = new CharacterBuffer();
+            buffer.parseString(textResult, true, BufferItem.QUOTES);
+            buffer.skip();
+            return textResult.toString();
 		case JsonObject.START:
-			return this.parsingEntity(new JsonObject(), buffer);
+			return this.parsingEntity(newInstance(), buffer);
 		case JsonArray.START:
-			return this.parsingEntity(new JsonArray(), buffer);
+			return this.parsingEntity(newInstanceList(), buffer);
 		default:
 			break;
 		}
