@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
@@ -29,7 +30,7 @@ public class JsonMessageTest implements ObjectCondition {
 		}
 		SimpleEvent simpleEvent = (SimpleEvent) event;
 		if(simpleEvent.isNewEvent() || simpleEvent.isIdEvent()){
-			Assert.assertEquals("Message "+pos+":", messages.get(pos++), simpleEvent.getEntity().toString());
+			assertEquals(messages.get(pos++), simpleEvent.getEntity().toString(), "Message "+pos+":");
 		}
 		return true;
 	}
@@ -81,7 +82,7 @@ public class JsonMessageTest implements ObjectCondition {
 		messages.with("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"root\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"A1\"}}}");
 		map.with(this);
 		tree.createApple();
-		Assert.assertEquals(messages.size(), pos);
+		assertEquals(messages.size(), pos);
 
 	}
 	@Test
@@ -112,18 +113,18 @@ public class JsonMessageTest implements ObjectCondition {
 		House newHouse = (House) decodeMap.decode(string);
 
 		// Old Model
-		Assert.assertEquals(4, newHouse.getFloor());
-		Assert.assertEquals("University", newHouse.getName());
+		assertEquals(4, newHouse.getFloor());
+		assertEquals("University", newHouse.getName());
 
 		// Update old Model
 		house.setFloor(42);
 
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"H1\",\"prop\":{\"name\":\"University\",\"floor\":4}}", messages.get(0));
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"H1\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}", messages.get(1));
+		assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"H1\",\"prop\":{\"name\":\"University\",\"floor\":4}}", messages.get(0));
+		assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"H1\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}", messages.get(1));
 
 		decodeMap.decode(messages.get(1));
 
-		Assert.assertEquals(42, newHouse.getFloor());
+		assertEquals(42, newHouse.getFloor());
 	}
 
 }

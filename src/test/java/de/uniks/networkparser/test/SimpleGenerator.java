@@ -1,8 +1,10 @@
 package de.uniks.networkparser.test;
 
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.ext.ModelGenerator;
 import de.uniks.networkparser.graph.Association;
@@ -30,7 +32,7 @@ public class SimpleGenerator {
 		ModelGenerator generator = new ModelGenerator();
 
 		TemplateResultFragment fragment = generator.parseTemplate(template, person);
-		Assert.assertEquals("Hallo\r\n", fragment.getResult().toString());
+		assertEquals("Hallo\r\n", fragment.getResult().toString());
 
 
 		template ="{{#if {{type}}!=INTERFACE}}"
@@ -38,7 +40,7 @@ public class SimpleGenerator {
 				+"{{#endif}}";
 		person = new Clazz("Person");
 		fragment = generator.parseTemplate(template, person);
-		Assert.assertEquals("Hallo\r\n", fragment.getResult().toString());
+		assertEquals("Hallo\r\n", fragment.getResult().toString());
 	}
 
 
@@ -50,7 +52,7 @@ public class SimpleGenerator {
 		Clazz person = new Clazz("Person");
 		ModelGenerator generator = new ModelGenerator();
 		TemplateResultFragment fragment = generator.parseTemplate(template, person);
-		Assert.assertEquals("Hallo\r\n", fragment.getResult().toString());
+		assertEquals("Hallo\r\n", fragment.getResult().toString());
 	}
 
 //	@Test
@@ -81,7 +83,7 @@ public class SimpleGenerator {
 		ModelGenerator generator = new ModelGenerator();
 		TemplateResultFragment generate = generator.parseTemplate(template, name);
 
-		Assert.assertEquals("Hello World\r\n", generate.getResult().toString());
+		assertEquals("Hello World\r\n", generate.getResult().toString());
 	}
 
 	@Test
@@ -97,7 +99,7 @@ public class SimpleGenerator {
 
 		template.generate(model, templateFile, name);
 
-		Assert.assertEquals("Hello ", templateFile.toString());
+		assertEquals("Hello ", templateFile.toString());
 	}
 
 	@Test
@@ -113,7 +115,7 @@ public class SimpleGenerator {
 
 		template.generate(model, templateFile, name);
 
-		Assert.assertEquals("Hello World", templateFile.toString());
+		assertEquals("Hello World", templateFile.toString());
 	}
 
 
@@ -131,7 +133,7 @@ public class SimpleGenerator {
 
 		template.generate(model, templateFile, person);
 
-		Assert.assertEquals("Hello", templateFile.toString());
+		assertEquals("Hello", templateFile.toString());
 	}
 
 	@Test
@@ -152,7 +154,7 @@ public class SimpleGenerator {
 
 		TemplateResultFragment fragment = template.generate(model, templateFile, assoc);
 
-		Assert.assertEquals("de.uniks.test.model.UniSet", fragment.getHeaders().first());
+		assertEquals("de.uniks.test.model.UniSet", fragment.getHeaders().first());
 	}
 	@Test
 	public void testAttribute() {
@@ -166,12 +168,12 @@ public class SimpleGenerator {
 		ModelGenerator generator = new ModelGenerator();
 		TemplateResultFragment fragment;
 		fragment = generator.parseTemplate(template, name);
-		Assert.assertEquals("", fragment.getResult().trim().toString());
-		Assert.assertNull(fragment.getHeaders());
+		assertEquals("", fragment.getResult().trim().toString());
+		assertNull(fragment.getHeaders());
 
 		name.with(DataTypeSet.create(String.class));
 		fragment = generator.parseTemplate(template, name);
-		Assert.assertEquals("(de.uniks.networkparser.list.SimpleSet)", fragment.getHeaders().toString());
+		assertEquals("(de.uniks.networkparser.list.SimpleSet)", fragment.getHeaders().toString());
 	}
 
 }

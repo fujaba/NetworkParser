@@ -1,6 +1,6 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.http.HTTPRequest;
@@ -15,7 +15,7 @@ public class NodeProxyTest {
 //	@Test
 	public void UniversityOfMadness() {
 		HTMLEntity answer = NodeProxyTCP.getHTTP("avocado.uniks.de", 33000, "user/info");
-		Assert.assertNotNull(answer);
+		assertNotNull(answer);
 	}
 
 //	@Test
@@ -45,7 +45,7 @@ public class NodeProxyTest {
 			@Override
 			public boolean update(Object value) {
 				SimpleEvent event=(SimpleEvent) value;
-				Assert.assertNotNull(event);
+				assertNotNull(event);
 				return true;
 			}
 		});

@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.json.JsonObject;
@@ -22,7 +23,7 @@ public class HJson {
 		buffer.withLine("/* js block style comments */foobar2:/* more */\"This is a string value.\"/* a comment */");
 		buffer.withLine("}");
 		JsonObject json=new JsonObject().withValue(buffer);
-		Assert.assertNotNull(json);
+		assertNotNull(json);
 	}
 
 }

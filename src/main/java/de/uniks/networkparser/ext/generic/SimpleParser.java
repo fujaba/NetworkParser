@@ -213,17 +213,17 @@ public class SimpleParser {
 		if (buffer == null || map == null) {
 			return null;
 		}
-		char firstChar = buffer.nextClean(true);
+		char firstChar = buffer.nextClean();
 		if (firstChar == JsonArray.START) {
-		    buffer.nextClean(false);
+		    buffer.nextCleanSkip();
 	        return decodeModel(buffer, map, new JsonTokener(), JsonArray.END);
 		}
 		if (firstChar == JsonObject.START) {
-            buffer.nextClean(false);
+            buffer.nextCleanSkip();
             return decodeModel(buffer, map, new JsonTokener(), JsonObject.END);
 		}
 		if (firstChar == XMLEntity.START) {
-            buffer.nextClean(false);
+            buffer.nextCleanSkip();
             return decodeModel(buffer, map, new XMLTokener(), XMLEntity.END);
 		}
 		return null;
@@ -358,17 +358,17 @@ public class SimpleParser {
         if (buffer == null || map == null) {
             return null;
         }
-        char firstChar = buffer.nextClean(true);
+        char firstChar = buffer.nextClean();
         if (firstChar == JsonArray.START) {
-            buffer.nextClean(false);
+            buffer.nextCleanSkip();
             return decodeModel(buffer, map, tokener, JsonArray.END);
         }
         if (firstChar == JsonObject.START) {
-            buffer.nextClean(false);
+            buffer.nextCleanSkip();
             return decodeModel(buffer, map, tokener, JsonObject.END);
         }
         if (firstChar == XMLEntity.START) {
-            buffer.nextClean(false);
+            buffer.nextCleanSkip();
             return decodeModel(buffer, map, tokener, XMLEntity.END);
         }
         return null;

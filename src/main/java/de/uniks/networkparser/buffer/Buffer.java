@@ -13,6 +13,7 @@ public abstract class Buffer implements BufferItem {
   /** The Constant ENDLINE. */
   public static final char ENDLINE = '\n';
   public static final char[] QUOTE = new char[] {'"'};
+  public static final String EMPTY="";
 
   /** The index. */
   protected int position;
@@ -100,7 +101,7 @@ public abstract class Buffer implements BufferItem {
    * @return the string
    */
   public String substring(int... values) {
-    return "";
+    return EMPTY;
   }
 
   /**
@@ -110,7 +111,7 @@ public abstract class Buffer implements BufferItem {
    * @return the string
    */
   public String next(int... positions) {
-    return "";
+    return EMPTY;
   }
 
   /**
@@ -270,11 +271,26 @@ public abstract class Buffer implements BufferItem {
    * @return the char
    */
   @Override
-  public char nextClean(boolean currentValid) {
+  public char nextClean() {
     char c = getCurrentChar();
-    if (currentValid && c > ' ') {
+    if (c > ' ') {
       return c;
     }
+    do {
+      c = getChar();
+    } while (c != 0 && c <= ' ');
+    return c;
+  }
+  
+  /**
+   * Next clean.
+   *
+   * @param currentValid the current valid
+   * @return the char
+   */
+  @Override
+  public char nextCleanSkip() {
+    char c;
     do {
       c = getChar();
     } while (c != 0 && c <= ' ');
@@ -304,14 +320,14 @@ public abstract class Buffer implements BufferItem {
    * @return the character buffer
    */
   public CharacterBuffer nextString() {
-    nextClean(true);
+    nextClean();
     boolean isQuote = getCurrentChar() == QUOTES;
     if (isQuote) {
       this.skipChar(QUOTES);
       CharacterBuffer result = nextString(QUOTES);
       return result;
     }
-    nextClean(true);
+    nextClean();
     CharacterBuffer result = nextString(SPACE, ENDLINE);
     return result;
   }
@@ -422,7 +438,7 @@ public abstract class Buffer implements BufferItem {
       if (sb.length() < 1) {
         return null;
       }
-      if (sb.equals("")) {
+      if (sb.equals(EMPTY)) {
         return sb;
       }
       if (sb.equalsIgnoreCase("true")) {
@@ -569,10 +585,9 @@ public abstract class Buffer implements BufferItem {
    * @return the character buffer
    */
   @Override
-  public CharacterBuffer nextToken(boolean current, char... stopWords) {
-    nextClean(current);
+  public CharacterBuffer nextToken(char... stopWords) {
     CharacterBuffer characterBuffer = new CharacterBuffer();
-    char c = getCurrentChar();
+    char c = nextCleanSkip();
     for (int i = 0; i < stopWords.length; i++) {
       if (stopWords[i] == c) {
         return characterBuffer;

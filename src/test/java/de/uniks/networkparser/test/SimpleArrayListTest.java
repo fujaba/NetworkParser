@@ -1,13 +1,16 @@
 package de.uniks.networkparser.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.list.EntityComparator;
@@ -41,8 +44,8 @@ public class SimpleArrayListTest {
 		set.add("Stefan");
 
 		list.add("Stefan", "Stefan");
-		Assert.assertEquals(3, set.size());
-		Assert.assertEquals(2, list.size());
+		assertEquals(3, set.size());
+		assertEquals(2, list.size());
 	}
 
 	@Test
@@ -53,17 +56,17 @@ public class SimpleArrayListTest {
 		list.add(new SortedMsg().withNumber(1));
 		list.add(new SortedMsg().withNumber(23));
 		list.add(new SortedMsg().withNumber(80));
-		Assert.assertEquals(1, list.get(0).getNumber());
-		Assert.assertEquals(22, list.get(1).getNumber());
-		Assert.assertEquals(23, list.get(2).getNumber());
-		Assert.assertEquals(42, list.get(3).getNumber());
-		Assert.assertEquals(80, list.get(4).getNumber());
+		assertEquals(1, list.get(0).getNumber());
+		assertEquals(22, list.get(1).getNumber());
+		assertEquals(23, list.get(2).getNumber());
+		assertEquals(42, list.get(3).getNumber());
+		assertEquals(80, list.get(4).getNumber());
 	}
 	
 	@Test
 	public void testEMPTYLIST() {
 		SpeedList<Integer> list = new SpeedList<Integer>();
-		Assert.assertNotNull(list.toString());
+		assertNotNull(list.toString());
 	}
 
 	@Test
@@ -71,7 +74,7 @@ public class SimpleArrayListTest {
 		SimpleList<String> list = new SimpleList<String>().with("Hello", "World", "Test");
 		list.remove(0);
 		ArrayList<String> newList = new ArrayList<String>(list);
-		Assert.assertEquals("World", newList.get(0));
+		assertEquals("World", newList.get(0));
 	}
 
 	@Test
@@ -82,13 +85,13 @@ public class SimpleArrayListTest {
 		simpleSet.add("Welt");
 		simpleSet.add("Welt");
 		simpleSet.add("Simple");
-		Assert.assertEquals(1, simpleSet.getPositionKey("Welt", false));
-		Assert.assertEquals(2, simpleSet.getPositionKey("Welt", true));
+		assertEquals(1, simpleSet.getPositionKey("Welt", false));
+		assertEquals(2, simpleSet.getPositionKey("Welt", true));
 		for (int i = 0; i < 420; i++) {
 			simpleSet.add("!");
 		}
-		Assert.assertEquals(1, simpleSet.getPositionKey("Welt", false));
-		Assert.assertEquals(2, simpleSet.getPositionKey("Welt", true));
+		assertEquals(1, simpleSet.getPositionKey("Welt", false));
+		assertEquals(2, simpleSet.getPositionKey("Welt", true));
 	}
 
 	@Test
@@ -97,14 +100,14 @@ public class SimpleArrayListTest {
 		for (int i = 0; i < 500; i++) {
 			list.add(i);
 		}
-		Assert.assertEquals(500, list.size());
+		assertEquals(500, list.size());
 		SimpleSet<Integer> newList = new SimpleSet<Integer>();
 		newList.withList(list);
-		Assert.assertEquals(500, newList.size());
+		assertEquals(500, newList.size());
 
 		SimpleSet<Integer> newListOBJ = new SimpleSet<Integer>();
 		newListOBJ.with(list.toArray(new Object[list.size()]));
-		Assert.assertEquals(500, newList.size());
+		assertEquals(500, newList.size());
 
 	}
 
@@ -119,8 +122,8 @@ public class SimpleArrayListTest {
 		list.remove(2); // ["Hello", "Test"]
 		list.add(1, "World"); // ["Hello", "World", "Test"]
 		ArrayList<String> newList = new ArrayList<String>(list);
-		Assert.assertEquals("Test", newList.get(2));
-		Assert.assertEquals(3, list.size());
+		assertEquals("Test", newList.get(2));
+		assertEquals(3, list.size());
 	}
 
 	@Test
@@ -130,8 +133,8 @@ public class SimpleArrayListTest {
 		list.add("Test");
 		list.add(1, "World");
 		ArrayList<String> newList = new ArrayList<String>(list);
-		Assert.assertEquals("Test", newList.get(2));
-		Assert.assertEquals(3, list.size());
+		assertEquals("Test", newList.get(2));
+		assertEquals(3, list.size());
 	}
 
 	@Test
@@ -144,8 +147,8 @@ public class SimpleArrayListTest {
 		ArrayList<String> newList = new ArrayList<String>(list); // [Hello,
 																	// World,
 																	// Test, !]
-		Assert.assertEquals("Test", newList.get(2));
-		Assert.assertEquals(4, list.size());
+		assertEquals("Test", newList.get(2));
+		assertEquals(4, list.size());
 	}
 
 	@Test
@@ -176,8 +179,8 @@ public class SimpleArrayListTest {
 		itemB.add(2);
 
 		itemA.retainAll(itemB);
-		Assert.assertEquals(2, itemA.size());
-		Assert.assertEquals(2, itemB.size());
+		assertEquals(2, itemA.size());
+		assertEquals(2, itemB.size());
 	}
 
 	private ArrayList<TestObject> gtTestList() {
@@ -230,12 +233,12 @@ public class SimpleArrayListTest {
 		list.remove(99);
 		list.remove(100);
 		list.add(5, 5);
-		Assert.assertEquals("Map Visible CaseSensitive (5)", list.toString());
+		assertEquals("Map Visible CaseSensitive (5)", list.toString());
 		list.add(6, 6);
 		list.add(7, 7);
 		Object[] array = list.keySet().toArray();
-		Assert.assertEquals(7, array.length);
-		Assert.assertEquals(1, array[0]);
+		assertEquals(7, array.length);
+		assertEquals(1, array[0]);
 	}
 
 	@Test
@@ -258,89 +261,89 @@ public class SimpleArrayListTest {
 		Object[] items = (Object[]) declaredField.get(map);
 		Object[] keys = (Object[]) items[0];
 
-		Assert.assertEquals(5, keys[0]);
-		Assert.assertEquals(null, keys[1]);
-		Assert.assertEquals(1, keys[2]);
-		Assert.assertEquals(2, keys[3]);
-		Assert.assertEquals(3, keys[4]);
-		Assert.assertEquals(4, keys[5]);
+		assertEquals(5, keys[0]);
+		assertEquals(null, keys[1]);
+		assertEquals(1, keys[2]);
+		assertEquals(2, keys[3]);
+		assertEquals(3, keys[4]);
+		assertEquals(4, keys[5]);
 	}
 
 	@Test
 	public void testReadd() {
 		SimpleList<Integer> list = new SimpleList<Integer>();
 
-		Assert.assertFalse(list.contains(3));
-		Assert.assertFalse(list.contains(4));
-		Assert.assertFalse(list.contains(5));
+		assertFalse(list.contains(3));
+		assertFalse(list.contains(4));
+		assertFalse(list.contains(5));
 
 		for (int i = 1; i <= 500; i++) {
 			list.add(i);
 		}
-		Assert.assertEquals(500, list.size());
+		assertEquals(500, list.size());
 
-		Assert.assertTrue(list.contains(3));
-		Assert.assertTrue(list.contains(4));
-		Assert.assertTrue(list.contains(5));
+		assertTrue(list.contains(3));
+		assertTrue(list.contains(4));
+		assertTrue(list.contains(5));
 
 		list.remove((Integer) 4);
 		list.remove((Integer) 3);
 		list.remove((Integer) 2);
 
-		Assert.assertFalse(list.contains(2));
-		Assert.assertFalse(list.contains(3));
-		Assert.assertFalse(list.contains(4));
+		assertFalse(list.contains(2));
+		assertFalse(list.contains(3));
+		assertFalse(list.contains(4));
 
 		list.add(3);
 
-		Assert.assertTrue(list.contains(3));
+		assertTrue(list.contains(3));
 	}
 
 	@Test
 	public void testReaddBig() {
 		SimpleList<Integer> list = new SimpleList<Integer>();
 
-		Assert.assertFalse(list.contains(3));
-		Assert.assertFalse(list.contains(4));
-		Assert.assertFalse(list.contains(5));
+		assertFalse(list.contains(3));
+		assertFalse(list.contains(4));
+		assertFalse(list.contains(5));
 
 		for (int i = 1; i <= 500; i++) {
 			list.add(i);
 		}
-		Assert.assertEquals(500, list.size());
+		assertEquals(500, list.size());
 
-		Assert.assertTrue(list.contains(3));
-		Assert.assertTrue(list.contains(4));
-		Assert.assertTrue(list.contains(5));
+		assertTrue(list.contains(3));
+		assertTrue(list.contains(4));
+		assertTrue(list.contains(5));
 
 		list.remove((Integer) 4);
 		list.remove((Integer) 3);
 		list.remove((Integer) 2);
 
-		Assert.assertFalse(list.contains(3));
-		Assert.assertFalse(list.contains(4));
-		Assert.assertFalse(list.contains(5));
+		assertFalse(list.contains(3));
+		assertFalse(list.contains(4));
+		assertFalse(list.contains(5));
 
 		list.add(3);
 
-		Assert.assertTrue(list.contains(3));
+		assertTrue(list.contains(3));
 
 		// try some larger numbers
-		Assert.assertTrue(list.contains(453));
-		Assert.assertTrue(list.contains(454));
-		Assert.assertTrue(list.contains(455));
+		assertTrue(list.contains(453));
+		assertTrue(list.contains(454));
+		assertTrue(list.contains(455));
 
 		list.remove((Integer) 454);
 		list.remove((Integer) 453);
 		list.remove((Integer) 452);
 
-		Assert.assertFalse(list.contains(453));
-		Assert.assertFalse(list.contains(454));
-		Assert.assertFalse(list.contains(455));
+		assertFalse(list.contains(453));
+		assertFalse(list.contains(454));
+		assertFalse(list.contains(455));
 
 		list.add(453);
 
-		Assert.assertTrue(list.contains(453));
+		assertTrue(list.contains(453));
 	}
 
 
@@ -357,7 +360,7 @@ public class SimpleArrayListTest {
 			sb.add(" ");
 		}
 
-		Assert.assertEquals("Hallo Welt Stefan ", sb.toString());
+		assertEquals("Hallo Welt Stefan ", sb.toString());
 	}
 	
 	@Test
@@ -367,9 +370,9 @@ public class SimpleArrayListTest {
 			double d = i;
 			map.add(d, "" +d);
 		}
-		Assert.assertEquals(10, map.size());
+		assertEquals(10, map.size());
 		for(int i=0;i<10;i++) {
-			Assert.assertEquals(""+i+".0", map.getValue((double)i));
+			assertEquals(""+i+".0", map.getValue((double)i));
 		}
 	}
 	@Test
@@ -378,7 +381,7 @@ public class SimpleArrayListTest {
 		map.put(7.0, "7");
 		map.put(14.0, "14");
 		map.put(3.0, "3");
-		Assert.assertEquals(3, map.size());
+		assertEquals(3, map.size());
 	}
 
 	@Test
@@ -389,40 +392,40 @@ public class SimpleArrayListTest {
 		try {
 			// Test Add
 			set.add("Karli");
-			Assert.assertEquals(2, set.size());
-			Assert.fail( "My method didn't throw when I expected it to" );
+			assertEquals(2, set.size());
+			fail( "My method didn't throw when I expected it to" );
 		} catch (Exception expectedException) {}
 
 		ArrayList<String> arrayList = new ArrayList<String>();
 		arrayList.add("Karli");
 		set.addAll(arrayList);
-		Assert.assertEquals(2, set.size());
+		assertEquals(2, set.size());
 
 		try {
 			set.remove("Stefan");
-			Assert.assertEquals(2, set.size());
+			assertEquals(2, set.size());
 		} catch (Exception expectedException) {}
 
 		try {
 			arrayList = new ArrayList<String>();
 			arrayList.add("Stefan");
 			set.removeAll(arrayList);
-			Assert.assertEquals(2, set.size());
+			assertEquals(2, set.size());
 		} catch (Exception expectedException) {}
 		
 		try {
 			arrayList = new ArrayList<String>();
 			arrayList.add("Stefan");
 			set.retainAll(arrayList);
-			Assert.assertEquals(2, set.size());
+			assertEquals(2, set.size());
 		} catch (Exception expectedException) {}
 		
 //		set.removeIf(filter)
 
 		try {
 			set.clear();
-			Assert.assertEquals(2, set.size());
-			Assert.fail( "My method didn't throw when I expected it to" );
+			assertEquals(2, set.size());
+			fail( "My method didn't throw when I expected it to" );
 		} catch (Exception expectedException) {}
 		//ITERATOR
 		//        public void remove() {

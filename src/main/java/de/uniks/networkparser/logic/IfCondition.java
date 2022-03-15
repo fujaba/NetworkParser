@@ -331,7 +331,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 		this.withTrue(parser.parsing(buffer, customTemplate, false, true, "else", "endif"));
 
 		/* ELSE OR ENDIF */
-		CharacterBuffer tokenPart = buffer.nextToken(false, SPLITEND);
+		CharacterBuffer tokenPart = buffer.nextToken(SPLITEND);
 		if ("else".equalsIgnoreCase(tokenPart.toString())) {
 			buffer.skipChar(SPLITEND);
 			buffer.skipChar(SPLITEND);

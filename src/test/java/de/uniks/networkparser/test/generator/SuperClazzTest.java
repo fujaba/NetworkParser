@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test.generator;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Clazz;
@@ -21,8 +22,8 @@ public class SuperClazzTest {
 
 		regularClazz.withSuperClazz(superClazz, interfaceClazz);
 
-		Assert.assertEquals(1, regularClazz.getSuperClazzes(false).size());
-		Assert.assertEquals(1, regularClazz.getInterfaces(false).size());
+		assertEquals(1, regularClazz.getSuperClazzes(false).size());
+		assertEquals(1, regularClazz.getInterfaces(false).size());
 	}
 	
 	@Test
@@ -39,8 +40,8 @@ public class SuperClazzTest {
 		regularClazz.withSuperClazz(superClazz);
 		regularClazz.withSuperClazz(interfaceClazz);
 
-		Assert.assertEquals(1, regularClazz.getSuperClazzes(false).size());
-		Assert.assertEquals(1, regularClazz.getInterfaces(false).size());
+		assertEquals(1, regularClazz.getSuperClazzes(false).size());
+		assertEquals(1, regularClazz.getInterfaces(false).size());
 	}
 	
 	@Test
@@ -57,8 +58,8 @@ public class SuperClazzTest {
 		regularClazz.withSuperClazz(interfaceClazz);
 		regularClazz.withSuperClazz(superClazz);
 
-		Assert.assertEquals(1, regularClazz.getSuperClazzes(false).size());
-		Assert.assertEquals(1, regularClazz.getInterfaces(false).size());
+		assertEquals(1, regularClazz.getSuperClazzes(false).size());
+		assertEquals(1, regularClazz.getInterfaces(false).size());
 	}
 	
 	@Test
@@ -78,8 +79,8 @@ public class SuperClazzTest {
 		regularClazz.withSuperClazz(superClazz, interfaceClazz);
 		regularClazz.withSuperClazz(interfaceClazz2);
 
-		Assert.assertEquals(1, regularClazz.getSuperClazzes(false).size());
-		Assert.assertEquals(2, regularClazz.getInterfaces(false).size());
+		assertEquals(1, regularClazz.getSuperClazzes(false).size());
+		assertEquals(2, regularClazz.getInterfaces(false).size());
 	}
 
 	@Test
@@ -91,7 +92,7 @@ public class SuperClazzTest {
 
 		regularClazz.withSuperClazz(superClazz);
 
-		Assert.assertEquals(1, regularClazz.getSuperClazzes(false).size());
+		assertEquals(1, regularClazz.getSuperClazzes(false).size());
 	}
 
 	@Test
@@ -106,8 +107,8 @@ public class SuperClazzTest {
 //		regularClazz.withSuperClazz(interfaceClazz);
 		interfaceClazz.enableInterface();
 
-		Assert.assertEquals(1, regularClazz.getSuperClazzes(false).size());
-		Assert.assertEquals(1, regularClazz.getInterfaces(false).size());
+		assertEquals(1, regularClazz.getSuperClazzes(false).size());
+		assertEquals(1, regularClazz.getInterfaces(false).size());
 	}
 
 	@Test
@@ -121,18 +122,18 @@ public class SuperClazzTest {
 		regularClazz.withSuperClazz(superClazz, interfaceClazz);
 		interfaceClazz.enableInterface();
 
-		Assert.assertEquals(1, regularClazz.getSuperClazzes(false).size());
-		Assert.assertEquals(1, regularClazz.getInterfaces(false).size());
+		assertEquals(1, regularClazz.getSuperClazzes(false).size());
+		assertEquals(1, regularClazz.getInterfaces(false).size());
 
 		regularClazz.remove(superClazz);
 
-		Assert.assertEquals(0, regularClazz.getSuperClazzes(false).size());
-		Assert.assertEquals(1, regularClazz.getInterfaces(false).size());
+		assertEquals(0, regularClazz.getSuperClazzes(false).size());
+		assertEquals(1, regularClazz.getInterfaces(false).size());
 
 		regularClazz.remove(interfaceClazz);
 
-		Assert.assertEquals(0, regularClazz.getSuperClazzes(false).size());
-		Assert.assertEquals(0, regularClazz.getInterfaces(false).size());
+		assertEquals(0, regularClazz.getSuperClazzes(false).size());
+		assertEquals(0, regularClazz.getInterfaces(false).size());
 
 	}
 

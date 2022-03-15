@@ -1,19 +1,22 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 
 public class TestBroadCast {
-	@Test(timeout=5000)
+	@Test
+	@Timeout(5)
 	public void testBroadCast() throws IOException {
 		Space space = Space.newInstance(NodeProxyTCP.createServer(5000), NodeProxyTCP.createServer(9876));
 		Timer timer = new Timer();
@@ -36,7 +39,7 @@ public class TestBroadCast {
 			NodeProxyTCP broasCast = new NodeProxyTCP().withServerType(NodeProxy.TYPE_OUT);
 			DatagramPacket answer = broasCast.executeBroadCast(false);
 			if(answer != null) {
-				Assert.assertNotNull(answer.getData());
+				assertNotNull(answer.getData());
 			}
 //			String modifiedSentence = new String(answer.getData());
 //			System.out.println("FROM SERVER:" + modifiedSentence);

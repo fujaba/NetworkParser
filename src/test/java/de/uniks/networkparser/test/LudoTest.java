@@ -3,7 +3,7 @@ package de.uniks.networkparser.test;
 import static de.uniks.networkparser.graph.Association.MANY;
 import static de.uniks.networkparser.graph.Association.ONE;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.ludo.model.Ludo;
 import de.uniks.ludo.model.util.LudoSet;

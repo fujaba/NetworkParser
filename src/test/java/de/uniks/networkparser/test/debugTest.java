@@ -1,12 +1,13 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.list.EntityComparator;
@@ -31,13 +32,13 @@ public class debugTest {
 		values.add(4);
 
 		SortedSet<Integer> subSet = values.subSet(2, 4);
-		Assert.assertEquals("OLD subSet:", "2 3 ", getString(subSet));
+		assertEquals("2 3 ", getString(subSet), "OLD subSet:");
 
 		SortedSet<Integer> headSet = values.headSet(3);
-		Assert.assertEquals("OLD headSet:", "1 2 ", getString(headSet));
+		assertEquals("1 2 ", getString(headSet), "OLD headSet:");
 
 		SortedSet<Integer> tailSet = values.tailSet(3);
-		Assert.assertEquals("OLD tailSet:", "3 4 5 ", getString(tailSet));
+		assertEquals("3 4 5 ", getString(tailSet), "OLD tailSet:");
 	}
 
 	public String getString(Collection<?> set) {
@@ -59,13 +60,13 @@ public class debugTest {
 		values.add(4);
 
 		JsonArray subSet = values.subList(2, 4);
-		Assert.assertEquals("NEW subSet:", "3 4 ", getString(subSet));
+		assertEquals("3 4 ", getString(subSet), "NEW subSet:");
 
 		JsonArray headSet = values.headSet(3, true);
-		Assert.assertEquals("NEW headSet:", "3 ", getString(headSet));
+		assertEquals("3 ", getString(headSet), "NEW headSet:");
 
 		JsonArray tailSet = values.tailSet(3, true);
-		Assert.assertEquals("NEW tailSet:", "3 4 5 ", getString(tailSet));
+		assertEquals("3 4 5 ", getString(tailSet), "NEW tailSet:");
 	}
 
 	class IntComparator implements Comparator<Object>{

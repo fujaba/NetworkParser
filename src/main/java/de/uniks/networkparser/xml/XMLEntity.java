@@ -98,7 +98,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			if (buffer == null) {
 				return null;
 			}
-			char c = buffer.nextClean(true);
+			char c = buffer.nextClean();
 			if (c != START) {
 				Object item = buffer.getString(buffer.length() - buffer.position());
 				if (item != null) {

@@ -115,7 +115,16 @@ public interface BufferItem {
 	 *
 	 * @return A character, or 0 if there are no more characters.
 	 */
-	char nextClean(boolean currentValid);
+	char nextClean();
+	
+	   /**
+     * Get the next char in the string, skipping whitespace.
+     * 
+     * @param currentValid is the current char also a valid character
+     *
+     * @return A character, or 0 if there are no more characters.
+     */
+    char nextCleanSkip();
 
 	/**
 	 * Return the characters up to the next close quote character. Backslash
@@ -163,7 +172,7 @@ public interface BufferItem {
 	 * @param stopWords may be at Simple Space
 	 * @return The next Token
 	 */
-	CharacterBuffer nextToken(boolean current, char... stopWords);
+	CharacterBuffer nextToken(char... stopWords);
 
 	/**
 	 * Skip.

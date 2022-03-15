@@ -1,6 +1,10 @@
 package de.uniks.networkparser.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -9,8 +13,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Date;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.Filter;
@@ -95,14 +98,14 @@ public class GraphTest {
       last = new Clazz("CLASSNAME_" + i);
       list.add(last);
     }
-    Assert.assertEquals(list.size(), size);
+    assertEquals(list.size(), size);
     last = new Clazz("CLASSNAME_0");
     list.add(last);
     list.add(last);
     list.add(new Clazz("CLASSNAME_NEW"));
 
 
-    Assert.assertEquals(list.size(), size + 2);
+    assertEquals(list.size(), size + 2);
   }
 
   @Test
@@ -115,12 +118,12 @@ public class GraphTest {
     Entity json = converter.convertToJson(model, true, true);
 
     ClassModel modelB = (ClassModel) converter.convertFromJson(json, new ClassModel());
-    Assert.assertEquals(modelB.getClazzes().size(), 2);
+    assertEquals(modelB.getClazzes().size(), 2);
 
     String meta =
         "{\"type\":\"classdiagram\",\"id\":\"i.love.networkparser\",\"nodes\":[{\"modifiers\":\"public\",\"type\":\"class\",\"id\":\"Student\",\"attributes\":[{\"id\":\"uni\",\"modifiers\":\"private\",\"type\":\"Uni\"}]}]}";
     ClassModel modelC = (ClassModel) converter.convertFromJson(JsonObject.create(meta), new ClassModel());
-    Assert.assertEquals(modelC.getClazzes().size(), 2);
+    assertEquals(modelC.getClazzes().size(), 2);
   }
 
   @Test
@@ -140,9 +143,9 @@ public class GraphTest {
     person.createMethod("go");
     person.withBidirectional(food, "has", Association.MANY, "owner", Association.ONE);
 
-    Assert.assertEquals(2, person.getMethods().size());
-    Assert.assertEquals(2, person.getAttributes().size());
-    Assert.assertEquals(3, person.getAssociations().size());
+    assertEquals(2, person.getMethods().size());
+    assertEquals(2, person.getAttributes().size());
+    assertEquals(3, person.getAssociations().size());
   }
 
 
@@ -152,42 +155,42 @@ public class GraphTest {
     IdMap map = new IdMap();
     map.withTimeStamp(1);
     JsonObject jsonObject = map.toJsonObject(so);
-    Assert.assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"prop\":{\"value\":42}}", jsonObject.toString());
+    assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"prop\":{\"value\":42}}", jsonObject.toString());
     jsonObject = map.toJsonObject(so, Filter.createSimple());
-    Assert.assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"value\":42}", jsonObject.toString());
+    assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"value\":42}", jsonObject.toString());
 
-    Assert.assertEquals(so.getValue(), 42);
+    assertEquals(so.getValue(), 42);
   }
 
   @Test
   public void testModifier() {
     GraphList model = new GraphList();
     Clazz person = model.createClazz("Person");
-    Assert.assertEquals("public", person.getModifier().toString());
+    assertEquals("public", person.getModifier().toString());
 
     person.with(Modifier.ABSTRACT);
     person.with(Modifier.ABSTRACT);
 
-    Assert.assertEquals("public abstract", person.getModifier().toString());
+    assertEquals("public abstract", person.getModifier().toString());
 
     person.with(Modifier.FINAL);
 
-    Assert.assertEquals("public abstract final", person.getModifier().toString());
+    assertEquals("public abstract final", person.getModifier().toString());
 
     Clazz uni = model.createClazz("Uni");
 
-    Assert.assertEquals("public", uni.getModifier().toString());
+    assertEquals("public", uni.getModifier().toString());
     uni.with(Modifier.ABSTRACT);
 
-    Assert.assertEquals("public abstract", uni.getModifier().toString());
+    assertEquals("public abstract", uni.getModifier().toString());
 
     Clazz student = model.createClazz("Student");
     student.with(Modifier.create(Modifier.ABSTRACT));
 
-    Assert.assertEquals("public abstract", student.getModifier().toString());
+    assertEquals("public abstract", student.getModifier().toString());
 
-    Assert.assertEquals("public abstract", uni.getModifier().toString());
-    Assert.assertEquals("public abstract final", person.getModifier().toString());
+    assertEquals("public abstract", uni.getModifier().toString());
+    assertEquals("public abstract final", person.getModifier().toString());
   }
 
 
@@ -198,12 +201,12 @@ public class GraphTest {
     person.withBidirectional(uni, "owner", Association.ONE, "has", Association.MANY);
     person.withBidirectional(uni, "owner", Association.ONE, "has", Association.MANY);
 
-    Assert.assertEquals(1, uni.getAssociations().size());
-    Assert.assertEquals(1, person.getAssociations().size());
+    assertEquals(1, uni.getAssociations().size());
+    assertEquals(1, person.getAssociations().size());
 
     person.withBidirectional(uni, "ownerB", Association.ONE, "hasN", Association.MANY);
-    Assert.assertEquals(2, uni.getAssociations().size());
-    Assert.assertEquals(2, person.getAssociations().size());
+    assertEquals(2, uni.getAssociations().size());
+    assertEquals(2, person.getAssociations().size());
 
   }
 
@@ -226,7 +229,7 @@ public class GraphTest {
   @Test
   public void testDataType() {
     DataType dataType = DataType.create("int");
-    Assert.assertEquals(dataType.toString(), "DataType.INT");
+    assertEquals(dataType.toString(), "DataType.INT");
   }
 
   @Test
@@ -237,7 +240,7 @@ public class GraphTest {
     list.with(node);
 
     GraphConverter converter = new GraphConverter();
-    Assert.assertEquals(
+    assertEquals(
         "{\"type\":\"classdiagram\",\"nodes\":[{\"type\":\"class\",\"id\":\"Item\",\"head\":{\"src\":\"karli.png\"}}]}",
         converter.convertToJson(list, false, false).toString());
   }
@@ -247,11 +250,11 @@ public class GraphTest {
     Clazz student = new Clazz("Student");
     Clazz person = new Clazz("Person");
     student.withSuperClazz(person);
-    Assert.assertNotNull(student.getSuperClazzes(false).first());
-    Assert.assertEquals(student.getAssociations().first().getType(), AssociationTypes.GENERALISATION);
+    assertNotNull(student.getSuperClazzes(false).first());
+    assertEquals(student.getAssociations().first().getType(), AssociationTypes.GENERALISATION);
     person.enableInterface();
-    Assert.assertNull(student.getSuperClazzes(false).first());
-    Assert.assertEquals(student.getAssociations().first().getType(), AssociationTypes.IMPLEMENTS);
+    assertNull(student.getSuperClazzes(false).first());
+    assertEquals(student.getAssociations().first().getType(), AssociationTypes.IMPLEMENTS);
   }
 
   @Test
@@ -260,8 +263,8 @@ public class GraphTest {
     Clazz person = new Clazz("Person");
     student.withSuperClazz(person);
 
-    Assert.assertEquals(student.getSuperClazzes(false).first(), person);
-    Assert.assertTrue(person.getKidClazzes(false).contains(student));
+    assertEquals(student.getSuperClazzes(false).first(), person);
+    assertTrue(person.getKidClazzes(false).contains(student));
   }
 
   @Test
@@ -277,7 +280,7 @@ public class GraphTest {
     SimpleList<Object> list = new SimpleList<Object>();
     list.with(uni, student);
     JsonArray jsonArray = map.toJsonArray(list, Filter.createFull().withPropertyRegard(BooleanCondition.create(true)));
-    Assert.assertEquals(3, jsonArray.size());
+    assertEquals(3, jsonArray.size());
   }
 
   @Test
@@ -293,10 +296,10 @@ public class GraphTest {
     SimpleList<Object> list = new SimpleList<Object>();
     list.with(uni, student, room);
     JsonArray jsonArray = map.toJsonArray(list, Filter.createFull().withPropertyRegard(BooleanCondition.create(true)));
-    Assert.assertEquals(3, jsonArray.size());
+    assertEquals(3, jsonArray.size());
 
     jsonArray = map.toJsonArray(list, Filter.createFull().withPropertyRegard(BooleanCondition.create(true)));
-    Assert.assertEquals(3, jsonArray.size());
+    assertEquals(3, jsonArray.size());
   }
 
   @Test
@@ -306,8 +309,8 @@ public class GraphTest {
     Clazz uni = new Clazz("Uni");
     student.withSuperClazz(person);
 
-    Assert.assertEquals(student.getSuperClazzes(false).first(), person);
-    Assert.assertTrue(person.getKidClazzes(false).contains(student));
+    assertEquals(student.getSuperClazzes(false).first(), person);
+    assertTrue(person.getKidClazzes(false).contains(student));
 
     uni.withBidirectional(student, "stud", Association.MANY, "owner", Association.ONE);
   }
@@ -398,7 +401,7 @@ public class GraphTest {
 
 
     root = graphConverter.convertGraphList(GraphTokener.CLASSDIAGRAM, jsonArray);
-    Assert.assertEquals("[Field|color:String;kind:String]-[Pawn|color:String],[Field]-[Player|color:String;name:String],[Ludo]-[Player],[Pawn]-[Player]",
+    assertEquals("[Field|color:String;kind:String]-[Pawn|color:String],[Field]-[Player|color:String;name:String],[Ludo]-[Player],[Pawn]-[Player]",
         converterYUML.convert(root, true));
 
     showDebugInfos(converter, 1505, null);
@@ -440,7 +443,7 @@ public class GraphTest {
       stream.println(json.toString(2));
       stream.println("###############################");
     }
-    Assert.assertEquals(len, json.toString(2).length());
+    assertEquals(len, json.toString(2).length());
   }
 
   protected void showDebugInfos(String value, int len, PrintStream stream) {
@@ -449,7 +452,7 @@ public class GraphTest {
       stream.println(value);
       stream.println("###############################");
     }
-    Assert.assertEquals(len, value.length());
+    assertEquals(len, value.length());
   }
 
   private void showDebugInfos(EntityList json, int len, PrintStream stream) {
@@ -458,7 +461,7 @@ public class GraphTest {
       stream.println(json.toString(2));
       stream.println("###############################");
     }
-    Assert.assertEquals(len, json.toString(2).length());
+    assertEquals(len, json.toString(2).length());
   }
 
   @Test
@@ -479,7 +482,7 @@ public class GraphTest {
 
     Entity clazzModel = graphConverter.convertToJson(GraphTokener.CLASSDIAGRAM, jsonArray, true);
     showDebugInfos(clazzModel, 464, null);
-    Assert.assertEquals(new CharacterBuffer().withLine("{").withLine("  \"type\":\"classdiagram\",")
+    assertEquals(new CharacterBuffer().withLine("{").withLine("  \"type\":\"classdiagram\",")
         .withLine("  \"nodes\":[").withLine("    {")
         .withLine("      \"type\":\"class\",").withLine("      \"id\":\"SortedMsg\",")
         .withLine("      \"attributes\":[").withLine("        \"msg:String\",")
@@ -502,8 +505,8 @@ public class GraphTest {
     player.withAttribute("name", DataType.STRING);
     player.withAttribute("name", DataType.STRING);
     player.withMethod("checkend()", DataType.BOOLEAN);
-    Assert.assertEquals("checkend", player.getMethods().first().getName());
-    Assert.assertEquals(1, player.getAttributes().size());
+    assertEquals("checkend", player.getMethods().first().getName());
+    assertEquals(1, player.getAttributes().size());
   }
 
   @Test
@@ -511,7 +514,7 @@ public class GraphTest {
     Clazz ludo = new Clazz("Ludo");
     Clazz player = new Clazz("Player");
     ludo.withBidirectional(player, "players", Association.MANY, "game", Association.ONE);
-    Assert.assertNotNull(ludo);
+    assertNotNull(ludo);
   }
 
   @Test
@@ -547,7 +550,7 @@ public class GraphTest {
 
     GraphPatternMatch diff = mapA.getDiff(uniA, uniB, false);
 
-    Assert.assertEquals(0, diff.size());
+    assertEquals(0, diff.size());
   }
 
   @Test
@@ -595,7 +598,7 @@ public class GraphTest {
     Clazz student = list.with(new Clazz("Student"));
     student.withUniDirectional(uni, "owner", Association.ONE);
     YUMLConverter converter = new YUMLConverter();
-    Assert.assertEquals("[Student]->[University|name:String]", converter.convert(list, true));
+    assertEquals("[Student]->[University|name:String]", converter.convert(list, true));
   }
 
   @Test
@@ -607,7 +610,7 @@ public class GraphTest {
     Clazz student = list.with(new Clazz("Student"));
     student.withBidirectional(uni, "owner", Association.ONE, "students", Association.MANY);
     YUMLConverter converter = new YUMLConverter();
-    Assert.assertEquals("[Student]-[University|name:String]", converter.convert(list, true));
+    assertEquals("[Student]-[University|name:String]", converter.convert(list, true));
   }
 
   @Test
@@ -617,7 +620,7 @@ public class GraphTest {
     uni.createAttribute("name", DataType.STRING);
     list.with(new Clazz("Student"));
     YUMLConverter converter = new YUMLConverter();
-    Assert.assertEquals("[Student],[University|name:String]", converter.convert(list, true));
+    assertEquals("[Student],[University|name:String]", converter.convert(list, true));
   }
 
 
@@ -630,7 +633,7 @@ public class GraphTest {
     htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/dagre.min.js");
     htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/drawer.js");
 
-    Assert.assertEquals(438, htmlEntity.toString(2).length());
+    assertEquals(438, htmlEntity.toString(2).length());
 
     DocEnvironment docEnvironment = new DocEnvironment();
     GraphList model = new GraphList().withType(GraphTokener.CLASSDIAGRAM);
@@ -681,7 +684,7 @@ public class GraphTest {
 
     uni.withBidirectional(person, "has", Association.MANY, "studis", Association.ONE);
     String result = htmlEntity.withGraph(model).toString(2);
-    Assert.assertNotNull(result);
+    assertNotNull(result);
     // showDebugInfos( result, 934, null);
   }
 
@@ -705,7 +708,7 @@ public class GraphTest {
     String item = "graph{1}";
     DotConverter map = new DotConverter();
     GraphList list = (GraphList) map.decode(item);
-    Assert.assertEquals(1, list.getNodes().size());
+    assertEquals(1, list.getNodes().size());
   }
 
   @Test
@@ -717,7 +720,7 @@ public class GraphTest {
         + "}";
     DotConverter map = new DotConverter();
     GraphList list = (GraphList) map.decode(item);
-    Assert.assertEquals(4, list.getNodes().size());
+    assertEquals(4, list.getNodes().size());
   }
 
   @Test
@@ -734,7 +737,7 @@ public class GraphTest {
 
     DotConverter map = new DotConverter();
     GraphList list = (GraphList) map.decode(item);
-    Assert.assertEquals(5, list.getNodes().size());
+    assertEquals(5, list.getNodes().size());
   }
 
   @Test
@@ -743,7 +746,7 @@ public class GraphTest {
         + "1[BONUS=2,ID=ISLAND] -- 2[BONUS=3]}";
     DotConverter map = new DotConverter();
     GraphList list = (GraphList) map.decode(item);
-    Assert.assertEquals(2, list.getNodes().size());
+    assertEquals(2, list.getNodes().size());
   }
 
   @Test
@@ -776,42 +779,42 @@ public class GraphTest {
 
   @Test
   public void testCoverage() {
-    Assert.assertFalse(AssociationTypes.isEdge(null));
-    Assert.assertEquals(AssociationTypes.ASSOCIATION, AssociationTypes.create("ASSOCIATION"));
+    assertFalse(AssociationTypes.isEdge(null));
+    assertEquals(AssociationTypes.ASSOCIATION, AssociationTypes.create("ASSOCIATION"));
 
-    Assert.assertEquals(GraphOptions.TYP.HTML, GraphOptions.TYP.valueOf("HTML"));
-    Assert.assertEquals(4, GraphOptions.TYP.values().length);
+    assertEquals(GraphOptions.TYP.HTML, GraphOptions.TYP.valueOf("HTML"));
+    assertEquals(4, GraphOptions.TYP.values().length);
 
-    Assert.assertEquals(GraphOptions.RANK.LR, GraphOptions.RANK.valueOf("LR"));
-    Assert.assertEquals(2, GraphOptions.RANK.values().length);
+    assertEquals(GraphOptions.RANK.LR, GraphOptions.RANK.valueOf("LR"));
+    assertEquals(2, GraphOptions.RANK.values().length);
 
-    Assert.assertEquals(GraphOptions.LINETYP.CENTER, GraphOptions.LINETYP.valueOf("CENTER"));
-    Assert.assertEquals(2, GraphOptions.LINETYP.values().length);
+    assertEquals(GraphOptions.LINETYP.CENTER, GraphOptions.LINETYP.valueOf("CENTER"));
+    assertEquals(2, GraphOptions.LINETYP.values().length);
 
     GraphList model = new GraphList();
     model.setAuthorName("Stefan");
     model.with("de.uniks.networkparser");
     Clazz person = model.createClazz("Person");
-    Assert.assertEquals(1, model.getClazzes().size());
+    assertEquals(1, model.getClazzes().size());
 
     AssociationSet set = new AssociationSet();
     set.add(new Association(person));
-    Assert.assertEquals(1, set.size());
+    assertEquals(1, set.size());
   }
 
   @Test
   public void testMember() {
     GraphList model = new GraphList();
     model.createClazz("Person");
-    Assert.assertNull(model.getValue("Blub"));
+    assertNull(model.getValue("Blub"));
     model.add(new Match());
     model.getClazzes(new BooleanCondition().withValue(true));
     DataTypeSet dtSet = DataTypeSet.create(DataType.STRING);
-    Assert.assertNotNull(dtSet);
-    Assert.assertTrue(dtSet.equals(DataTypeSet.create(DataType.STRING)));
-    Assert.assertEquals("SimpleSet<String>", dtSet.getName(true));
+    assertNotNull(dtSet);
+    assertTrue(dtSet.equals(DataTypeSet.create(DataType.STRING)));
+    assertEquals("SimpleSet<String>", dtSet.getName(true));
 
-    Assert.assertNotNull(DataTypeMap.create(DataType.STRING, DataType.STRING));
+    assertNotNull(DataTypeMap.create(DataType.STRING, DataType.STRING));
     // create(Clazz) 9 0% n/a 1 1 2 2 1 1
     // create(String) 9 0% n/a 1 1 2 2 1 1
     // getGeneric() 3 0% n/a 1 1 1 1 1 1
@@ -826,8 +829,8 @@ public class GraphTest {
     Clazz person = model.createClazz("Person");
     Clazz uni = model.createClazz("University");
     ClazzSet clazzes = model.getClazzes();
-    Assert.assertEquals(person, clazzes.get(0));
-    Assert.assertEquals(uni, clazzes.get(1));
+    assertEquals(person, clazzes.get(0));
+    assertEquals(uni, clazzes.get(1));
 
     Attribute name = person.createAttribute("name", DataType.STRING);
     Attribute id = person.createAttribute("id", DataType.INT);
@@ -838,20 +841,20 @@ public class GraphTest {
     person.withBidirectional(uni, "owner", Association.ONE, "studs", Association.MANY);
 
     AttributeSet attributes = person.getAttributes();
-    Assert.assertEquals(name, attributes.get(1));
-    Assert.assertEquals(id, attributes.get(0));
+    assertEquals(name, attributes.get(1));
+    assertEquals(id, attributes.get(0));
 
     MethodSet methods = person.getMethods();
-    Assert.assertEquals(initMethod, methods.get(0));
-    Assert.assertEquals(toStringMethod, methods.get(1));
-    Assert.assertEquals(1, methods.getClazzes().size());
-    Assert.assertEquals(1, methods.getAnnotations().size());
-    Assert.assertEquals(1, methods.getModifiers().size());
-    Assert.assertEquals(2, methods.getReturnTypes().size());
-    Assert.assertEquals(1, methods.getParameters().size());
+    assertEquals(initMethod, methods.get(0));
+    assertEquals(toStringMethod, methods.get(1));
+    assertEquals(1, methods.getClazzes().size());
+    assertEquals(1, methods.getAnnotations().size());
+    assertEquals(1, methods.getModifiers().size());
+    assertEquals(2, methods.getReturnTypes().size());
+    assertEquals(1, methods.getParameters().size());
 
-    Assert.assertEquals(1, methods.getParameters().getMethods().size());
-    Assert.assertEquals(1, methods.getParameters().getDataTypes().size());
+    assertEquals(1, methods.getParameters().getMethods().size());
+    assertEquals(1, methods.getParameters().getDataTypes().size());
 
     // Full Methods for AnnotationSet
     Annotation override = Annotation.OVERRIDE;
@@ -860,9 +863,9 @@ public class GraphTest {
     person.with(override.newInstance());
 
     AnnotationSet listOfAnnotation = new AnnotationSet().with(override);
-    Assert.assertEquals(1, listOfAnnotation.getClazzes().size());
-    Assert.assertEquals(1, listOfAnnotation.getMethods().size());
-    Assert.assertEquals(0, listOfAnnotation.getAttributes().size());
+    assertEquals(1, listOfAnnotation.getClazzes().size());
+    assertEquals(1, listOfAnnotation.getMethods().size());
+    assertEquals(0, listOfAnnotation.getAttributes().size());
 
     Modifier private1 = Modifier.PRIVATE;
     initMethod.with(private1);
@@ -872,31 +875,31 @@ public class GraphTest {
     ModifierSet listOfModifier = new ModifierSet().with(initMethod.getModifier());
     listOfModifier.with(name.getModifier());
     listOfModifier.with(person.getModifier());
-    Assert.assertEquals(1, listOfModifier.getClazzes().size());
-    Assert.assertEquals(1, listOfModifier.getMethods().size());
-    Assert.assertEquals(0, listOfModifier.getAttributes().size());
+    assertEquals(1, listOfModifier.getClazzes().size());
+    assertEquals(1, listOfModifier.getMethods().size());
+    assertEquals(0, listOfModifier.getAttributes().size());
 
     // Navigate over Full Model
     ClazzSet list = new ClazzSet().with(person, uni);
-    Assert.assertEquals(2, list.getModifiers().size());
-    Assert.assertEquals(2, list.getMethods().size());
+    assertEquals(2, list.getModifiers().size());
+    assertEquals(2, list.getMethods().size());
 
 
     listOfAnnotation = list.getAnnotations();
-    Assert.assertEquals(1, listOfAnnotation.size());
+    assertEquals(1, listOfAnnotation.size());
 
     AssociationSet listOfAssocuation = list.getAssociations();
-    Assert.assertEquals(2, listOfAssocuation.getClazzes().size());
-    Assert.assertEquals(1, listOfAssocuation.getOther().size());
-    Assert.assertEquals(2, listOfAssocuation.getOtherClazz().size());
-    Assert.assertEquals(2, listOfAssocuation.size());
+    assertEquals(2, listOfAssocuation.getClazzes().size());
+    assertEquals(1, listOfAssocuation.getOther().size());
+    assertEquals(2, listOfAssocuation.getOtherClazz().size());
+    assertEquals(2, listOfAssocuation.size());
 
     AttributeSet listOfAttribute = list.getAttributes();
-    Assert.assertEquals(2, listOfAttribute.size());
-    Assert.assertEquals(1, listOfAttribute.getClazzes().size());
-    Assert.assertEquals(1, listOfAttribute.getAnnotations().size());
-    Assert.assertEquals(1, listOfAttribute.getModifiers().size());
-    Assert.assertEquals(2, listOfAttribute.getDataTypes().size());
+    assertEquals(2, listOfAttribute.size());
+    assertEquals(1, listOfAttribute.getClazzes().size());
+    assertEquals(1, listOfAttribute.getAnnotations().size());
+    assertEquals(1, listOfAttribute.getModifiers().size());
+    assertEquals(2, listOfAttribute.getDataTypes().size());
 
     // ParameterSet 2044 69% 22 50% 2 7 4 15 0 5 0 1
   }
@@ -913,12 +916,12 @@ public class GraphTest {
     IdMap map = new IdMap();
     JDLTokener tokener = new JDLTokener();
     BaseItem encode = map.encode(graphList, tokener);
-    Assert.assertNotNull(encode);
+    assertNotNull(encode);
 
     EMFTokener emfTokener = new EMFTokener();
 
     XMLEntity xmi = emfTokener.toXMI(graphList);
-    Assert.assertNotNull(xmi);
+    assertNotNull(xmi);
     // System.out.println(xmi.toString(2));
   }
 
@@ -929,7 +932,7 @@ public class GraphTest {
 
     GraphConverter converter = new GraphConverter();
     TemplateResultFragment convertToMetaText = converter.convertToMetaText(model, true, true);
-    Assert.assertNotNull(convertToMetaText);
+    assertNotNull(convertToMetaText);
     // System.out.println(convertToMetaText.getValue().toString());
   }
 
@@ -945,7 +948,7 @@ public class GraphTest {
 
     GraphConverter converter = new GraphConverter();
     TemplateResultFragment convertToMetaText = converter.convertToMetaText(model, true, false);
-    Assert.assertNotNull(convertToMetaText);
+    assertNotNull(convertToMetaText);
     // System.out.println(convertToMetaText.getValue().toString());
 
     // System.out.println("#### HEADER ###");
@@ -970,7 +973,7 @@ public class GraphTest {
     GraphConverter converter = new GraphConverter();
     TemplateResultFragment convertToMetaText = converter.convertToMetaText(model, false, false);
 
-    Assert.assertNotNull(convertToMetaText);
+    assertNotNull(convertToMetaText);
     // System.out.println(convertToMetaText.getValue().toString());
   }
 

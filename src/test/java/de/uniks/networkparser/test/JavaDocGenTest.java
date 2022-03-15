@@ -1,14 +1,17 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import de.uniks.networkparser.ext.FileClassModel;
 import de.uniks.networkparser.list.SimpleList;
 
 public class JavaDocGenTest {
 	public static final String PREFIX="src.main.java.";
-	@Test(timeout=180000)
+	@Test
+	@Timeout(180)
 	public void testGenJavaDoc() {
 //		long time = System.currentTimeMillis();
 		FileClassModel model = new FileClassModel("de.uniks.networkparser");
@@ -19,7 +22,7 @@ public class JavaDocGenTest {
 		for(String item : errors) {
 			System.out.println(item);
 		}
-		Assert.assertEquals(0, errors.size());
+		assertEquals(0, errors.size());
 //		try{
 //			ProcessBuilder pb = new ProcessBuilder("javadoc","-notree", "-noindex", "-nonavbar", "-quiet", "-subpackages", "de.uniks.networkparser", "-sourcepath", "src/main/java", "-d", "build/testJavadoc");
 //			pb = new ProcessBuilder("javadoc", "-noindex", "-notree", "-quiet", "-subpackages", "de.uniks.networkparser", "-sourcepath", "src/main/java", "-d", "build/testJavadoc");
@@ -55,9 +58,9 @@ public class JavaDocGenTest {
 //					System.err.println(item);
 //				}
 //			}
-//			Assert.assertEquals(0, errors.size());
+//			assertEquals(0, errors.size());
 //		}catch(Exception e) {
-//			Assert.fail();
+//			fail();
 //		}
 	}
 }

@@ -20,10 +20,12 @@
  */
 package de.uniks.networkparser.test.studyrightWithAssigments;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.IOException;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Assignment;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.President;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
@@ -31,8 +33,8 @@ import org.sdmlib.test.examples.studyrightWithAssignments.model.Student;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.TeachingAssistant;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.University;
 
-import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepSourceCode;
@@ -234,7 +236,7 @@ public class Storyboards {
 //		IdMap yamlIdMap = new IdMap();
 		/*FIXME
 		University studyRight = (University) yamlIdMap.decode(yaml);
-		Assert.assertNotNull(studyRight);
+		assertNotNull(studyRight);
 		addSourceCode.withEnd();
 
 		story.addText("Decoded object structure:");
@@ -466,7 +468,7 @@ public class Storyboards {
 		Room softwareEngineering = university.createRooms().withName("7422").withTopic("Software Engineering")
 				.withCredits(42).withDoors(artsRoom, examRoom);
 		addSourceCode.withEnd();
-		Assert.assertNotNull(softwareEngineering);
+		assertNotNull(softwareEngineering);
 /*FIXME
 		storyboard.addObjectDiagram("studyRight", university, "karli", "icons/karli.png", karli, "mathRoom",
 				"icons/mathroom.png", mathRoom, "artsRoom", artsRoom, "sportsRoom", sportsRoom, "examRoom", examRoom,
@@ -578,19 +580,19 @@ public class Storyboards {
 
 		President president = university.createPresident();
 
-		Assert.assertNotNull(a4);
-		Assert.assertNotNull(softwareEngineering);
-		Assert.assertNotNull(president);
+		assertNotNull(a4);
+		assertNotNull(softwareEngineering);
+		assertNotNull(president);
 
-		// Assert.assertEquals("presidents lives", true, president);
+		// assertEquals("presidents lives", true, president);
 
 		// university.removeYou();
 		// TODO: generate removeYou method
 
-		// Assert.assertEquals("studyright has no more rooms", 0,
+		// assertEquals("studyright has no more rooms", 0,
 		// university.getRooms().size());
-		Assert.assertEquals("karli still has assignments", 2, karli.getDone().size());
-		// Assert.assertEquals("presidents is dead", false, president.alive);
+		assertEquals(2, karli.getDone().size(), "karli still has assignments");
+		// assertEquals("presidents is dead", false, president.alive);
 
 	}
 
@@ -695,10 +697,10 @@ public class Storyboards {
 
 		Assignment integrals = new Assignment().withContent("Integrals").withPoints(8);
 
-		Assert.assertNotNull(karli);
-		Assert.assertNotNull(a1);
-		Assert.assertNotNull(a2);
-		Assert.assertNotNull(integrals);
+		assertNotNull(karli);
+		assertNotNull(a1);
+		assertNotNull(a2);
+		assertNotNull(integrals);
 
 //      Room mathRoom = university.createRooms()
 //         .withName("senate")
@@ -774,7 +776,7 @@ public class Storyboards {
 
 //		University readUniversity = (University) rootObject;
 		persistent.withEnd();
-//FIXME				Assert.assertNotNull(readUniversity);
+//FIXME				assertNotNull(readUniversity);
 
 //FIXME		storyboard.addObjectDiagram(rootObject);
 
@@ -953,8 +955,8 @@ public class Storyboards {
 		Room softwareEngineering = university.createRooms().withName("7422").withTopic("Software Engineering")
 				.withCredits(42).withDoors(artsRoom, examRoom);
 
-		Assert.assertNotNull(a4);
-		Assert.assertNotNull(softwareEngineering);
+		assertNotNull(a4);
+		assertNotNull(softwareEngineering);
 //FIXME		story.addObjectDiagram(university);
 
 		// =====================================================
@@ -1404,7 +1406,7 @@ public class Storyboards {
 		Room sportsRoom = university.createRooms().withName("gymnasium").withTopic("sports").withCredits(25)
 				.withDoors(mathRoom, artsRoom).withStudents(abu, alice);
 
-		Assert.assertNotNull(sportsRoom);
+		assertNotNull(sportsRoom);
 
 //      Assignment a4 = sportsRoom.createAssignments().withContent("Pushups").withPoints(4).withStudents(abu);
 

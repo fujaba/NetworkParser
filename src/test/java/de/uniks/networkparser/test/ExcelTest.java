@@ -1,13 +1,13 @@
 package de.uniks.networkparser.test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.EntityCreator;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -29,8 +29,8 @@ public class ExcelTest {
 		ExcelSheet sheet = exBuf.parse(myFile);
 
 		ExcelRow tagRow = sheet.get(1);
-		Assert.assertEquals("FG Softwaretechnik", tagRow.get(0).getContent());
-		Assert.assertEquals("Albert", tagRow.get(2).getContent());
+		assertEquals("FG Softwaretechnik", tagRow.get(0).getContent());
+		assertEquals("Albert", tagRow.get(2).getContent());
 	}
 
 	@Test
@@ -56,6 +56,6 @@ public class ExcelTest {
 		CharacterBuffer readFile = FileBuffer.readFile(resource.getFile());
 		ExcelParser excelParser = new ExcelParser();
 		SimpleList<Object> readCSV = excelParser.readCSV(readFile, EntityCreator.createJson(true));
-		Assert.assertEquals(3, readCSV.size());
+		assertEquals(3, readCSV.size());
 	}
 }

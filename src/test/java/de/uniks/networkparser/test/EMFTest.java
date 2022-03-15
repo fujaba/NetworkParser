@@ -1,10 +1,12 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.graph.Association;
@@ -29,10 +31,10 @@ public class EMFTest {
 		StringBuffer value = DocEnvironment.readFile("railway.ecore");
 		Object model = new IdMap().decodeEMF(value.toString());
 		GraphList list = (GraphList) model;
-		Assert.assertEquals(9, list.getClazzes().size());
+		assertEquals(9, list.getClazzes().size());
 		Clazz segment = list.getClazzes().get(0);
-		Assert.assertEquals("RailwayContainer", segment.toString());
-		Assert.assertEquals("[RailwayContainer]->[RailwayElement|id:int],[RailwayContainer]->[Route],[RailwayContainer]->[Semaphore|signal:Signal],[RailwayElement]^-[Route],[RailwayElement]^-[Semaphore],[RailwayElement]^-[Sensor],[RailwayElement]^-[SwitchPosition|position:Position],[RailwayElement]^-[TrackElement],[Route]->[Semaphore],[Route]->[Sensor],[Route]->[SwitchPosition],[Segment|length:int]-^[TrackElement],[Sensor]->[TrackElement],[Switch|currentPosition:Position]->[SwitchPosition],[Switch]-^[TrackElement],[TrackElement]<-[TrackElement]", model.toString());
+		assertEquals("RailwayContainer", segment.toString());
+		assertEquals("[RailwayContainer]->[RailwayElement|id:int],[RailwayContainer]->[Route],[RailwayContainer]->[Semaphore|signal:Signal],[RailwayElement]^-[Route],[RailwayElement]^-[Semaphore],[RailwayElement]^-[Sensor],[RailwayElement]^-[SwitchPosition|position:Position],[RailwayElement]^-[TrackElement],[Route]->[Semaphore],[Route]->[Sensor],[Route]->[SwitchPosition],[Segment|length:int]-^[TrackElement],[Sensor]->[TrackElement],[Switch|currentPosition:Position]->[SwitchPosition],[Switch]-^[TrackElement],[TrackElement]<-[TrackElement]", model.toString());
 	}
 
 	@Test
@@ -40,7 +42,7 @@ public class EMFTest {
 		IdMap map=new IdMap();
 		StringBuffer value = DocEnvironment.readFile("imdb.movies");
 		ArrayList<?> decode = (ArrayList<?>) map.decodeEMF(value.toString());
-		Assert.assertEquals(0, decode.size());
+		assertEquals(0, decode.size());
 	}
 
 	@Test
@@ -49,7 +51,7 @@ public class EMFTest {
 		StringBuffer value = DocEnvironment.readFile("imdb.movies");
 		GraphList decode = new GraphList();
 		map.decodeEMF(value.toString(), decode);
-		Assert.assertEquals(3, decode.getClazzes().size());
+		assertEquals(3, decode.getClazzes().size());
 	}
 
 	@Test
@@ -76,7 +78,7 @@ public class EMFTest {
 				"</eClassifiers>"+
 	    		"</ecore:EPackage>");
 
-		Assert.assertEquals(sb.toString(), root.toString());
+		assertEquals(sb.toString(), root.toString());
 	}
 
 	@Test
@@ -88,10 +90,10 @@ public class EMFTest {
 						+"<states id=\"2\" outgoing=\"//@transitions.9\" incoming=\"//@transitions.1\"/>";
 		IdMap map=new IdMap();
 //		map.with(new GenericCreator())
-		Assert.assertNotNull(xmi);
-		Assert.assertNotNull(map);
+		assertNotNull(xmi);
+		assertNotNull(map);
 		Object decode = map.decode(xmi);
-		Assert.assertNotNull(decode);
+		assertNotNull(decode);
 	}
 
 }

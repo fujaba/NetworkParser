@@ -1,5 +1,9 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,9 +12,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
@@ -29,7 +32,7 @@ public class HashTableTest
 		}
 	}
 
-	@BeforeClass
+	@BeforeAll
 	public static void initDummy(){
 		// VM Arg
 		// -Dcount=1000000
@@ -64,7 +67,7 @@ public class HashTableTest
 		long currentTimeMillis = System.currentTimeMillis();
 
 		for (int i = 0; i < items.size(); i += step) {
-			Assert.assertTrue("not in list: "+i+"="+items.get(i), list.contains(items.get(i)));
+			assertTrue(list.contains(items.get(i)), "not in list: "+i+"="+items.get(i));
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
 		printToStream(label+ " contains:	 " +end+ "ms for " +list.size()/step + " Objects");
@@ -74,7 +77,7 @@ public class HashTableTest
 		int step=1000;
 		long currentTimeMillis = System.currentTimeMillis();
 		for (int i = 0; i < items.size(); i += step) {
-			Assert.assertNotNull("not in list", list.get(i));
+			assertNotNull(list.get(i), "not in list");
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
 		printToStream(label+ " getter(index):" +end+ "ms for " +list.size()/step + " Objects");
@@ -86,7 +89,7 @@ public class HashTableTest
 			int pos=0;
 			for (Iterator<Person> iterator = list.iterator();iterator.hasNext();) {
 				if(pos==i){
-					Assert.assertNotNull("not in list "+ i , iterator.next());
+					assertNotNull(iterator.next(), "not in list "+ i);
 					break;
 				} else {
 					iterator.next();
@@ -101,7 +104,7 @@ public class HashTableTest
 	private void contains(String label, Set<Person> list){
 		long currentTimeMillis = System.currentTimeMillis();
 		for (int i = 0; i < items.size(); i += 100) {
-			Assert.assertTrue("not in list", list.contains(items.get(i)));
+			assertTrue(list.contains(items.get(i)), "not in list");
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
 		printToStream(label+ " contains:	 " + end + " for 10000 Objects");
@@ -110,7 +113,7 @@ public class HashTableTest
 	private void iterator(String label, Collection<Person> list){
 		long currentTimeMillis = System.currentTimeMillis();
 		for (Iterator<Person> i = list.iterator();i.hasNext();){
-			Assert.assertNotNull(i.next());
+			assertNotNull(i.next());
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
 		printToStream(label+ " iterator:	 " + end);
@@ -130,7 +133,7 @@ public class HashTableTest
 		for (Iterator<Person> i = list.iterator();i.hasNext();){
 			Person item = i.next();
 			c++;
-			Assert.assertNotNull("Item "+c+"/"+list.size()+" are null", item);
+			assertNotNull(item, "Item "+c+"/"+list.size()+" are null");
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
 		printToStream(label+ " removeObject: " + end+ "(" +list.size()+ ")");
@@ -165,7 +168,7 @@ public class HashTableTest
 		personSet.add(newValue);
 		personSet.add(new Person());
 		personSet.remove(newValue);
-		Assert.assertEquals(1, personSet.size());
+		assertEquals(1, personSet.size());
 	}
 
 	@Test
@@ -184,10 +187,10 @@ public class HashTableTest
 		printToStream("	 number of persons: " + groupAccount.getPersons().size() + " probe size: " + personSet.size());
 		printToStream("	 " +(System.currentTimeMillis() - currentTimeMillis ));
 //		for (Person person : personSet) {
-//			Assert.assertTrue("not in list", groupAccount.getPersons().contains(person));
+//			assertTrue("not in list", groupAccount.getPersons().contains(person));
 //			groupAccount.withoutPersons(person);
-//			Assert.assertFalse("still in list", groupAccount.getPersons().contains(person));
+//			assertFalse("still in list", groupAccount.getPersons().contains(person));
 //		}
-//		Assert.assertTrue("not in list", groupAccount.getPersons().contains(personSet.get(personSet.size()-1)));
+//		assertTrue("not in list", groupAccount.getPersons().contains(personSet.get(personSet.size()-1)));
 	}
 }

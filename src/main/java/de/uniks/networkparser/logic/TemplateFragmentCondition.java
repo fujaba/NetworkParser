@@ -159,9 +159,9 @@ public class TemplateFragmentCondition implements ParserCondition {
 	 */
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
-		CharacterBuffer id = buffer.nextToken(false, SPLITEND, SPACE);
+		CharacterBuffer id = buffer.nextToken(SPLITEND, SPACE);
 		this.id = id.toString();
-		buffer.nextClean(true);
+		buffer.nextClean();
 		if (buffer.getCurrentChar() != SPLITEND) {
 			/* Condition */
 			this.condition = parser.parsing(buffer, customTemplate, true, true);

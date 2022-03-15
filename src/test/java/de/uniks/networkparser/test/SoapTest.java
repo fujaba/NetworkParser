@@ -1,5 +1,9 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,8 +11,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.EntityList;
@@ -28,7 +31,7 @@ public class SoapTest {
 				);
 
 		String body = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +item.toString();
-		Assert.assertEquals("<?xml version=\"1.0\" encoding=\"utf-8\"?><soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body><GetMatchByMatchID xmlns=\"http://msiggi.de/Sportsdata/Webservices\"><MatchID>28682</MatchID></GetMatchByMatchID></soap:Body></soap:Envelope>", body);
+		assertEquals("<?xml version=\"1.0\" encoding=\"utf-8\"?><soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body><GetMatchByMatchID xmlns=\"http://msiggi.de/Sportsdata/Webservices\"><MatchID>28682</MatchID></GetMatchByMatchID></soap:Body></soap:Envelope>", body);
 
 		if(connectToServer) {
 			// Send
@@ -70,18 +73,18 @@ public class SoapTest {
 
 		SoapObject soapAnswer = (SoapObject) map.decode(answer.toString());
 
-		Assert.assertNotNull(soapAnswer.getBody());
+		assertNotNull(soapAnswer.getBody());
 
-		Assert.assertNull(creator.getValue(soapAnswer, "blub"));
+		assertNull(creator.getValue(soapAnswer, "blub"));
 
 		EntityList entity = (EntityList) ((EntityList)soapAnswer.getBody().getChild(0)).getChild(0);
-		Assert.assertEquals(25, entity.sizeChildren() );
+		assertEquals(25, entity.sizeChildren() );
 
  		XMLEntity xmlEntity = map.toXMLEntity(soapAnswer);
-		Assert.assertEquals(1, xmlEntity.sizeChildren());
+		assertEquals(1, xmlEntity.sizeChildren());
 
 		creator.setValue(soapAnswer, "Full:Body", "The answer is 42.", SendableEntityCreator.NEW);
 
-		Assert.assertEquals("The answer is 42.", soapAnswer.getBody().getValue());
+		assertEquals("The answer is 42.", soapAnswer.getBody().getValue());
 	}
 }

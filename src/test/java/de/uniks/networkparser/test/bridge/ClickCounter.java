@@ -1,6 +1,6 @@
 package de.uniks.networkparser.test.bridge;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import de.uniks.networkparser.SimpleObject;
 import de.uniks.networkparser.ext.SimpleController;
@@ -17,7 +17,7 @@ public class ClickCounter {
 	public static void main(String[] args) {
 		JavaBridgeFX javaBridge = new JavaBridgeFX();
 		SimpleController controller = SimpleController.create(javaBridge, null, true, false);
-		Assert.assertNotNull(controller);
+		assertNotNull(controller);
 		SimpleObject blub=new SimpleObject();	
 
 		NumberField numberField = new NumberField();

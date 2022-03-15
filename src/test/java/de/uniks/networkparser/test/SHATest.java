@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.ext.http.JsonToken;
 
@@ -29,6 +30,6 @@ public class SHATest {
 		
 		// COPY OF ELEMENTS
 		JsonToken create = jsonToken.createDecoder();
-		Assert.assertTrue(create.validate(token));
+		assertTrue(create.validate(token));
 	}
 }

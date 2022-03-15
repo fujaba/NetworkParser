@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.Server_Time;
@@ -46,7 +47,7 @@ public class SocketTest {
 
 			@Override
 			public boolean update(Object value) {
-				Assert.assertEquals(output[i++], value.toString());
+				assertEquals(output[i++], value.toString());
 				return false;
 			}
 		});

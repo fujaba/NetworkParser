@@ -1,15 +1,16 @@
 package de.uniks.networkparser.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
@@ -52,21 +53,22 @@ public class XMLTest {
 		map.with(new AppleCreator());
 
 		XMLEntity simpleXML = map.toSimpleXML(appleTree);
-		Assert.assertEquals(133, simpleXML.toString().length());
-		Assert.assertEquals("<de.uniks.networkparser.test.model.AppleTree><de.uniks.networkparser.test.model.Apple/></de.uniks.networkparser.test.model.AppleTree>", simpleXML.toString());
+		assertEquals(133, simpleXML.toString().length());
+		assertEquals("<de.uniks.networkparser.test.model.AppleTree><de.uniks.networkparser.test.model.Apple/></de.uniks.networkparser.test.model.AppleTree>", simpleXML.toString());
 	}
 
 	@Test
 	public void test(){
 		XMLEntity xmlEntity = new XMLEntity().withValue("<chatmsg folder=\"C:\\temp\\\\\" />");
-		Assert.assertEquals("C:\\temp\\", xmlEntity.getValue("folder"));
+		assertEquals("C:\\temp\\", xmlEntity.getValue("folder"));
 	}
+	
 	@Test
 	public void testParseError(){
 		String content = "<li>Canadian <i>(pictured)</i> of 82.</li>";
 		XMLEntity entity=new XMLEntity();
 		entity.withValue(content);
-		Assert.assertEquals("Canadian <i>(pictured)</i> of 82.", entity.getValue());
+		assertEquals("Canadian <i>(pictured)</i> of 82.", entity.getValue());
 	}
 
 	@Test
@@ -102,8 +104,8 @@ public class XMLTest {
 	public void testEscape(){
 		String xml="<chatmsg id=\"42\\\" name=\"Stefan\"></chatmsg>";
 		XMLEntity xmlEntity = new XMLEntity().withValue(xml);
-		Assert.assertEquals("42\\", xmlEntity.getString("id"));
-		Assert.assertEquals("Stefan", xmlEntity.getString("name"));
+		assertEquals("42\\", xmlEntity.getString("id"));
+		assertEquals("Stefan", xmlEntity.getString("name"));
 	}
 
 	@Test
@@ -194,7 +196,7 @@ public class XMLTest {
 		String xml = "<uni name=\"Kassel\"><child /><child /></uni>";
 		IdMap map = new IdMap();
 		XMLEntity entity = (XMLEntity) map.decode(xml);
-		Assert.assertEquals(2, entity.sizeChildren());
+		assertEquals(2, entity.sizeChildren());
 	}
 
 	@Test
@@ -202,7 +204,7 @@ public class XMLTest {
 		String xml = "<row r=\"3\" spans=\"1:3\"><c r=\"A3\" s=\"1\"/><c r=\"B3\" t=\"s\"><v>6</v></c><c r=\"C3\" t=\"s\"><v>7</v></c></row>";
 		IdMap map = new IdMap();
 		XMLEntity entity = (XMLEntity) map.decode(xml);
-		Assert.assertEquals(3, entity.sizeChildren());
+		assertEquals(3, entity.sizeChildren());
 	}
 
 	@Test
@@ -216,7 +218,7 @@ public class XMLTest {
 
 		String reference="<chatmsg sender=\"Stefan Lindel\" txt=\"Dies ist eine Testnachricht\"/>";
 		XMLEntity actual=map.toSimpleXML(chatMessage);
-		assertEquals("WERT Vergleichen", reference, actual.toString(2));
+		assertEquals(reference, actual.toString(2), "WERT Vergleichen");
 		assertEquals(reference.length(), actual.toString(2).length());
 
 		String msg = actual.toString(2);
@@ -225,7 +227,7 @@ public class XMLTest {
 		mapDecoder.with(new ChatMessageCreator());
 
 		ChatMessage newChatMsg = (ChatMessage) mapDecoder.decode(new XMLEntity().withValue(msg));
-		Assert.assertNotNull(newChatMsg);
+		assertNotNull(newChatMsg);
 	}
 
 	@Test
@@ -276,7 +278,7 @@ public class XMLTest {
 		IdMap xmlMap = new IdMap();
 		xmlMap.with(new ChatMessageCreator());
 		String reference="<chatmsg sender=\"Stefan Lindel\" txt=\"Dies ist eine Testnachricht\"/>";
-		assertEquals("WERT Vergleichen", reference, xmlMap.toSimpleXML(chatMessage).toString(2));
+		assertEquals(reference, xmlMap.toSimpleXML(chatMessage).toString(2), "WERT Vergleichen");
 	}
 
 	public static StringBuilder readFile(File file) throws IOException {
@@ -304,13 +306,13 @@ public class XMLTest {
 		IdMap map = new IdMap();
 		map.with(new XMLTestItemCreator());
 		XMLEntity xmlEmF = map.toSimpleXML(item);
-		Assert.assertEquals("<item id=\"42\"><user>Stefan</user><body txt=\"Hallo Welt\">new Value</body></item>", xmlEmF.toString());
+		assertEquals("<item id=\"42\"><user>Stefan</user><body txt=\"Hallo Welt\">new Value</body></item>", xmlEmF.toString());
 
 		XMLTestItem newItem = (XMLTestItem) map.decode(xmlEmF.toString());
-		Assert.assertEquals(item.getBody(), newItem.getBody());
-		Assert.assertEquals(item.getId(), newItem.getId());
-		Assert.assertEquals(item.getUser(), newItem.getUser());
-		Assert.assertEquals(item.getValue(), newItem.getValue());
+		assertEquals(item.getBody(), newItem.getBody());
+		assertEquals(item.getId(), newItem.getId());
+		assertEquals(item.getUser(), newItem.getUser());
+		assertEquals(item.getValue(), newItem.getValue());
 	}
 
 	@Test
@@ -324,9 +326,9 @@ public class XMLTest {
 		xmlB.withChild(new XMLEntity().withType("1"));
 		xmlB.withChild(new XMLEntity().withType("3"));
 
-		Assert.assertFalse(EntityUtil.compareEntity(xmlA, xmlB));
-		Assert.assertEquals("<p no=\"23\"><1/><2/></p>", xmlA.toString());
-		Assert.assertEquals("<p no=\"24\"><1/><3/></p>", xmlB.toString());
+		assertFalse(EntityUtil.compareEntity(xmlA, xmlB));
+		assertEquals("<p no=\"23\"><1/><2/></p>", xmlA.toString());
+		assertEquals("<p no=\"24\"><1/><3/></p>", xmlB.toString());
 	}
 
 	@Test
@@ -348,7 +350,7 @@ public class XMLTest {
 
 		XMLEntity item= new XMLEntity();
 		item.withValue(str);
-		Assert.assertEquals(505, item.toString().length());
+		assertEquals(505, item.toString().length());
 	}
 
 	@Test
@@ -372,7 +374,7 @@ public class XMLTest {
 		sb.append("  <!--</build>-->\r\n");
 		sb.append("</project>\r\n");
 		pomFile = new ArtifactFile().withValue(sb.toString());
-		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
+		assertEquals("4.2.0", pomFile.getModelVersion());
 
 		sb=new StringBuilder();
 		sb.append("<?xml version=\"1.0\"?>\r\n");
@@ -381,7 +383,7 @@ public class XMLTest {
 		sb.append("   <modelVersion>4.2.0</modelVersion>\r\n");
 		sb.append("   <!--  -->\r\n");
 		sb.append("</project>\r\n");
-		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
+		assertEquals("4.2.0", pomFile.getModelVersion());
 
 		sb=new StringBuilder();
 		sb.append("<!--\r\n");
@@ -391,7 +393,7 @@ public class XMLTest {
 		sb.append("<project>\r\n");
 		sb.append("   <modelVersion>4.2.0</modelVersion>\r\n");
 		sb.append("</project>\r\n");
-		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
+		assertEquals("4.2.0", pomFile.getModelVersion());
 
 		sb=new StringBuilder();
 		sb.append("<project>\r\n");
@@ -402,6 +404,6 @@ public class XMLTest {
 
 		pomFile = new ArtifactFile().withValue(sb.toString());
 
-		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
+		assertEquals("4.2.0", pomFile.getModelVersion());
 	}
 }

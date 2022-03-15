@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -17,16 +18,16 @@ public class YAMLTest {
 //		YamlEntity yamlEntity = new YamlEntity();
 //		yamlEntity.withValue(new CharacterBuffer().with(text));
 		YamlEntity yamlEntity = parseEntity( "Hallo Welt");
-		Assert.assertNotNull(yamlEntity);
+		assertNotNull(yamlEntity);
 
 		yamlEntity = parseEntity("-Test");
-		Assert.assertNotNull(yamlEntity);
+		assertNotNull(yamlEntity);
 
 		yamlEntity = parseEntity("- Test");
-		Assert.assertNotNull(yamlEntity);
+		assertNotNull(yamlEntity);
 
 		yamlEntity = parseEntity("- Test:Value");
-		Assert.assertNotNull(yamlEntity);
+		assertNotNull(yamlEntity);
 	}
 
 	private YamlEntity parseEntity(String text) {
@@ -66,13 +67,13 @@ public class YAMLTest {
 		// OLD
 //		YamlIdMap yamlIdMap = new YamlIdMap("de.uniks.networkparser.test.model");
 //	    University studyRight = (University) yamlIdMap.decode(yaml);
-//	    Assert.assertNotNull(studyRight);
+//	    assertNotNull(studyRight);
 	
 		// NEW
 		YAMLTokener tokener = new YAMLTokener();
 		IdMap map = UniversityCreator.createIdMap("");
 		tokener.withMap(map);
 		Object model = tokener.decode(yaml);
-		Assert.assertNotNull(model);
+		assertNotNull(model);
 	}
 }

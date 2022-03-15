@@ -1,9 +1,8 @@
 package de.uniks.networkparser.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
@@ -67,53 +66,53 @@ public class JsonPeer2PeerTest implements ObjectCondition {
 			assertEquals(2, secondMap.size());
 			secondRoot=(SortedMsg) secondMap.getObject(firstMap.getKey(firstRoot));
 		} else if(z==1){
-			Assert.assertEquals("===== add =====", 159, jsonObject.toString().length());
+			assertEquals(159, jsonObject.toString().length(), "===== add =====");
 			assertEquals(2, secondMap.size());
 			z++;
 		} else if(z==2){
-			Assert.assertEquals("===== add =====", 160, jsonObject.toString().length());
+			assertEquals(160, jsonObject.toString().length(), "===== add =====");
 			assertEquals(4, secondMap.size());
 			z++;
 		} else if(z==3){
-			Assert.assertEquals("===== add =====", 159, jsonObject.toString().length());
+			assertEquals(159, jsonObject.toString().length(), "===== add =====");
 			assertEquals(4, secondMap.size());
 			z++;
 		} else if(z==4){
-			Assert.assertEquals("===== add =====", 254, jsonObject.toString().length());
+			assertEquals(254, jsonObject.toString().length(), "===== add =====");
 			assertEquals(4, secondMap.size());
 			z++;
 		} else if(z==5){
-			Assert.assertEquals("===== add =====", 160, jsonObject.toString().length());
+			assertEquals(160, jsonObject.toString().length(), "===== add =====");
 			assertEquals(5, secondMap.size());
 			z++;
 		} else if(z==6){
-			Assert.assertEquals("=====  =====", 242, jsonObject.toString().length());
+			assertEquals(242, jsonObject.toString().length(), "===== add =====");
 			assertEquals(5, secondMap.size());
 			z++;
 		} else if(z==7){
-			Assert.assertEquals("===== add =====", 147, jsonObject.toString().length());
+			assertEquals(147, jsonObject.toString().length(), "===== add =====");
 			assertEquals(5, secondMap.size());
 			z++;
 		} else if(z==8){
-			Assert.assertEquals("===== rem =====", "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"S4\",\"rem\":{\"child\":{\"id\":\"S5\"}}}", jsonObject.toString());
+			assertEquals("{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"S4\",\"rem\":{\"child\":{\"id\":\"S5\"}}}", jsonObject.toString(), "===== rem =====");
 			z++;
 			assertEquals(5, secondMap.size());
 		} else if(z==9){
-			Assert.assertEquals("===== rem =====", "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"S4\",\"rem\":{\"child\":{\"id\":\"S5\"}}}", jsonObject.toString());
-//			Assert.assertEquals("===== rem =====", "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"S4\",\"rem\":{\"number\":4},\"upd\":{\"number\":42}}", jsonObject.toString());
+			assertEquals("{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"S4\",\"rem\":{\"child\":{\"id\":\"S5\"}}}", jsonObject.toString(), "===== rem =====");
+//			assertEquals("===== rem =====", "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"S4\",\"rem\":{\"number\":4},\"upd\":{\"number\":42}}", jsonObject.toString());
 			z++;
 			assertEquals(5, secondMap.size());
 		}
 		if(z>9){
-			Assert.assertEquals("===== FIRST =====",376, firstMap.toJsonObject(firstRoot).toString(2).length());
+			assertEquals(376, firstMap.toJsonObject(firstRoot).toString(2).length(), "===== FIRST =====");
 			//LAST
 			Object secondRoot = secondMap.getObject("J1.S1");
 			if(secondRoot != null) {
-				Assert.assertEquals("===== SECOND =====",385, secondMap.toJsonObject(secondRoot).toString(2).length());
-				Assert.assertEquals("===== SIZE FIRST=====",3, firstMap.size());
-				Assert.assertEquals("===== SIZE SECOND=====",5, secondMap.size());
+				assertEquals(385, secondMap.toJsonObject(secondRoot).toString(2).length(), "===== SECOND =====");
+				assertEquals(3, firstMap.size(), "===== SIZE FIRST=====");
+				assertEquals(5, secondMap.size(), "===== SIZE SECOND=====");
 				secondMap.garbageCollection(secondRoot);
-				Assert.assertEquals("===== SIZE SECOND=====",3, secondMap.size());
+				assertEquals(3, secondMap.size(), "===== SIZE SECOND=====");
 			}
 		}
 		return result!=null;

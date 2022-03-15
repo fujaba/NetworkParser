@@ -1,7 +1,9 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.logic.OCLParser;
@@ -16,8 +18,8 @@ public class OCLTest {
 		IdMap map = new IdMap().withCreator(new HouseCreator());
 		OCLParser parser = OCLParser.create(item, map);
 		House house = new House();
-		Assert.assertFalse(parser.update(house));
+		assertFalse(parser.update(house));
 		house.setFloor(1);
-		Assert.assertTrue(parser.update(house));
+		assertTrue(parser.update(house));
 	}
 }

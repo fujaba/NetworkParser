@@ -142,7 +142,11 @@ public class RegCalculator {
     boolean defaultMulti = false;
     while (!tokener.isEnd()) {
       if (current == null) {
-        current = tokener.nextClean(defaultMulti);
+          if(defaultMulti) {
+              current = tokener.nextClean();
+          }else {
+              current = tokener.nextCleanSkip();
+          }
       }
       if (current == ',') {
         current = null;

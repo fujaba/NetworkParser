@@ -1,6 +1,6 @@
 package de.uniks.networkparser.test.studyrightWithAssigments;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.io.FileBuffer;

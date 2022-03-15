@@ -153,12 +153,12 @@ public class Manifest extends SimpleKeyValueList<String, String> {
 		Manifest manifest = new Manifest();
 		CharacterBuffer tokener = new CharacterBuffer().with(value);
 		while (!tokener.isEnd()) {
-			CharacterBuffer section = tokener.nextToken(true, SPLITTER);
-			CharacterBuffer sectionheader = tokener.nextToken(false, CRLF);
+			CharacterBuffer section = tokener.nextToken(SPLITTER);
+			CharacterBuffer sectionheader = tokener.nextToken(CRLF);
 			boolean isCoverage = section.toString().equals(COVERAGE);
 			tokener.skipFor('\n');
 			while (tokener.getCurrentChar() == ' ' || tokener.getCurrentChar() == '\t') {
-				CharacterBuffer newLine = tokener.nextToken(true, CRLF);
+				CharacterBuffer newLine = tokener.nextToken(CRLF);
 				if (isCoverage) {
 					sectionheader.trim().with(newLine);
 				} else {

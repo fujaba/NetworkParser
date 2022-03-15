@@ -1,9 +1,10 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.io.BufferedByteInputStream;
@@ -36,6 +37,6 @@ public class ZipTest {
 		BufferedByteInputStream inputStream = BufferedByteInputStream.create(stream);
 		BaseItem readData = zip.decode(inputStream);
 
-		Assert.assertEquals(len, readData.toString().length());
+		assertEquals(len, readData.toString().length());
 	}
 }

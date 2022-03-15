@@ -1,7 +1,10 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
@@ -46,7 +49,7 @@ public class PetaFTest {
 		Space space=new Space();
 		space.startServer(5000);
 		space.sendMessage(connectMsg, false);
-		Assert.assertNotNull(space.convertMessage(connectMsg));
+		assertNotNull(space.convertMessage(connectMsg));
 
 		space.close();
 	}
@@ -69,7 +72,7 @@ public class PetaFTest {
 //	@Test
 	public void testServer() throws InterruptedException {
 		NodeProxyTCP server = NodeProxyTCP.createServer(5000);
-		Assert.assertTrue(server.start());
+		assertTrue(server.start());
 		server.start();
 		server.close();
 		
@@ -101,7 +104,7 @@ public class PetaFTest {
 
 
 		ModelHistory history = space.getHistory();
-		Assert.assertNotNull(history);
+		assertNotNull(history);
 	}
 
 
@@ -123,7 +126,7 @@ public class PetaFTest {
 
 
 		ModelHistory history = space.getHistory();
-		Assert.assertNotNull(history);
+		assertNotNull(history);
 	}
 
 
@@ -141,7 +144,7 @@ public class PetaFTest {
 		buffer.with(convertMessage);
 
 		ConnectMessage newMessage = (ConnectMessage) space.getMap().decode(buffer);
-		Assert.assertEquals(newMessage.getReceiver(), proxy);
+		assertEquals(newMessage.getReceiver(), proxy);
 	}
 
 	@Test
@@ -152,7 +155,7 @@ public class PetaFTest {
 		JsonObject json = new JsonObject();
 		json.with("Key", "42");
 		connect.withMessage(json);
-		Assert.assertEquals("{\"class\":\"ConnectMessage\",\"msg\":{\"Key\":\"42\"}}", space.convertMessage(connect));
+		assertEquals("{\"class\":\"ConnectMessage\",\"msg\":{\"Key\":\"42\"}}", space.convertMessage(connect));
 
 	}
 
@@ -176,7 +179,7 @@ public class PetaFTest {
 //		fsProxy.withFullModell(false);
 //
 		Item item1 = groupAccount.createItem().withDescription("Beer").withValue(2.49);
-		Assert.assertNotNull(item1);
+		assertNotNull(item1);
 
 
 		Space space2 = new Space();
@@ -194,7 +197,7 @@ public class PetaFTest {
 
 		FileBuffer.deleteFile(fsProxy.getFileName());
 		FileBuffer.deleteFile(fsProxy2.getFileName());
-		Assert.assertEquals(groupAccount.getName(), ga2.getName());
+		assertEquals(groupAccount.getName(), ga2.getName());
 	}
 
 
@@ -203,6 +206,6 @@ public class PetaFTest {
 		ConnectMessage connectMessage = new ConnectMessage();
 		Space space=new Space();
 		space.getMessageFilter().withFormat((byte)4); // Filter.FORMAT_SHORTCLASS
-		Assert.assertEquals("{\"class\":\"ConnectMessage\"}", space.convertMessage(connectMessage));
+		assertEquals("{\"class\":\"ConnectMessage\"}", space.convertMessage(connectMessage));
 	}
 }

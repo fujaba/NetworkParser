@@ -2,7 +2,7 @@ package de.uniks.networkparser.test;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.ext.GitRevision;
 

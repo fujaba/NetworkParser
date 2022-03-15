@@ -1,7 +1,9 @@
 package de.uniks.networkparser.test.generator;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.ClassModel;
@@ -28,14 +30,14 @@ public class TestDiffer {
 		GraphMatcher matcher = new GraphMatcher(oldModel, model);
 //		matcher.generate();
 		GraphSimpleSet diffs = matcher.getDiffs();
-		Assert.assertEquals(diffs.size(), 1);
+		assertEquals(diffs.size(), 1);
 
 		 // SOLUTION 1
 			GraphConverter converter = new GraphConverter();
 			TemplateResultFragment fragment = converter.convertToAdvanced(TemplateResultFragment.create(diffs, true, true));
 	
 			CharacterBuffer value = fragment.getValue();
-			Assert.assertNotNull(value);
+			assertNotNull(value);
 		
 		// SOLUTION 2
 			ClassModel gen = new ClassModel();
@@ -46,23 +48,23 @@ public class TestDiffer {
 //		Differ differ = new Differ();
 //		List<Match> diffs = differ.diff(oldModel, model);
 //		
-//		Assert.assertEquals(1, diffs.size());
+//		assertEquals(1, diffs.size());
 //		Match diff = diffs.get(0);
-//		Assert.assertEquals(SendableEntityCreator.NEW, diff.getType());
-//		Assert.assertEquals(oldUniversity, diff.getMatch());
-//		Assert.assertEquals(null, diff.getOldValue());
-//		Assert.assertEquals(attribute, diff.getNewValue());
+//		assertEquals(SendableEntityCreator.NEW, diff.getType());
+//		assertEquals(oldUniversity, diff.getMatch());
+//		assertEquals(null, diff.getOldValue());
+//		assertEquals(attribute, diff.getNewValue());
 //	
 //		GraphModel newModel = differ.generateAdvance(diffs, oldModel);
-//		Assert.assertEquals(1, oldUniversity.getAttributes().size());
+//		assertEquals(1, oldUniversity.getAttributes().size());
 //		Attribute generatedAttribute = oldUniversity.getAttributes().get(0);
-//		Assert.assertEquals(attribute.getName(), generatedAttribute.getName());
-//		Assert.assertEquals(attribute.getType(), generatedAttribute.getType());
-//		Assert.assertEquals(attribute.getModifier().toString(), generatedAttribute.getModifier().toString());
+//		assertEquals(attribute.getName(), generatedAttribute.getName());
+//		assertEquals(attribute.getType(), generatedAttribute.getType());
+//		assertEquals(attribute.getModifier().toString(), generatedAttribute.getModifier().toString());
 //		
 //		DiffGenerator diffGenerator = new DiffGenerator(null);
 //		String code = diffGenerator.generateNewVersion(newModel, "testBasicAttributeAdd", "src/main/java", "src/test/java");
-//		Assert.assertEquals("" +
+//		assertEquals("" +
 //				"	private void testBasicAttributeAddNewVersion()\n" +
 //				"	{\n" +
 //				"		de.uniks.networkparser.ext.ClassModel model = new de.uniks.networkparser.ext.ClassModel();\n" +

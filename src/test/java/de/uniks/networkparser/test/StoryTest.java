@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.ClassModel;
@@ -68,16 +69,16 @@ public class StoryTest {
 		story.addText("MainText");
 
 		Story halloWelt = book.createStory("HalloWelt");
-		Assert.assertNotNull(halloWelt);
+		assertNotNull(halloWelt);
 
 		Story ludo = book.createStory("Ludo");
-		Assert.assertNotNull(ludo);
+		assertNotNull(ludo);
 
 		Story startGame = book.createStory("StartGame");
-		Assert.assertNotNull(startGame);
+		assertNotNull(startGame);
 
 		Story winGame  = book.createStory("WinGame");
-		Assert.assertNotNull(winGame);
+		assertNotNull(winGame);
 
 		book.writeToFile();
 	}

@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.json.JsonObject;
@@ -18,9 +19,9 @@ public class HJsonTest {
 		sb.withLine("Comment */");
 		sb.withLine("}");
 		JsonObject json=new JsonObject().withValue(sb.toString());
-		Assert.assertEquals(json.get("id"), 42);
-		Assert.assertEquals(json.size(), 1);
-		Assert.assertEquals("{\"id\":42}", json.toString());
+		assertEquals(json.get("id"), 42);
+		assertEquals(json.size(), 1);
+		assertEquals("{\"id\":42}", json.toString());
 	}
 	@Test
 	public void testHJsonWithoutComma() {
@@ -31,10 +32,10 @@ public class HJsonTest {
 		sb.withLine("lastname:\"Zuendorf\"");
 		sb.withLine("}");
 		JsonObject json=new JsonObject().withValue(sb.toString());
-		Assert.assertEquals(json.get("id"), 42);
-		Assert.assertEquals(json.get("prename").toString(), "Albert");
-		Assert.assertEquals(json.get("lastname"), "Zuendorf");
-		Assert.assertEquals(json.size(), 3);
-		Assert.assertEquals("{\"id\":42,\"prename\":\"Albert\",\"lastname\":\"Zuendorf\"}", json.toString());
+		assertEquals(json.get("id"), 42);
+		assertEquals(json.get("prename").toString(), "Albert");
+		assertEquals(json.get("lastname"), "Zuendorf");
+		assertEquals(json.size(), 3);
+		assertEquals("{\"id\":42,\"prename\":\"Albert\",\"lastname\":\"Zuendorf\"}", json.toString());
 	}
 }

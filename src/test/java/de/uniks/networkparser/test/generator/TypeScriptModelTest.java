@@ -1,6 +1,6 @@
 package de.uniks.networkparser.test.generator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.ModelGenerator;

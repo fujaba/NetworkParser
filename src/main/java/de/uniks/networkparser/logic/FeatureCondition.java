@@ -47,9 +47,9 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 		if (buffer == null) {
 			return;
 		}
-		CharacterBuffer temp = buffer.nextToken(false, SPLITEND, ENTER);
+		CharacterBuffer temp = buffer.nextToken(SPLITEND, ENTER);
 		this.feature = Feature.valueOf(temp.toString()).create();
-		temp = buffer.nextToken(false, SPLITEND);
+		temp = buffer.nextToken(SPLITEND);
 		if (temp.length() > 0) {
 			String string = temp.toString();
 			if (SimpleSet.class.getSimpleName().equals(string) || SimpleSet.class.getName().equals(string)) {

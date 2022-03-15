@@ -1,6 +1,6 @@
 package de.uniks.networkparser.test;
 //
-//import static org.junit.Assert.assertNotNull;
+//import static org.junit.assertNotNull;
 //
 //import java.io.File;
 //import java.io.IOException;

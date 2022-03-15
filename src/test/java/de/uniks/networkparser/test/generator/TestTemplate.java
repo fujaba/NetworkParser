@@ -1,5 +1,9 @@
 package de.uniks.networkparser.test.generator;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.FunctionCondition;
@@ -7,8 +11,6 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.TemplateList;
 import de.uniks.networkparser.parser.TemplateResultFragment;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestTemplate {
 	@Test
@@ -22,7 +24,7 @@ public class TestTemplate {
 		variables.put("number", "42");
 
 		template.executeSimpleEntity(condition, variables);
-		Assert.assertNotNull(condition);
+		assertNotNull(condition);
 	}
 
 	@Test
@@ -47,10 +49,10 @@ public class TestTemplate {
 	@Test
 	public void testIFTemplate() {
 		String value = "{{#if true ? \"Hello\" : \"World\"}}!";
-		Assert.assertNotNull(value);
+		assertNotNull(value);
 //		Template template = Template.create(value);
 //		ObjectCondition condition = template.parsing();
-//		Assert.assertNotNull(condition);
+//		assertNotNull(condition);
 	}
 	@Test
 	public void testIFTemplateSpace() {
@@ -58,7 +60,7 @@ public class TestTemplate {
 		String value = "{{#if {{typecat}}!=SET? {{type}}... filter}}";
 		Template template = Template.create(value);
 		ObjectCondition condition = template.parsing();
-		Assert.assertNotNull(condition);
+		assertNotNull(condition);
 	}
 
 	@Test
@@ -68,8 +70,8 @@ public class TestTemplate {
 		ObjectCondition condition = template.parsing(new FunctionCondition());
 
 		TemplateResultFragment entity = template.executeEntity(condition, null);
-		Assert.assertNotNull(condition);
-		Assert.assertNotNull(entity);
+		assertNotNull(condition);
+		assertNotNull(entity);
 	}
 
 }

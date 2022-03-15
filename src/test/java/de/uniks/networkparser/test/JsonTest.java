@@ -1,8 +1,11 @@
 package de.uniks.networkparser.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.beans.PropertyChangeEvent;
 import java.util.Date;
@@ -11,16 +14,15 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.EntityStringConverter;
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.TextDiff;
 import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -75,37 +77,37 @@ public class JsonTest {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.withKeyValue("msg", "init");
 
-		Assert.assertFalse(jsonObject.equals(Equals.create("msg", "game")));
-		Assert.assertTrue(jsonObject.equals(Equals.create("msg", "init")));
+		assertFalse(jsonObject.equals(Equals.create("msg", "game")));
+		assertTrue(jsonObject.equals(Equals.create("msg", "init")));
 	}
 	
 	@Test
 	public void testJSONDuplicate() {
 		JsonObject json = new JsonObject().withValue("{\"type\":\"new\", \"type\":\"old\"}");
-		Assert.assertEquals(json.get("type"), "old");
-		Assert.assertEquals(1, json.size());
+		assertEquals(json.get("type"), "old");
+		assertEquals(1, json.size());
 	}
 
 	@Test
 	public void testJSONDelete() {
 		JsonObject json = new JsonObject().withValue("{\"id\":42, \"dice\":3}");
-		Assert.assertEquals(json.getValue("id"), 42);
-		Assert.assertEquals(json.getValue("dice"), 3);
+		assertEquals(json.getValue("id"), 42);
+		assertEquals(json.getValue("dice"), 3);
 		json.without("id");
 		String key = json.getKeyByIndex(0);
-		Assert.assertEquals(json.getValue(key), 3);
+		assertEquals(json.getValue(key), 3);
 	}
 	
 	@Test
 	public void testJSONCase() {
 		JsonObject json = new JsonObject().withValue("{\"id\":42}");
-		Assert.assertEquals(json.get("id"), 42);
-		Assert.assertNull(json.get("Id"));
+		assertEquals(json.get("id"), 42);
+		assertNull(json.get("Id"));
 		
 		json.withCaseSensitive(false);
-		Assert.assertEquals(json.get("id"), 42);
-		Assert.assertEquals(json.get("Id"), 42);
-		Assert.assertEquals(json.get("ID"), 42);
+		assertEquals(json.get("id"), 42);
+		assertEquals(json.get("Id"), 42);
+		assertEquals(json.get("ID"), 42);
 	}
 
 	@Test
@@ -120,23 +122,32 @@ public class JsonTest {
 	@Test
 	public void testJSONEmptyKey() {
 		JsonObject json = new JsonObject().withValue("{\"id\":42, }");
-		Assert.assertEquals(json.get("id"), 42);
-		Assert.assertEquals(1, json.size());
+		assertEquals(json.get("id"), 42);
+		assertEquals(1, json.size());
 	}
 
 	@Test
 	public void testJSONPath() {
 		JsonObject json = new JsonObject().withValue("{\"id\":\"D:\\\\Roellmedia\\\\\"\n\r}");
-		Assert.assertEquals("D:\\Roellmedia\\", json.get("id"));
+		assertEquals("D:\\Roellmedia\\", json.get("id"));
 	}
 
+   @Test
+   public void testPathEscape() {
+       String txt = "{\"id\":\"D:\\\\Roellmedia\\\\\"}";
+       JsonObject json = new JsonObject().withValue(txt);
+       
+       assertEquals(txt, json.toString());
+   }
+
+	
 	@Test
 	public void testJSONFunction() {
 		String functionJson = "{body:\"public main() {\r\n\tconsole.log('Hallo Welt');\n\t}\"}";
 
 		JsonObject jsonObject = new JsonObject();
 		new JsonTokener().parseToEntity(jsonObject, new CharacterBuffer().with(functionJson));
-		Assert.assertEquals(
+		assertEquals(
 				"{\"body\":\"public main() {\\r\\n\\u0009console.log(\'Hallo Welt\');\\n\\u0009}\"}",
 				jsonObject.toString(2));
 	}
@@ -145,14 +156,14 @@ public class JsonTest {
 	public void testJSONInsert() {
 		JsonObject item = new JsonObject().withValue("id", "K444", "value", "42");
 		item.add(0, "class", "JsonObject");
-		Assert.assertEquals("{\"class\":\"JsonObject\",\"id\":\"K444\",\"value\":\"42\"}", item.toString());
+		assertEquals("{\"class\":\"JsonObject\",\"id\":\"K444\",\"value\":\"42\"}", item.toString());
 	}
 
 	@Test
 	public void testJSONString() {
 		JsonObject item = new JsonObject().withValue("{name:\"\\\"Stefan\\\"\", value:42}");
 		item.add(0, "class", "JsonObject");
-		Assert.assertEquals("{\"class\":\"JsonObject\",\"name\":\"\\\"Stefan\\\"\",\"value\":42}", item.toString());
+		assertEquals("{\"class\":\"JsonObject\",\"name\":\"\\\"Stefan\\\"\",\"value\":42}", item.toString());
 	}
 
 	@Test
@@ -173,7 +184,7 @@ public class JsonTest {
 		item.put("iddouble", 42.1);
 		assertEquals(23L, item.get("idlong"));
 		assertEquals(23, item.get("idint"));
-		assertEquals("Wrong", 42.1d, item.getDouble("iddouble"), 0.00001);
+		assertEquals(42.1d, item.getDouble("iddouble"), 0.00001, "Wrong");
 	}
 
 	@Test
@@ -190,7 +201,7 @@ public class JsonTest {
 		assertEquals(master, text.toString());
 
 		FullAssocs newAssoc = (FullAssocs) map.decode(new JsonObject().withValue(text.toString()));
-		assertEquals("Passwords", 2, newAssoc.getPasswords().size());
+		assertEquals(2, newAssoc.getPasswords().size(), "Passwords");
 	}
 
 	@Test
@@ -206,10 +217,10 @@ public class JsonTest {
 		
 		String value = jsonArray.toString();
 
-		Assert.assertTrue(map.decode(value) instanceof University);
+		assertTrue(map.decode(value) instanceof University);
 		map.withFlag(IdMap.FLAG_SIMPLEFORMAT);
 //		Object uniList = map.decode(value);
-		Assert.assertTrue(map.decode(value) instanceof SimpleList<?>);
+		assertTrue(map.decode(value) instanceof SimpleList<?>);
 
 	}
 
@@ -244,7 +255,7 @@ public class JsonTest {
 		IdMap mapReserve = new IdMap();
 		mapReserve.with(new ChangeCreator());
 		Change item = (Change) mapReserve.decode(jsonObject.toString());
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Change\",\"id\":\"C1\",\"prop\":{\"value\":{\"id\":\"name\",\"value\":\"42\"}}}", jsonObject.toString());
+		assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Change\",\"id\":\"C1\",\"prop\":{\"value\":{\"id\":\"name\",\"value\":\"42\"}}}", jsonObject.toString());
 		assertEquals(item.getValue().getString("value"), "42");
 	}
 
@@ -260,7 +271,7 @@ public class JsonTest {
 
 		JsonObject jsonObject = map.toJsonObject(fullAssocs);
 		String data = jsonObject.toString(2);
-		Assert.assertEquals(141, data.length());
+		assertEquals(141, data.length());
 
 		FullAssocs newfullAssocs = (FullAssocs) map.decode(data);
 		assertNotNull(newfullAssocs);
@@ -322,7 +333,7 @@ public class JsonTest {
 		IdMap map = new IdMap();
 		map.with(new SortedMsgCreator());
 		Object item = map.decode(text);
-		Assert.assertNotNull(item);
+		assertNotNull(item);
 	}
 
 	@Test
@@ -446,7 +457,7 @@ public class JsonTest {
 
 		University clone = (University) readMap.decode(jsonArray);
 
-		Assert.assertEquals("wrong number of rooms", 2, clone.sizeOfRooms());
+		assertEquals(2, clone.sizeOfRooms(), "wrong number of rooms");
 	}
 
 	@Test
@@ -461,7 +472,7 @@ public class JsonTest {
 
 		String reference = "{\r\n  \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n  \"id\":\"C1\",\r\n  \"prop\":{\r\n    \"sender\":\"Stefan Lindel\",\r\n    \"txt\":\"Dies ist eine Testnachricht\"\r\n  }\r\n}";
 		JsonObject actual = jsonMap.toJsonObject(chatMessage);
-		assertEquals("WERT Vergleichen", reference, actual.toString(2));
+		assertEquals(reference, actual.toString(2), "WERT Vergleichen");
 		assertEquals(reference.length(), actual.toString(2).length());
 
 		String msg = actual.toString(2);
@@ -470,7 +481,7 @@ public class JsonTest {
 		map.with(new ChatMessageCreator());
 
 		ChatMessage newChatMsg = (ChatMessage) map.decode(new JsonObject().withValue(msg));
-		Assert.assertNotNull(newChatMsg);
+		assertNotNull(newChatMsg);
 	}
 
 	@Test
@@ -485,16 +496,16 @@ public class JsonTest {
 
 		String reference = "{\r\n  \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n  \"id\":\"C1\",\r\n  \"prop\":{\r\n    \"sender\":\"Stefan Lindel\",\r\n    \"txt\":\"Dies ist eine Testnachricht\"\r\n  }\r\n}";
 		JsonObject actual = jsonMap.toJsonObject(chatMessage);
-		assertEquals("WERT Vergleichen", reference, actual.toString(2));
+		assertEquals(reference, actual.toString(2), "WERT Vergleichen");
 
 		reference = "{\r\n  \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n  \"id\":\"C1\",\r\n  \"prop\":{\r\n    \"sender\":\"Stefan Lindel\",\r\n    \"time\":null,\r\n    \"txt\":\"Dies ist eine Testnachricht\",\r\n    \"count\":0,\r\n    \"activ\":false\r\n  }\r\n}";
 		actual = jsonMap.toJsonObject(chatMessage, Filter.createFull());
-		assertEquals("WERT Vergleichen", reference, actual.toString(2));
+		assertEquals(reference, actual.toString(2),"WERT Vergleichen");
 
 		// Array
 		reference = "[\r\n  {\r\n    \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n    \"id\":\"C1\",\r\n    \"prop\":{\r\n      \"sender\":\"Stefan Lindel\",\r\n      \"time\":null,\r\n      \"txt\":\"Dies ist eine Testnachricht\",\r\n      \"count\":0,\r\n      \"activ\":false\r\n    }\r\n  }\r\n]";
 		JsonArray actualArray = jsonMap.toJsonArray(chatMessage, Filter.createFull());
-		assertEquals("WERT Vergleichen", reference, actualArray.toString(2));
+		assertEquals(reference, actualArray.toString(2), "WERT Vergleichen");
 	}
 
 	@Test
@@ -533,7 +544,7 @@ public class JsonTest {
 		msg.setLocation(new Location(42, 23));
 //FIXME		map.with(new RestCounter("http://myname.org/rest/"));
 		JsonObject json = map.toJsonObject(msg, new Filter().withConvertable(Deep.create(0)));
-		Assert.assertEquals(
+		assertEquals(
 				"{\"class\":\"de.uniks.networkparser.test.model.FullMessage\",\"id\":\"F1\",\"prop\":{\"txt\":\"Hallo Welt\",\"number\":42,\"location\":{\"class\":\"de.uniks.networkparser.test.model.Location\",\"id\":\"L2\"}}}",
 				json.toString());
 	}
@@ -593,14 +604,14 @@ public class JsonTest {
 
 		String reference = "{\"class\":\"de.uniks.networkparser.test.model.StringMessage\",\"id\":\"0\",\"prop\":{\"value\":\"C:\\\\TEST\\\\MY\\\\WORLD.TXT\"}}";
 
-		Assert.assertEquals(reference, msg);
+		assertEquals(reference, msg);
 
 		IdMap mapReverse = new IdMap();
 		mapReverse.with(new StringMessageCreator());
 
 		StringMessage test = (StringMessage) mapReverse.decode(jsonObject.toString());
 
-		Assert.assertEquals("C:\\TEST\\MY\\WORLD.TXT", test.getValue());
+		assertEquals("C:\\TEST\\MY\\WORLD.TXT", test.getValue());
 	}
 
 	@Test
@@ -628,12 +639,12 @@ public class JsonTest {
 		map.withTimeStamp(1);
 
 		// ARRAY
-		Assert.assertEquals(
+		assertEquals(
 				"[{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"A1\",\"prop\":{\"pass\":null,\"x\":0,\"y\":0,\"owner\":null}}]",
 				map.toJsonArray(apple, Filter.createFull()).toString());
 
 		// OBJECT
-		Assert.assertEquals(
+		assertEquals(
 				"{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"A1\",\"prop\":{\"pass\":null,\"x\":0,\"y\":0,\"owner\":null}}",
 				map.toJsonObject(apple, Filter.createFull()).toString());
 
@@ -646,13 +657,13 @@ public class JsonTest {
 		encodeMap.with(new PersonCreator());
 		Person person = new Person().withName("Albert").withBalance(42);
 		String shortString = encodeMap.toJsonObject(person, Filter.createSimple()).toString();
-		Assert.assertEquals(49, shortString.length());
+		assertEquals(49, shortString.length());
 
 		IdMap decodeMap = new IdMap().with(new EMFJsonGrammar());
 		decodeMap.with(new PersonCreator());
 		Person item = (Person) decodeMap.decode(new JsonObject().withValue(shortString));
-		Assert.assertEquals("Albert", item.getName());
-		Assert.assertEquals(42, item.getBalance(), 0.000001);
+		assertEquals("Albert", item.getName());
+		assertEquals(42, item.getBalance(), 0.000001);
 	}
 
 	@Test
@@ -666,15 +677,15 @@ public class JsonTest {
 
 		Barbarian barbar = (Barbarian) map.decode(new JsonObject().withValue(json));
 
-		Assert.assertNotNull(barbar);
-		Assert.assertEquals(barbar.getPosition(), 42);
+		assertNotNull(barbar);
+		assertEquals(barbar.getPosition(), 42);
 
-		Assert.assertNull(barbar.getGame());
+		assertNull(barbar.getGame());
 		json = "{\"@ts\":\"1368185625179\",\"@src\":\"Barbarian@2b40c3b9\",\"@prop\":\"game\",\"@nv\":\"Game@55a92d3a\"}";
 
 		map.decode(new JsonObject().withValue(json));
 
-		Assert.assertNotNull(barbar.getGame());
+		assertNotNull(barbar.getGame());
 	}
 
 	@Test
@@ -683,20 +694,32 @@ public class JsonTest {
 
 		JsonObject item = new JsonObject().withValue(json);
 		// Duplicate allow
-		Assert.assertEquals(42, item.get("Number"));
-		Assert.assertEquals(23, item.get("number"));
+		assertEquals(42, item.get("Number"));
+		assertEquals(23, item.get("number"));
 
 		// Dont allow Duplicate
 		JsonObject item2 = new JsonObject().withCaseSensitive(false);
 		item2.withValue(json);
-		Assert.assertEquals(42, item2.get("Number"));
-		Assert.assertEquals(42, item2.get("number"));
+		assertEquals(42, item2.get("Number"));
+		assertEquals(42, item2.get("number"));
 
 		JsonObject item3 = new JsonObject();
 
 		item3.put("id", "23");
 		item3.put("id", "42");
-		Assert.assertEquals("{\"id\":\"42\"}", item3.toString());
+		assertEquals("{\"id\":\"42\"}", item3.toString());
+	}
+	
+	@Test
+    public void testJSONInJSON() {
+        JsonObject subItem = new JsonObject().withKeyValue("value", "Hallo Welt");
+        JsonObject item = new JsonObject().withKeyValue("item", subItem.toString());
+
+        String itemString = item.toString();
+
+        JsonObject newItem = new JsonObject().withValue(itemString);
+        String newItemString = newItem.getString("item");
+        JsonObject newSubItem = new JsonObject().withValue(newItemString);
 	}
 
 	@Test
@@ -706,14 +729,12 @@ public class JsonTest {
 		JsonObject item = new JsonObject().withKeyValue("item", subItem.toString());
 
 		String itemString = item.toString();
-		// {"item":"{\"id\":\"{\\\"value\\\":\\\"Hallo Welt\\\"}\"}"}
-		Assert.assertEquals(58, itemString.length());
+		assertEquals(58, itemString.length());
 
 		JsonObject newItem = new JsonObject().withValue(itemString);
-		//{"item":"{\\ id :\\\"{\\\\\\\"value\\\\\\\":\\\\\\\"Hallo Welt\\\\\\\"}\\\"}"}
 		String newItemString = newItem.getString("item");
 		JsonObject newSubItem = new JsonObject().withValue(newItemString);
-		Assert.assertEquals(35, newSubItem.toString().length());
+		assertEquals(35, newSubItem.toString().length());
 
 		// StringBuffer readFile =
 		// readFile("test/StringThatDoesNotUnquote2.txt");
@@ -739,29 +760,29 @@ public class JsonTest {
 		JsonObject same = new JsonObject();
 		TextDiff diffList = new TextDiff();
 
-		Assert.assertFalse(EntityUtil.compareEntity(jsonA, jsonB, diffList, same));
-		Assert.assertEquals("{\"id\":42,\"list\":[1,2]}", same.toString());
-		Assert.assertEquals("{\"no\":23,\"array\":[2]}", jsonA.toString());
-		Assert.assertEquals("{\"no\":24,\"array\":[3]}", jsonB.toString());
+		assertFalse(EntityUtil.compareEntity(jsonA, jsonB, diffList, same));
+		assertEquals("{\"id\":42,\"list\":[1,2]}", same.toString());
+		assertEquals("{\"no\":23,\"array\":[2]}", jsonA.toString());
+		assertEquals("{\"no\":24,\"array\":[3]}", jsonB.toString());
 	}
 
 	@Test
 	public void testLong() {
 		JsonObject item = new JsonObject().withValue("value", "1234567890");
-		Assert.assertEquals(1234567890, item.getLong("value"));
+		assertEquals(1234567890, item.getLong("value"));
 	}
 
 	@Test
 	public void testJsonArrayTest() {
 		JsonArray array = new JsonArray();
 		array.with(1, 2, 3, 4, 5);
-		Assert.assertEquals("[1,2,3,4,5]", array.toString());
+		assertEquals("[1,2,3,4,5]", array.toString());
 		array.with(new JsonArray().with(6, 7));
 		array.with(8);
 		array.with(new JsonObject().with("id", 42));
 		array.with(new JsonObject().with("id", 42, "class", "JsonObject"));
 
-		Assert.assertEquals(
+		assertEquals(
 				"[\r\n  1,\r\n  2,\r\n  3,\r\n  4,\r\n  5,\r\n  [\r\n    6,\r\n    7\r\n  ],\r\n  8,\r\n  {\"id\":42},\r\n  {\r\n    \"id\":42,\r\n    \"class\":\"JsonObject\"\r\n  }\r\n]",
 				array.toString(2));
 	}
@@ -770,7 +791,7 @@ public class JsonTest {
 	public void testSimpleSpaceTest() {
 		String content = " \t\r\n{id:22}";
 		JsonObject json = new JsonObject().withValue(content);
-		Assert.assertEquals(22, json.getInt("id"));
+		assertEquals(22, json.getInt("id"));
 
 	}
 
@@ -780,9 +801,9 @@ public class JsonTest {
 		// https://github.com/fujaba/NetworkParser/issues/3
 		String content = "{\"foo\": null}";
 		JsonObject json = new JsonObject().withValue(content);
-		Assert.assertEquals(null, json.getString("foo", null));
-		Assert.assertEquals("", json.getString("foo", ""));
-		Assert.assertEquals("bar", json.getString("foo", "bar"));
+		assertEquals(null, json.getString("foo", null));
+		assertEquals("", json.getString("foo", ""));
+		assertEquals("bar", json.getString("foo", "bar"));
 	}
 
 	@Test
@@ -797,12 +818,12 @@ public class JsonTest {
 		map.withTimeStamp(1);
 		map.with(new ListEntity());
 		JsonObject json = map.toJsonObject(root);
-		Assert.assertEquals(1285, json.toString(2).length());
+		assertEquals(1285, json.toString(2).length());
 
 		IdMap mapDecode = new IdMap();
 		mapDecode.with(new ListEntity());
 		Object rootDecode = mapDecode.decode(json);
-		Assert.assertNotNull(rootDecode);
+		assertNotNull(rootDecode);
 	}
 
 	@Test
@@ -849,7 +870,7 @@ public class JsonTest {
 				String testMessage = messages.first();
 
 				String updateMessage = simpleEvent.getEntity().toString();
-				Assert.assertEquals(testMessage, updateMessage);
+				assertEquals(testMessage, updateMessage);
 				if(messages.size()>1) {
 					messages.remove(0);
 				}
@@ -864,15 +885,15 @@ public class JsonTest {
 		House newHouse = (House) decodeMap.decode(string);
 
 		// Old Model
-		Assert.assertEquals(4, newHouse.getFloor());
-		Assert.assertEquals("University", newHouse.getName());
+		assertEquals(4, newHouse.getFloor());
+		assertEquals("University", newHouse.getName());
 
 		// Update old Model
 		house.setFloor(42);
 
 		decodeMap.decode(messages.first());
 
-		Assert.assertEquals(42, newHouse.getFloor());
+		assertEquals(42, newHouse.getFloor());
 	}
 
 	@Test
@@ -913,8 +934,8 @@ public class JsonTest {
 		decodeMap.with(new ItemCreator());
 
 		PropertyChangeEvent decode = (PropertyChangeEvent) decodeMap.decode(encode.toString());
-		Assert.assertEquals(person.getClass(), decode.getSource().getClass());
-		Assert.assertEquals("child", decode.getPropertyName());
+		assertEquals(person.getClass(), decode.getSource().getClass());
+		assertEquals("child", decode.getPropertyName());
 	}
 
 	@Test
@@ -930,7 +951,7 @@ public class JsonTest {
 		map.withListener(new ObjectCondition() {
 			@Override
 			public boolean update(Object value) {
-				Assert.fail();
+				fail();
 				return false;
 			}
 		});
@@ -939,7 +960,7 @@ public class JsonTest {
 		person.setBalance(42);
 		map.getMapListener().resetNotification();
 
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P1\",\"upd\":{\"name\":\"Albert\",\"balance\":42},\"rem\":{\"balance\":0}}", updateAccumulate.getChange().toString());
+		assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P1\",\"upd\":{\"name\":\"Albert\",\"balance\":42},\"rem\":{\"balance\":0}}", updateAccumulate.getChange().toString());
 	}
 	
 	@Test
@@ -949,10 +970,10 @@ public class JsonTest {
 		jsonObject.with("value", "[{id:23},{id:32}]");
 		jsonObject.with("description", "Hallo Welt");
 		JsonArray jsonArray = jsonObject.getJsonArray("value");
-		Assert.assertEquals(2, jsonArray.size());
+		assertEquals(2, jsonArray.size());
 		jsonArray = jsonObject.getJsonArray("description");
-		Assert.assertEquals(1, jsonArray.size());
-		Assert.assertEquals("Hallo Welt", jsonArray.first());
+		assertEquals(1, jsonArray.size());
+		assertEquals("Hallo Welt", jsonArray.first());
 	}
 
 	@Test
@@ -961,7 +982,7 @@ public class JsonTest {
 		Clazz uni = model.createClazz( "Uni" ) ;
 		Clazz student = model.createClazz( "Student" );
 		uni.withAssoc (student , 42 ) ;
-		Assert.assertNotNull(new DotConverter().encode(model));
+		assertNotNull(new DotConverter().encode(model));
 	}
 	
 //	@Test

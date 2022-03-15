@@ -1,5 +1,7 @@
 package de.uniks.networkparser.test;
 
+import java.util.regex.Matcher;
+
 /**
  * A compiled representation of a regular expression.
  *

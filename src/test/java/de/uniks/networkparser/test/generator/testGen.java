@@ -1,6 +1,6 @@
 package de.uniks.networkparser.test.generator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.story.Story;
@@ -51,7 +51,7 @@ public class testGen {
 //		Object infRoom = junit.createElement(room, "name", "InfRoom");
 		
 //		Object albert = junit.createElement(person, "name", "InfRoom", "room", infRoom);
-//		Assert.assertNotNull(albert);
+//		assertNotNull(albert);
 	}
 	
 

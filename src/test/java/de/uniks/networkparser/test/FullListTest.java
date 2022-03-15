@@ -1,7 +1,10 @@
 package de.uniks.networkparser.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -10,8 +13,8 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.ListIterator;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.TextDiff;
@@ -35,13 +38,13 @@ public class FullListTest {
 		apple.withX(23).withY(42);
 		set.add(apple);
 		set.add(apple);
-		Assert.assertEquals(1, set.size());
+		assertEquals(1, set.size());
 		
 		
 		SimpleKeyValueList<String, Integer> map = new SimpleKeyValueList<String, Integer>();
 		map.put("Hallo", 23);
 		map.put("World", 42);
-		Assert.assertEquals(2, map.size());
+		assertEquals(2, map.size());
 	}
 
 	@Test
@@ -57,17 +60,17 @@ public class FullListTest {
 		list.add(second);
 		list.add(third);
 
-		Assert.assertEquals(first, list.get(0));
-		Assert.assertEquals(second, list.get(1));
-		Assert.assertEquals(third, list.get(2));
+		assertEquals(first, list.get(0));
+		assertEquals(second, list.get(1));
+		assertEquals(third, list.get(2));
 
 		list.add(newSecond);
 
-		Assert.assertEquals(first, list.get(0));
-		Assert.assertEquals(newSecond, list.get(1));
-		Assert.assertEquals(second, list.get(2));
-		Assert.assertEquals(third, list.get(3));
-		Assert.assertEquals(4, list.size());
+		assertEquals(first, list.get(0));
+		assertEquals(newSecond, list.get(1));
+		assertEquals(second, list.get(2));
+		assertEquals(third, list.get(3));
+		assertEquals(4, list.size());
 	}
 
 	@Test
@@ -90,7 +93,7 @@ public class FullListTest {
 		slave.add("Welt");
 		masterB.add(slave);
 
-		Assert.assertTrue(EntityUtil.compareEntity(masterA, masterB));
+		assertTrue(EntityUtil.compareEntity(masterA, masterB));
 	}
 
 	private JsonObject createHelpClass(String name, String color) {
@@ -111,17 +114,15 @@ public class FullListTest {
 		JsonObject master = this.createHelpClass("Alice", "green");
 		JsonObject slave = this.createHelpClass("Bob", "blue");
 		TextDiff diffs=new TextDiff();
-		Assert.assertFalse(EntityUtil.compareEntity(master, slave, diffs, null));
-
+		assertFalse(EntityUtil.compareEntity(master, slave, diffs, null));
 	}
-
 
 	@Test
 	public void CollectionWith() {
 		SimpleList<String> item=new SimpleList<String>();
 		item.withType(String.class);
 		item.with("Hallo", "Welt", 42, null);
-		Assert.assertEquals(2, item.size());
+		assertEquals(2, item.size());
 	}
 
 	@Test
@@ -130,7 +131,7 @@ public class FullListTest {
 		for(int i=0;i<500;i++) {
 			item.add("Number_"+i);
 		}
-		Assert.assertEquals("Number_42", item.getValue("Number_42"));
+		assertEquals("Number_42", item.getValue("Number_42"));
 	}
 
 	@Test
@@ -140,7 +141,7 @@ public class FullListTest {
 		bidiMap.add("Tobi", 3);
 		bidiMap.add("Albert", 42);
 		bidiMap.remove("Tobi");
-		Assert.assertNull(bidiMap.getValue("Albert42"));
+		assertNull(bidiMap.getValue("Albert42"));
 	}
 
 	@Test
@@ -150,7 +151,7 @@ public class FullListTest {
 		bidiMap.add("Tobi", 3);
 		bidiMap.add("Albert", 42);
 		bidiMap.removePos(2);
-		Assert.assertNull(bidiMap.getValue("Albert"));
+		assertNull(bidiMap.getValue("Albert"));
 	}
 
 	@Test
@@ -163,7 +164,7 @@ public class FullListTest {
 		bidiMap.add(delete, 42);
 		bidiMap.without(delete);
 		bidiMap.without("Check");
-		Assert.assertNull(bidiMap.getValue("Albert.42"));
+		assertNull(bidiMap.getValue("Albert.42"));
 	}
 
 	@Test
@@ -174,7 +175,7 @@ public class FullListTest {
 		bidiMap.add("Tobi", 3);
 		bidiMap.add("Albert", 3);
 //		bidiMap.add(delete, 42);
-		Assert.assertNull(bidiMap.getValue(delete));
+		assertNull(bidiMap.getValue(delete));
 	}
 
 	@Test
@@ -183,16 +184,16 @@ public class FullListTest {
 		item.with(new Fruit().withX(1).withY(1));
 		item.with(new Apple().withX(2).withX(2));
 
-		Assert.assertEquals(2, item.size());
+		assertEquals(2, item.size());
 		AppleSet newSet=new AppleSet();
 		newSet.withType(Apple.class);
 		newSet.withList(item);
 
-		Assert.assertEquals(1, newSet.size());
+		assertEquals(1, newSet.size());
 
 		newSet.with(new Fruit().withX(3).withY(3));
 
-		Assert.assertEquals(1, newSet.size());
+		assertEquals(1, newSet.size());
 	}
 
 	@Test
@@ -200,11 +201,11 @@ public class FullListTest {
 		SimpleList<String> simpleList = new SimpleList<String>();
 		simpleList.add("Hallo");
 
-		Assert.assertEquals("Hallo",simpleList.get(0));
+		assertEquals("Hallo",simpleList.get(0));
 		SimpleKeyValueList<String, Integer> map = new SimpleKeyValueList<String, Integer>();
 		map.flag();
 		map.add("Stefan", 42);
-		Assert.assertEquals("Map Visible CaseSensitive (1) [Stefan]",map.toString());
+		assertEquals("Map Visible CaseSensitive (1) [Stefan]",map.toString());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -217,69 +218,69 @@ public class FullListTest {
 		Integer int_01 = Integer.valueOf(1);
 		Integer int_02 = Integer.valueOf(2);
 
-		assertEquals("List should be empty", 0, simpleList.size());
-		assertTrue("List should not yet contain added element", ! simpleList.contains(int_01));
+		assertEquals(0, simpleList.size(), "List should be empty");
+		assertTrue(! simpleList.contains(int_01), "List should not yet contain added element");
 
 		simpleList.add(int_01);
 
-		assertEquals("List should contain 1 element", 1, simpleList.size());
-		assertTrue("List should contain added element", simpleList.contains(int_01));
+		assertEquals(1, simpleList.size(), "List should contain 1 element");
+		assertTrue(simpleList.contains(int_01), "List should contain added element");
 
 		// add it again
 		simpleList.add(int_01);
 
 		// should have no effect
-		assertEquals("List should contain 1 element", 1, simpleList.size());
-		assertTrue("List should contain added element", simpleList.contains(int_01));
+		assertEquals(1, simpleList.size(), "List should contain 1 element");
+		assertTrue(simpleList.contains(int_01), "List should contain added element");
 
 		// iterate through it
 		int counter = 0;
 		for (Integer integer : simpleList) {
 			counter++;
-			Assert.assertNotNull(integer);
+			assertNotNull(integer);
 		}
 
-		assertEquals("iteration should have counted one element", 1, counter);
+		assertEquals(1, counter, "iteration should have counted one element");
 
 		// remove an element, it does not contain
 		simpleList.remove(int_02);
 
-		assertEquals("List should contain 1 element", 1, simpleList.size());
-		assertTrue("List should contain added element", simpleList.contains(int_01));
+		assertEquals(1, simpleList.size(), "List should contain 1 element");
+		assertTrue(simpleList.contains(int_01), "List should contain added element");
 
 		// clone the list
 		SimpleSet<Integer> clone = simpleList.clone();
 
-		assertEquals("List should contain 1 element", 1, simpleList.size());
-		assertTrue("List should contain added element", simpleList.contains(int_01));
+		assertEquals(1, simpleList.size(), "List should contain 1 element");
+		assertTrue(simpleList.contains(int_01), "List should contain added element");
 
-		assertEquals("List should contain 1 element", 1, clone.size());
-		assertTrue("List should contain added element", clone.contains(int_01));
+		assertEquals(1, clone.size(), "List should contain 1 element");
+		assertTrue(clone.contains(int_01), "List should contain added element");
 
 		// remove it
 		simpleList.remove(int_01);
 
-		assertEquals("List should be empty", 0, simpleList.size());
-		assertTrue("List should not yet contain added element", ! simpleList.contains(int_01));
+		assertEquals(0, simpleList.size(), "List should be empty");
+		assertTrue(!simpleList.contains(int_01), "List should not yet contain added element");
 
-		assertEquals("List should contain 1 element", 1, clone.size());
-		assertTrue("List should contain added element", clone.contains(int_01));
+		assertEquals(1, clone.size(), "List should contain 1 element");
+		assertTrue(clone.contains(int_01), "List should contain added element");
 
 		// iterate through it
 		counter = 0;
 		for (Integer integer : simpleList) {
 			counter++;
-			Assert.assertNotNull(integer);
+			assertNotNull(integer);
 		}
 
-		assertEquals("iteration should have counted zero elements", 0, counter);
+		assertEquals(0, counter, "iteration should have counted zero elements");
 
 		// remove again
 
 		simpleList.remove(int_01);
 
-		assertEquals("List should be empty", 0, simpleList.size());
-		assertTrue("List should not yet contain added element", ! simpleList.contains(int_01));
+		assertEquals(0, simpleList.size(), "List should be empty");
+		assertTrue(!simpleList.contains(int_01),"List should not yet contain added element");
 
 		// some small list for testing sublist
 		for (int i = 0; i < 42; i++)
@@ -289,15 +290,15 @@ public class FullListTest {
 
 		SimpleSet<Integer> subList = simpleList.subList(10, 20);
 
-		assertEquals("sublist[0] should be 10", Integer.valueOf(10), subList.get(0));
+		assertEquals(Integer.valueOf(10), subList.get(0), "sublist[0] should be 10");
 
 		subList = simpleList.subList(42, 20);
 
-		assertEquals("sublist should be empty", 0, subList.size());
+		assertEquals(0, subList.size(), "sublist should be empty");
 
 		subList = simpleList.subList(40, 42);
 
-		assertEquals("sublist should have two elements", 2, subList.size());
+		assertEquals(2, subList.size(), "sublist should have two elements");
 
 		// test iterator
 		ListIterator<Integer> iter = subList.iteratorReverse();
@@ -352,7 +353,7 @@ public class FullListTest {
 		simpleList.first();
 		simpleList.last();
 
-		assertEquals("last should be last", simpleList.last(), simpleList.get(simpleList.size() - 1));
+		assertEquals(simpleList.last(), simpleList.get(simpleList.size() - 1), "last should be last");
 
 		simpleList.toArray();
 
@@ -370,16 +371,16 @@ public class FullListTest {
 
 		simpleList.toArray(new Integer[99]);
 
-		assertEquals("simpleList should have 550 elements", 550, simpleList.size());
+		assertEquals(550, simpleList.size(), "simpleList should have 550 elements");
 
 		// try to add 42, again
-		Assert.assertFalse(simpleList.add(simpleList.get(41)));
+		assertFalse(simpleList.add(simpleList.get(41)));
 
-		assertEquals("simpleList should still have 550 elements", 550, simpleList.size());
+		assertEquals(550, simpleList.size(), "simpleList should still have 550 elements");
 
 		simpleList.listIterator();
 		Integer next = simpleList.listIterator(41).next();
-		assertEquals("listiterator[41] should deliver 42", 42, 0+next);
+		assertEquals(42, 0+next, "listiterator[41] should deliver 42");
 
 		clone = simpleList.clone();
 
@@ -388,20 +389,20 @@ public class FullListTest {
 		simpleList.retainAll(clone);
 		simpleList.retainAll(null);
 
-		assertEquals("simpleList should have 549 elements", 549, simpleList.size());
-		assertEquals("simpleList[0] should be 2", 2, 0 + simpleList.first());
+		assertEquals(549, simpleList.size(), "simpleList should have 549 elements");
+		assertEquals(2, 0 + simpleList.first(), "simpleList[0] should be 2");
 
 		simpleList = new SimpleSet<Integer>();
 
 		simpleList.with(int_01, int_02);
-		assertEquals("simpleList should have 2 elements", 2, simpleList.size());
-		assertEquals("simpleList[0] should be 1", 1, 0 + simpleList.first());
+		assertEquals(2, simpleList.size(), "simpleList should have 2 elements");
+		assertEquals(1, 0 + simpleList.first(), "simpleList[0] should be 1");
 
 		clone = new SimpleSet<Integer>();
 
 		simpleList.copyEntity(clone, 1);
-		assertEquals("clone should have 1 elements", 1, clone.size());
-		assertEquals("clone[0] should be 12", 2, 0 + clone.first());
+		assertEquals(1, clone.size(), "clone should have 1 elements");
+		assertEquals(2, 0 + clone.first(), "clone[0] should be 12");
 
 		//FIXME TEST ELEMENTS ARE NOT NULL
 		simpleList.clear();
@@ -413,21 +414,21 @@ public class FullListTest {
 
 		clone = (SimpleSet<Integer>) simpleList.subSet(Integer.valueOf(23), Integer.valueOf(25));
 
-		assertEquals("wrong number of elements", 2, clone.size());
-		assertEquals("clone[0] is wrong", 23, 0 + clone.first());
+		assertEquals(2, clone.size(), "wrong number of elements");
+		assertEquals(23, 0 + clone.first(), "clone[0] is wrong");
 
 		clone = (SimpleSet<Integer>) simpleList.subList(22, 24);
 
-		assertEquals("wrong number of elements", 2, clone.size());
-		assertEquals("clone[0] is wrong", 23, 0 + clone.first());
+		assertEquals(2, clone.size(), "wrong number of elements");
+		assertEquals(23, 0 + clone.first(), "clone[0] is wrong");
 
 		clone.removeByObject(clone.first());
 
-		assertEquals("wrong number of elements", 1, clone.size());
-		assertEquals("clone[0] is wrong", 24, 0 + clone.first());
+		assertEquals(1, clone.size(), "wrong number of elements");
+		assertEquals(24, 0 + clone.first(), "clone[0] is wrong");
 
 		int lastIndexOf = clone.lastIndexOf(clone.first());
-		assertEquals("wrong index", 0, lastIndexOf);
+		assertEquals(0, lastIndexOf, "wrong index");
 	}
 
 	@Test
@@ -440,7 +441,7 @@ public class FullListTest {
 		Field declaredField = queue.getClass().getSuperclass().getSuperclass().getDeclaredField("elements");
 		declaredField.setAccessible(true);
 		Object[] object = (Object[]) declaredField.get(queue);
-		Assert.assertNull(object[1]); //AbstractArray.BIG_KEY
+		assertNull(object[1]); //AbstractArray.BIG_KEY
 	}
 
 	@Test
@@ -454,12 +455,12 @@ public class FullListTest {
 			}
 			queue.add(i, i);
 		}
-		Assert.assertTrue(found);
+		assertTrue(found);
 		Field declaredField = queue.getClass().getSuperclass().getDeclaredField("elements");
 		declaredField.setAccessible(true);
 		Object[] object = (Object[]) declaredField.get(queue);
-		Assert.assertNull(object[1]); // AbstractArray.BIG_KEY
-		Assert.assertNull(object[4]); // AbstractArray.BIG_VALUE
+		assertNull(object[1]); // AbstractArray.BIG_KEY
+		assertNull(object[4]); // AbstractArray.BIG_VALUE
 	}
 
 	@Test
@@ -472,11 +473,11 @@ public class FullListTest {
 		Field declaredField = queue.getClass().getSuperclass().getSuperclass().getDeclaredField("elements");
 		declaredField.setAccessible(true);
 		Object[] object = (Object[]) declaredField.get(queue);
-		Assert.assertNull(object[1]); // AbstractArray.BIG_KEY
+		assertNull(object[1]); // AbstractArray.BIG_KEY
 		queue.remove(0);
-		Assert.assertEquals(queue.size(), 498);
+		assertEquals(queue.size(), 498);
 		Integer integer = queue.get(0);
-		Assert.assertEquals(integer, Integer.valueOf(2));
+		assertEquals(integer, Integer.valueOf(2));
 	}
 
 	@Test
@@ -489,14 +490,14 @@ public class FullListTest {
 		Field declaredField = list.getClass().getSuperclass().getSuperclass().getDeclaredField("elements");
 		declaredField.setAccessible(true);
 		Object[] object = (Object[]) declaredField.get(list);
-//		Assert.assertEquals(13, object.length);
-		Assert.assertEquals(6, object.length);
+//		assertEquals(13, object.length);
+		assertEquals(6, object.length);
 
 		list.remove(0);
 		list.remove(0);
 //		list.remove(0);
 //		list.remove(0);
-		Assert.assertNotNull(object);
+		assertNotNull(object);
 
 		Object[] array = list.toArray();
 
@@ -504,7 +505,7 @@ public class FullListTest {
 
 		Object[] arrayB = list.toArray();
 
-		Assert.assertEquals(array.length + 1, arrayB.length);
+		assertEquals(array.length + 1, arrayB.length);
 	}
 
 	@Test
@@ -518,7 +519,7 @@ public class FullListTest {
 		list.remove(0);
 		list.add(6);
 		list.removeByObject(3);
-		Assert.assertEquals(4, list.size());
+		assertEquals(4, list.size());
 	}
 
 	@Test
@@ -530,7 +531,7 @@ public class FullListTest {
 		list.add(4);
 		list.add(5);
 		list.removeByObject(3);
-		Assert.assertEquals(4, list.size());
+		assertEquals(4, list.size());
 	}
 
 	@Test
@@ -543,8 +544,8 @@ public class FullListTest {
 		list.add(5);
 		list.remove(0);
 		list.removeByObject(3);
-		Assert.assertEquals(3, list.size());
-		Assert.assertEquals(Integer.valueOf(5), list.get(2));
+		assertEquals(3, list.size());
+		assertEquals(Integer.valueOf(5), list.get(2));
 	}
 
 	@Test
@@ -555,13 +556,13 @@ public class FullListTest {
 		Field declaredField = list.getClass().getSuperclass().getSuperclass().getDeclaredField("elements");
 		declaredField.setAccessible(true);
 		Object[] object = (Object[]) declaredField.get(list);
-		Assert.assertEquals(9, object.length);
+		assertEquals(9, object.length);
 
 		list.pack();
 
 		object = (Object[]) declaredField.get(list);
 
-		Assert.assertEquals(3, object.length);
+		assertEquals(3, object.length);
 
 		for(int i=4;i<501;i++) {
 			list.add(i);
@@ -569,12 +570,12 @@ public class FullListTest {
 		Object[] items= (Object[]) declaredField.get(list);
 		object=(Object[])items[0];
 
-		Assert.assertEquals(596, object.length);
+		assertEquals(596, object.length);
 
 		list.pack();
 
 		object= (Object[]) declaredField.get(list);
-		Assert.assertEquals(500, object.length);
+		assertEquals(500, object.length);
 	}
 
 	@Test
@@ -589,13 +590,13 @@ public class FullListTest {
 		Object[] items = (Object[]) declaredField.get(list);
 		Object[] object=(Object[])items[0];
 
-		Assert.assertEquals(6, object.length);
+		assertEquals(6, object.length);
 
 		list.pack();
 
 		object = (Object[]) declaredField.get(list);
 
-		Assert.assertEquals(4, object.length);
+		assertEquals(4, object.length);
 
 		for(int i=4;i<501;i++) {
 			list.add(i, i);
@@ -604,13 +605,13 @@ public class FullListTest {
 		items= (Object[]) declaredField.get(list);
 		object=(Object[])items[0];
 
-		Assert.assertEquals(509, object.length);
+		assertEquals(509, object.length);
 
 		list.pack();
 
 		items= (Object[]) declaredField.get(list);
 		object=(Object[])items[0];
-		Assert.assertEquals(500, object.length);
+		assertEquals(500, object.length);
 	}
 
 	@Test
@@ -621,7 +622,7 @@ public class FullListTest {
 		Object[] items = (Object[]) declaredField.get(list);
 
 		// New Size: size + size / 2 + 5;
-		Assert.assertEquals(35, items.length);
+		assertEquals(35, items.length);
 	}
 
 	@Test
@@ -635,27 +636,29 @@ public class FullListTest {
 		}
 	}
 
-	@Test(expected=ConcurrentModificationException.class)
+	@Test
 	public void testSize() {
-		SimpleSet<Apple> appleTree=new SimpleSet<Apple>();
-		ArrayList<Apple> list=new ArrayList<Apple>();
-		for(int i=0;i<430;i++) {
-			Apple item = new Apple().withPassword("Apple"+i);
-			appleTree.add(item);
-			if(i % 50 == 0) {
-				list.add(item);
-			}
-		}
-		Assert.assertEquals(430, appleTree.size());
+	    Assertions.assertThrows(ConcurrentModificationException.class, () -> {
+	        SimpleSet<Apple> appleTree=new SimpleSet<Apple>();
+	        ArrayList<Apple> list=new ArrayList<Apple>();
+	        for(int i=0;i<430;i++) {
+	            Apple item = new Apple().withPassword("Apple"+i);
+	            appleTree.add(item);
+	            if(i % 50 == 0) {
+	                list.add(item);
+	            }
+	        }
+	        assertEquals(430, appleTree.size());
 
-		for(Apple item : appleTree) {
-			appleTree.remove(42);
-			if(appleTree.size()<400) {
-				break;
-			}
-			item.setX(0);
-			appleTree.indexOf(list.get(0));
-		}
+	        for(Apple item : appleTree) {
+	            appleTree.remove(42);
+	            if(appleTree.size()<400) {
+	                break;
+	            }
+	            item.setX(0);
+	            appleTree.indexOf(list.get(0));
+	        }
+	  });
 	}
 
 	@Test
@@ -669,7 +672,7 @@ public class FullListTest {
 				list.add(item);
 			}
 		}
-		Assert.assertEquals(430, appleTree.size());
+		assertEquals(430, appleTree.size());
 
 		for(Iterator<Apple> iterator = appleTree.iterator(false);iterator.hasNext();) {
 			Apple apple = iterator.next();
@@ -705,10 +708,10 @@ public class FullListTest {
 
 		item.retainAll(itemB);
 
-		Assert.assertEquals(2, item.size());
+		assertEquals(2, item.size());
 
 		SimpleList<String> clone =  (SimpleList<String>)item.clone();
-		Assert.assertEquals(2, clone.size());
+		assertEquals(2, clone.size());
 	}
 
 	@Test
@@ -722,9 +725,9 @@ public class FullListTest {
 			}
 		});
 		item.with("Stefan", "Alex", "Albert");
-		Assert.assertEquals("Albert", item.get(0));
-		Assert.assertEquals("Alex", item.get(1));
-		Assert.assertEquals("Stefan", item.get(2));
+		assertEquals("Albert", item.get(0));
+		assertEquals("Alex", item.get(1));
+		assertEquals("Stefan", item.get(2));
 	}
 
 
@@ -747,24 +750,24 @@ public class FullListTest {
 	private void testList(SimpleSet<Integer> smallList) {
 		Integer theThree = Integer.valueOf(3);
 		Integer theOne = Integer.valueOf(1);
-		Assert.assertEquals(Integer.valueOf(1), smallList.first());
-		Assert.assertEquals(theThree, smallList.last());
-		Assert.assertEquals(3, smallList.size());
-		Assert.assertEquals(2, smallList.indexOf(theThree));
-		Assert.assertEquals(theThree, smallList.get(2));
-		Assert.assertEquals(theThree, smallList.getKeyByIndex(2));
-		Assert.assertEquals(2, smallList.getPositionKey(3, false));
-//		Assert.assertEquals(-1, smallList.getPositionValue(3));
-		Assert.assertEquals(1, smallList.removeByObject(2));
-		Assert.assertEquals(theOne, smallList.remove(0));
+		assertEquals(Integer.valueOf(1), smallList.first());
+		assertEquals(theThree, smallList.last());
+		assertEquals(3, smallList.size());
+		assertEquals(2, smallList.indexOf(theThree));
+		assertEquals(theThree, smallList.get(2));
+		assertEquals(theThree, smallList.getKeyByIndex(2));
+		assertEquals(2, smallList.getPositionKey(3, false));
+//		assertEquals(-1, smallList.getPositionValue(3));
+		assertEquals(1, smallList.removeByObject(2));
+		assertEquals(theOne, smallList.remove(0));
 
-		Assert.assertEquals(0, smallList.indexOf(theThree));
-		Assert.assertFalse(smallList.isAllowDuplicate());
-		Assert.assertFalse(smallList.isAllowEmptyValue());
-		Assert.assertTrue(smallList.isCaseSensitive());
-		Assert.assertFalse(smallList.isComparator());
-		Assert.assertFalse(smallList.isEmpty());
-		Assert.assertTrue(smallList.isVisible());
-		Assert.assertFalse(smallList.isReadOnly());
+		assertEquals(0, smallList.indexOf(theThree));
+		assertFalse(smallList.isAllowDuplicate());
+		assertFalse(smallList.isAllowEmptyValue());
+		assertTrue(smallList.isCaseSensitive());
+		assertFalse(smallList.isComparator());
+		assertFalse(smallList.isEmpty());
+		assertTrue(smallList.isVisible());
+		assertFalse(smallList.isReadOnly());
 	}
 }

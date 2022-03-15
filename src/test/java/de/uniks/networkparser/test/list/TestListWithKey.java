@@ -1,9 +1,9 @@
 package de.uniks.networkparser.test.list;
 
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.list.SortedSet;
 import de.uniks.networkparser.test.model.Wallet;

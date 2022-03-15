@@ -2,7 +2,7 @@ package de.uniks.networkparser.test;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 //import com.github.javaparser.JavaParser;
 //import com.github.javaparser.ast.CompilationUnit;
@@ -22,6 +22,6 @@ public class JavaParserTest {
 
 //		JavaParser parser = new JavaParser();
 //		SymTabEntry parse = parser.parse(context);
-//		Assert.assertNotNull(parse);
+//		assertNotNull(parse);
 	}
 }

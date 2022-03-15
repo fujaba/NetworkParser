@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.DataType;
@@ -12,7 +13,7 @@ import de.uniks.networkparser.parser.TemplateResultFragment;
 
 public class TestModel {
 
-	@Test()
+	@Test
 	public void testModel() {
 		ObjectModel model = new ObjectModel();
 		ObjectInstance alice = model.createObject("alice", "Person");
@@ -25,7 +26,7 @@ public class TestModel {
 		
 		GraphConverter converter = new GraphConverter();
 		TemplateResultFragment convertToTestCode = converter.convertToTestCode(model, true);
-		Assert.assertNotNull(convertToTestCode);
+		assertNotNull(convertToTestCode);
 	}
 	
     public static void main(String args[]) {

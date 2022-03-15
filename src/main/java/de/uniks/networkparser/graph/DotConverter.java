@@ -100,7 +100,7 @@ public class DotConverter implements Converter {
 		if (value == null) {
 			return null;
 		}
-		char c = value.nextClean(true);
+		char c;
 		StringBuilder sb = new StringBuilder();
 		boolean useStrict = false;
 		GraphList graph = new GraphList();
@@ -170,7 +170,7 @@ public class DotConverter implements Converter {
 		if (graph == null || value == null) {
 			return null;
 		}
-		char c = value.nextClean(true);
+		char c = value.nextClean();
 		StringBuilder sb = new StringBuilder();
 		sb.append(c);
 		GraphEntity node = null;
@@ -194,7 +194,7 @@ public class DotConverter implements Converter {
 				if (c == '\n') {
 					value.skip();
 				}
-				value.nextClean(true);
+				value.nextClean();
 				c = 0;
 				break;
 			default:
@@ -233,7 +233,7 @@ public class DotConverter implements Converter {
 		if (value == null) {
 			return null;
 		}
-		char c = value.nextClean(true);
+		char c = value.nextClean();
 		StringBuilder sb = new StringBuilder();
 		sb.append(c);
 		do {

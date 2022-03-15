@@ -1,7 +1,9 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
@@ -22,8 +24,8 @@ public class GetMethodsTest {
 		Clazz student = model.createClazz("Student").withSuperClazz(person);
 
 		MethodSet methods = student.getMethods();
-		Assert.assertEquals(1, methods.size());
-		Assert.assertEquals(method, methods.get(0));
+		assertEquals(1, methods.size());
+		assertEquals(method, methods.get(0));
 	}
 
 	@Test
@@ -33,8 +35,8 @@ public class GetMethodsTest {
 		Clazz student = model.createClazz("Student").withSuperClazz(person);
 		Method method = person.createMethod("think").with(DataType.BOOLEAN);
 		MethodSet methods = student.getMethods();
-		Assert.assertEquals(1, methods.size());
-		Assert.assertEquals(method, methods.get(0));
+		assertEquals(1, methods.size());
+		assertEquals(method, methods.get(0));
 	}
 
 	@Test
@@ -45,14 +47,14 @@ public class GetMethodsTest {
 		Clazz student = model.createClazz("Student").withSuperClazz(human);
 		Method method = person.createMethod("think").with(DataType.BOOLEAN);
 		MethodSet humanMethods = human.getMethods();
-		Assert.assertEquals(0, humanMethods.size());
+		assertEquals(0, humanMethods.size());
 
 		method.with(Modifier.ABSTRACT);
 		humanMethods = human.getMethods();
-		Assert.assertEquals(1, humanMethods.size());
-		Assert.assertEquals(method, humanMethods.get(0));
+		assertEquals(1, humanMethods.size());
+		assertEquals(method, humanMethods.get(0));
 		MethodSet studentMethods = student.getMethods();
-		Assert.assertEquals(0, studentMethods.size());
+		assertEquals(0, studentMethods.size());
 	}
 
 	@Test
@@ -66,17 +68,17 @@ public class GetMethodsTest {
 		Clazz student = model.createClazz("Student").withSuperClazz(human);
 
 		MethodSet humanMethods = human.getMethods();
-		Assert.assertEquals(0, humanMethods.size());
+		assertEquals(0, humanMethods.size());
 
 		MethodSet studentMethods = student.getMethods();
-		Assert.assertEquals(0, studentMethods.size());
+		assertEquals(0, studentMethods.size());
 
 		method.with(Modifier.ABSTRACT);
 
 		studentMethods = student.getMethods();
 
-		Assert.assertEquals(1, studentMethods.size());
-		Assert.assertEquals(method, studentMethods.get(0));
+		assertEquals(1, studentMethods.size());
+		assertEquals(method, studentMethods.get(0));
 	}
 
 	@Test
@@ -89,12 +91,12 @@ public class GetMethodsTest {
 		Method method = person.createMethod("think").with(DataType.BOOLEAN).with(Modifier.create(Modifier.ABSTRACT));
 		MethodSet humanMethods = human.getMethods();
 
-		Assert.assertEquals(1, humanMethods.size());
-		Assert.assertEquals(method, humanMethods.get(0));
+		assertEquals(1, humanMethods.size());
+		assertEquals(method, humanMethods.get(0));
 		MethodSet studentMethods = student.getMethods();
-		Assert.assertEquals(0, studentMethods.size());
+		assertEquals(0, studentMethods.size());
 		MethodSet pupilMethods = pupil.getMethods();
-		Assert.assertEquals(0, pupilMethods.size());
+		assertEquals(0, pupilMethods.size());
 	}
 
 	@Test
@@ -107,13 +109,13 @@ public class GetMethodsTest {
 		Clazz student = model.createClazz("Student").withSuperClazz(human);
 		Clazz pupil = model.createClazz("Pupil").withSuperClazz(student);
 		MethodSet humanMethods = human.getMethods();
-		Assert.assertEquals(0, humanMethods.size());
+		assertEquals(0, humanMethods.size());
 
 		MethodSet studentMethods = student.getMethods();
-		Assert.assertEquals(1, studentMethods.size());
-		Assert.assertEquals(method, studentMethods.get(0));
+		assertEquals(1, studentMethods.size());
+		assertEquals(method, studentMethods.get(0));
 		MethodSet pupilMethods = pupil.getMethods();
-		Assert.assertEquals(0, pupilMethods.size());
+		assertEquals(0, pupilMethods.size());
 	}
 
 	@Test
@@ -126,15 +128,15 @@ public class GetMethodsTest {
 		Clazz subPupil = model.createClazz("SubPupil").withSuperClazz(pupil).with(Modifier.create(Modifier.ABSTRACT));
 		Method method = person.createMethod("think").with(DataType.BOOLEAN).with(Modifier.ABSTRACT);
 		MethodSet humanMethods = human.getMethods();
-		Assert.assertEquals(0, humanMethods.size());
+		assertEquals(0, humanMethods.size());
 
 		MethodSet studentMethods = student.getMethods();
-		Assert.assertEquals(1, studentMethods.size());
-		Assert.assertEquals(method, studentMethods.get(0));
+		assertEquals(1, studentMethods.size());
+		assertEquals(method, studentMethods.get(0));
 		MethodSet pupilMethods = pupil.getMethods();
-		Assert.assertEquals(0, pupilMethods.size());
+		assertEquals(0, pupilMethods.size());
 		MethodSet subPupilMethods = subPupil.getMethods();
-		Assert.assertEquals(0, subPupilMethods.size());
+		assertEquals(0, subPupilMethods.size());
 	}
 
 	@Test
@@ -147,14 +149,14 @@ public class GetMethodsTest {
 		Clazz subPupil = model.createClazz("SubPupil").withSuperClazz(pupil);
 		Method method = person.createMethod("think").with(DataType.BOOLEAN).with(Modifier.ABSTRACT);
 		MethodSet humanMethods = human.getMethods();
-		Assert.assertEquals(1, humanMethods.size());
-		Assert.assertEquals(method, humanMethods.get(0));
+		assertEquals(1, humanMethods.size());
+		assertEquals(method, humanMethods.get(0));
 		MethodSet studentMethods = student.getMethods();
-		Assert.assertEquals(0, studentMethods.size());
+		assertEquals(0, studentMethods.size());
 		MethodSet pupilMethods = pupil.getMethods();
-		Assert.assertEquals(0, pupilMethods.size());
+		assertEquals(0, pupilMethods.size());
 		MethodSet subPupilMethods = subPupil.getMethods();
-		Assert.assertEquals(0, subPupilMethods.size());
+		assertEquals(0, subPupilMethods.size());
 	}
 
 	@Test
@@ -165,10 +167,10 @@ public class GetMethodsTest {
 		Clazz pupil = model.createClazz("Pupil").withSuperClazz(student);
 		Method method = person.createMethod("think").with(DataType.BOOLEAN);
 		MethodSet studentMethods = student.getMethods();
-		Assert.assertEquals(0, studentMethods.size());
+		assertEquals(0, studentMethods.size());
 		MethodSet pupilMethods = pupil.getMethods();
-		Assert.assertEquals(1, pupilMethods.size());
-		Assert.assertEquals(method, pupilMethods.get(0));
+		assertEquals(1, pupilMethods.size());
+		assertEquals(method, pupilMethods.get(0));
 	}
 
 	@Test
@@ -179,10 +181,10 @@ public class GetMethodsTest {
 		Clazz pupil = model.createClazz("Pupil").withSuperClazz(student).withSuperClazz(student).with(Modifier.create(Modifier.ABSTRACT));
 		Method method = person.createMethod("think").with(DataType.BOOLEAN);
 		MethodSet studentMethods = student.getMethods();
-		Assert.assertEquals(1, studentMethods.size());
-		Assert.assertEquals(method, studentMethods.get(0));
+		assertEquals(1, studentMethods.size());
+		assertEquals(method, studentMethods.get(0));
 		MethodSet pupilMethods = pupil.getMethods();
-		Assert.assertEquals(0, pupilMethods.size());
+		assertEquals(0, pupilMethods.size());
 	}
 
 	@Test
@@ -194,9 +196,9 @@ public class GetMethodsTest {
 		Method method = person.createMethod("think").with(DataType.BOOLEAN);
 		Method method2 = teacher.createMethod("walk").with(DataType.INT).with(Modifier.create(Modifier.ABSTRACT));
 		MethodSet studentMethods = student.getMethods();
-		Assert.assertEquals(2, studentMethods.size());
-		Assert.assertTrue(studentMethods.contains(method));
-		Assert.assertTrue(studentMethods.contains(method2));
+		assertEquals(2, studentMethods.size());
+		assertTrue(studentMethods.contains(method));
+		assertTrue(studentMethods.contains(method2));
 	}
 
 	@Test
@@ -209,10 +211,10 @@ public class GetMethodsTest {
 		Method method = person.createMethod("think").with(DataType.BOOLEAN);
 		Method method2 = teacher.createMethod("walk").with(DataType.INT).with(Modifier.create(Modifier.ABSTRACT));
 		MethodSet studentMethods = student.getMethods();
-		Assert.assertEquals(2, studentMethods.size());
-		Assert.assertTrue(studentMethods.contains(method));
-		Assert.assertTrue(studentMethods.contains(method2));
+		assertEquals(2, studentMethods.size());
+		assertTrue(studentMethods.contains(method));
+		assertTrue(studentMethods.contains(method2));
 		MethodSet pupilMethods = pupil.getMethods();
-		Assert.assertEquals(0, pupilMethods.size());
+		assertEquals(0, pupilMethods.size());
 	}
 }

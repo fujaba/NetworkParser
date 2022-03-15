@@ -1,10 +1,9 @@
 package de.uniks.networkparser.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.BitEntity;
@@ -31,9 +30,9 @@ public class BitMapTest {
 		NumberFormatCreator createrClass = new NumberFormatCreator("len", 4, 4);
 		createrClass.addBitEntity("number",BitEntity.BIT_NUMBER,  "8", BitEntity.BIT_STRING, "len", BitEntity.BIT_REFERENCE);
 		NumberFormat numberItem = (NumberFormat) map.decode(buffer, createrClass);
-		Assert.assertNotNull(numberItem);
+		assertNotNull(numberItem);
 
-		Assert.assertEquals(42, numberItem.getNumber());
+		assertEquals(42, numberItem.getNumber());
 	}
 
 	@Test

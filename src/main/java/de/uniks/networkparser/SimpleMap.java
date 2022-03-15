@@ -870,7 +870,7 @@ public int size() {
     if (value instanceof Tokener && target instanceof Buffer) {
       Buffer element = (Buffer) target;
       Tokener tokener = (Tokener) value;
-      char firstChar = element.nextClean(true);
+      char firstChar = element.nextClean();
       if (firstChar == JsonArray.START) {
         return decode(tokener.parseToEntity(new JsonArray(), element));
       }
@@ -899,7 +899,7 @@ public int size() {
     }
     if (value instanceof Buffer) {
       Buffer buffer = (Buffer) value;
-      char firstChar = buffer.nextClean(true);
+      char firstChar = buffer.nextClean();
       if (JsonObject.START == firstChar) {
         valueItem = this.jsonTokener.newInstance().withValue(buffer);
       } else if (JsonArray.START == firstChar) {

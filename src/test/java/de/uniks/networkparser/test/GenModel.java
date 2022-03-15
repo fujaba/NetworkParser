@@ -1,6 +1,6 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.ClassModelBuilder;
@@ -139,9 +139,9 @@ public class GenModel {
 //		System.out.println("Clazz: "+getCount(uni, true, printItems));
 //		System.out.println("Attribute: "+getCount(nameAttribute, true, printItems));
 //		System.out.println("Method: "+getCount(mainMethod, true, printItems));
-//		Assert.assertNotNull(uni);
-//		Assert.assertNotNull(nameAttribute);
-//		Assert.assertNotNull(mainMethod);
+//		assertNotNull(uni);
+//		assertNotNull(nameAttribute);
+//		assertNotNull(mainMethod);
 	}
 
 	private String shortName(Class<?> classType) {

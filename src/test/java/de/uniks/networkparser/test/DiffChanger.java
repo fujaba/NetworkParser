@@ -1,7 +1,9 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.TextDiff;
@@ -31,7 +33,7 @@ public class DiffChanger {
 		JsonObject slave = this.createHelpClass("Bob", "blue");
 		slave.getJsonArray("trainers").add(createTrainerClass("Stefan", "black"));
 		TextDiff diffs=new TextDiff();
-		Assert.assertFalse(EntityUtil.compareEntity(master, slave, diffs, null));
+		assertFalse(EntityUtil.compareEntity(master, slave, diffs, null));
 	}
 	@Test
 	public void compareJsonWithModel() {
@@ -101,6 +103,6 @@ public class DiffChanger {
 	if(!EntityUtil.compareEntity(master, slave, diff, null)) {
 		return;
 	}
-	Assert.fail();
+	fail();
 	}
 }

@@ -1,10 +1,11 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
@@ -70,7 +71,7 @@ public class ReflectionTest {
       public boolean update(Object value) {
         SimpleEvent event = (SimpleEvent) value;
 
-        Assert.assertNotNull(event);
+        assertNotNull(event);
 
         return false;
       }
@@ -104,7 +105,7 @@ public class ReflectionTest {
           @Override
           public boolean update(Object value) {
             SimpleEvent event = (SimpleEvent) value;
-            Assert.assertNotNull(event);
+            assertNotNull(event);
             return false;
           }
         });
@@ -115,15 +116,15 @@ public class ReflectionTest {
   public void createInstance() {
     Object result;
     result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.bytes.qr.Version.class);
-    Assert.assertNotNull(result);
+    assertNotNull(result);
 
     result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.ext.gui.ModelListenerProperty.class);
-    Assert.assertNotNull(result);
+    assertNotNull(result);
 
     result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.ext.SimpleController.class);
-    Assert.assertNotNull(result);
+    assertNotNull(result);
 
     result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.ext.RESTServiceTask.class);
-    Assert.assertNotNull(result);
+    assertNotNull(result);
   }
 }

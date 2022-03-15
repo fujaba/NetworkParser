@@ -21,6 +21,8 @@
 
 package de.uniks.networkparser.test.studyrightWithAssigments;
 
+import org.junit.jupiter.api.Test;
+
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.story.Story;
@@ -30,7 +32,6 @@ import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Parameter;
-import org.junit.Test;
 
 public class GenModel {
 	@Test

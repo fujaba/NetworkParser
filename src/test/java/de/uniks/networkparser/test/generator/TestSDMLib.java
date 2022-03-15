@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test.generator;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.ModelGenerator;
@@ -32,15 +33,15 @@ public class TestSDMLib {
 		// Generate and override SourceCode
 		generator.removeAndGenerate("java");
 
-		Assert.assertEquals(1, person.getAttributes().size());
-		Assert.assertEquals(1, person.getMethods().size());
+		assertEquals(1, person.getAttributes().size());
+		assertEquals(1, person.getMethods().size());
 
 
 		person.createAttribute("age", DataType.INT);
 		person.createMethod("go");
 
-		Assert.assertEquals(2, person.getAttributes().size());
-		Assert.assertEquals(2, person.getMethods().size());
+		assertEquals(2, person.getAttributes().size());
+		assertEquals(2, person.getMethods().size());
 
 
 		// Change SourceCode
@@ -55,8 +56,8 @@ public class TestSDMLib {
 		person.remove(nameAttribute);
 		person.remove(eatMethod);
 
-		Assert.assertEquals(1, person.getAttributes().size());
-		Assert.assertEquals(1, person.getMethods().size());
+		assertEquals(1, person.getAttributes().size());
+		assertEquals(1, person.getMethods().size());
 
 
 		//model.generate("src/test/java");
@@ -64,10 +65,10 @@ public class TestSDMLib {
 
 		// Create a Person with name and age Attribute
 		// and eat and go Method
-		Assert.assertEquals(3, person.getAttributes().size());
+		assertEquals(3, person.getAttributes().size());
 //		MethodSet methods = 
 				person.getMethods();
-//FIXME		Assert.assertEquals(2, methods.size());
+//FIXME		assertEquals(2, methods.size());
 
 
 		//Add Remove Modifier

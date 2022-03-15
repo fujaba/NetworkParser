@@ -101,7 +101,7 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 		}
 		/* Skip Word */
 		/* IF CONDITION */
-		CharacterBuffer tokenPart = buffer.nextToken(false, SPLITEND, ENTER, '!');
+		CharacterBuffer tokenPart = buffer.nextToken(SPLITEND, ENTER, '!');
 		if (tokenPart.length() > 0) {
 			char currentChar = buffer.getCurrentChar();
 			VariableCondition left = VariableCondition.create(tokenPart, true);

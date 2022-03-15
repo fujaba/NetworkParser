@@ -1,7 +1,10 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.generic.GenericJsonGrammar;
@@ -32,15 +35,15 @@ public class SuperCreator {
 		decodeMap.with(new GenericJsonGrammar());
 		Fruit newData = (Fruit) decodeMap.decode(data);
 
-		Assert.assertNotNull(newData);
-		Assert.assertTrue(newData instanceof GenericFruit);
+		assertNotNull(newData);
+		assertTrue(newData instanceof GenericFruit);
 
 		IdMap decodeAppleMap=new IdMap();
 		decodeAppleMap.with(new FruitCreator());
 		decodeAppleMap.with(new GenericJsonGrammar());
 		Fruit newApple = (Fruit) decodeAppleMap.decode(JsonObject.create(data), new Apple(), null);
-		Assert.assertNotNull(newApple);
-		Assert.assertTrue(newApple instanceof Apple);
+		assertNotNull(newApple);
+		assertTrue(newApple instanceof Apple);
 	}
 	@Test
 	public void testGenicAppleTree() {
@@ -57,9 +60,8 @@ public class SuperCreator {
 		decodeMap.with(new GenericJsonGrammar());
 		decodeMap.with(new TreeCreator());
 		Tree newData = (Tree) decodeMap.decode(data);
-		Assert.assertNotNull(newData);
-		Assert.assertTrue(newData instanceof AppleTree);
-
+		assertNotNull(newData);
+		assertInstanceOf(AppleTree.class, newData);
 	}
 
 	@Test
@@ -81,8 +83,8 @@ public class SuperCreator {
 		decodeMap.with(new TreeCreator());
 		decodeMap.with(new PersonCreator());
 		Tree newData = (Tree) decodeMap.decode(data);
-		Assert.assertNotNull(newData);
-		Assert.assertTrue(newData instanceof AppleTree);
+		assertNotNull(newData);
+		assertInstanceOf(AppleTree.class, newData);
 	}
 
 }

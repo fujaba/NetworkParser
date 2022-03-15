@@ -1,5 +1,7 @@
 package de.uniks.networkparser.test.generator;
 
+import org.junit.jupiter.api.Test;
+
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.graph.Association;
@@ -8,7 +10,6 @@ import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Literal;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Parameter;
-import org.junit.Test;
 
 public class TestModelCreation {
 	@Test
@@ -60,7 +61,7 @@ public class TestModelCreation {
 		room.withBidirectional(teacher, "currentTeacher", Association.ONE, "currentRoom", Association.ONE);
 		pupil.withBidirectional(teacher, "teacher", Association.ONE, "pupils", Association.MANY);
 
-/*FIXME		Assert.assertEquals(1, enumStudent.getAttributes().size());
+/*FIXME		assertEquals(1, enumStudent.getAttributes().size());
 		model.generate("src/test/java");
 
 		story.addDiagram(model);

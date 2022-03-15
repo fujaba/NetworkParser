@@ -1,7 +1,10 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -19,25 +22,25 @@ public class GUITest {
 		IdMap map =new IdMap();
 		map.withTimeStamp(1);
 		JsonObject json = map.toJsonObject(button, Filter.createSimple());
-		Assert.assertEquals("{\"class\":\"input\",\"id\":\"B1\",\"type\":\"button\"}", json.toString());
+		assertEquals("{\"class\":\"input\",\"id\":\"B1\",\"type\":\"button\"}", json.toString());
 	}
 	@Test
 	public void testGUIPosition() {
-		Assert.assertEquals(GUIPosition.CENTER.getValue(), "Center");
-		Assert.assertEquals(GUIPosition.EAST.getValue(), "East");
-		Assert.assertEquals(GUIPosition.SOUTH.getValue(), "South");
-		Assert.assertEquals(GUIPosition.WEST.getValue(), "West");
-		Assert.assertEquals(GUIPosition.NORTH.getValue(), "North");
-		Assert.assertEquals(10, GUIPosition.values().length);
-		Assert.assertTrue(GUIPosition.NORTH.equals(GUIPosition.valueOf("NORTH")));
+		assertEquals(GUIPosition.CENTER.getValue(), "Center");
+		assertEquals(GUIPosition.EAST.getValue(), "East");
+		assertEquals(GUIPosition.SOUTH.getValue(), "South");
+		assertEquals(GUIPosition.WEST.getValue(), "West");
+		assertEquals(GUIPosition.NORTH.getValue(), "North");
+		assertEquals(10, GUIPosition.values().length);
+		assertTrue(GUIPosition.NORTH.equals(GUIPosition.valueOf("NORTH")));
 	}
 
 	@Test
 	public void testColumn(){
 		Column column= new Column();
-		Assert.assertFalse("Must be False", column.getListener().onAction(null, null, 0, 0));
+		assertFalse(column.getListener().onAction(null, null, 0, 0), "Must be False");
 		column.withEditable(true);
-		Assert.assertTrue("Must be True", column.getListener().onAction(null, null, 0, 0));
+		assertTrue(column.getListener().onAction(null, null, 0, 0), "Must be True");
 	}
 
 	@Test
@@ -45,11 +48,11 @@ public class GUITest {
 		Column column= new Column().withAttribute("Name").withResizable(true);
 		column.withVisible(true);
 		column.withMovable(true);
-		Assert.assertEquals(column.getBrowserId(), GUIPosition.CENTER);
+		assertEquals(column.getBrowserId(), GUIPosition.CENTER);
 
 		IdMap map=new IdMap().with(new Column());
 
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.gui.Column\",\"attribute\":\"Name\"}", map.toJsonObject(column).toString());
+		assertEquals("{\"class\":\"de.uniks.networkparser.gui.Column\",\"attribute\":\"Name\"}", map.toJsonObject(column).toString());
 	}
 
 	@Test
@@ -62,6 +65,6 @@ public class GUITest {
 				return false;
 			}
 		});
-		Assert.assertFalse("Must be False", column.getListener().onAction(null, null, 0, 0));
+		assertFalse(column.getListener().onAction(null, null, 0, 0), "Must be False");
 	}
 }

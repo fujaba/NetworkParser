@@ -1,7 +1,9 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Association;
@@ -17,8 +19,8 @@ public class TestUnidirectionalCase {
 
 		Association assoc = testClazz.createUniDirectional(testClazz, "target", Association.ONE);
 
-		Assert.assertTrue(testClazz.getAssociations().contains(assoc));
-		Assert.assertTrue(testClazz.getAssociations().contains(assoc.getOther()));
+		assertTrue(testClazz.getAssociations().contains(assoc));
+		assertTrue(testClazz.getAssociations().contains(assoc.getOther()));
 	}
 
 }

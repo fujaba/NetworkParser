@@ -324,7 +324,7 @@ public class HTMLEntity implements BaseItem {
 					if (buffer.startsWith("<html", buffer.position(), false)) {
 						buffer.skipTo('>', false);
 						buffer.skip();
-						buffer.nextClean(true);
+						buffer.nextClean();
 					}
 					if (buffer.startsWith("<head", buffer.position(), false)) {
 						int end = buffer.indexOf("</head>");
@@ -334,14 +334,14 @@ public class HTMLEntity implements BaseItem {
 						buffer.withLength(length);
 						buffer.skipTo('>', false);
 						buffer.skip();
-						buffer.nextClean(true);
+						buffer.nextClean();
 					}
 					/* SO PARSE BODY */
 					if (plainBody) {
 						if (buffer.startsWith("<body", buffer.position(), false)) {
 							buffer.skipTo('>', false);
 							buffer.skip();
-							buffer.nextClean(true);
+							buffer.nextClean();
 						}
 						int end = buffer.indexOf("</body>");
 						if (end > 0) {

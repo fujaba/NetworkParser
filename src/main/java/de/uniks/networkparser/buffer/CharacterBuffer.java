@@ -31,6 +31,7 @@ import de.uniks.networkparser.list.SimpleList;
  */
 public class CharacterBuffer extends BufferedBuffer implements CharSequence, BaseItem {
   /** The value is used for character storage. */
+  private static final String EMPTY="";
   char[] buffer;
 
   /**
@@ -1217,7 +1218,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
   @Override
   public String toString() {
     if (length < 1) {
-      return "";
+      return EMPTY;
     }
     return new String(buffer, start, length);
   }
@@ -1439,7 +1440,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
    */
   public String toCurrentString() {
     if (validateValue() || position > length) {
-      return "";
+      return EMPTY;
     }
 
     return new String(buffer, position, length - position);

@@ -1,9 +1,10 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.IOException;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
@@ -71,13 +72,13 @@ public class SimpleUsage {
 			@Override
 			public boolean update(Object value) {
 				SimpleEvent event = (SimpleEvent) value;
-				Assert.assertNotNull(event);
+				assertNotNull(event);
 				return true;
 			}
 		});
 
 		JsonObject json = map.toJsonObject(uni);
-		Assert.assertNotNull(json);
+		assertNotNull(json);
 
 		Student albert = new Student().withName("Albert");
 		uni.withStudents(albert);

@@ -265,7 +265,7 @@ public class StringUtil {
 		for (i = 0; i < len; i += 1) {
 			c = string.charAt(i);
 			if (c == '\\') {
-			    buffer.with('\\', '\\');
+			    buffer.with('\\').with('\\');
 				continue;
 			}
 			if (c == '"') {

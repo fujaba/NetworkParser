@@ -2,7 +2,7 @@ package de.uniks.networkparser.test;
 
 import java.util.Collection;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SpeedList;

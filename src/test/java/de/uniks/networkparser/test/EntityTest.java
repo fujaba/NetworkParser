@@ -1,12 +1,12 @@
 package de.uniks.networkparser.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
@@ -58,14 +58,14 @@ public class EntityTest {
 		map.put("int", "23");
 		map.put("double", "23.5");
 		JsonObject cloneEntity = (JsonObject) new JsonObject().withMap(map);
-		assertEquals("Must be 23", "23", cloneEntity.getString("id"));
-		assertTrue("Must be True", cloneEntity.getBoolean("init"));
-		assertFalse("Must be False", cloneEntity.getBoolean("destroy"));
+		assertEquals("23", cloneEntity.getString("id"), "Must be 23");
+		assertTrue(cloneEntity.getBoolean("init"), "Must be True");
+		assertFalse(cloneEntity.getBoolean("destroy"), "Must be False");
 
-		assertEquals("Must be 23", 23, cloneEntity.getInt("int"));
-		assertEquals("Must be 23.5", 23.5, cloneEntity.getDouble("double"), 0.05);
+		assertEquals(23, cloneEntity.getInt("int"), "Must be 23");
+		assertEquals(23.5, cloneEntity.getDouble("double"), 0.05, "Must be 23.5");
 		cloneEntity.increment("int");
-		assertEquals("Must be 24", 24, cloneEntity.getInt("int"));
+		assertEquals(24, cloneEntity.getInt("int"), "Must be 24");
 	}
 
 }

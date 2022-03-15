@@ -1,9 +1,10 @@
 package de.uniks.networkparser.test.generator;
 
 import static de.uniks.networkparser.graph.DataType.STRING;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationSet;
@@ -256,6 +257,6 @@ public class TestAssociation {
 		player.createAttribute("madness", DataType.INT);
 		player.createAttribute("actionsleft", DataType.INT);
 		AssociationSet associations = model.getAssociations();
-		Assert.assertEquals(15, associations.size());
+		assertEquals(15, associations.size());
 	}
 }

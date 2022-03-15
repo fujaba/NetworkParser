@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -9,8 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -47,7 +47,7 @@ public class ByteTest{
 	public void testShortToByte() {
 		ByteBuffer byteBuffer = new ByteBuffer();
 		byteBuffer.add((short) 206);
-		Assert.assertEquals("[]", byteBuffer.toArrayString());
+		assertEquals("[]", byteBuffer.toArrayString());
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class ByteTest{
 		buffer.add(new byte[]{14,15,16,17,18});
 		buffer.add(new byte[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13});
 		for(int i=0;i<buffer.length();i++) {
-			Assert.assertEquals(i, buffer.byteAt(i));
+			assertEquals(i, buffer.byteAt(i));
 		}
 	}
 
@@ -68,14 +68,14 @@ public class ByteTest{
 		byte[] itemByte = item.getBytes();
 		byte[] reference = BASE64EncoderStream.encode(itemByte);
 		byte[] actuals = new ByteConverter64().toStaticString(item).toBytes();
-		Assert.assertEquals(reference.length, actuals.length);
-		Assert.assertArrayEquals(reference, actuals);
+		assertEquals(reference.length, actuals.length);
+		assertArrayEquals(reference, actuals);
 	}
 
 	@Test
 	public void testSHA1() throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		String text="Hallo Welt";
-		Assert.assertEquals("28cbbc72d6a52617a7abbfff6756d04bbad0106a", SHA1.value(text).toString());
+		assertEquals("28cbbc72d6a52617a7abbfff6756d04bbad0106a", SHA1.value(text).toString());
 	}
 
 	@Test
@@ -84,19 +84,19 @@ public class ByteTest{
 		aes.withKey("kWmHe8xIsDpfzK4d");  // choose 16 byte password
 
 		String data = "Hello world, here is some sample text.";
-		Assert.assertEquals("Original text : [" +data+ "] [" +data.length()+ " bytes]", 38, data.length());
+		assertEquals(38, data.length(), "Original text : [" +data+ "] [" +data.length()+ " bytes]");
 
 		String encrypted = aes.encode(data).toString();
-		Assert.assertEquals("Encrypted text : [" +encrypted+ "] [" +encrypted.length()+ " bytes]", 64, encrypted.length());
+		assertEquals(64, encrypted.length(), "Encrypted text : [" +encrypted+ "] [" +encrypted.length()+ " bytes]");
 		ByteConverterHex converter = new ByteConverterHex();
 
 //		outputStream(encrypted.getBytes(), null);
 		String hex = converter.toString(new ByteBuffer().with(encrypted)).replace(" ", "");
 		outputStream(hex.getBytes(), null);
-//		Assert.assertEquals("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]", 128, hex.length());
+//		assertEquals("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]", 128, hex.length());
 
 		String unencrypted = aes.decode(encrypted).toString();
-		Assert.assertEquals("Unencrypted text : [" +unencrypted+ "] [" +unencrypted.length()+ " bytes]", 38, unencrypted.length());
+		assertEquals(38, unencrypted.length(), "Unencrypted text : [" +unencrypted+ "] [" +unencrypted.length()+ " bytes]");
 	}
 
 	@Test
@@ -105,19 +105,19 @@ public class ByteTest{
 		aes.withKey("kWmHe8xIsDpfzK4d");  // choose 16 byte password
 
 		String data = "Hello world, here is some sample text.";
-		Assert.assertEquals("Original text : [" +data+ "] [" +data.length()+ " bytes]", 38, data.length());
+		assertEquals(38, data.length(), "Original text : [" +data+ "] [" +data.length()+ " bytes]");
 
 		String encrypted = aes.toString(data).toString();
-		Assert.assertEquals("Encrypted text : [" +encrypted+ "] [" +encrypted.length()+ " bytes]", 64, encrypted.length());
+		assertEquals(64, encrypted.length(), "Encrypted text : [" +encrypted+ "] [" +encrypted.length()+ " bytes]");
 
 		ByteConverterHex converter = new ByteConverterHex();
 
 		String hex = converter.toString(new ByteBuffer().with(encrypted)).replace(" ", "");
 		outputStream(hex.getBytes(), null);
-//		Assert.assertEquals("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]", 128, hex.length());
+//		assertEquals("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]", 128, hex.length());
 
 		String unencrypted = new String(aes.decode(encrypted));
-		Assert.assertEquals("Unencrypted text : [" +unencrypted+ "] [" +unencrypted.length()+ " bytes]", 38, unencrypted.length());
+		assertEquals(38, unencrypted.length(), "Unencrypted text : [" +unencrypted+ "] [" +unencrypted.length()+ " bytes]");
 	}
 
 	@Test
@@ -128,7 +128,7 @@ public class ByteTest{
 		String value = entity.toString(new ByteConverterBinary(), true);
 		assertEquals("0011011000101010", value);
 
-		Assert.assertEquals(2, entity.getBytes(true).length());
+		assertEquals(2, entity.getBytes(true).length());
 	}
 
 	@Test
@@ -151,7 +151,7 @@ public class ByteTest{
 		ByteItem data = map.toByteItem(msg);
 		ByteBuffer bytes = data.getBytes(false);
 		SortedMsg newMsg = (SortedMsg) map.decode(bytes);
-		assertEquals("VALUE", 42, newMsg.getNumber());
+		assertEquals(42, newMsg.getNumber(), "VALUE");
 	}
 
 	@Test
@@ -166,8 +166,8 @@ public class ByteTest{
 //		String reference="C-Stefan ALindel\"FDies Aist Aeine ATestnachricht";
 		String reference="#cK-Stefan ALindel\"ODies Aist Aeine ATestnachricht";
 		String vergleich=msg.toString();
-		assertEquals("Wert vergleichen", reference, vergleich);
-		assertEquals("Wert vergleichen", reference.length(), vergleich.length());
+		assertEquals(reference, vergleich, "Wert vergleichen");
+		assertEquals(reference.length(), vergleich.length(), "Wert vergleichen");
 	}
 
 	@Test
@@ -231,11 +231,11 @@ public class ByteTest{
 		ByteItem msg=map.toByteItem(sortedMsg);
 		ByteBuffer bytesBuffer = msg.getBytes(false);
 //		outputStream(bytesBuffer);
-		assertEquals("Len of not dynamic", 7, bytesBuffer.length());
+		assertEquals(7, bytesBuffer.length(), "Len of not dynamic");
 
 		bytesBuffer = msg.getBytes(true);
 //		outputStream(bytesBuffer);
-		assertEquals("Len of dynamic", 4, bytesBuffer.length());
+		assertEquals(4, bytesBuffer.length(), "Len of dynamic");
 
 	}
 	void outputStream(ByteBuffer buffer, PrintStream stream){
@@ -291,7 +291,7 @@ public class ByteTest{
 //		}
 
 		StringMessage newMsg = (StringMessage) map.decode(hexString, new ByteConverterHex());
-		assertEquals("Value of TextMessage", "Test", newMsg.getValue());
+		assertEquals("Test", newMsg.getValue(), "Value of TextMessage");
 	}
 
 	@Test
@@ -321,12 +321,12 @@ public class ByteTest{
 		ByteItem data = map.toByteItem(assocs);
 		ByteBuffer bytes = data.getBytes(false);
 		outputStream(bytes, null);
-		assertEquals("Length", 36, bytes.length());
+		assertEquals(36, bytes.length(), "Length");
 
 		FullAssocs newAssocs=(FullAssocs) map.decode(bytes);
 
-		assertEquals("Passwort fuer Stefan", "42", newAssocs.getPassword("Stefan"));
-		assertEquals("Nachricht", "Testnachricht", newAssocs.getMessage().getValue());
+		assertEquals("42", newAssocs.getPassword("Stefan"), "Passwort fuer Stefan");
+		assertEquals("Testnachricht", newAssocs.getMessage().getValue(), "Nachricht");
 	}
 
 
@@ -345,10 +345,10 @@ public class ByteTest{
 		map.with(new AppleCreator());
 		ByteItem item = map.toByteItem(appleTree);
 		ByteBuffer bytes = item.getBytes(true);
-		Assert.assertEquals(175, bytes.length());
+		assertEquals(175, bytes.length());
 		String string = item.toString();
-		Assert.assertEquals(245, string.length());
-		Assert.assertEquals(245, map.toByteItem(appleTree, new Filter()).toString().length());
+		assertEquals(245, string.length());
+		assertEquals(245, map.toByteItem(appleTree, new Filter()).toString().length());
 	}
 	@Test
 	public void testSimpleApple() {
@@ -357,7 +357,7 @@ public class ByteTest{
 		map.with(new AppleCreator());
 		ByteItem item = map.toByteItem(apple);
 		ByteBuffer bytes = item.getBytes(true);
-		Assert.assertEquals(62, bytes.length());
+		assertEquals(62, bytes.length());
 	}
 
 	@Test
@@ -373,7 +373,7 @@ public class ByteTest{
 		map.with(new AppleCreator(), new AppleTreeCreator());
 		ByteItem item = map.toByteItem(appleTree);
 		ByteBuffer bytes = item.getBytes(true);
-		Assert.assertEquals(100, bytes.length());
+		assertEquals(100, bytes.length());
 	}
 
 	@Test
@@ -385,7 +385,7 @@ public class ByteTest{
 		map.with(new AppleCreator(), new AppleTreeCreator());
 		ByteItem item = map.toByteItem(appleTree);
 		ByteBuffer bytes = item.getBytes(true);
-		Assert.assertEquals(118, bytes.length());
+		assertEquals(118, bytes.length());
 	}
 
 	@Test
@@ -403,9 +403,9 @@ public class ByteTest{
 
 		ByteBuffer bytes = item.getBytes(true);
 //		outputStream(bytes.array(), null);
-		Assert.assertEquals(100, bytes.length());
+		assertEquals(100, bytes.length());
 		String string = item.toString();
-		Assert.assertEquals(128, string.length());
+		assertEquals(128, string.length());
 	}
 
 	@Test
@@ -417,16 +417,16 @@ public class ByteTest{
 //		String string2 = converter.toString(reference);
 		String referenceString = new String(reference);
 		String string3 = converter.toStaticString(new CharacterBuffer().with(item)).toString();
-		Assert.assertEquals(referenceString, string3);
+		assertEquals(referenceString, string3);
 
 		CharacterBuffer string4 = ByteConverter64.toBase64String(item);
-		Assert.assertEquals(referenceString, string4.toString());
+		assertEquals(referenceString, string4.toString());
 
 		byte[] encodedBytes = Base64.getEncoder().encode(item.getBytes());
 		String outPut = "encodedBytes " + new String(encodedBytes);
 		this.outputStream(outPut.getBytes(), stream);
 
-		Assert.assertEquals(new String(encodedBytes), string4.toString());
+		assertEquals(new String(encodedBytes), string4.toString());
 
 		byte[] decodedBytes = Base64.getDecoder().decode(encodedBytes);
 		outPut = "decodedBytes " + new String(decodedBytes);
@@ -434,7 +434,7 @@ public class ByteTest{
 
 		CharacterBuffer string5 = ByteConverter64.fromBase64String(string4);
 
-		Assert.assertEquals(new String(decodedBytes), string5.toString());
+		assertEquals(new String(decodedBytes), string5.toString());
 
 
 

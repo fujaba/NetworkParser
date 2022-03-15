@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.io.FileBuffer;
@@ -24,6 +25,6 @@ public class FXMLConverter {
 		//	</children></HBox>
 		//	<Button mnemonicParsing="false" text="Click"/>
 		//	<Label text="0"></Label></children></VBox>
- 		Assert.assertNotNull(convert);
+ 		assertNotNull(convert);
 	}
 }

@@ -261,11 +261,21 @@ public class FileBuffer extends Buffer {
 	 * @return the char
 	 */
 	@Override
-	public char nextClean(boolean currentValid) {
-		char current = super.nextClean(currentValid);
-		this.currentChar = current;
-		return current;
+	public char nextClean() {
+		currentChar = super.nextClean();
+		return currentChar;
 	}
+    /**
+     * Next clean.
+     *
+     * @param currentValid the current valid
+     * @return the char
+     */
+    @Override
+    public char nextCleanSkip() {
+        currentChar = super.nextCleanSkip();
+        return currentChar;
+    }
 
 	/**
 	 * Gets the current char.
@@ -658,7 +668,7 @@ public class FileBuffer extends Buffer {
 
 	private static BaseItem parsingBuffer(CharacterBuffer buffer, BaseItem container) {
 		if (buffer != null && buffer.length() > 0) {
-			char startCharacter = buffer.nextClean(true);
+			char startCharacter = buffer.nextClean();
 			if (startCharacter == '{') {
 				JsonObject result;
 				if (container instanceof JsonObject) {

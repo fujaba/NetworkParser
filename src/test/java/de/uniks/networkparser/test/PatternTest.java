@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.graph.Pattern;
 import de.uniks.networkparser.test.model.ferryman.Bank;
@@ -32,7 +33,7 @@ public class PatternTest {
 				i++;
 			}
 		}
-		Assert.assertEquals(3, i);
+		assertEquals(3, i);
 
 //		for (Object found : allMatches) {
 //			Cargo cargo = (Cargo) found;

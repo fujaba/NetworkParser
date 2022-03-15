@@ -1,12 +1,13 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.bytes.qr.ByteMatrix;
 import de.uniks.networkparser.bytes.qr.DecoderResult;
@@ -57,7 +58,7 @@ public class SVGDrawerTest {
 //		writer.close();
 
 		DecoderResult decode = tokener.decode(matrix.getArray());
-		Assert.assertEquals("test", decode.getText());
+		assertEquals("test", decode.getText());
 	}
 
 	@Test

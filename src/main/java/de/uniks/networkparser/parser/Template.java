@@ -331,7 +331,7 @@ public class Template implements TemplateParser {
 				break;
 			}
 
-			char character = buffer.nextClean(true);
+			char character = buffer.nextClean();
 			if (isExpression && character == SPLITEND) {
 				break;
 			} else if (!isQuote && stopCharacter != null) {
@@ -372,7 +372,7 @@ public class Template implements TemplateParser {
 			CharacterBuffer tokenPart = new CharacterBuffer();
 			if (character == '#') {
 				int startCommand = buffer.position();
-				tokenPart = buffer.nextToken(false, ' ', SPLITEND);
+				tokenPart = buffer.nextToken(' ', SPLITEND);
 
 				// Is It a stopword
 				if (stopWords != null) {
@@ -870,10 +870,10 @@ public class Template implements TemplateParser {
 		if (buffer == null) {
 			return false;
 		}
-		CharacterBuffer id = buffer.nextToken(false, Template.SPLITEND, Template.SPACE);
+		CharacterBuffer id = buffer.nextToken(Template.SPLITEND, Template.SPACE);
 		this.id = id.toString();
 		if (buffer.getCurrentChar() == Template.SPACE) {
-			String value = buffer.nextToken(false, Template.SPLITEND, Template.SPACE).toString();
+			String value = buffer.nextToken(Template.SPLITEND, Template.SPACE).toString();
 			int type = TemplateFragmentCondition.getIdKey(value);
 			this.withType(type);
 			result = true;

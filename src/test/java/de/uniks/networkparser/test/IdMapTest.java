@@ -1,9 +1,12 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.Date;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -39,7 +42,7 @@ public class IdMapTest {
 
 		String fortyTwo = jsonObject.getString("id");
 
-		Assert.assertEquals("The answer ", "42", fortyTwo);
+		assertEquals("42", fortyTwo, "The answer ");
 
 	}
 
@@ -55,7 +58,7 @@ public class IdMapTest {
 		map.toJsonObject(ludo);
 
 		SimpleList<Object> typList = map.getTypList(playerCreator);
-		Assert.assertEquals(450, typList.size());
+		assertEquals(450, typList.size());
 	}
 
 	@Test
@@ -63,7 +66,7 @@ public class IdMapTest {
 		IdMap map = new IdMap();
 		int size = map.getCreators().size();
 		GenericCreator.create(map, University.class);
-		Assert.assertEquals(size + 3, map.getCreators().size());
+		assertEquals(size + 3, map.getCreators().size());
 	}
 
 	@Test
@@ -113,7 +116,7 @@ public class IdMapTest {
 
 		String newId = (String) jsonObject.get(IdMap.ID);
 
-		Assert.assertEquals(id, newId);
+		assertEquals(id, newId);
 	}
 
 	@Test
@@ -121,24 +124,24 @@ public class IdMapTest {
 		IdMap idMap = new IdMap().withCreator(new StudentCreator());
 		Student alice = new Student().withName("alice");
 		alice.setFirstName("Alice");
-		Assert.assertNotNull(alice);
+		assertNotNull(alice);
 		JsonObject jsonObject = idMap.toJsonObject(alice);
-		Assert.assertNotNull(jsonObject);
-		Assert.assertEquals("Alice", alice.getFirstName());
+		assertNotNull(jsonObject);
+		assertEquals("Alice", alice.getFirstName());
 
 
 		IdMap idMapB = new IdMap().withCreator(new StudentCreator());
 		Student aliceKassel  = (Student) idMapB.decode(jsonObject);
-		Assert.assertNotNull(aliceKassel);
-		Assert.assertEquals("Alice", aliceKassel.getFirstName());
+		assertNotNull(aliceKassel);
+		assertEquals("Alice", aliceKassel.getFirstName());
 		
 		alice.setFirstName(null);
 		jsonObject = idMap.toJsonObject(alice, Filter.createChange());
 
 		// Remove old and set New One
 		aliceKassel  = (Student) idMapB.decode(jsonObject);
-		Assert.assertNotNull(aliceKassel);
-		Assert.assertNull(aliceKassel.getFirstName());
+		assertNotNull(aliceKassel);
+		assertNull(aliceKassel.getFirstName());
 	}
 
 }

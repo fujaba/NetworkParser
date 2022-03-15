@@ -311,9 +311,9 @@ public class Tokener {
 	 * @param stopWords the stop words
 	 * @return the character buffer
 	 */
-	public CharacterBuffer nextToken(Buffer buffer, boolean current, char... stopWords) {
+	public CharacterBuffer nextToken(Buffer buffer, char... stopWords) {
 		if (buffer != null) {
-			return buffer.nextToken(current, stopWords);
+			return buffer.nextToken(stopWords);
 		}
 		return null;
 	}

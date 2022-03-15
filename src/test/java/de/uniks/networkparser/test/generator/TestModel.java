@@ -2,7 +2,7 @@ package de.uniks.networkparser.test.generator;
 
 import java.util.HashSet;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Association;

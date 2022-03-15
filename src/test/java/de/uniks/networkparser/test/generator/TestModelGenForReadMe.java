@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test.generator;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.ClassModelBuilder;
@@ -15,7 +16,7 @@ public class TestModelGenForReadMe {
 	@Test
 	public void testModelGen() {
 		Story story = new Story();
-		Assert.assertNotNull(story);
+		assertNotNull(story);
 		ClassModelBuilder mb = new ClassModelBuilder("de.uniks.studyright");
 		Clazz uni = mb.buildClass("University").withAttribute("name", DataType.STRING);
 		Clazz student = mb.buildClass("Student").withAttribute("matNo", DataType.INT);
@@ -27,7 +28,7 @@ public class TestModelGenForReadMe {
 		uni.withAssoc(room, "rooms", Association.MANY, "uni", Association.ONE);
 		ClassModel model = mb.build(ClassModelBuilder.NOGEN);
 		
-		Assert.assertNotNull(model.toString());
+		assertNotNull(model.toString());
 //		HTMLEntity entity=new HTMLEntity();
 //		entity.withText("CLassBuilder");
 //		entity.withGraph(model);

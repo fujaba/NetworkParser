@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test.generator;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.ext.ModelGenerator;
 import de.uniks.networkparser.graph.Attribute;
@@ -23,7 +24,7 @@ public class GeneratorTest {
 
 
 		template.generate(resultModel, null, new Attribute("name", DataType.STRING));
-		Assert.assertEquals("0: Declaration", template.toString());
+		assertEquals("0: Declaration", template.toString());
 
 	}
 }

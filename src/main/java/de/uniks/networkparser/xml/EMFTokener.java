@@ -144,7 +144,7 @@ public class EMFTokener extends Tokener {
 		}
 		buffer.skipTo('>', false);
 		/* Skip > */
-		buffer.nextClean(false);
+		buffer.nextCleanSkip();
 	}
 
 	/**

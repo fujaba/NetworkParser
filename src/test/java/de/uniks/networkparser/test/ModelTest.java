@@ -1,11 +1,18 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
 
 import de.uniks.networkparser.Deep;
@@ -60,10 +67,12 @@ import de.uniks.networkparser.test.model.util.UniversityCreator;
 public class ModelTest implements ObjectCondition {
 	private SimpleList<SimpleEvent> events = new SimpleList<SimpleEvent>();
 
-	@Test(expected = UnsupportedOperationException.class)
+	@Test
 	public void testModelGroupAccount(){
-		GroupAccount ga = new GroupAccount();
-		ga.getPersons().add(new Person().withName("Albert"));
+	    Assertions.assertThrowsExactly(UnsupportedOperationException.class, () -> {
+    		GroupAccount ga = new GroupAccount();
+    		ga.getPersons().add(new Person().withName("Albert"));
+    	});
 	}
 
 	@Test
@@ -76,9 +85,9 @@ public class ModelTest implements ObjectCondition {
 		int i=0;
 		for (Person p : persons){
 			if(i==0){
-				Assert.assertEquals("Albert", p.getName());
+				assertEquals("Albert", p.getName());
 			} else {
-				Assert.assertEquals("Stefan", p.getName());
+				assertEquals("Stefan", p.getName());
 			}
 			i++;
 		}
@@ -93,10 +102,10 @@ public class ModelTest implements ObjectCondition {
 		for(Iterator<Entry<String, Integer>> i = values.iterator();i.hasNext();){
 			Entry<String, Integer> item = i.next();
 			if(item.getKey().equals("Albert")){
-				Assert.assertEquals(42, values.getInt(item.getKey()));
+				assertEquals(42, values.getInt(item.getKey()));
 			}
 			if(item.getKey().equals("Stefan")){
-				Assert.assertEquals(23, values.getInt(item.getKey()));
+				assertEquals(23, values.getInt(item.getKey()));
 			}
 		}
 	}
@@ -105,12 +114,12 @@ public class ModelTest implements ObjectCondition {
 	public void testIdMapFromIdMap(){
 		IdMap map= new IdMap();
 		map.with(new PersonCreator());
-		Assert.assertEquals(8, countMap(map));
+		assertEquals(8, countMap(map));
 
 		IdMap subMap= new IdMap();
-		Assert.assertEquals(7, countMap(subMap));
+		assertEquals(7, countMap(subMap));
 		subMap.with(map);
-		Assert.assertEquals(9, countMap(subMap));
+		assertEquals(9, countMap(subMap));
 
 	}
 
@@ -140,11 +149,11 @@ public class ModelTest implements ObjectCondition {
 		map.with(new SortedMsgCreator());
 
 		SortedMsg root2 = (SortedMsg) map.cloneObject(root, new Filter().withPropertyRegard(Deep.create(1)));
-		Assert.assertNotSame(root, root2);
-		Assert.assertEquals(root2.getMsg(), "root");
-		Assert.assertNotNull(root2.getChild());
-		Assert.assertEquals(root2.getChild().getMsg(), "Child");
-		Assert.assertNull(root2.getChild().getChild());
+		assertNotSame(root, root2);
+		assertEquals(root2.getMsg(), "root");
+		assertNotNull(root2.getChild());
+		assertEquals(root2.getChild().getMsg(), "Child");
+		assertNull(root2.getChild().getChild());
 	}
 
 	@Test
@@ -158,7 +167,7 @@ public class ModelTest implements ObjectCondition {
 		events.clear();
 		map.toJsonObject(uni);
 		uni.withStudents(new Student().withFirstName("Stefan"));
-		Assert.assertEquals(5, events.size());
+		assertEquals(5, events.size());
 	}
 	
 	@Test
@@ -189,9 +198,9 @@ public class ModelTest implements ObjectCondition {
 		creator.setValue(apple, Apple.PROPERTY_Y, 42, SendableEntityCreator.NEW);
 		creator.setValue(apple, "password", "Albert", SendableEntityCreator.NEW);
 
-		Assert.assertEquals(23.0, creator.getValue(apple, Apple.PROPERTY_X));
-		Assert.assertEquals(42.0, creator.getValue(apple, Apple.PROPERTY_Y));
-		Assert.assertEquals("Albert", creator.getValue(apple, "password"));
+		assertEquals(23.0, creator.getValue(apple, Apple.PROPERTY_X));
+		assertEquals(42.0, creator.getValue(apple, Apple.PROPERTY_Y));
+		assertEquals("Albert", creator.getValue(apple, "password"));
 	}
 
 	@Override
@@ -228,7 +237,7 @@ public class ModelTest implements ObjectCondition {
 		map.withCreator(new ItemCreator());
 
 		JsonObject jsonObject = map.toJsonObject(uni, Filter.regard(new WhiteListCondition().with(uni.getClass()).with(alice.getClass())));
-		Assert.assertEquals(504, jsonObject.toString().length());
+		assertEquals(504, jsonObject.toString().length());
 	}
 	@Test
 	public void testJabberChatMessage() {
@@ -239,7 +248,7 @@ public class ModelTest implements ObjectCondition {
 
 		map = new IdMap().withCreator(new Plant());
 		JsonObject jsonObject = map.toJsonObject(flower);
-		Assert.assertNotNull(jsonObject);
+		assertNotNull(jsonObject);
 //		System.out.println(jsonObject);
 
 		map = new IdMap().withCreator(new PlantCreatorNoIndex());
@@ -267,7 +276,7 @@ public class ModelTest implements ObjectCondition {
 		JsonObject jsonObjectB = map.toJsonObject(barbarian, Filter.createNull());
 		JsonObject jsonObject = map.toJsonObject(barbarian);
 
-		Assert.assertNotEquals(jsonObject, jsonObjectB);
+		assertNotEquals(jsonObject, jsonObjectB);
 	}
 
 	@Test
@@ -292,7 +301,7 @@ public class ModelTest implements ObjectCondition {
 //		JsonObject json = new JsonObject().withValue(buffer);
 
  		University uni2 = SimpleParser.decodeModel(buffer, map);
-		Assert.assertNotNull(uni2);
+		assertNotNull(uni2);
 	}
 	
 	@Test
@@ -314,12 +323,12 @@ public class ModelTest implements ObjectCondition {
 			errorMsg+="ADD TO SET";
 		}catch (Exception e) {
 		}
-		Assert.assertTrue(errorMsg, errorMsg.isEmpty());
+		assertTrue(errorMsg.isEmpty(), errorMsg);
 		
 		AppleSet appleSet = new AppleSet();
 		appleSet.add(empty);
 		appleSet.add(apple);
-		Assert.assertEquals(2, appleSet.size());
+		assertEquals(2, appleSet.size());
 	}
 	
 	@Test
@@ -415,7 +424,7 @@ public class ModelTest implements ObjectCondition {
 		map.withListener(new SimpleEventCondition() {
 			@Override
 			public boolean update(SimpleEvent event) {
-				Assert.assertNotNull(event.getEntity());
+				assertNotNull(event.getEntity());
 				return false;
 			}
 		});

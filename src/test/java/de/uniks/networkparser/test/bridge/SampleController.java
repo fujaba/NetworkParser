@@ -1,6 +1,6 @@
 package de.uniks.networkparser.test.bridge;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
@@ -192,7 +192,7 @@ public class SampleController {
 	public void showValue(SimpleEvent event) {
 		IdMap map = javaBridge.getMap();
 		Object object = map.getObject("number");
-		Assert.assertNotNull(object);
+		assertNotNull(object);
 	}
 
 	public void add(SimpleEvent event) {

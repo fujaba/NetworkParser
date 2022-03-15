@@ -1,9 +1,11 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.ByteArrayOutputStream;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.ext.io.RabbitMessage;
@@ -18,7 +20,7 @@ public class RabbitTest {
 		startOK.write(byteBuffer, null);
 		ByteBuffer buffer = new ByteBuffer();
 		buffer.add(byteBuffer.toByteArray());
-		Assert.assertEquals("[]", buffer.toArrayString());
+		assertEquals("[]", buffer.toArrayString());
 	}
 	
 
@@ -29,7 +31,7 @@ public class RabbitTest {
 		proxy.withCallback(new ObjectCondition() {
 			@Override
 			public boolean update(Object value) {
-				Assert.assertNotNull(value);
+				assertNotNull(value);
 				return false;
 			}
 		});

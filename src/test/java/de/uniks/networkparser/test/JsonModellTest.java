@@ -1,12 +1,15 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.beans.PropertyChangeEvent;
 import java.io.PrintStream;
 import java.math.BigInteger;
 import java.util.LinkedHashSet;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
@@ -68,7 +71,7 @@ public class JsonModellTest implements ObjectCondition {
 		users.add(new Student().withName("Albert"));
 		JsonObject json = new JsonObject();
 		json.add("readyUser", users);
-		Assert.assertEquals("{\"readyUser\":[\"Albert 0.0\"]}", json.toString());
+		assertEquals("{\"readyUser\":[\"Albert 0.0\"]}", json.toString());
 	}
 
 
@@ -77,22 +80,22 @@ public class JsonModellTest implements ObjectCondition {
 		Student student = new Student().withName("Albert");
 		IdMap map=new IdMap();
 		map.withCreator(new StudentCreator());
-		Assert.assertEquals(student.getDynamicValue("job"), null);
+		assertEquals(student.getDynamicValue("job"), null);
 		student.withDynamicValue("department", "se");
 
 		JsonObject json = map.toJsonObject(student);
 		JsonObject props = json.getJsonObject(JsonTokener.PROPS);
 		props.put("job", "prof");
-		Assert.assertEquals("{\"name\":\"Albert\",\"department\":\"se\",\"job\":\"prof\"}", props.toString());
+		assertEquals("{\"name\":\"Albert\",\"department\":\"se\",\"job\":\"prof\"}", props.toString());
 		
 		IdMap mapB=new IdMap();
 		mapB.withCreator(new StudentCreator());
 		Student albert = (Student) mapB.decode(json);
 		
-		Assert.assertEquals(albert.getDynamicValue("job"), "prof");
-		Assert.assertEquals(albert.getDynamicValue("department"), "se");
+		assertEquals(albert.getDynamicValue("job"), "prof");
+		assertEquals(albert.getDynamicValue("department"), "se");
 		
-//		Assert.assertEquals("Uni Kassel", uniKassel.getName());
+//		assertEquals("Uni Kassel", uniKassel.getName());
 	}
 	
 	@Test
@@ -102,7 +105,7 @@ public class JsonModellTest implements ObjectCondition {
 		map.withCreator(new UniversityCreator(), new StudentCreator());
 		JsonObject json = map.toJsonObject(uni);
 		University uniKassel = SimpleParser.fromJson(json, University.class);
-		Assert.assertEquals("Uni Kassel", uniKassel.getName());
+		assertEquals("Uni Kassel", uniKassel.getName());
 	}
 
 
@@ -114,7 +117,7 @@ public class JsonModellTest implements ObjectCondition {
 		JsonObject json = SimpleParser.toJson(uni);
 
 		University uniKassel = SimpleParser.fromJson(json, University.class);
-		Assert.assertEquals("Uni Kassel", uniKassel.getName());
+		assertEquals("Uni Kassel", uniKassel.getName());
 	}
 	@Test
 	public void testGenericJsonModelCrazy(){
@@ -124,13 +127,13 @@ public class JsonModellTest implements ObjectCondition {
 		JsonObject json = SimpleParser.toJson(uni);
 
 		University uniKassel = SimpleParser.fromJson(json);
-		Assert.assertEquals("Uni Kassel", uniKassel.getName());
+		assertEquals("Uni Kassel", uniKassel.getName());
 	}
 	@Test
 	public void testGenericJsonCrazy(){
 		JsonObject json = JsonObject.create("{name:\"Uni Kassel\"}");
 		University uniKassel = SimpleParser.fromJson(json, University.class);
-		Assert.assertEquals("Uni Kassel", uniKassel.getName());
+		assertEquals("Uni Kassel", uniKassel.getName());
 	}
 
 	@Test
@@ -142,7 +145,7 @@ public class JsonModellTest implements ObjectCondition {
 		IdMap map=new IdMap();
 		map.withCreator(new UniversityCreator(), new StudentCreator());
 		String json = map.toJsonArray(uni, Filter.regard(InstanceOf.create(Student.PROPERTY_STUD_NO))).toString();
-		Assert.assertFalse(json.indexOf("geheim") >= 0);
+		assertFalse(json.indexOf("geheim") >= 0);
 	}
 
 	@Test
@@ -159,8 +162,8 @@ public class JsonModellTest implements ObjectCondition {
 		map.withCreator(new UniversityCreator(), new StudentCreator(), new RoomCreator());
 		Or filter= Or.create(InstanceOf.create(Student.PROPERTY_STUD_NO), classFilter.withWhiteList(true));
 		String json = map.toJsonArray(uni, Filter.regard(filter)).toString(2);
-		Assert.assertFalse(json.indexOf("geheim") >= 0);
-		Assert.assertFalse(json.indexOf("de.uniks.networkparser.test.model.Room") >=0);
+		assertFalse(json.indexOf("geheim") >= 0);
+		assertFalse(json.indexOf("de.uniks.networkparser.test.model.Room") >=0);
 	}
 
 	@Test
@@ -174,8 +177,8 @@ public class JsonModellTest implements ObjectCondition {
 		map.with(new PersonCreator());
 		map.with(new GroupAccountCreator());
 		String jsonArray = map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.create(Person.class, Person.PROPERTY_PARENT))).toString(2);
-		Assert.assertEquals(229, jsonArray.length());
-		Assert.assertEquals("[\r\n"+
+		assertEquals(229, jsonArray.length());
+		assertEquals("[\r\n"+
 				"  {\r\n"+
 				"    \"class\":\"de.uniks.networkparser.test.model.Person\",\r\n" +
 				"    \"id\":\"P1\",\r\n" + 
@@ -205,11 +208,11 @@ public class JsonModellTest implements ObjectCondition {
 		String sample="Hallo Welt";
 
 		byte[] dataByte = sample.getBytes();
-		Assert.assertEquals("Actual Size of String", 10, dataByte.length);
+		assertEquals(10, dataByte.length, "Actual Size of String");
 
 		// test string
 		String text = "Hello world!";
-		Assert.assertEquals("" + text+ "(" +text.length()+ ")", 12, text.length());
+		assertEquals(12, text.length(), "" + text+ "(" +text.length()+ ")");
 
 		// convert to big integer
 		BigInteger number = new BigInteger(text.getBytes());
@@ -222,7 +225,7 @@ public class JsonModellTest implements ObjectCondition {
 		secondMap.with(new SortedMsgCreator());
 		map.withTimeStamp(1);
 		JsonObject jsonObject=map.toJsonObject(first);
-		Assert.assertEquals(376, jsonObject.toString(2).length());
+		assertEquals(376, jsonObject.toString(2).length());
 
 		secondMap.decode(jsonObject);
 
@@ -230,15 +233,15 @@ public class JsonModellTest implements ObjectCondition {
 		third.withNumber(4);
 		second.setChild(third);
 		// DEEP 0
-		Assert.assertEquals(159, map.toJsonObject(first, Filter.regard(Deep.create(1))).toString().length());
+		assertEquals(159, map.toJsonObject(first, Filter.regard(Deep.create(1))).toString().length());
 		// DEEP 1
-		Assert.assertEquals(328, map.toJsonObject(first, Filter.regard(Deep.create(2))).toString().length());
+		assertEquals(328, map.toJsonObject(first, Filter.regard(Deep.create(2))).toString().length());
 		// DEEP 2
-		Assert.assertEquals(423, map.toJsonObject(first, Filter.regard(Deep.create(3))).toString().length());
+		assertEquals(423, map.toJsonObject(first, Filter.regard(Deep.create(3))).toString().length());
 		third.updateNumber(2);
 		third.withNumber(5);
 
-		Assert.assertEquals(3, map.size());
+		assertEquals(3, map.size());
 		second.setChild(null);
 	}
 
@@ -305,8 +308,8 @@ public class JsonModellTest implements ObjectCondition {
 		apple.withY(42);
 		tree.addToHas(apple);
 
-		Assert.assertNotNull(data);
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"A1\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"A2\",\"prop\":{\"x\":23,\"y\":42}}}}", data.toString());
+		assertNotNull(data);
+		assertEquals("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"A1\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"A2\",\"prop\":{\"x\":23,\"y\":42}}}}", data.toString());
 	}
 
 	@Test
@@ -317,10 +320,10 @@ public class JsonModellTest implements ObjectCondition {
 		map.with(new ByteMessage());
 		map.withTimeStamp(1);
 		JsonObject jsonObject = map.toJsonObject(message);
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.bytes.ByteMessage\",\"id\":\"B1\",\"prop\":{\"value\":\"The answer to life the universe and everything is 42.\"}}", jsonObject.toString());
+		assertEquals("{\"class\":\"de.uniks.networkparser.bytes.ByteMessage\",\"id\":\"B1\",\"prop\":{\"value\":\"The answer to life the universe and everything is 42.\"}}", jsonObject.toString());
 
 		ByteMessage newMessage = (ByteMessage) map.decode(jsonObject);
-		Assert.assertEquals(message.getValue(), newMessage.getValue());
+		assertEquals(message.getValue(), newMessage.getValue());
 	}
 	private int i;
 	@Test
@@ -344,7 +347,7 @@ public class JsonModellTest implements ObjectCondition {
 
 			@Override
 			public boolean update(Object value) {
-				Assert.assertEquals(output[i++], value.toString());
+				assertEquals(output[i++], value.toString());
 				return false;
 			}
 		});
@@ -353,7 +356,7 @@ public class JsonModellTest implements ObjectCondition {
 		person.withName("Albert");
 
 		account.createItem();
-		Assert.assertNotNull(updateAccumulate);
+		assertNotNull(updateAccumulate);
 
 	}
 }

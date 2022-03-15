@@ -1,7 +1,9 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.StringUtil;
 import de.uniks.networkparser.gui.Style;
@@ -30,7 +32,7 @@ public class HTMLTest {
 
 
 		html.withValue("<!doctype html>"+sb.toString());
-//		Assert.assertEquals(sb.toString(), html.toString());
+//		assertEquals(sb.toString(), html.toString());
 
 //		HTMLEntity answer = SocketUtil.getHTTP("http://www.google.de");
 	}
@@ -38,9 +40,9 @@ public class HTMLTest {
 	public void testHTML(){
 		String txt = "Stefan <Test>";
 		String encode = StringUtil.encode(txt);
-		Assert.assertEquals("Stefan &lt;Test&gt;", encode);
+		assertEquals("Stefan &lt;Test&gt;", encode);
 
-		Assert.assertEquals(txt, StringUtil.decode(encode));
+		assertEquals(txt, StringUtil.decode(encode));
 	}
 	@Test
 	public void testSimpleHTMLFile(){
@@ -52,7 +54,7 @@ public class HTMLTest {
 		file.addStyle("Table", ".div{border:1px solid black}");
 		file.withNewLine();
 		file.withText("Second Line");
-		Assert.assertNotNull(file.toString());
+		assertNotNull(file.toString());
 	}
 
 	@Test
@@ -69,13 +71,13 @@ public class HTMLTest {
 		sb.append("</div>");
 		HTMLEntity entity = new HTMLEntity().with(sb.toString());
 		XMLEntity list = entity.getElementsBy(StringUtil.CLASS, "#mp-itn b a");
-		Assert.assertEquals(2, list.sizeChildren());
+		assertEquals(2, list.sizeChildren());
 		for(int i=0;i<list.sizeChildren();i++) {
 			BaseItem child = list.getChild(i);
 			if(i==0) {
-				Assert.assertEquals("<a href=\"/wiki/2016_Kaikoura_earthquake\" title=\"2016 Kaikoura earthquake\">An earthquake</a>", child.toString());
+				assertEquals("<a href=\"/wiki/2016_Kaikoura_earthquake\" title=\"2016 Kaikoura earthquake\">An earthquake</a>", child.toString());
 			} else {
-				Assert.assertEquals("<a href=\"/wiki/Leonard_Cohen\" title=\"Leonard Cohen\">Leonard Cohen</a>", child.toString());
+				assertEquals("<a href=\"/wiki/Leonard_Cohen\" title=\"Leonard Cohen\">Leonard Cohen</a>", child.toString());
 			}
 		}
 	}

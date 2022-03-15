@@ -96,7 +96,7 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		if (position() - start + 1 >= length()) {
 			return true;
 		}
-		return nextClean(true) == 0;
+		return nextClean() == 0;
 	}
 
 	/**
@@ -174,7 +174,7 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		return this;
 	}
 
-	private void next(char... quotes) {
+	private void next(boolean isValueAllow, char... quotes) {
         char c = getCurrentChar();
         char b = 0;
         int i;
@@ -195,7 +195,7 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
                     }
                     break;
                 case '"':
-                    if (b == '\\') {
+                    if (b == '\\' && isValueAllow) {
                         b=c;
                         c=getChar();
                         continue;
@@ -213,10 +213,11 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
             
         } while (c != 0);
 	}
+	
 	@Override
-	public CharacterBuffer parseString(CharacterBuffer sc, boolean check, char... quotes) {
+	public CharacterBuffer parseString(CharacterBuffer sc, boolean value, char... quotes) {
 		int startpos = this.position();
-		next(quotes);
+		next(value, quotes);
 		int endPos = this.position();
 		sc.with(this.subSequence(startpos, endPos));
 		return sc;
@@ -241,7 +242,7 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		} else if (n == -1) {
 			n = length() - this.position();
 		} else if (n == 0) {
-			return "";
+			return EMPTY;
 		} else if (position() + n > length()) {
 			n = length() - position();
 		}
@@ -286,7 +287,7 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
         } else if (count == -1) {
             count = length() - this.position();
         } else if (count == 0) {
-            return "";
+            return EMPTY;
         } else if (position() + count > length()) {
             count = length() - position();
         }
@@ -342,7 +343,7 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 			}
 		}
 		if (start < 0 || end <= 0 || start > end) {
-			return "";
+			return EMPTY;
 		}
 		return subSequence(start, end).toString();
 	}

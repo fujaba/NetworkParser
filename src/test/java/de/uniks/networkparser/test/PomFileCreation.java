@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.Manifest;
@@ -45,7 +46,7 @@ public class PomFileCreation {
 		"    </dependency>\r\n"+
 		"  </dependencies>\r\n"+
 		"</project>";
-		Assert.assertEquals(ref, pom.toString(2));
+		assertEquals(ref, pom.toString(2));
 	}
 
 	@Test
@@ -56,7 +57,7 @@ public class PomFileCreation {
 		sb.withLine("Author: Stefan Lindel)");
 
 		Manifest manifest = Manifest.create(sb);
-		Assert.assertEquals(3, manifest.size());
+		assertEquals(3, manifest.size());
 
 	}
 }

@@ -1,6 +1,6 @@
  package de.uniks.networkparser.test.scrum;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Association;

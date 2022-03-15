@@ -1,7 +1,8 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.graph.GraphPatternMatch;
@@ -24,7 +25,7 @@ public class GraphPatternTest {
 
 		GraphPatternMatch diff = mapA.getDiff(uniA, uniB, false);
 
-		Assert.assertEquals(0, diff.size());
+		assertEquals(0, diff.size());
 	}
 
 	@Test
@@ -38,7 +39,7 @@ public class GraphPatternTest {
 
 		GraphPatternMatch diff = mapA.getDiff(uniA, uniB, true);
 
-		Assert.assertEquals(1, diff.size());
+		assertEquals(1, diff.size());
 	}
 	@Test
 	public void testMatchWithStudents() {
@@ -52,7 +53,7 @@ public class GraphPatternTest {
 
 		GraphPatternMatch diff = mapA.getDiff(uniA, uniB, true);
 
-		Assert.assertEquals(2, diff.size());
+		assertEquals(2, diff.size());
 	}
 	@Test
 	public void testMatchWithCicle() {
@@ -74,6 +75,6 @@ public class GraphPatternTest {
 
 		GraphPatternMatch diff = mapA.getDiff(uni, uniB, true);
 
-		Assert.assertEquals(4, diff.size());
+		assertEquals(4, diff.size());
 	}
 }
