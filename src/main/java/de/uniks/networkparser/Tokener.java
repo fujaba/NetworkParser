@@ -296,9 +296,9 @@ public class Tokener {
 	 * @param quotes the quotes
 	 * @return the character buffer
 	 */
-	public CharacterBuffer nextString(Buffer buffer, CharacterBuffer sc, boolean allowCRLF, char... quotes) {
+	public CharacterBuffer nextString(Buffer buffer, boolean allowCRLF, char... quotes) {
 		if (buffer != null) {
-			return buffer.nextString(sc, allowCRLF, quotes);
+			return buffer.nextString(allowCRLF, quotes);
 		}
 		return null;
 	}
@@ -371,9 +371,12 @@ public class Tokener {
 	 * @param id the id
 	 * @return the entity
 	 */
-	public Entity createLink(Entity parent, String property, String className, String id) {
-		return null;
-	}
+    public Entity createLink(Entity parent, String property, String className, String id) {
+        Entity child = newInstance();
+        child.put(SimpleMap.CLASS, className);
+        child.put(SimpleMap.ID, id);
+        return child;
+    }
 
 	/**
 	 * Checks if is child.

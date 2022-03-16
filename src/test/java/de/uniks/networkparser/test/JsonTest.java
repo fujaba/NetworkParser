@@ -586,6 +586,11 @@ public class JsonTest {
 		IdMap map = new IdMap();
 		map.with(new SortedMsgCreator()).withTimeStamp(1);
 		String ref = "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"S1\",\"prop\":{\"number\":1,\"child\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"S2\",\"prop\":{\"number\":2,\"parent\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"S1\"}}}}}";
+
+		//TEST
+		JsonObject jsonObject = map.toJsonObject(parent);
+		assertEquals(ref, jsonObject.toString());
+
 		assertEquals(ref, map.toJsonObject(parent).toString());
 
 		ref = "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"number\":1,\"child\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"number\":2,\"parent\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"S1\"}}}";

@@ -88,7 +88,7 @@ public class XMLTokener extends Tokener {
         buffer.skip();
         CharacterBuffer v;
         if(isAllowQuote) {
-            v = nextString(buffer, new CharacterBuffer(), isAllowQuote, '"');
+            v = nextString(buffer, isAllowQuote, '"');
             buffer.skip();
         }else {
             v = nextString(buffer, stopChar);
@@ -150,8 +150,7 @@ public class XMLTokener extends Tokener {
           return entity;
         }
         if (c != XMLEntity.START) {
-          CharacterBuffer item = new CharacterBuffer();
-          buffer.nextString(item, false, '<');
+          CharacterBuffer item = buffer.nextString(false, '<');
           char currentChar = buffer.getCurrentChar();
           char nextChar = buffer.nextCleanSkip();
           if (nextChar != '/') {
@@ -197,7 +196,7 @@ public class XMLTokener extends Tokener {
               buffer.skip();
             }
           } else {
-            xmlEntity.withValue(nextString(buffer, new CharacterBuffer(), false, '<').toString());
+            xmlEntity.withValue(nextString(buffer, false, '<').toString());
           }
         }
       } else if (c == '/') {
@@ -215,8 +214,7 @@ public class XMLTokener extends Tokener {
           }
         } else {
           /* Just a Child */
-          CharacterBuffer item = new CharacterBuffer();
-          nextString(buffer, item, false, '<');
+          CharacterBuffer item = nextString(buffer, false, '<');
           /* May be another child so it is possible text node text */
           XMLEntity newChild = new XMLEntity();
           newChild.withValue(item.toString());
@@ -322,19 +320,18 @@ public class XMLTokener extends Tokener {
     SendableEntityCreator creator = stack.getCurrentCreator();
     if (entity != null) {
       /* Parsing attributes */
-      CharacterBuffer token = new CharacterBuffer();
       char myChar;
       do {
         if (buffer.getCurrentChar() == SimpleMap.SPACE) {
           buffer.getChar();
         }
-        tokener.nextString(buffer, token, true, SimpleMap.SPACE, SimpleMap.EQUALS, XMLEntity.END, ENDTAG);
+        CharacterBuffer token = tokener.nextString(buffer, true, SimpleMap.SPACE, SimpleMap.EQUALS, XMLEntity.END, ENDTAG);
         myChar = buffer.getCurrentChar();
         if (myChar == ENTER) {
           String key = token.toString();
           token.clear();
           buffer.skip(2);
-          tokener.nextString(buffer, token, true, SimpleMap.DOUBLEQUOTIONMARK);
+          token = tokener.nextString(buffer, true, SimpleMap.DOUBLEQUOTIONMARK);
           String value = token.toString();
           token.clear();
           buffer.skip();
@@ -367,8 +364,7 @@ public class XMLTokener extends Tokener {
       char quote = XMLEntity.START;
       /* Skip > */
       buffer.skip();
-      CharacterBuffer valueItem = new CharacterBuffer();
-      tokener.nextString(buffer, valueItem, false, quote);
+      CharacterBuffer valueItem = tokener.nextString(buffer, false, quote);
       if (!valueItem.isEmptyCharacter()) {
         CharacterBuffer test = new CharacterBuffer();
         while (!buffer.isEnd()) {
@@ -458,7 +454,7 @@ public class XMLTokener extends Tokener {
     boolean isEmpty = true;
     do {
       if (buffer.getCurrentChar() != XMLEntity.START) {
-        tokener.nextString(buffer, valueItem, false, XMLEntity.START);
+        valueItem = tokener.nextString(buffer, false, XMLEntity.START);
         if (!valueItem.isEmpty()) {
           valueItem.trim();
           isEmpty = valueItem.isEmpty();
@@ -530,7 +526,7 @@ public class XMLTokener extends Tokener {
       } else {
         buffer.skip();
         if (buffer.getCurrentChar() != XMLEntity.START) {
-          tokener.nextString(buffer, valueItem, false, XMLEntity.START);
+          valueItem = tokener.nextString(buffer, false, XMLEntity.START);
           if (!valueItem.isEmpty()) {
             valueItem.trim();
             Object entity = stack.getCurrentItem();

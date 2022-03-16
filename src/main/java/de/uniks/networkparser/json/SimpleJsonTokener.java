@@ -71,16 +71,14 @@ public class SimpleJsonTokener extends JsonTokener {
         switch (buffer.nextClean()) {
         case BufferItem.QUOTES:
             buffer.skip();
-            CharacterBuffer text = new CharacterBuffer();
-            buffer.parseString(text, true, BufferItem.QUOTES);
+            CharacterBuffer text = buffer.parseString(true, BufferItem.QUOTES);
             buffer.skip();
             return text;
         case '\\':
             /* Must be unquote */
             buffer.skip();
             buffer.skip();
-            CharacterBuffer textResult = new CharacterBuffer();
-            buffer.parseString(textResult, true, BufferItem.QUOTES);
+            CharacterBuffer textResult = buffer.parseString(true, BufferItem.QUOTES);
             buffer.skip();
             return textResult;
         case JsonObject.START:

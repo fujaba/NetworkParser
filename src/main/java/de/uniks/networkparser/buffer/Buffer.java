@@ -308,8 +308,7 @@ public abstract class Buffer implements BufferItem {
     if (quotes == null) {
       quotes = QUOTE;
     }
-    CharacterBuffer result = new CharacterBuffer();
-    nextString(result, false, quotes);
+    CharacterBuffer result = nextString(false, quotes);
     skip();
     return result;
   }
@@ -341,10 +340,9 @@ public abstract class Buffer implements BufferItem {
    * @param quotes the quotes
    * @return the character buffer
    */
-  @Override
-  public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, char... quotes) {
+  public CharacterBuffer nextString(boolean allowQuote, char... quotes) {
     if (getCurrentChar() == 0 || quotes == null) {
-      return sc;
+      return new CharacterBuffer();
     }
     char c = getCurrentChar();
     int i = 0;
@@ -354,14 +352,13 @@ public abstract class Buffer implements BufferItem {
       }
     }
     if (i < quotes.length) {
-      return sc;
+      return new CharacterBuffer();
     }
-    parseString(sc, allowQuote, quotes);
-    return sc;
+    return parseString(allowQuote, quotes);
   }
 
-  public CharacterBuffer parseString(CharacterBuffer sc, boolean allowQuote, char... quotes) {
-    sc.with(getCurrentChar());
+  public CharacterBuffer parseString(boolean allowQuote, char... quotes) {
+    CharacterBuffer sc = new CharacterBuffer().with(getCurrentChar());
     if (quotes == null) {
       return sc;
     }
@@ -586,15 +583,13 @@ public abstract class Buffer implements BufferItem {
    */
   @Override
   public CharacterBuffer nextToken(char... stopWords) {
-    CharacterBuffer characterBuffer = new CharacterBuffer();
     char c = nextCleanSkip();
     for (int i = 0; i < stopWords.length; i++) {
       if (stopWords[i] == c) {
-        return characterBuffer;
+        return new CharacterBuffer();
       }
     }
-    parseString(characterBuffer, true, stopWords);
-    return characterBuffer;
+    return parseString(true, stopWords);
   }
 
   /**
@@ -622,10 +617,9 @@ public abstract class Buffer implements BufferItem {
   @Override
   public SimpleList<String> getStringList() {
     SimpleList<String> list = new SimpleList<String>();
-    CharacterBuffer sc = new CharacterBuffer();
+    CharacterBuffer sc;
     do {
-      sc.clear();
-      nextString(sc, true, '"');
+      sc = nextString(true, '"');
       skip();
       if (sc.length() > 0) {
         if (sc.indexOf('\"') >= 0) {

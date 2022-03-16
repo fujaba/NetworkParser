@@ -155,7 +155,6 @@ public interface BufferItem {
 	 *                   &nbsp;<small>(single quote)</small>.
 	 * @return the StringContainer with the new Value
 	 */
-	CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, char... quotes);
 
 	/**
 	 * Get the NextVlaue.

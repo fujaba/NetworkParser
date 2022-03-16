@@ -215,12 +215,11 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	}
 	
 	@Override
-	public CharacterBuffer parseString(CharacterBuffer sc, boolean value, char... quotes) {
+	public CharacterBuffer parseString(boolean value, char... quotes) {
 		int startpos = this.position();
 		next(value, quotes);
 		int endPos = this.position();
-		sc.with(this.subSequence(startpos, endPos));
-		return sc;
+		return new CharacterBuffer().with(this.subSequence(startpos, endPos));
 	}
 
 	/**

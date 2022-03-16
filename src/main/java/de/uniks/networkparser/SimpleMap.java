@@ -1419,9 +1419,9 @@ public int size() {
       Tokener tokener = map.getTokener();
       for (int i = 0; i < properties.length; i++) {
         String property = properties[i];
-        Object value = creator.getValue(entity, property);
+        Object key = creator.getValue(entity, property);
         if (SendableEntityCreator.DYNAMIC.equals(property)) {
-          if (value == null) {
+          if (key == null) {
             continue;
           }
           SimpleList<String> props = new SimpleList<String>();
@@ -1430,7 +1430,7 @@ public int size() {
             props.add(properties[p]);
           }
 
-          Object[][] array = (Object[][]) value;
+          Object[][] array = (Object[][]) key;
 
           for (p = 0; p < array.length; p++) {
             props.with(array[p][0]);
@@ -1439,8 +1439,8 @@ public int size() {
           continue;
         }
 
-        if (value != null) {
-          int convert = f.convert(entity, property, value, this, map.getDeep());
+        if (key != null) {
+          int convert = f.convert(entity, property, key, this, map.getDeep());
           if (convert < 0) {
             continue;
           }
@@ -1450,8 +1450,7 @@ public int size() {
           }
           if (!encoding) {
             if (notNull) {
-              Object refValue = creator.getValue(referenceObject, property);
-              encoding = !value.equals(refValue);
+              encoding = !key.equals(creator.getValue(referenceObject, property));
             } else {
               encoding = true;
             }
@@ -1462,21 +1461,21 @@ public int size() {
             if (parent.has(property) && isError(this, "Encode", NetworkParserLog.ERROR_TYP_DUPPLICATE, entity, className)) {
               throw new SimpleException("Property duplicate:" + property + "(" + className + ")");
             }
-            if (value instanceof Entity) {
+            if (key instanceof Entity) {
               if (parent instanceof EntityList) {
-                parent.add(value);
+                parent.add(key);
                 continue;
               }
-              parent.put(property, value);
+              parent.put(property, key);
               continue;
             }
-            className = value.getClass().getName();
+            Object value = key;
+            className = key.getClass().getName();
             String fullProp = prop.toString();
-            SendableEntityCreator valueCreater = g.getCreator(Grammar.WRITE, value, map, className);
+            SendableEntityCreator valueCreater = g.getCreator(Grammar.WRITE, key, map, className);
 
-            Object key = value;
-            if (f.isId(value, className, this)) {
-              key = tokener.getKey(value);
+            if (f.isId(key, className, this)) {
+              key = tokener.getKey(key);
             }
             boolean contains = false;
             if (key != null) {
@@ -1515,7 +1514,7 @@ public int size() {
           }
           prop.setNextString(property, pos);
           Entity parent = map.convertProperty(prop, item);
-          parent.put(prop.toString(), value);
+          parent.put(prop.toString(), key);
         }
       }
       map.popStack();
