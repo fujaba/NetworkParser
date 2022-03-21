@@ -291,7 +291,6 @@ public class Tokener {
 	 * Next string.
 	 *
 	 * @param buffer the buffer
-	 * @param sc the sc
 	 * @param allowCRLF the allow CRLF
 	 * @param quotes the quotes
 	 * @return the character buffer
@@ -307,7 +306,6 @@ public class Tokener {
 	 * Next token.
 	 *
 	 * @param buffer the buffer
-	 * @param current the current
 	 * @param stopWords the stop words
 	 * @return the character buffer
 	 */

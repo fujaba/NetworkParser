@@ -87,7 +87,6 @@ public class CharacterReader extends CharacterBuffer {
   /**
    * Next string.
    *
-   * @param sc the sc
    * @param allowQuote the allow quote
    * @param quotes the quotes
    * @return the character buffer

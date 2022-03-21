@@ -111,8 +111,6 @@ public interface BufferItem {
 	/**
 	 * Get the next char in the string, skipping whitespace.
 	 * 
-	 * @param currentValid is the current char also a valid character
-	 *
 	 * @return A character, or 0 if there are no more characters.
 	 */
 	char nextClean();
@@ -120,8 +118,6 @@ public interface BufferItem {
 	   /**
      * Get the next char in the string, skipping whitespace.
      * 
-     * @param currentValid is the current char also a valid character
-     *
      * @return A character, or 0 if there are no more characters.
      */
     char nextCleanSkip();
@@ -167,7 +163,6 @@ public interface BufferItem {
 	  /**
 	 * Get the next Token.
 	 *
-	 * @param current   switch for add the current Character
 	 * @param stopWords may be at Simple Space
 	 * @return The next Token
 	 */

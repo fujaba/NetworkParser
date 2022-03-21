@@ -497,12 +497,11 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         this.allowAnswer = true;
         return this;
     }
-
     
     /**
      * Gets the http.
      *
-     * @param session the session
+     * @param url the HTTP-ServerAdress
      * @param path the path
      * @param params the params
      * @return the http

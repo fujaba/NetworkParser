@@ -267,7 +267,6 @@ public abstract class Buffer implements BufferItem {
   /**
    * Next clean.
    *
-   * @param currentValid the current valid
    * @return the char
    */
   @Override
@@ -285,7 +284,6 @@ public abstract class Buffer implements BufferItem {
   /**
    * Next clean.
    *
-   * @param currentValid the current valid
    * @return the char
    */
   @Override
@@ -334,9 +332,7 @@ public abstract class Buffer implements BufferItem {
   /**
    * Next string.
    *
-   * @param sc the sc
    * @param allowQuote the allow quote
-   * @param nextStep the next step
    * @param quotes the quotes
    * @return the character buffer
    */
@@ -577,7 +573,6 @@ public abstract class Buffer implements BufferItem {
   /**
    * Next token.
    *
-   * @param current the current
    * @param stopWords the stop words
    * @return the character buffer
    */

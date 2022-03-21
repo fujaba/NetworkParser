@@ -257,7 +257,6 @@ public class FileBuffer extends Buffer {
 	/**
 	 * Next clean.
 	 *
-	 * @param currentValid the current valid
 	 * @return the char
 	 */
 	@Override
@@ -268,7 +267,6 @@ public class FileBuffer extends Buffer {
     /**
      * Next clean.
      *
-     * @param currentValid the current valid
      * @return the char
      */
     @Override
