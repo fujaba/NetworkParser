@@ -6,6 +6,7 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.RESTServiceTask;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.graph.GraphUtil;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
@@ -109,7 +110,7 @@ public class ConfigService implements Condition<HTTPRequest> {
 	}
 
 	private boolean showDefault(HTTPRequest value) {
-		HTMLEntity entity = new HTMLEntity();
+		HTMLEntity entity = new HTMLEntity().withEncoding(BaseItem.ENCODING);
 		
 		XMLEntity headerTag = entity.createChild("div", "class", "header");
 		XMLEntity backBtn = headerTag.createChild("a", "href", "/");
@@ -187,7 +188,7 @@ public class ConfigService implements Condition<HTTPRequest> {
 							return value.redirect(this.routing.getAbsolutePath());
 						}
 					}
-					HTMLEntity entity = new HTMLEntity();
+					HTMLEntity entity = new HTMLEntity().withEncoding(BaseItem.ENCODING);
 					entity.createChild("h1", creator.getTag());
 					XMLEntity formTag = entity.createChild("form").withKeyValue("method", "post").withKeyValue("enctype", "application/json");
 					for(String prop : creator.getProperties()) {

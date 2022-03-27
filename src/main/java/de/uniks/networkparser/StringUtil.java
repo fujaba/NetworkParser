@@ -1296,6 +1296,7 @@ public class StringUtil {
         try {
             return new String(value.getBytes(fromEncoding), toEncoding);
         } catch (UnsupportedEncodingException e) {
+            // DO NOTHING
         }
         return "";
     }
@@ -1304,10 +1305,8 @@ public class StringUtil {
         String probe = StandardCharsets.UTF_8.name();
         for (String c : charsets) {
             Charset charset = Charset.forName(c);
-            if (charset != null) {
-                if (value.equals(convert(convert(value, charset.name(), probe), probe, charset.name()))) {
-                    return c;
-                }
+            if (charset != null && value.equals(convert(convert(value, charset.name(), probe), probe, charset.name()))) {
+                return c;
             }
         }
         return StandardCharsets.UTF_8.name();
@@ -1354,6 +1353,53 @@ public class StringUtil {
 		return sb.toString();
 	}
 
+	   /**
+     * Encode parameter.
+     *
+     * @param value the value
+     * @param charset the charset
+     * @return the string
+     */
+    public static CharacterBuffer decodeParameter(CharSequence value) {
+        if(value == null) {
+            return null;
+        }
+        CharacterBuffer sb = new CharacterBuffer().withBufferLength(value.length());
+        for (int i=0;i<value.length();i++) {
+            char character = value.charAt(i);
+            if (
+                    (character>= 'a' && character<= 'z') ||
+                    (character>= 'A' && character<= 'Z') ||
+                    (character>= '0' && character<= '9') ||
+                    "-_.* ".indexOf(character)>=0)
+            {
+                sb.add(character);
+            } else if(character=='+'){
+                sb.add(' ');
+            } else if(character=='%'){
+                character = value.charAt(++i);
+                if(character=='c'||character=='C' && value.charAt(i+2)=='%' && value.charAt(i+1)=='3') {
+                    i+=2;
+                    sb.with((char) (decodeChar(value.charAt(++i), value.charAt(++i))+64));
+                }else {
+                    sb.with(decodeChar(character, value.charAt(++i)));
+                }
+            }
+        }
+        return sb;
+    }
+    
+    private static char decodeChar(char bitA, char bitB) {
+        char charValue = 0;
+        if(bitA>='0' && bitA<='9') {charValue = (char) ((bitA-'0')*16);}
+        if(bitA>='A' && bitA<='F') {charValue = (char) ((bitA-'A'+10)*16);}
+        if(bitA>='a' && bitA<='f') {charValue = (char) ((bitA-'a'+10)*16);}
+        if(bitB>='0' && bitB<='9') {charValue += bitB-'0';}
+        if(bitB>='A' && bitB<='F') {charValue += bitB-'A'+10;}
+        if(bitB>='a' && bitB<='f') {charValue += bitB-'a'+10;}
+        return charValue;
+    }
+	
     /**
      * Checks if is text.
      *

@@ -14,13 +14,13 @@ dependencies {
 }
 
 sourceSets {
-	main.java.srcDirs = files('gradle')
-	test.java.srcDirs = files('gradle')
+	main.java.srcDirs = files("gradle");
+	test.java.srcDirs = files("gradle");
 }
 task runJavValidator(type:JavaExec) {
 	errorOutput = System.err
 	main = "de.uniks.networkparser.ext.DiagramEditor"
-	args 'JARVALIDATOR', 'coverage=60', 'fatjar', 'noError'
+	args "JARVALIDATOR", 'coverage=60', 'fatjar', 'noError'
 	classpath = sourceSets.main.compileClasspath
 }
 

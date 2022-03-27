@@ -145,10 +145,7 @@ public class HTMLEntity implements BaseItem {
 	 * @return the HTML entity
 	 */
 	public HTMLEntity withEncoding(String encoding) {
-		XMLEntity metaTag = new XMLEntity().withType("meta");
-		metaTag.withKeyValue("http-equiv", "Content-Type");
-		metaTag.withKeyValue("content", "text/html;charset=" + encoding);
-		this.header.with(metaTag);
+	    createChild("meta", this.getHeader(), "http-equiv", "Content-Type", "content", "text/html;charset=" + encoding);
 		return this;
 	}
 

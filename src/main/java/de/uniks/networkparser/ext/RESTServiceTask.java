@@ -17,6 +17,7 @@ import de.uniks.networkparser.ext.http.LoginService;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyModel;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SimpleUpdateListener;
@@ -190,7 +191,8 @@ public class RESTServiceTask implements Condition<Socket> {
 			return success;
 		} else if(routing.size()>0 && (path == null || path.isEmpty())) {
 		    // ROOT AND DEFAULT PAGE
-            HTMLEntity entity = new HTMLEntity();
+            HTMLEntity entity = new HTMLEntity().withEncoding(BaseItem.ENCODING);
+
             XMLEntity menueItem = entity.createChild("div", "class", "menue");
             for(HTTPRequest item : routing) {
                 if(item.getTag() != null) {

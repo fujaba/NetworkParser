@@ -253,7 +253,7 @@ public class Os {
 		return ("UTF-8".equals(System.getProperty("file.encoding"))
 				|| "UTF8".equals(System.getProperty("file.encoding")));
 	}
-
+	
 	/**
 	 * Checks if is not first thread.
 	 *

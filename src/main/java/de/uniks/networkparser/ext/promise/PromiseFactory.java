@@ -1,8 +1,6 @@
 package de.uniks.networkparser.ext.promise;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ScheduledExecutorService;
 
 public class PromiseFactory {
 //    /**

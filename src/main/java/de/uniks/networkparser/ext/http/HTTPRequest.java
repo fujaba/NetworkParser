@@ -55,6 +55,9 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 	/** The Constant HTTP_CONTENT_PLAIN. */
 	public static final String HTTP_CONTENT_PLAIN = "text/plain";
 	
+    /** The Constant HTTP_CONTENT_JS. */
+    public static final String HTTP_CONTENT_JS = "text/javascript";
+	
 	/** The Constant HTTP_CONTENT_JSON. */
 	public static final String HTTP_CONTENT_JSON = "application/json";
 	
@@ -274,7 +277,7 @@ public class HTTPRequest implements Comparable<HTTPRequest> {
 		}else {
 			writer.println(HTTP_CONTENT + ": " + contentType);
 		}
-		writer.println(HTTP_LENGTH + ": " +response.length());
+		//writer.println(HTTP_LENGTH + ": " +response.length()+ 2);
 		writer.write(BaseItem.CRLF);
 		writer.print(response);
 		writer.flush();
