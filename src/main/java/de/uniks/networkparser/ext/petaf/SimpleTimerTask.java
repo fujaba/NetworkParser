@@ -70,7 +70,7 @@ public class SimpleTimerTask extends TimerTask implements Callable<Object> {
 	 * @param space the space
 	 */
 	public SimpleTimerTask(Space space) {
-		handler.addListener(space);
+		handler.withListener(space);
 		this.space = space;
 	}
 

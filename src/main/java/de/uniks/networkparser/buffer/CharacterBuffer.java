@@ -87,7 +87,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
     if (end > buffer.length) {
       end = buffer.length;
     }
-    return new CharacterBuffer().with(this.buffer, start, end, false);
+    return new CharacterBuffer().withReference(this.buffer, start, end);
   }
 
   /**
@@ -397,17 +397,16 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
    * @param values the reference CharArray
    * @param start the Startposition for the new CharacterBuffer
    * @param end the Endposition for the new CharacterBuffer
-   * @param copy Boolean if copy the Array to new one
    * @return the new CharacterBuffer
    */
-  public CharacterBuffer with(char[] values, int start, int end, boolean copy) {
-    if (!copy) {
-        this.buffer = values;
-        this.start = start;
-        this.length = end - start;
-        return this;
+  public CharacterBuffer withReference(char[] values, int start, int end) {
+    this.buffer = values;
+    this.start = start;
+    if(end>values.length) {
+        end = buffer.length;
     }
-    return with(values, start, end);
+    this.length = end - start;
+    return this;
   }
 
   /**

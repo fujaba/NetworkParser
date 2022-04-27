@@ -1,6 +1,7 @@
 package de.uniks.networkparser.ext.petaf;
 
 import java.util.Collection;
+import java.util.List;
 
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.Filter;
@@ -82,7 +83,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	protected String name;
 	protected NodeBackup backupTask = new NodeBackup().withSpace(this);
 	protected NetworkParserLog log = new NetworkParserLog();
-	protected final ErrorHandler handler = new ErrorHandler();
+	protected ErrorHandler handler;
 	protected boolean isInit = true;
 	protected final ChangeMessage changeMessageCreator = new ChangeMessage();
 	protected PetaFilter messageFilter = new PetaFilter().withTyp(PetaFilter.ID);
@@ -117,6 +118,11 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	public Space withMap(IdMap map) {
 		this.map = map;
 		return this;
+	}
+	
+	public Space withErrorHanlder(ErrorHandler value) {
+	    this.handler = value;
+        return this;
 	}
 
 	/**
@@ -1553,12 +1559,20 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	/**
 	 * Handle exception.
 	 *
-	 * @param e the e
+	 * @param e the Exception
+	 * @param message Custom String Message
+	 * @return List of Files
 	 */
-	public void handleException(Throwable e) {
-		this.handler.saveException(e, false);
+	public List<String> handleException(Throwable e, String... message) {
+	    if(this.handler == null) {
+	        this.handler = new ErrorHandler();
+	    }
+	    if(this.log != null && message != null && message.length>0) {
+            this.log.error(this, message[0], e);
+        }
+	    return this.handler.saveException(e, false);
 	}
-
+	
 	/**
 	 * Handle msg.
 	 *

@@ -131,7 +131,7 @@ public class NetworkParserLog extends Handler {
    * @return if method must Cancel
    */
   public boolean debug(Object owner, String method, Object message) {
-    if (condition != null) {
+    if ((flag & LOGLEVEL_INFO) != 0 && condition != null) {
       return condition.update(new SimpleEvent(owner, method, null, message).withType(DEBUG));
     }
     return false;
@@ -187,7 +187,7 @@ public class NetworkParserLog extends Handler {
    * @return true, if successful
    */
   public boolean info(String message) {
-    return info(this, "info", message);
+    return info(this, INFO, message);
   }
 
   /**

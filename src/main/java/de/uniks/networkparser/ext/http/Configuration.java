@@ -167,6 +167,15 @@ public class Configuration implements SendableEntityCreatorNoIndex, SendableEnti
 		}
 		return null;
 	}
+	
+   public SendableEntityCreator updateConfiguration(String label, String property, Object value) {
+        SendableEntityCreator settings = getSetting(label);
+        if(settings != null && settings.setValue(settings, property, value, SendableEntityCreator.NEW)) {
+            return settings;
+        }
+        return null;
+    }
+
 
 	/**
 	 * Gets the tag.

@@ -42,7 +42,7 @@ public abstract class ReceivingTimerTask extends Message implements Runnable {
 	 * @return the receiving timer task
 	 */
 	public ReceivingTimerTask withSpace(Space space) {
-		handler.addListener(space);
+		handler.withListener(space);
 		this.space = space;
 		return this;
 	}

@@ -587,4 +587,12 @@ public class RESTServiceTask implements Condition<Socket> {
     public ImpressumService getImpressumService() {
         return impressumService;
     }
+
+    /**
+     * Gets the space Object.
+     * @return the space
+     */
+    public Space getSpace() {
+        return space;
+    }
 }

@@ -161,6 +161,10 @@ public class StringPrintStream extends PrintStream implements ObjectCondition {
 		}
 		return false;
 	}
+	
+	public String getStringStream() {
+	    return this.out.toString();
+	}
 	/*
 	 * java.io.PrintStream.printf(String, Object...)
 	 * java.io.PrintStream.printf(Locale, String, Object...)

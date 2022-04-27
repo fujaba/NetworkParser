@@ -991,4 +991,26 @@ public class HTMLEntity implements BaseItem {
 		input.setValueItem("value", value);
 		return parent;
 	}
+	
+	public BaseItem createToast(String text, String... style) {
+	    String styleClass = "success";
+	    if(style != null && style.length>0) {
+	        styleClass = style[0];
+	    }
+	    XMLEntity parentElement = createChild("div", "class", "toast "+ styleClass);
+	    parentElement.createChild("span", "class", "content", text);
+        parentElement.createChild("button", "type", "button", "onclick", "this.parentNode.style.display='none'", "x");
+        return parentElement;
+	}
+	
+    public BaseItem createToastError(Object text) {
+        XMLEntity parentElement = createChild("div", "class", "toast  failure");
+        if (text instanceof String) {
+            parentElement.createChild("span", "class", "content", "" + text);
+        } else if (text instanceof Error) {
+            parentElement.createChild("span", "class", "content", "" + ((Error) text).getMessage());
+        }
+        parentElement.createChild("button", "type", "button", "onclick", "this.parentNode.style.display='none'", "x");
+        return parentElement;
+    }
 }

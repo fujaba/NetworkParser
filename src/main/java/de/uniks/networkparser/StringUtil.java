@@ -427,68 +427,24 @@ public class StringUtil {
 	 * @param length the length of Value
 	 * @return a String of Value
 	 */
-	public static final String strZero(int value, int length) {
-		return strZero(String.valueOf(value), length, -1);
+	public static final String strZero(Object value, int length) {
+		return strZero(String.valueOf(value), length);
 	}
 
 	/**
-	 * format a String with 0.
-	 *
-	 * @param value  the numericvalue
-	 * @param length the length of Value
-	 * @return a String of Value
-	 */
-	public static final String strZero(long value, int length) {
-		return strZero(String.valueOf(value), length, -1);
-	}
-
-	/**
-	 * format a String with 0.
-	 *
-	 * @param value  the numericvalue
-	 * @param length the length of Value
-	 * @param max    the maxValue
-	 * @return a String of Value
-	 */
-	public static final String strZero(long value, int length, int max) {
-		return strZero(String.valueOf(value), length, max);
-	}
-
-	/**
-	 * Format a date with 0.
-	 *
-	 * @param value  the numericvalue
-	 * @param length the length of Value
-	 * @param max    the maxValue
-	 * @return a String of Value with max value
-	 */
-	public static final String strZero(int value, int length, int max) {
-		return strZero(String.valueOf(value), length, max);
-	}
-
-	/**
-	 * Str zero.
+	 * Fill String with zero.
 	 *
 	 * @param value the value
 	 * @param length the length
-	 * @param max the max
 	 * @return the string
 	 */
-	public static final String strZero(String value, int length, int max) {
-		if (max > 0 && max < length) {
-			length = max;
-		}
+	public static final String strZero(String value, int length) {
 		if (value == null) {
 			return null;
 		}
-		StringBuilder sb = new StringBuilder();
+		CharacterBuffer sb = new CharacterBuffer();
 		if (length > value.length()) {
-			sb.ensureCapacity(length);
-			max = length - value.length();
-			while (max > 0) {
-				sb.append("0");
-				max--;
-			}
+			sb.with("0".repeat(length - value.length()));
 		}
 		sb.append(value);
 		return sb.toString();
@@ -1018,7 +974,6 @@ public class StringUtil {
 		if (isEmpty(cs) || searchChars == null || searchChars.length == 0) {
 			return false;
 		}
-
 		int csLength = cs.length();
 		int searchLength = searchChars.length;
 		int csLast = csLength - 1;
@@ -1070,8 +1025,7 @@ public class StringUtil {
 	 * so that there is a more equal chance that a number will be picked. We can use
 	 * the array to get a random number or letter by picking a random array index.
 	 */
-	private static char[] numbersAndLetters = ("0123456789abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-			.toCharArray();
+	private static char[] numbersAndLetters = ("0123456789abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ").toCharArray();
 
 	/**
 	 * Returns a random String of numbers and letters (lower and upper case) of the
@@ -1119,13 +1073,10 @@ public class StringUtil {
 		if (StringUtil.randGen == null) {
 			StringUtil.randGen = new Random();
 		}
-
 		/*
 		 * nextInt is normally exclusive of the top value, so add 1 to make it inclusive
 		 */
-		int randomNum = StringUtil.randGen.nextInt((max - min) + 1) + min;
-
-		return randomNum;
+		return StringUtil.randGen.nextInt((max - min) + 1) + min;
 	}
 
 	/**
@@ -1176,13 +1127,11 @@ public class StringUtil {
 		}
 		String[] base = basePath.split(separator);
 		String[] target = targetPath.split(separator);
-
 		/*
 		 * First get all the common elements. Store them as a string, and also count how
 		 * many of them there are.
 		 */
 		CharacterBuffer common = new CharacterBuffer();
-
 		int commonIndex = 0;
 		while (commonIndex < target.length && commonIndex < base.length
 				&& target[commonIndex].equals(base[commonIndex])) {
@@ -1198,9 +1147,7 @@ public class StringUtil {
 		}
 
 		boolean baseIsFile = true;
-
 		File baseResource = new File(basePath);
-
 		if (baseResource.exists()) {
 			baseIsFile = baseResource.isFile();
 
@@ -1268,6 +1215,9 @@ public class StringUtil {
 	 * @return the string
 	 */
 	public static String encodeUmlaute(String value) {
+	    if(value == null) {
+	        return null;
+	    }
 		CharacterBuffer sb = new CharacterBuffer().withBufferLength(value.length());
 		for (int i=0;i<value.length();i++) {
 			char character = value.charAt(i);
@@ -1357,7 +1307,6 @@ public class StringUtil {
      * Encode parameter.
      *
      * @param value the value
-     * @param charset the charset
      * @return the string
      */
     public static CharacterBuffer decodeParameter(CharSequence value) {
@@ -1416,5 +1365,19 @@ public class StringUtil {
             }
         }
         return true;
+    }
+    
+    public static CharacterBuffer[] splitText(char[] txt, int len) {
+        if(txt == null) {
+            return new CharacterBuffer[0];
+        }
+        int count=txt.length/len+(txt.length%len>0 ? 1 : 0);
+        CharacterBuffer[] split = new CharacterBuffer[count];
+        int start=0;
+        for(int i=0;i<count;i++) {
+            split[i]=new CharacterBuffer().withReference(txt, start, start+len);
+            start+=len;
+        }
+        return split;
     }
 }

@@ -1,29 +1,5 @@
 package de.uniks.networkparser.ext.io;
 
-/*
-NetworkParser
-The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -51,10 +27,9 @@ import de.uniks.networkparser.xml.XMLEntity;
  * @author Stefan Lindel
  */
 public class FileBuffer extends Buffer {
-	
 	/** The Constant BUFFER. */
 	public static final int BUFFER = 4096;
-	private BufferedReader reader;
+	private InputStreamReader reader;
 	private File file;
 	private CharacterBuffer lookAHead = new CharacterBuffer();
 	private int length;
@@ -97,8 +72,7 @@ public class FileBuffer extends Buffer {
 		this.length = (int) this.file.length();
 		try {
 			FileInputStream fis = asStream();
-			InputStreamReader isr = new InputStreamReader(fis, Charset.forName(BaseItem.ENCODING));
-			this.reader = new BufferedReader(isr, cache);
+			this.reader = new InputStreamReader(fis, Charset.forName(BaseItem.ENCODING));
 		} catch (Exception e) {
 		}
 		this.position = 0;
@@ -305,9 +279,14 @@ public class FileBuffer extends Buffer {
 		try {
 			if (this.reader != null) {
 				this.reader.close();
+				this.reader = null;
 			}
 		} catch (IOException e) {
 		}
+	}
+	
+	public InputStreamReader getStreamReader() {
+	    return reader;
 	}
 
 	/**
@@ -469,6 +448,19 @@ public class FileBuffer extends Buffer {
 	}
 
 	/**
+     * Read all.
+     *
+     * @return the character buffer
+     */
+    public ByteBuffer readAllBinary() {
+        if (file == null) {
+            return null;
+        }
+        return readBinaryFile(file);
+    }
+	
+	
+	/**
 	 * Read resource.
 	 *
 	 * @param is the is
@@ -599,26 +591,36 @@ public class FileBuffer extends Buffer {
 		if (file == null) {
 			return null;
 		}
-		File content = new File(file);
+		return readBinaryFile(new File(file));
+	}
+
+    /**
+     * Read binary file.
+     *
+     * @param file the file
+     * @return the byte buffer
+     */
+    public static final ByteBuffer readBinaryFile(File file) {
 		ByteBuffer sb = new ByteBuffer();
-		if (content.exists()) {
-			final byte[] buffer = new byte[BUFFER];
-			int read;
-			FileInputStream is = null;
-			try {
-				is = new FileInputStream(content);
-				do {
-					read = is.read(buffer, 0, buffer.length);
-					if (read > 0) {
-						sb.addBytes(buffer, read, false);
-					}
-				} while (read >= 0);
-			} catch (IOException e) {
-			} finally {
-				try {
-					is.close();
-				} catch (IOException e) {
+		if (file == null || !file.exists()) {
+		    return sb;
+		}
+		final byte[] buffer = new byte[BUFFER];
+		int read;
+		FileInputStream is = null;
+		try {
+			is = new FileInputStream(file);
+			do {
+				read = is.read(buffer, 0, buffer.length);
+				if (read > 0) {
+					sb.addBytes(buffer, read, false);
 				}
+			} while (read >= 0);
+		} catch (IOException e) {
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
 			}
 		}
 		return sb;
@@ -817,19 +819,17 @@ public class FileBuffer extends Buffer {
 		if (data.length == 1 && data[0] == 0) {
 			return -1;
 		}
-		try {
-			boolean append = false;
-			if (flag == APPEND) {
-				append = true;
-			}
-			FileOutputStream os = new FileOutputStream(this.file, append);
+		boolean append = false;
+		if (flag == APPEND) {
+		    append = true;
+		}
+		try(FileOutputStream os = new FileOutputStream(this.file, append)) {
 			os.write(data);
 			os.flush();
-			os.close();
 			return data.length;
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {
-		}
+		} catch (Exception e) {
+		    // DO NOTHING
+        }
 		return -1;
 	}
 
@@ -952,5 +952,9 @@ public class FileBuffer extends Buffer {
 			return -1;
 		}
 		return count;
+	}
+	
+	public static InputStreamReader createStream(String name) {
+	    return new FileBuffer().withFile(name).getStreamReader();
 	}
 }

@@ -657,7 +657,7 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
      * @return the HTML entity
      */
     public static HTMLEntity postHTTP(String url, BaseItem params) {
-        HTTPRequest request = new HTTPRequest(url, HTTPRequest.HTTP_TYPE_POST).withContent(params).withContentType(HTTPRequest.HTTP_CONTENT_FORM);
+        HTTPRequest request = new HTTPRequest(url, HTTPRequest.HTTP_TYPE_POST).withContent(params).withContentType(HTTPRequest.CONTENT_FORM);
         return sendHTTP(request);
     }
     
@@ -717,7 +717,7 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
    */
   public static HTMLEntity postHTTP(String url, Map<String, Object> params) {
 	  HTTPRequest request = new HTTPRequest(url, HTTPRequest.HTTP_TYPE_POST);
-	  request.withContent(HTTPRequest.HTTP_CONTENT_PLAIN, params);
+	  request.withContent(HTTPRequest.CONTENT_PLAIN, params);
 	  return sendHTTP(request);
   }
   
@@ -737,7 +737,7 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
 	}
 	  HTTPRequest request = new HTTPRequest(fullUrl.toString(), HTTPRequest.HTTP_TYPE_POST);
 	  request.withContent(content);
-	  request.withContentType(HTTPRequest.HTTP_CONTENT_FORM);
+	  request.withContentType(HTTPRequest.CONTENT_FORM);
 	  return sendHTTP(request);
   }
   
@@ -773,13 +773,13 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
                 return null;
             }
         }
-        if (HTTPRequest.HTTP_CONTENT_PLAIN.equalsIgnoreCase(element.getContentType())) {
+        if (HTTPRequest.CONTENT_PLAIN.equalsIgnoreCase(element.getContentType())) {
         	if(element.getContent() != null) {
         		content.add(element.getContentType());
         	} else {
         		convertParams(content, element.getContentValues());
         	}
-        } else if (HTTPRequest.HTTP_CONTENT_JSON.equalsIgnoreCase(element.getContentType())) {
+        } else if (HTTPRequest.CONTENT_JSON.equalsIgnoreCase(element.getContentType())) {
         	if(element.getContentElement() instanceof JsonObject || element.getContentElement() instanceof JsonArray) {
         		content.add(element.getContentElement().toString());
         	}else {
@@ -787,6 +787,8 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         		convertParams(json, element.getContentValues());
         		content.add(json.toString());
         	}
+        } else if(contentElement instanceof CharacterBuffer){
+            content = (CharacterBuffer) contentElement;
         }
         byte[] bytes = content.toBytes(true);
         HttpURLConnection conn = getConnection(url, element.getHttp_Type());
@@ -794,7 +796,7 @@ public class NodeProxyTCP extends NodeProxy implements Condition<Socket> {
         	return null;
         }
         if(!HTTPRequest.HTTP_CONTENT_HEADER.equalsIgnoreCase(element.getContentType())) {
-        	conn.setRequestProperty(HTTPRequest.HTTP_CONTENT, element.getContentType());
+        	conn.setRequestProperty(HTTPRequest.CONTENT_TYPE, element.getContentType());
         }
         conn.setRequestProperty(HTTPRequest.HTTP_LENGTH, "" + bytes.length);
         conn.setRequestProperty("charset", "utf-8");

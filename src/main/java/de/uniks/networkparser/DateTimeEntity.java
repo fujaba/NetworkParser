@@ -1,6 +1,7 @@
 package de.uniks.networkparser;
 
 import java.util.Date;
+
 /*
  * The MIT License
  * 
@@ -636,39 +637,51 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
             month = 1;
           }
 
-          char search[] = new char[] {'d', 'm', 'y', 'H', 'M', 'S'};
-          int specials[] =new int[6];
-          int pos;
-    	  for(int i=0;i<sub.length();i++) {
+          String search = "dmyHMS";
+          char oldItem=0;
+         
+    	  for(int i=0;i<sub.length();) {
           	char item = sub.charAt(i);
-          	for(pos = 0;pos<search.length;pos++) {
-          		if(search[pos] == item) {
-          			specials[pos] += 1;
-          			break;
-          		}
-          	}
-          	if(pos == search.length) {
-          		// Not found
-          		if(item == 'z') {
-          			sb.with("CEST");
-          		} else if(item == 'Z') {
-          			if(specials[3] == 1) {
-            			specials[3] = 0;
-            			sb.with(StringUtil.strZero(get(HOUR_OF_DAY) - getTimezone(), 2));
-          			} else if (this.timeZone > 0) {
-          				sb.with("+" + StringUtil.strZero(this.timeZone, 2, 2) + "00");
+          	int foundPos = search.indexOf(item);
+            if(foundPos < 0) {
+                // Not found
+                if(item == 'z') {
+                    sb.with("CEST");
+                    oldItem = item;
+                    i++;
+                    continue;
+                } else if(item == 'Z') {
+                    if(oldItem=='H') {
+                        sb.with(StringUtil.strZero(get(HOUR_OF_DAY) - getTimezone(), 2));
+                    } else if (this.timeZone > 0) {
+                        sb.with("+" + StringUtil.strZero(this.timeZone, 2) + "00");
                     } else if (this.timeZone < 0) {
-                    	sb.with("-" + StringUtil.strZero(this.timeZone, 2, 2) + "00");
+                        sb.with("-" + StringUtil.strZero(this.timeZone, 2) + "00");
                     } else {
-                    	sb.with("0000");
+                        sb.with("0000");
                     }
-          		} else {
-	          		replaceSpecial(sb, specials, dayOfWeek, month);
-	          		sb.with(item);
-        		}
+                    oldItem = item;
+                    i++;
+                    continue;
+                } else {
+                    sb.with(item);
+                    i++;
+                    continue;
+                }
+            } else if(item =='H' && i+1<sub.length() && sub.charAt(i+1) =='Z' ) {
+                i++;
+                oldItem = item;
+                continue;
+            }
+            int count=1;
+          	while(i+1 < sub.length() && sub.charAt(++i)==item) {
+          	    count++;
+          	}
+          	replaceSpecial(sb, item, count, dayOfWeek, month);
+          	if(i+1 == sub.length()) {
+          	    break;
           	}
           }
-          replaceSpecial(sb, specials, dayOfWeek, month);
       } else if(isString) {
     	  sb.with(sub);
       }
@@ -681,28 +694,38 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
     return sb.toString();
   }
 
-	private void replaceSpecial(CharacterBuffer sb, int[] specials, int dayOfWeek, int month) {
-		if(specials[0] == 4) {sb.with(this.weekDays[dayOfWeek]);}
-		if(specials[0] == 3) {sb.with(this.weekDays[dayOfWeek].substring(0, 3));}
-		if(specials[0] == 2) {sb.with(StringUtil.strZero(get(DAY_OF_MONTH), 2));}
-		if(specials[0] == 1) {sb.with(String.valueOf(get(DAY_OF_MONTH)));}
-		if(specials[1] == 4) {sb.with(this.monthOfYear[month - 1]);}
-		if(specials[1] == 3) {sb.with(this.monthOfYear[month - 1].substring(0, 3));}
-		if(specials[1] == 2) {sb.with(StringUtil.strZero(month, 2));}
-		if(specials[1] == 1) {sb.with(String.valueOf(month));}
-		if(specials[2] == 4) {sb.with(String.valueOf(get(YEAR)));}
-		if(specials[2] == 3) {sb.with(String.valueOf(get(YEAR)));}
-		if(specials[2] == 2) {sb.with(StringUtil.strZero(get(YEAR), 2, 2));}
-		if(specials[2] == 1) {sb.with(StringUtil.strZero(get(YEAR), 1, 2));}
-		if(specials[3] == 2) {sb.with(StringUtil.strZero(get(HOUR_OF_DAY), 2));}
-		if(specials[3] == 1) {sb.with(String.valueOf(get(HOUR_OF_DAY)));}
-		if(specials[4] == 2) {sb.with(StringUtil.strZero(get(MINUTE_OF_HOUR), 2));}
-		if(specials[4] == 1) {sb.with(String.valueOf(get(MINUTE_OF_HOUR)));}
-		if(specials[5] == 2) {sb.with(StringUtil.strZero(get(SECOND_OF_MINUTE), 2));}
-		if(specials[5] == 1) {sb.with(String.valueOf(get(SECOND_OF_MINUTE)));}
-		for(int i=0;i<specials.length;i++) {
-			specials[i] = 0;
-		}
+	private CharacterBuffer replaceSpecial(CharacterBuffer sb, char charType, int count,  int dayOfWeek, int month) {
+	    if(charType=='d') {
+	        if(count==4) {return sb.with(this.weekDays[dayOfWeek]);}
+	        if(count==3) {return sb.with(this.weekDays[dayOfWeek].substring(0, 3));}
+	        if(count==2) {return sb.with(StringUtil.strZero(get(DAY_OF_MONTH), 2));}
+	        if(count==1) {return sb.with(String.valueOf(get(DAY_OF_MONTH)));}
+	    }
+	    if(charType=='m') {
+	        if(count==4) {return sb.with(this.monthOfYear[month - 1]);}
+	        if(count==3) {return sb.with(this.monthOfYear[month - 1].substring(0, 3));}
+	        if(count==2) {return sb.with(StringUtil.strZero(month, 2));}
+	        if(count==1) {return sb.with(String.valueOf(month));}
+	    }
+	    if(charType=='y') {
+	        if(count==4) {return sb.with(String.valueOf(get(YEAR)));}
+	        if(count==3) {return sb.with(String.valueOf(get(YEAR)));}
+	        if(count==2) {return sb.with(StringUtil.strZero(get(YEAR), 2));}
+	        if(count==1) {return sb.with(StringUtil.strZero(get(YEAR), 1));}
+	    }
+	    if(charType=='H') {
+	        if(count==2) {return sb.with(StringUtil.strZero(get(HOUR_OF_DAY), 2));}
+	        if(count==1) {return sb.with(String.valueOf(get(HOUR_OF_DAY)));}
+	    }
+	    if(charType=='M') {
+	        if(count==2) {return sb.with(StringUtil.strZero(get(MINUTE_OF_HOUR), 2));}
+	        if(count==1) {return sb.with(String.valueOf(get(MINUTE_OF_HOUR)));}
+	    }
+        if (charType == 'S') {
+            if(count==2) {return sb.with(StringUtil.strZero(get(SECOND_OF_MINUTE), 2));}
+            if(count==1) {return sb.with(String.valueOf(get(SECOND_OF_MINUTE)));}
+        }
+        return null;
 	}
 
   /**

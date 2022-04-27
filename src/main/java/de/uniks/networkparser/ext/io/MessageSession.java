@@ -43,6 +43,7 @@ import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.bytes.ByteConverter64;
+import de.uniks.networkparser.ext.http.HTTPRequest;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -1110,7 +1111,7 @@ public class MessageSession {
 					+ message.getHeader(SocketMessage.PROPERTY_BOUNDARY));
 		} else {
 			sendValues(message.getHeader(SocketMessage.PROPERTY_CONTENTTYPE));
-			sendValues(SocketMessage.CONTENT_ENCODING);
+			sendValues(HTTPRequest.MERGE(HTTPRequest.CONTENT_ENCODING, HTTPRequest.CONTENT_ENCODING_7BIT));
 		}
 		/* The CRLF separator between header and content */
 		sendValues(BaseItem.CRLF);
@@ -1122,11 +1123,10 @@ public class MessageSession {
 			if (multiPart) {
 				sendValues(splitter + message.generateBoundaryValue());
 				sendValues(SocketMessage.PROPERTY_CONTENTTYPE + message.getContentType(msg));
-				sendValues(SocketMessage.CONTENT_ENCODING);
+	            sendValues(HTTPRequest.MERGE(HTTPRequest.CONTENT_ENCODING, HTTPRequest.CONTENT_ENCODING_7BIT));
 			}
 			/* The CRLF separator between header and content */
 			sendValues(BaseItem.CRLF);
-
 			while (!buffer.isEnd()) {
 				CharacterBuffer line = buffer.readLine();
 				/* If the line begins with a ".", put an extra "." in front of it. */
@@ -1139,16 +1139,34 @@ public class MessageSession {
 		SimpleKeyValueList<String, Buffer> attachments = message.getAttachments();
 		for (int i = 0; i < attachments.size(); i++) {
 			String fileName = attachments.get(i);
+			if(fileName == null) {
+			    continue;
+			}
 			Buffer buffer = attachments.getValueByIndex(i);
 			sendValues(splitter + message.generateBoundaryValue());
-			sendValues(SocketMessage.PROPERTY_CONTENTTYPE + SocketMessage.CONTENT_TYPE_PLAIN + " name=" + fileName);
-			sendValues(SocketMessage.CONTENT_ENCODING);
-			sendValues("Content-Disposition: attachment; filename=" + fileName);
-			/* The CRLF separator between header and content */
-			sendValues(BaseItem.CRLF);
-			while (!buffer.isEnd()) {
-				CharacterBuffer line = buffer.getString(1024);
-				sendValues(line.toString());
+			if(fileName.toLowerCase().endsWith(".jpg")) {
+			    
+                sendValues(
+                        HTTPRequest.MERGE(
+                                HTTPRequest.CONTENT_TYPE, HTTPRequest.CONTENT_JPG,
+                                HTTPRequest.CONTENT_NAME, fileName
+                                ));
+//                public static final String CONTENT_CREATION = "creation-date:";
+//                public static final String CONTENT_MODIFICATION = "modification-date:";
+                sendValues(HTTPRequest.CONTENT_ENCODING+":"+HTTPRequest.CONTENT_ENCODING_BASE64);
+                sendDataBASE64(buffer, fileName);
+			} else if(fileName.toLowerCase().endsWith(".pdf")) {
+			    sendValues(
+                        HTTPRequest.MERGE(
+                                HTTPRequest.CONTENT_TYPE, HTTPRequest.CONTENT_PDF,
+                                HTTPRequest.CONTENT_NAME, fileName
+                                ));
+			    sendValues(HTTPRequest.CONTENT_ENCODING+":"+HTTPRequest.CONTENT_ENCODING_BASE64);
+                sendDataBASE64(buffer, fileName);
+			} else {
+			    sendValues(SocketMessage.PROPERTY_CONTENTTYPE + HTTPRequest.CONTENT_PLAIN + ";" +HTTPRequest.HTTP_CHARSET + "; name=" + fileName);
+		        sendValues(HTTPRequest.CONTENT_ENCODING+":"+HTTPRequest.CONTENT_ENCODING_7BIT);
+		        sendData(buffer, fileName);
 			}
 		}
 		if (multiPart) {
@@ -1160,6 +1178,28 @@ public class MessageSession {
 		/* Message is sent. Close the connection to the server */
 		return doCommand("QUIT", RESPONSE_SERVICE_CLOSING_TRANSMISSION);
 	}
+	
+	private void sendData(Buffer buffer, String fileName) {
+	    sendValues("Content-Disposition: attachment; filename=" + fileName);
+        /* The CRLF separator between header and content */
+        sendValues(BaseItem.CRLF);
+        while (!buffer.isEnd()) {
+            CharacterBuffer line = buffer.getString(1024);
+            sendValues(line.toString());
+        }
+	}
+	
+	private void sendDataBASE64(Buffer buffer, String fileName) {
+        sendValues("Content-Disposition: attachment; filename=" + fileName);
+        /* The CRLF separator between header and content */
+        sendValues(BaseItem.CRLF);
+        
+        CharacterBuffer[] splitText = StringUtil.splitText(
+                ByteConverter64.toBase64String(((FileBuffer)buffer).readAllBinary().array()).toCharArray(), 1024);
+        for(CharacterBuffer line : splitText ) {
+            sendValues(line.toString());
+        }
+	}        
 
 	/**
 	 * Gets the last answer.

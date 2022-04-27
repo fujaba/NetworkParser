@@ -28,6 +28,7 @@ import de.uniks.networkparser.EntityStringConverter;
 import de.uniks.networkparser.StringEntity;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.http.HTTPRequest;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.json.JsonObject;
@@ -42,7 +43,6 @@ import de.uniks.networkparser.xml.XMLEntity;
  * @author Stefan Lindel
  */
 public class SocketMessage implements BaseItem {
-	
 	/** The Constant PROPERTY_FROM. */
 	public static final String PROPERTY_FROM = "From: ";
 	
@@ -63,22 +63,10 @@ public class SocketMessage implements BaseItem {
 	
 	/** The Constant PROPERTY_BOUNDARY. */
 	public static final String PROPERTY_BOUNDARY = "boundary=";
-	
-	/** The Constant PROPERTY_CONTENTTYPE. */
-	public static final String PROPERTY_CONTENTTYPE = "Content-Type: ";
-	
-	/** The Constant CONTENT_TYPE_MULTIPART. */
-	public static final String CONTENT_TYPE_MULTIPART = "multipart/mixed;";
-	
-	/** The Constant CONTENT_TYPE_HTML. */
-	public static final String CONTENT_TYPE_HTML = "text/html; charset=utf-8;";
-	
-	/** The Constant CONTENT_TYPE_PLAIN. */
-	public static final String CONTENT_TYPE_PLAIN = "text/plain; charset=utf-8;";
-	
-	/** The Constant CONTENT_ENCODING. */
-	public static final String CONTENT_ENCODING = "Content-Transfer-Encoding: 7bit";
 
+    /** The Constant PROPERTY_CONTENTTYPE. */
+    public static final String PROPERTY_CONTENTTYPE = "Content-Type: ";
+	
 	private String subject;
 	private SimpleList<BaseItem> message = new SimpleList<BaseItem>();
 	private String id;
@@ -105,13 +93,13 @@ public class SocketMessage implements BaseItem {
 	 */
 	public String getContentType() {
 		if (isMultiPart()) {
-			return CONTENT_TYPE_MULTIPART;
+			return HTTPRequest.CONTENT_MULTIPART2 +";";
 		}
 		BaseItem item = null;
 		if (this.message.size() > 0) {
 			item = this.message.get(0);
 		}
-		return getContentType(item);
+		return getContentType(item)+ ";" + HTTPRequest.HTTP_CHARSET + ";";
 	}
 
 	/**
@@ -122,9 +110,9 @@ public class SocketMessage implements BaseItem {
 	 */
 	public String getContentType(BaseItem element) {
 		if (element instanceof HTMLEntity) {
-			return CONTENT_TYPE_HTML;
+			return HTTPRequest.CONTENT_HTML;
 		}
-		return CONTENT_TYPE_PLAIN;
+		return HTTPRequest.CONTENT_PLAIN;
 	}
 
 	/**
@@ -142,7 +130,7 @@ public class SocketMessage implements BaseItem {
 			values.with(PROPERTY_TO).with(": ");
 			for (int i = 0; i < to.size(); i++) {
 				if (i > 0) {
-					values.with(";");
+					values.with(",");
 				}
 				values.with(to.get(i));
 			}
@@ -308,9 +296,11 @@ public class SocketMessage implements BaseItem {
 			return this;
 		}
 		for (int i = 0; i < toAdresses.length; i++) {
-			for(String item : toAdresses[i].split(",")) {
-				this.to.add(item);
-			}
+		    if(toAdresses[i] != null) {
+    			for(String item : toAdresses[i].split(",")) {
+    				this.to.add(item);
+    			}
+		    }
 		}
 		return this;
 	}
@@ -424,6 +414,17 @@ public class SocketMessage implements BaseItem {
 		this.attachment.add(fileName, buffer);
 		return this;
 	}
+	
+    /**
+     * With attachment.
+     *
+     * @param fileName the file name
+     * @return the socket message
+     */
+    public SocketMessage withAttachment(String fileName) {
+        this.attachment.add(fileName, new FileBuffer().withFile(fileName));
+        return this;
+    }
 
 	/**
 	 * Gets the new list.

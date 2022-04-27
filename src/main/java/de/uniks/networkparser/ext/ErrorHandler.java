@@ -25,14 +25,17 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.StringList;
 
 /**
  * The Class ErrorHandler.
@@ -55,14 +58,14 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
    * @param fileName the file name
    * @param filePath the file path
    * @param e the e
-   * @return true, if successful
+   * @return File, if successful
    */
-  public boolean saveErrorFile(String prefix, String fileName, String filePath, Throwable e) {
-    boolean success;
+  public File saveErrorFile(String prefix, String fileName, String filePath, Throwable e) {
+    File file =null;
     try {
-      File file = getFileName(filePath, prefix, fileName);
+      file = getFileName(filePath, prefix, fileName);
       if (file == null) {
-        return false;
+        return null;
       }
       FileOutputStream networkFile = new FileOutputStream(file);
 
@@ -107,13 +110,12 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
       if ("Java heap space".equals(e.getMessage())) {
         saveHeapSpace(prefix);
       }
-      success = true;
     } catch (FileNotFoundException exception) {
-      success = false;
+      file = null;
     } catch (IOException exception) {
-      success = false;
+      file = null;
     }
-    return success;
+    return file;
   }
 
   /**
@@ -356,9 +358,10 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
    * Save exception.
    *
    * @param e the e
+   * @return List of Files
    */
-  public void saveException(Throwable e) {
-    saveException(e, this.stage, true);
+  public List<String> saveException(Throwable e) {
+    return saveException(e, this.stage, true);
   }
 
   /**
@@ -366,9 +369,10 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
    *
    * @param e the e
    * @param throwException the throw exception
+   * @return List of Files
    */
-  public void saveException(Throwable e, boolean throwException) {
-    saveException(e, this.stage, throwException);
+  public List<String> saveException(Throwable e, boolean throwException) {
+    return saveException(e, this.stage, throwException);
   }
 
   /**
@@ -447,17 +451,25 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
    * @param throwException the throw exception
    * @return true, if successful
    */
-  public boolean saveException(Throwable e, Object stage, boolean throwException) {
+  public List<String> saveException(Throwable e, Object stage, boolean throwException) {
     /* Generate Error.txt */
+    StringList files = new StringList();
     if (e == null) {
-      return false;
+      return files;
     }
     String prefixName = getPrefix();
-    boolean success = saveErrorFile(prefixName, "error.txt", this.path, e);
-    saveScreenShoot(prefixName, "Full.jpg", this.path, stage);
+    File target = saveErrorFile(prefixName, "error.txt", this.path, e);
+    if(target != null) {
+        files.add(target.toString());
+    }
+    Exception exception = saveScreenShoot(prefixName, "Full.jpg", this.path, stage);
+    if(exception == null) {
+        files.add(this.path + "/" + prefixName + "Full.jpg");
+    }
     if (list.size() > 0) {
-      SimpleEvent event = new SimpleEvent(this, prefixName, null, e);
-      event.withType(TYPE);
+      SimpleEvent event = new SimpleEvent(this, TYPE, null, e);
+      event.withModelValue(files);
+      event.withType(prefixName);
 
       for (ObjectCondition child : list) {
         child.update(event);
@@ -467,7 +479,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
       e.printStackTrace();
       throw new SimpleException(e);
     }
-    return success;
+    return files;
   }
 
   /**
@@ -494,9 +506,11 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
    * Adds the listener.
    *
    * @param world the world
+   * @return ThisComponent 
    */
-  public void addListener(ObjectCondition world) {
+  public ErrorHandler withListener(Condition<?> world) {
     list.add(world);
+    return this;
   }
 
   /**

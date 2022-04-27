@@ -20,9 +20,9 @@ public class NodeProxyTest {
 
 //	@Test
 	public void UniversityOfMadnessCreate() {
-		HTMLEntity answer = NodeProxyTCP.postHTTP("avocado.uniks.de", 33000, "user/create", HTTPRequest.HTTP_CONTENT_JSON, "Username", "Eraser");
+		HTMLEntity answer = NodeProxyTCP.postHTTP("avocado.uniks.de", 33000, "user/create", HTTPRequest.CONTENT_JSON, "Username", "Eraser");
 
-		HTMLEntity login = NodeProxyTCP.postHTTP("avocado.uniks.de", 33000, "user/login", HTTPRequest.HTTP_CONTENT_JSON, "Username", "Eraser", "Password", "crazy");
+		HTMLEntity login = NodeProxyTCP.postHTTP("avocado.uniks.de", 33000, "user/login", HTTPRequest.CONTENT_JSON, "Username", "Eraser", "Password", "crazy");
 
 //		answer = NodeProxyTCP.postHTTP(login, "api/games/create", NodeProxyTCP.HEADER_PLAIN, "name", "Springfield");
 //		System.out.println(answer.getStatusCode()+": "+answer.getStatusMessage());
@@ -49,7 +49,7 @@ public class NodeProxyTest {
 				return true;
 			}
 		});
-		answer = NodeProxyTCP.postHTTP(login, "/api/chat/channel/General", HTTPRequest.HTTP_CONTENT_PLAIN, "Hallo Welt");
+		answer = NodeProxyTCP.postHTTP(login, "/api/chat/channel/General", HTTPRequest.CONTENT_PLAIN, "Hallo Welt");
 //		System.out.println(answer.getStatusCode()+": "+answer.getStatusMessage() + "BODY: "+answer.getBody().getValue());
 		try {
 			Thread.sleep(10000);
