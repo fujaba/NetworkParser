@@ -444,7 +444,9 @@ public class StringUtil {
 		}
 		CharacterBuffer sb = new CharacterBuffer();
 		if (length > value.length()) {
-			sb.with("0".repeat(length - value.length()));
+		    char[] txt=new char[length - value.length()];
+	        for(int i=0;i<txt.length;i++) {txt[i]='0';}
+			sb.with(new String(txt));
 		}
 		sb.append(value);
 		return sb.toString();
